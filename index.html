@@ -3,944 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAA & PEE - EB1/PE do Covão e Vargem</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>APPCovao - Gestão Escolar e CAA</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Print styles optimization */
-        @media print {
-            body { background: white !important; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .print-box { border: 1px solid #ccc !important; background: #fff !important; box-shadow: none !important; }
+        :root {
+            --primary: #2e6930;
+            --primary-hover: #235224;
+            --bg-color: #f4f6f3;
+            --card-bg: #ffffff;
+            --text-main: #2c3e2d;
+            --border-color: #c2d0c3;
         }
-        .print-only { display: none; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Layout Principal */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Desktop */
+        .sidebar {
+            width: 260px;
+            background-color: #1e3f20;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .sidebar-menu li:hover, .sidebar-menu li.active {
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Ecrãs de Autenticação */
+        .auth-container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .auth-logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px auto;
+            background: #e8f0e8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8e2;
+            color: var(--text-main);
+            margin-top: 10px;
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5cb;
+        }
+
+        /* Tabelas e Modulares */
+        .card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8e2;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f0f4f0;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-approved { background: #d1fae5; color: #065f46; }
+
+        .hidden { display: none !important; }
+
+        /* Estilos de Impressão */
+        .print-only-content { display: none; }
+
+        @media print {
+            .sidebar, .no-print, button, input, textarea { display: none !important; }
+            .print-only-content { display: block !important; background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 5px; }
+            body { background: white; padding: 0; }
+            .card { box-shadow: none; padding: 0; }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body>
 
-    <div id="authView" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-brand-900 via-brand-800 to-slate-900 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 border border-brand-100 transform transition-all">
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 bg-brand-100 text-brand-700 rounded-2xl mx-auto flex items-center justify-center text-3xl font-bold shadow-inner mb-4">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-                <h1 class="text-2xl font-bold text-slate-900">EB1/PE do Covão e Vargem</h1>
-                <p class="text-sm text-brand-700 font-semibold mt-1">Centro de Apoio à Aprendizagem (CAA) & PEE</p>
-                <p class="text-xs text-gray-500 mt-1">Plataforma de Gestão Pedagógica</p>
-            </div>
+    <!-- SECÇÃO DE AUTENTICAÇÃO -->
+    <div id="authView" class="auth-container">
+        <div class="auth-logo">APP</div>
+        <h2 style="margin-top:0; color: #1e3f20;">APPCovao</h2>
+        <p style="font-size:13px; color: #666; margin-bottom: 25px;">Plataforma de Gestão Escolar e CAA</p>
 
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Correio Eletrónico</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-envelope"></i></span>
-                        <input type="email" id="loginEmail" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="ex: professor@escola.pt">
-                    </div>
+        <!-- Formulário de Login -->
+        <div id="loginFormSection">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Institucional</label>
+                    <input type="email" id="loginEmail" placeholder="nome@edu.madeira.gov.pt" required>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Palavra-passe</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" id="loginPass" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="••••••••">
-                    </div>
+                <div class="form-group">
+                    <label>Palavra-passe</label>
+                    <input type="password" id="loginPassword" required>
                 </div>
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand-600/30 transition-all">
-                    Entrar na Plataforma
-                </button>
+                <button type="submit">Entrar</button>
             </form>
+            <p style="margin-top: 20px; font-size: 13px;">
+                Não tens conta? <a href="#" onclick="toggleAuth(true)" style="color: var(--primary);">Registar novo utilizador</a>
+            </p>
+        </div>
 
-            <div class="mt-6 pt-6 border-t border-gray-100 text-center">
-                <p class="text-xs text-gray-500 mb-3 font-medium">Acesso Rápido para Demonstração:</p>
-                <div class="flex gap-2 justify-center">
-                    <button type="button" onclick="fillDemo('admin')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium border border-slate-300 transition-colors">
-                        👑 Admin Master
-                    </button>
-                    <button type="button" onclick="fillDemo('prof')" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-medium border border-brand-200 transition-colors">
-                        👩‍🏫 Professor CAA
-                    </button>
+        <!-- Formulário de Registo -->
+        <div id="registerFormSection" class="hidden">
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="regName" required>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>Email Institucional (@edu.madeira.gov.pt)</label>
+                    <input type="email" id="regEmail" placeholder="ex: professor@edu.madeira.gov.pt" required>
+                </div>
+                <div class="form-group">
+                    <label>Palavra-passe</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <button type="submit">Submeter Registo</button>
+                <button type="button" class="btn-secondary" onclick="toggleAuth(false)">Voltar ao Login</button>
+            </form>
         </div>
     </div>
 
-    <div id="appView" class="hidden flex-1 flex flex-col md:flex-row min-h-screen">
-        
-        <!-- Desktop Sidebar -->
-        <aside class="hidden md:flex flex-col w-72 bg-gradient-to-b from-brand-900 to-brand-950 text-white shadow-xl z-20">
-            <div class="p-6 border-b border-brand-800 flex items-center gap-3">
-                <div class="w-12 h-12 bg-white text-brand-900 rounded-xl flex items-center justify-center font-bold text-xl shadow">
-                    CAA
+    <!-- APLICAÇÃO PRINCIPAL (PÓS-LOGIN) -->
+    <div id="appView" class="app-container hidden">
+        <div class="sidebar">
+            <div>
+                <div class="sidebar-brand">
+                    <span>📚</span> APPCovao
                 </div>
-                <div>
-                    <h2 class="font-bold text-sm leading-tight">EB1/PE Covão e Vargem</h2>
-                    <p class="text-xs text-brand-300 mt-0.5">Gestão de Apoio & PEE</p>
-                </div>
+                <ul class="sidebar-menu">
+                    <li id="menuDashboard" onclick="switchTab('dashboard')" class="active">Painel Principal</li>
+                    <li id="menuCaa" onclick="switchTab('caa')">Registo CAA</li>
+                    <li id="menuAdmin" onclick="switchTab('admin')" class="hidden">Painel Administrador</li>
+                </ul>
+            </div>
+            <div>
+                <p id="userLoggedInfo" style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;"></p>
+                <button onclick="logout()" style="background: #a93226; font-size: 13px; padding: 8px;">Terminar Sessão</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- PAINEL PRINCIPAL -->
+            <div id="tabDashboard" class="card">
+                <h2>Bem-vindo ao APPCovao</h2>
+                <p>Selecione uma opção no menu lateral para gerir as atividades pedagógicas, registos do Centro de Apoio à Aprendizagem (CAA) ou aceder ao painel administrativo.</p>
             </div>
 
-            <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors bg-brand-700 text-white shadow-sm">
-                    <i class="fa-solid fa-chart-pie w-5 text-center"></i> Painel Geral
-                </button>
-                <button onclick="switchTab('registo')" id="nav-registo" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-brand-100 hover:bg-brand-800">
-                    <i class="fa-solid fa-file-pen w-5 text-center"></i> Novo Registo CAA
-                </button>
-                <button onclick="switchTab('pee')" id="nav-pee" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-brand-100 hover:bg-brand-800">
-                    <i class="fa-solid fa-bullseye w-5 text-center"></i> Metas do PEE
-                </button>
-                <button onclick="switchTab('avaliacoes')" id="nav-avaliacoes" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-brand-100 hover:bg-brand-800">
-                    <i class="fa-solid fa-clipboard-check w-5 text-center"></i> Avaliações
-                </button>
-                <button onclick="switchTab('registos')" id="nav-registos" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-brand-100 hover:bg-brand-800">
-                    <i class="fa-solid fa-folder-open w-5 text-center"></i> Histórico de Atividades
-                </button>
-                <div id="adminMenuSection" class="pt-4 mt-4 border-t border-brand-800 hidden">
-                    <p class="px-4 text-xs font-bold text-brand-400 uppercase tracking-wider mb-2">Administração</p>
-                    <button onclick="switchTab('admin')" id="nav-admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-brand-100 hover:bg-brand-800">
-                        <i class="fa-solid fa-shield-halved w-5 text-center"></i> Painel Master
-                    </button>
-                </div>
-            </nav>
-
-            <div class="p-4 border-t border-brand-800 bg-brand-950/50">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2 truncate">
-                        <div class="w-9 h-9 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold text-xs" id="userAvatar">U</div>
-                        <div class="truncate">
-                            <p class="text-xs font-bold text-white truncate" id="userNameDisplay">Utilizador</p>
-                            <p class="text-[10px] text-brand-300 truncate" id="userRoleDisplay">Professor</p>
-                        </div>
+            <!-- MÓDULO CAA -->
+            <div id="tabCaa" class="card hidden">
+                <h2>CAA - Centro de Apoio à Aprendizagem</h2>
+                <p style="font-size: 13px; color: #666; margin-bottom: 20px;">EB1/PE do Covão e Vargem - Registo de Atividades Pedagógicas</p>
+                
+                <form id="caaForm" onsubmit="saveCaaActivity(event)">
+                    <div class="form-group">
+                        <label>1. Data da Atividade *</label>
+                        <input type="date" id="caa_data" required>
                     </div>
-                </div>
-                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-200 hover:text-white rounded-lg text-xs font-semibold transition-all border border-red-500/30">
-                    <i class="fa-solid fa-right-from-bracket"></i> Terminar Sessão
-                </button>
-            </div>
-        </aside>
-
-        <!-- Mobile Header -->
-        <header class="md:hidden bg-brand-900 text-white p-4 flex items-center justify-between shadow-md z-30">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-white text-brand-900 rounded-lg flex items-center justify-center font-bold text-sm">CAA</div>
-                <div>
-                    <h1 class="font-bold text-sm">EB1/PE Covão e Vargem</h1>
-                    <p class="text-[10px] text-brand-300">Centro de Apoio à Aprendizagem</p>
-                </div>
-            </div>
-            <button onclick="handleLogout()" class="text-xs bg-red-600 px-3 py-1.5 rounded-lg text-white font-medium">Sair</button>
-        </header>
-
-        <!-- Mobile Bottom Nav -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 z-40 shadow-lg">
-            <button onclick="switchTab('dashboard')" id="mnav-dashboard" class="flex flex-col items-center text-brand-600 text-xs font-medium p-1">
-                <i class="fa-solid fa-chart-pie text-lg"></i>
-                <span>Painel</span>
-            </button>
-            <button onclick="switchTab('registo')" id="mnav-registo" class="flex flex-col items-center text-gray-500 text-xs font-medium p-1">
-                <i class="fa-solid fa-file-pen text-lg"></i>
-                <span>Registo</span>
-            </button>
-            <button onclick="switchTab('pee')" id="mnav-pee" class="flex flex-col items-center text-gray-500 text-xs font-medium p-1">
-                <i class="fa-solid fa-bullseye text-lg"></i>
-                <span>PEE</span>
-            </button>
-            <button onclick="switchTab('registos')" id="mnav-registos" class="flex flex-col items-center text-gray-500 text-xs font-medium p-1">
-                <i class="fa-solid fa-folder-open text-lg"></i>
-                <span>Histórico</span>
-            </button>
-            <button onclick="switchTab('admin')" id="mnav-admin" class="flex flex-col items-center text-gray-500 text-xs font-medium p-1 hidden mobile-admin-tab">
-                <i class="fa-solid fa-shield-halved text-lg"></i>
-                <span>Admin</span>
-            </button>
-        </nav>
-
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-8">
-
-            <!-- 1. DASHBOARD TAB -->
-            <section id="tab-dashboard" class="space-y-6">
-                <div class="bg-gradient-to-r from-brand-600 to-brand-800 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold">Bem-vindo(a) ao CAA & PEE</h2>
-                        <p class="text-brand-100 text-sm mt-1">Escola Básica do 1º Ciclo com Pré-Escolar do Covão e Vargem</p>
+                    <div class="form-group">
+                        <label>2. Nome do Aluno *</label>
+                        <input type="text" id="caa_aluno" required>
                     </div>
-                    <button onclick="switchTab('registo')" class="px-5 py-3 bg-white text-brand-800 font-bold rounded-xl shadow hover:bg-brand-50 transition-colors flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-plus-circle"></i> Novo Registo de Atividade
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-file-lines"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-semibold uppercase">Atividades Registadas</p>
-                            <h3 class="text-2xl font-bold text-slate-800" id="statAtividades">0</h3>
-                        </div>
+                    <div class="form-group">
+                        <label>3. Atividade / Descrição *</label>
+                        <textarea id="caa_desc" rows="4" required></textarea>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-children"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-semibold uppercase">Alunos Apoiados</p>
-                            <h3 class="text-2xl font-bold text-slate-800" id="statAlunos">0</h3>
-                        </div>
+                    <div class="form-group">
+                        <label>4. Observações / Avaliação *</label>
+                        <textarea id="caa_obs" rows="3" required></textarea>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-bullseye"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-semibold uppercase">Metas PEE Ativas</p>
-                            <h3 class="text-2xl font-bold text-slate-800" id="statPee">6</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-school"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-semibold uppercase">Salas / Turmas</p>
-                            <h3 class="text-2xl font-bold text-slate-800">11</h3>
-                        </div>
-                    </div>
-                </div>
+                    <button type="submit">Guardar Atividade CAA</button>
+                </form>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-bold text-slate-800 text-lg">Últimas Atividades Registadas</h3>
-                            <button onclick="switchTab('registos')" class="text-xs text-brand-600 font-semibold hover:underline">Ver todas</button>
-                        </div>
-                        <div id="recentActivityList" class="space-y-3">
-                            <p class="text-sm text-gray-500 text-center py-4">Sem atividades registadas recentemente.</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                        <h3 class="font-bold text-slate-800 text-lg mb-4">Acesso Rápido a Módulos</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="switchTab('registo')" class="p-4 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 text-left transition-all group">
-                                <div class="w-10 h-10 bg-brand-600 text-white rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-plus"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">Novo Registo CAA</h4>
-                                <p class="text-xs text-gray-500 mt-1">Registar apoio pedagógico</p>
-                            </button>
-                            <button onclick="switchTab('pee')" class="p-4 bg-emerald-50 hover:bg-emerald-100 rounded-xl border border-emerald-200 text-left transition-all group">
-                                <div class="w-10 h-10 bg-emerald-600 text-white rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-bullseye"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">Metas PEE</h4>
-                                <p class="text-xs text-gray-500 mt-1">Plano Educativo Estratégico</p>
-                            </button>
-                            <button onclick="switchTab('avaliacoes')" class="p-4 bg-amber-50 hover:bg-amber-100 rounded-xl border border-amber-200 text-left transition-all group">
-                                <div class="w-10 h-10 bg-amber-600 text-white rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-clipboard-check"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">Avaliação Automática</h4>
-                                <p class="text-xs text-gray-500 mt-1">Preenchimento assistido</p>
-                            </button>
-                            <button onclick="switchTab('registos')" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 text-left transition-all group">
-                                <div class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-print"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">Relatórios e PDF</h4>
-                                <p class="text-xs text-gray-500 mt-1">Exportar e imprimir relatórios</p>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2. OFICIAL CAA FORM TAB -->
-            <section id="tab-registo" class="space-y-6 hidden">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 max-w-4xl mx-auto">
-                    <div class="flex items-center gap-4 border-b border-brand-500 pb-4 mb-6">
-                        <div class="w-16 h-16 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center text-3xl font-bold flex-shrink-0">
-                            <i class="fa-solid fa-school"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider">EB1/PE do Covão e Vargem</h2>
-                            <h1 class="text-xl md:text-2xl font-bold text-brand-700">CAA - Centro de Apoio à Aprendizagem</h1>
-                            <p class="text-xs text-gray-500">Registo Oficial de Atividades Pedagógicas</p>
-                        </div>
-                    </div>
-
-                    <form id="escolarForm" onsubmit="saveCAAForm(event)" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block font-semibold text-sm mb-1">1. Data da Atividade <span class="text-red-600">*</span></label>
-                                <input type="date" id="data_atividade" name="data_atividade" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-sm mb-1">2. Nome do Aluno <span class="text-red-600">*</span></label>
-                                <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" placeholder="Nome completo do aluno" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold text-sm mb-2">3. Turma(s) / Sala(s) (Pode selecionar várias)</label>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="1ºA" class="rounded text-brand-600 focus:ring-brand-500"> 1ºA</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="1ºB" class="rounded text-brand-600 focus:ring-brand-500"> 1ºB</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="2ºA" class="rounded text-brand-600 focus:ring-brand-500"> 2ºA</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="2ºB" class="rounded text-brand-600 focus:ring-brand-500"> 2ºB</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="3ºA" class="rounded text-brand-600 focus:ring-brand-500"> 3ºA</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="3ºB" class="rounded text-brand-600 focus:ring-brand-500"> 3ºB</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="4ºA" class="rounded text-brand-600 focus:ring-brand-500"> 4ºA</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="4ºB" class="rounded text-brand-600 focus:ring-brand-500"> 4ºB</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="Abelhinhas" class="rounded text-brand-600 focus:ring-brand-500"> Abelhinhas</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="Arco-Íris" class="rounded text-brand-600 focus:ring-brand-500"> Arco-Íris</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="turma" value="Flores" class="rounded text-brand-600 focus:ring-brand-500"> Flores</label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <label for="atividade" class="font-semibold text-sm">4. Atividade <span class="text-red-600">*</span></label>
-                                <button type="button" onclick="autoFillCAA()" class="text-xs bg-brand-550 text-brand-700 bg-brand-50 hover:bg-brand-100 px-2.5 py-1 rounded-lg font-medium border border-brand-200 flex items-center gap-1">
-                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Sugerir / Preencher Exemplo
-                                </button>
-                            </div>
-                            <input type="text" id="atividade" name="atividade" maxlength="1000" placeholder="Título ou designação da atividade" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50">
-                        </div>
-
-                        <div>
-                            <label for="objetivos" class="block font-semibold text-sm mb-1">5. Objetivos <span class="text-red-600">*</span></label>
-                            <textarea id="objetivos" name="objetivos" maxlength="5000" rows="4" placeholder="Introduza os objetivos pedagógicos..." oninput="updateCounter(this, 'counter-obj')" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50"></textarea>
-                            <div id="counter-obj" class="text-xs text-gray-500 text-right mt-1">Máximo de 5000 carateres</div>
-                        </div>
-
-                        <div>
-                            <label for="descricao_atividade" class="block font-semibold text-sm mb-1">6. Descrição da Atividade <span class="text-red-600">*</span></label>
-                            <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" rows="5" placeholder="Descrição detalhada do desenvolvimento da atividade..." oninput="updateCounter(this, 'counter-desc')" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50"></textarea>
-                            <div id="counter-desc" class="text-xs text-gray-500 text-right mt-1">Máximo de 10000 carateres</div>
-                        </div>
-
-                        <div>
-                            <label for="formas_avaliacao" class="block font-semibold text-sm mb-1">7. Formas de Avaliação <span class="text-red-600">*</span></label>
-                            <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" rows="3" placeholder="Instrumentos e critérios de avaliação..." oninput="updateCounter(this, 'counter-av')" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50"></textarea>
-                            <div id="counter-av" class="text-xs text-gray-500 text-right mt-1">Máximo de 5000 carateres</div>
-                        </div>
-
-                        <div>
-                            <label for="articulacao" class="block font-semibold text-sm mb-1">8. Articulação <span class="text-red-600">*</span></label>
-                            <textarea id="articulacao" name="articulacao" maxlength="5000" rows="3" placeholder="Articulação curricular e com a comunidade/família..." oninput="updateCounter(this, 'counter-art')" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50"></textarea>
-                            <div id="counter-art" class="text-xs text-gray-500 text-right mt-1">Máximo de 5000 carateres</div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="responsaveis" class="block font-semibold text-sm mb-1">9. Responsável(eis) <span class="text-red-600">*</span></label>
-                                <input type="text" id="responsaveis" name="responsaveis" maxlength="500" placeholder="Nome dos docentes/técnicos" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50">
-                            </div>
-                            <div>
-                                <label for="observacoes" class="block font-semibold text-sm mb-1">10. Observações <span class="text-red-600">*</span></label>
-                                <textarea id="observacoes" name="observacoes" maxlength="5000" rows="2" placeholder="Outras notas relevantes..." oninput="updateCounter(this, 'counter-obs')" required class="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-gray-50"></textarea>
-                                <div id="counter-obs" class="text-xs text-gray-500 text-right mt-1">Máximo de 5000 carateres</div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold text-sm mb-2">11. Registo Fotográfico / Imagens da Atividade:</label>
-                            <div class="border-2 border-dashed border-gray-300 p-6 text-center rounded-xl bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors" onclick="document.getElementById('fileInput').click()">
-                                <i class="fa-solid fa-camera text-3xl text-brand-600 mb-2"></i>
-                                <p class="text-sm font-medium text-gray-700">Clique para carregar fotografias da atividade</p>
-                                <p class="text-xs text-gray-400 mt-1">Formatos aceites: JPG, PNG</p>
-                                <input type="file" id="fileInput" accept="image/*" multiple class="hidden" onchange="handleFiles(this.files)">
-                            </div>
-                            <div id="imagePreviewContainer" class="flex flex-wrap gap-3 mt-4"></div>
-                        </div>
-
-                        <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                            <button type="button" onclick="clearCAAForm()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition-colors">Limpar</button>
-                            <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold shadow-lg shadow-brand-600/30 transition-all flex items-center gap-2">
-                                <i class="fa-solid fa-floppy-disk"></i> Guardar Registo CAA
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </section>
-
-            <!-- 3. PEE METAS TAB -->
-            <section id="tab-pee" class="space-y-6 hidden">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 max-w-4xl mx-auto">
-                    <div class="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-                        <div>
-                            <h2 class="text-2xl font-bold text-slate-800">Plano Educativo Estratégico (PEE)</h2>
-                            <p class="text-sm text-gray-500">Monitorização de metas e objetivos de inclusão e apoio à aprendizagem</p>
-                        </div>
-                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full">Ano Letivo 2025/2026</span>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm hover:border-brand-500 transition-all">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Eixo 1: Inclusão e Acessibilidade</span>
-                                    <h3 class="font-bold text-slate-800 text-base mt-1">Adaptação de Materiais Pedagógicos Multimédia</h3>
-                                    <p class="text-xs text-gray-600 mt-1">Garantir que 100% dos alunos com medidas seletivas disponham de recursos táteis e visuais adaptados.</p>
-                                </div>
-                                <span class="px-3 py-1 bg-green-100 text-green-700 font-semibold text-xs rounded-lg flex-shrink-0">Em Curso (85%)</span>
-                            </div>
-                            <div class="w-full bg-gray-100 h-2 rounded-full mt-4 overflow-hidden">
-                                <div class="bg-brand-600 h-full rounded-full" style="width: 85%"></div>
-                            </div>
-                        </div>
-
-                        <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm hover:border-brand-500 transition-all">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Eixo 2: Articulação Curricular</span>
-                                    <h3 class="font-bold text-slate-800 text-base mt-1">Co-lecionação e Suporte em Sala de Aula</h3>
-                                    <p class="text-xs text-gray-600 mt-1">Aumentar em 30% as horas de intervenção direta nas salas do 1º Ciclo e Pré-Escolar.</p>
-                                </div>
-                                <span class="px-3 py-1 bg-blue-100 text-blue-700 font-semibold text-xs rounded-lg flex-shrink-0">Concluído (100%)</span>
-                            </div>
-                            <div class="w-full bg-gray-100 h-2 rounded-full mt-4 overflow-hidden">
-                                <div class="bg-blue-600 h-full rounded-full" style="width: 100%"></div>
-                            </div>
-                        </div>
-
-                        <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm hover:border-brand-500 transition-all">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Eixo 3: Comunidade e Família</span>
-                                    <h3 class="font-bold text-slate-800 text-base mt-1">Oficinas de Apoio Parental e Partilha</h3>
-                                    <p class="text-xs text-gray-600 mt-1">Realização de sessões mensais com encarregados de educação para continuidade de estratégias em casa.</p>
-                                </div>
-                                <span class="px-3 py-1 bg-amber-100 text-amber-700 font-semibold text-xs rounded-lg flex-shrink-0">A decorrer (60%)</span>
-                            </div>
-                            <div class="w-full bg-gray-100 h-2 rounded-full mt-4 overflow-hidden">
-                                <div class="bg-amber-500 h-full rounded-full" style="width: 60%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. AVALIAÇÕES TAB -->
-            <section id="tab-avaliacoes" class="space-y-6 hidden">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 max-w-4xl mx-auto">
-                    <div class="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-                        <div>
-                            <h2 class="text-2xl font-bold text-slate-800">Módulo de Avaliação e Auto-Preenchimento</h2>
-                            <p class="text-sm text-gray-500">Ferramenta assistida para avaliação de competências do CAA</p>
-                        </div>
-                        <button onclick="runAutoEvaluation()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold shadow hover:bg-brand-700 transition-colors flex items-center gap-2">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Parecer Automático
-                        </button>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block font-semibold text-sm mb-1">Selecionar Aluno em Acompanhamento</label>
-                            <select id="evalAlunoSelect" class="w-full p-3 border border-gray-300 rounded-xl text-sm bg-gray-50 focus:ring-2 focus:ring-brand-500">
-                                <option>Matilde Sousa (3ºA)</option>
-                                <option>Rodrigo Fernandes (2ºB)</option>
-                                <option>Beatriz Lima (Sala Abelhinhas)</option>
-                                <option>Tomás Ribeiro (4ºA)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold text-sm mb-1">Critérios de Avaliação Aplicados</label>
-                            <div class="space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                <label class="flex items-center gap-2 text-sm"><input type="checkbox" checked class="rounded text-brand-600"> Observação direta em contexto de sala de aula</label>
-                                <label class="flex items-center gap-2 text-sm"><input type="checkbox" checked class="rounded text-brand-600"> Grelha de registo de frequência e autonomia</label>
-                                <label class="flex items-center gap-2 text-sm"><input type="checkbox" checked class="rounded text-brand-600"> Análise de produções escritas e plásticas</label>
-                                <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-brand-600"> Feedback da família / Encarregado de Educação</label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold text-sm mb-1">Parecer / Conclusão de Avaliação Gerado</label>
-                            <textarea id="evalOutputText" rows="5" class="w-full p-3 border border-gray-300 rounded-xl text-sm bg-gray-50 focus:ring-2 focus:ring-brand-500" placeholder="Clique em 'Gerar Parecer Automático' para criar a síntese avaliativa..."></textarea>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. HISTÓRICO E RELATÓRIOS TAB -->
-            <section id="tab-registos" class="space-y-6 hidden">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 max-w-5xl mx-auto">
-                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-gray-200 pb-4 mb-6 gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold text-slate-800">Histórico de Atividades CAA</h2>
-                            <p class="text-sm text-gray-500">Lista completa de registos efetuados e relatórios prontos para impressão</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="exportDataJSON()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors flex items-center gap-2">
-                                <i class="fa-solid fa-download"></i> Exportar JSON
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="recordsTableContainer" class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-100 text-xs font-bold text-gray-600 uppercase border-b border-gray-200">
-                                    <th class="p-3 rounded-l-xl">Data</th>
-                                    <th class="p-3">Aluno</th>
-                                    <th class="p-3">Turmas</th>
-                                    <th class="p-3">Atividade</th>
-                                    <th class="p-3">Responsável</th>
-                                    <th class="p-3 text-right rounded-r-xl">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recordsTableBody">
-                                <!-- Preenchido por JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. ADMIN MASTER TAB -->
-            <section id="tab-admin" class="space-y-6 hidden">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 max-w-4xl mx-auto">
-                    <div class="flex items-center gap-4 border-b border-gray-200 pb-4 mb-6">
-                        <div class="w-14 h-14 bg-red-50 text-red-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-slate-800">Painel de Administração Master</h2>
-                            <p class="text-sm text-gray-500">Gestão global de acessos, contas e controlo de registos da escola</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-3">Contas de Utilizadores Registados</h3>
-                            <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-3">
-                                <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-brand-600 text-white rounded-lg flex items-center justify-center font-bold">A</div>
-                                        <div>
-                                            <p class="text-sm font-bold text-slate-800">Administrador Master</p>
-                                            <p class="text-xs text-gray-500">admin@escola.pt • <span class="text-emerald-600 font-semibold">Ativo</span></p>
-                                        </div>
-                                    </div>
-                                    <span class="px-3 py-1 bg-brand-100 text-brand-800 text-xs font-bold rounded-lg">Admin</span>
-                                </div>
-                                <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-emerald-600 text-white rounded-lg flex items-center justify-center font-bold">P</div>
-                                        <div>
-                                            <p class="text-sm font-bold text-slate-800">Professor CAA</p>
-                                            <p class="text-xs text-gray-500">professor@escola.pt • <span class="text-emerald-600 font-semibold">Ativo</span></p>
-                                        </div>
-                                    </div>
-                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg">Professor</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-3">Gestão de Base de Dados e Registos</h3>
-                            <div class="p-4 bg-red-50 rounded-xl border border-red-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                <div>
-                                    <h4 class="font-bold text-red-900 text-sm">Eliminar Todos os Registos</h4>
-                                    <p class="text-xs text-red-700 mt-0.5">Esta ação limpa o armazenamento local de todas as atividades introduzidas.</p>
-                                </div>
-                                <button onclick="clearAllRecords()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow transition-all">
-                                    Limpar Todos os Dados
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <div id="printModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto print-box">
-            <div class="flex justify-between items-center pb-4 border-b border-gray-200 no-print mb-6">
-                <h3 class="font-bold text-slate-800 text-lg">Pré-visualização para Impressão / PDF</h3>
-                <div class="flex gap-2">
-                    <button onclick="window.print()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow">
-                        <i class="fa-solid fa-print"></i> Imprimir / Guardar PDF
-                    </button>
-                    <button onclick="closePrintModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold">
-                        Fechar
-                    </button>
-                </div>
+                <hr style="margin: 30px 0; border:0; border-top:1px solid #eee;">
+                <h3>Atividades Registadas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Aluno</th>
+                            <th>Atividade</th>
+                            <th>Autor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="caaTableBody">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Print content container -->
-            <div id="printModalContent" class="space-y-6 text-slate-800">
-                <!-- Preenchido dinamicamente -->
+            <!-- PAINEL ADMINISTRADOR -->
+            <div id="tabAdmin" class="card hidden">
+                <h2>Painel de Administração</h2>
+                <p>Aprovação de contas e gestão global do sistema.</p>
+                
+                <h3>Utilizadores Pendentes</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersBody">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 30px;">
+                    <button onclick="exportData()" style="width: auto;">Descarregar Backup Completo (JSON)</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Estado Global
-        let currentUser = null;
-        let records = JSON.parse(localStorage.getItem('caa_records') || '[]');
-        let currentUploadedImages = [];
+        // Base de dados local simulada
+        let db = JSON.parse(localStorage.getItem('appcovao_db')) || {
+            users: [
+                { name: 'Administrador', email: 'admin@edu.madeira.gov.pt', pass: 'admin123', role: 'admin', approved: true }
+            ],
+            caa: [],
+            currentUser: null
+        };
 
-        // Definir data atual por defeito no form
-        document.getElementById('data_atividade').valueAsDate = new Date();
+        function saveDb() {
+            localStorage.setItem('appcovao_db', JSON.stringify(db));
+        }
 
-        function fillDemo(type) {
-            if(type === 'admin') {
-                document.getElementById('loginEmail').value = 'admin@escola.pt';
-                document.getElementById('loginPass').value = '123456';
-            } else {
-                document.getElementById('loginEmail').value = 'professor@escola.pt';
-                document.getElementById('loginPass').value = '123456';
-            }
+        function toggleAuth(isRegister) {
+            document.getElementById('loginFormSection').classList.toggle('hidden', isRegister);
+            document.getElementById('registerFormSection').classList.toggle('hidden', !isRegister);
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
 
-            if(pass.length < 5) {
-                alert('A palavra-passe deve ter pelo menos 6 carateres.');
+            const user = db.users.find(u => u.email === email && u.pass === pass);
+            if (!user) {
+                alert('Credenciais inválidas.');
+                return;
+            }
+            if (!user.approved) {
+                alert('A sua conta encontra-se pendente de aprovação pelo Administrador.');
                 return;
             }
 
-            if(email.includes('admin')) {
-                currentUser = { name: 'Administrador Master', email: email, role: 'admin' };
-            } else {
-                currentUser = { name: 'Professor CAA', email: email, role: 'professor' };
+            db.currentUser = user;
+            initApp();
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPassword').value;
+
+            if (!email.endsWith('@edu.madeira.gov.pt')) {
+                alert('Apenas são permitidos emails institucionais terminados em @edu.madeira.gov.pt');
+                return;
             }
 
-            document.getElementById('userNameDisplay').textContent = currentUser.name;
-            document.getElementById('userRoleDisplay').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Professor';
-            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
-
-            if(currentUser.role === 'admin') {
-                document.getElementById('adminMenuSection').classList.remove('hidden');
-                document.querySelectorAll('.mobile-admin-tab').forEach(el => el.classList.remove('hidden'));
-            } else {
-                document.getElementById('adminMenuSection').classList.add('hidden');
-                document.querySelectorAll('.mobile-admin-tab').forEach(el => el.classList.add('hidden'));
+            if (db.users.some(u => u.email === email)) {
+                alert('Este email já está registado.');
+                return;
             }
 
+            db.users.push({ name, email, pass, role: 'teacher', approved: false });
+            saveDb();
+            alert('Registo efetuado com sucesso! Aguarde aprovação do administrador.');
+            toggleAuth(false);
+        }
+
+        function initApp() {
             document.getElementById('authView').classList.add('hidden');
             document.getElementById('appView').classList.remove('hidden');
-            updateStats();
-            renderRecentActivity();
-            renderRecordsTable();
+            document.getElementById('userLoggedInfo').textContent = `${db.currentUser.name} (${db.currentUser.role === 'admin' ? 'Admin' : 'Professor'})`;
+
+            if (db.currentUser.role === 'admin') {
+                document.getElementById('menuAdmin').classList.remove('hidden');
+            } else {
+                document.getElementById('menuAdmin').classList.add('hidden');
+            }
+
+            switchTab('dashboard');
+            renderCaaTable();
+            renderAdminUsers();
         }
 
-        function handleLogout() {
-            currentUser = null;
-            document.getElementById('authView').classList.remove('hidden');
+        function logout() {
+            db.currentUser = null;
             document.getElementById('appView').classList.add('hidden');
+            document.getElementById('authView').classList.remove('hidden');
         }
 
-        function switchTab(tabId) {
-            const tabs = ['dashboard', 'registo', 'pee', 'avaliacoes', 'registos', 'admin'];
-            tabs.forEach(t => {
-                const el = document.getElementById('tab-' + t);
-                const nav = document.getElementById('nav-' + t);
-                const mnav = document.getElementById('mnav-' + t);
-                if(el) el.classList.add('hidden');
-                if(nav) {
-                    nav.classList.remove('bg-brand-700', 'text-white', 'shadow-sm');
-                    nav.classList.add('text-brand-100', 'hover:bg-brand-800');
-                }
-                if(mnav) {
-                    mnav.classList.remove('text-brand-600');
-                    mnav.classList.add('text-gray-500');
-                }
-            });
+        function switchTab(tab) {
+            document.getElementById('tabDashboard').classList.add('hidden');
+            document.getElementById('tabCaa').classList.add('hidden');
+            document.getElementById('tabAdmin').classList.add('hidden');
 
-            const activeEl = document.getElementById('tab-' + tabId);
-            const activeNav = document.getElementById('nav-' + tabId);
-            const activeMnav = document.getElementById('mnav-' + tabId);
+            document.getElementById('menuDashboard').classList.remove('active');
+            document.getElementById('menuCaa').classList.remove('active');
+            document.getElementById('menuAdmin').classList.remove('active');
 
-            if(activeEl) activeEl.classList.remove('hidden');
-            if(activeNav) {
-                activeNav.classList.add('bg-brand-700', 'text-white', 'shadow-sm');
-                activeNav.classList.remove('text-brand-100', 'hover:bg-brand-800');
-            }
-            if(activeMnav) {
-                activeMnav.classList.add('text-brand-600');
-                activeMnav.classList.remove('text-gray-500');
+            if (tab === 'dashboard') {
+                document.getElementById('tabDashboard').classList.remove('hidden');
+                document.getElementById('menuDashboard').classList.add('active');
+            } else if (tab === 'caa') {
+                document.getElementById('tabCaa').classList.remove('hidden');
+                document.getElementById('menuCaa').classList.add('active');
+            } else if (tab === 'admin') {
+                document.getElementById('tabAdmin').classList.remove('hidden');
+                document.getElementById('menuAdmin').classList.add('active');
+                renderAdminUsers();
             }
         }
 
-        function updateCounter(textarea, counterId) {
-            const len = textarea.value.length;
-            const max = textarea.getAttribute('maxlength');
-            document.getElementById(counterId).textContent = len + ' / ' + max + ' carateres';
-        }
-
-        function handleFiles(files) {
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            for(let i=0; i<files.length; i++) {
-                const file = files[i];
-                if(!file.type.startsWith('image/')) continue;
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentUploadedImages.push(e.target.result);
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200 shadow-sm';
-                    wrapper.innerHTML = `
-                        <img src="${e.target.result}" class="w-full h-full object-cover">
-                        <button type="button" onclick="this.parentElement.remove()" class="absolute top-1 right-1 bg-black/70 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center">&times;</button>
-                    `;
-                    previewContainer.appendChild(wrapper);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function autoFillCAA() {
-            document.getElementById('nome_aluno').value = 'Matilde Sousa';
-            document.getElementById('atividade').value = 'Oficina de Matriz Sensorial e Reconhecimento de Formas';
-            document.getElementById('objetivos').value = '1. Estimular a discriminação tátil e visual;\n2. Fomentar a concentração e autonomia na execução de tarefas sequenciadas;\n3. Promover a interação social com pares.';
-            document.getElementById('descricao_atividade').value = 'Desenvolvimento de circuito com materiais táteis diversificados (texturas rugosas, suaves e lisas). A aluna identificou e associou formas geométricas a tabuleiros de madeira com apoio do docente de apoio à aprendizagem.';
-            document.getElementById('formas_avaliacao').value = 'Observação direta com registo em grelha de frequências e verificação do grau de autonomia.';
-            document.getElementById('articulacao').value = 'Articulação direta com a educadora da sala de pré-escolar e partilha de dicas com a família.';
-            document.getElementById('responsaveis').value = 'Docente CAA: Ana Rita Silveira';
-            document.getElementById('observacoes').value = 'Aluna demonstrou excelente recetividade e entusiasmo durante toda a sessão.';
-        }
-
-        function saveCAAForm(e) {
+        function saveCaaActivity(e) {
             e.preventDefault();
-            const turmasChecked = document.querySelectorAll('input[name="turma"]:checked');
-            const turmasValues = Array.from(turmasChecked).map(cb => cb.value).join(', ');
-
-            const record = {
+            const newEntry = {
                 id: Date.now(),
-                data: document.getElementById('data_atividade').value,
-                aluno: document.getElementById('nome_aluno').value,
-                turmas: turmasValues || 'Nenhuma',
-                atividade: document.getElementById('atividade').value,
-                objetivos: document.getElementById('objetivos').value,
-                descricao: document.getElementById('descricao_atividade').value,
-                avaliacao: document.getElementById('formas_avaliacao').value,
-                articulacao: document.getElementById('articulacao').value,
-                responsaveis: document.getElementById('responsaveis').value,
-                observacoes: document.getElementById('observacoes').value,
-                images: [...currentUploadedImages]
+                date: document.getElementById('caa_data').value,
+                aluno: document.getElementById('caa_aluno').value,
+                desc: document.getElementById('caa_desc').value,
+                obs: document.getElementById('caa_obs').value,
+                author: db.currentUser.email
             };
 
-            records.unshift(record);
-            localStorage.setItem('caa_records', JSON.stringify(records));
-            
-            alert('Registo guardado com sucesso!');
-            clearCAAForm();
-            updateStats();
-            renderRecentActivity();
-            renderRecordsTable();
-            switchTab('registos');
+            db.caa.push(newEntry);
+            saveDb();
+            document.getElementById('caaForm').reset();
+            renderCaaTable();
+            alert('Atividade CAA guardada com sucesso!');
         }
 
-        function clearCAAForm() {
-            document.getElementById('escolarForm').reset();
-            document.getElementById('imagePreviewContainer').innerHTML = '';
-            currentUploadedImages = [];
-            document.getElementById('data_atividade').valueAsDate = new Date();
-        }
-
-        function updateStats() {
-            document.getElementById('statAtividades').textContent = records.length;
-            const uniqueAlunos = new Set(records.map(r => r.aluno)).size;
-            document.getElementById('statAlunos').textContent = uniqueAlunos;
-        }
-
-        function renderRecentActivity() {
-            const container = document.getElementById('recentActivityList');
-            if(records.length === 0) {
-                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">Sem atividades registadas.</p>';
-                return;
-            }
-            container.innerHTML = records.slice(0, 3).map(r => `
-                <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm">${r.atividade}</h4>
-                        <p class="text-xs text-gray-500">Aluno(a): ${r.aluno} • Turma: ${r.turmas}</p>
-                    </div>
-                    <span class="text-xs bg-brand-100 text-brand-800 px-2.5 py-1 rounded-lg font-semibold">${r.data}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderRecordsTable() {
-            const tbody = document.getElementById('recordsTableBody');
-            if(records.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-sm">Nenhum registo encontrado na base de dados.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = records.map(r => `
-                <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm">
-                    <td class="p-3 font-medium">${r.data}</td>
-                    <td class="p-3 font-bold text-slate-800">${r.aluno}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 bg-gray-100 rounded text-xs">${r.turmas}</span></td>
-                    <td class="p-3 text-slate-600 truncate max-w-xs">${r.atividade}</td>
-                    <td class="p-3 text-slate-600">${r.responsaveis}</td>
-                    <td class="p-3 text-right space-x-2">
-                        <button onclick="openPrintModal(${r.id})" class="p-2 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-bold" title="Imprimir / Ver Relatório">
-                            <i class="fa-solid fa-print"></i>
-                        </button>
-                        ${(currentUser && currentUser.role === 'admin') ? `<button onclick="deleteRecord(${r.id})" class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold" title="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}
+        function renderCaaTable() {
+            const tbody = document.getElementById('caaTableBody');
+            tbody.innerHTML = '';
+            db.caa.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.date}</td>
+                    <td>${item.aluno}</td>
+                    <td>${item.desc}</td>
+                    <td>${item.author}</td>
+                    <td>
+                        ${(db.currentUser.role === 'admin' || db.currentUser.email === item.author) ? `<button onclick="deleteCaa(${item.id})" style="background:#a93226; padding:4px 8px; font-size:12px; width:auto;">Apagar</button>` : ''}
                     </td>
-                </tr>
-            `).join('');
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function deleteRecord(id) {
-            if(confirm('Tem a certeza que pretende eliminar este registo?')) {
-                records = records.filter(r => r.id !== id);
-                localStorage.setItem('caa_records', JSON.stringify(records));
-                updateStats();
-                renderRecentActivity();
-                renderRecordsTable();
+        function deleteCaa(id) {
+            if (confirm('Tem a certeza que pretende apagar este registo?')) {
+                db.caa = db.caa.filter(i => i.id !== id);
+                saveDb();
+                renderCaaTable();
             }
         }
 
-        function clearAllRecords() {
-            if(confirm('ATENÇÃO: Pretende apagar todos os registos do sistema? Esta ação é irreversível.')) {
-                records = [];
-                localStorage.removeItem('caa_records');
-                updateStats();
-                renderRecentActivity();
-                renderRecordsTable();
-                alert('Todos os registos foram eliminados.');
+        function renderAdminUsers() {
+            const tbody = document.getElementById('adminUsersBody');
+            tbody.innerHTML = '';
+            db.users.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge ${u.approved ? 'badge-approved' : 'badge-pending'}">${u.approved ? 'Aprovado' : 'Pendente'}</span></td>
+                    <td>
+                        ${!u.approved ? `<button onclick="approveUser('${u.email}')" style="background:#27ae60; padding:4px 8px; font-size:12px; width:auto;">Aprovar</button>` : ''}
+                        ${u.email !== 'admin@edu.madeira.gov.pt' ? `<button onclick="deleteUser('${u.email}')" style="background:#a93226; padding:4px 8px; font-size:12px; width:auto; margin-left:5px;">Remover</button>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function approveUser(email) {
+            const user = db.users.find(u => u.email === email);
+            if (user) {
+                user.approved = true;
+                saveDb();
+                renderAdminUsers();
             }
         }
 
-        function exportDataJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+        function deleteUser(email) {
+            if (confirm('Deseja eliminar este utilizador?')) {
+                db.users = db.users.filter(u => u.email !== email);
+                saveDb();
+                renderAdminUsers();
+            }
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "CAA_Backup_E_PEE.json");
+            downloadAnchor.setAttribute("download", "appcovao_backup.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
         }
-
-        function openPrintModal(id) {
-            const r = records.find(item => item.id === id);
-            if(!r) return;
-
-            const modalContent = document.getElementById('printModalContent');
-            modalContent.innerHTML = `
-                <div class="flex items-center gap-4 border-b-2 border-brand-600 pb-4 mb-6">
-                    <div class="w-14 h-14 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-                        <i class="fa-solid fa-school"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-xs font-bold text-gray-500 uppercase">EB1/PE do Covão e Vargem</h2>
-                        <h1 class="text-xl font-bold text-brand-700">Centro de Apoio à Aprendizagem (CAA)</h1>
-                        <p class="text-xs text-gray-500">Relatório de Registo de Atividade Pedagógica</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-xl border border-gray-200">
-                    <div><strong>Data da Atividade:</strong> ${r.data}</div>
-                    <div><strong>Nome do Aluno:</strong> ${r.aluno}</div>
-                    <div><strong>Turma(s) / Sala(s):</strong> ${r.turmas}</div>
-                    <div><strong>Responsável(eis):</strong> ${r.responsaveis}</div>
-                </div>
-
-                <div class="space-y-4 text-sm">
-                    <div>
-                        <h4 class="font-bold text-brand-800 uppercase text-xs mb-1">4. Atividade</h4>
-                        <p class="p-3 bg-gray-50 rounded-lg border border-gray-200">${r.atividade}</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-brand-800 uppercase text-xs mb-1">5. Objetivos</h4>
-                        <p class="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap">${r.objetivos}</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-brand-800 uppercase text-xs mb-1">6. Descrição da Atividade</h4>
-                        <p class="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap">${r.descricao}</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-brand-800 uppercase text-xs mb-1">7. Formas de Avaliação</h4>
-                        <p class="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap">${r.avaliacao}</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-brand-800 uppercase text-xs mb-1">8. Articulação</h4>
-                        <p class="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap">${r.articulacao}</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-brand-800 uppercase text-xs mb-1">10. Observações</h4>
-                        <p class="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap">${r.observacoes}</p>
-                    </div>
-                    ${r.images && r.images.length > 0 ? `
-                        <div>
-                            <h4 class="font-bold text-brand-800 uppercase text-xs mb-2">11. Registo Fotográfico</h4>
-                            <div class="flex flex-wrap gap-3">
-                                ${r.images.map(img => `<img src="${img}" class="w-32 h-32 object-cover rounded-xl border border-gray-300">`).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-
-            document.getElementById('printModal').classList.remove('hidden');
-            document.getElementById('printModal').classList.add('flex');
-        }
-
-        function closePrintModal() {
-            document.getElementById('printModal').classList.add('hidden');
-            document.getElementById('printModal').classList.remove('flex');
-        }
-
-        function runAutoEvaluation() {
-            const aluno = document.getElementById('evalAlunoSelect').value;
-            const text = `Parecer Síntese de Avaliação - ${aluno}\n\nNo âmbito do Centro de Apoio à Aprendizagem (CAA) da EB1/PE do Covão e Vargem, o aluno demonstra evolução significativa e progressiva no desenvolvimento das competências previstas no seu Plano Educativo Individual (PEI) e metas do PEE.\n\nConstata-se:\n- Maior autonomia e foco nas propostas táteis e visuais;\n- Interação positiva e colaborativa com o grupo de pares;\n- Cumprimento regular dos objetivos propostos nas sessões de intervenção.\n\nRecomenda-se a continuidade das estratégias de co-lecionação e reforço positivo em articulação constante com a família.`;
-            document.getElementById('evalOutputText').value = text;
-        }
-
-        // Inicializar dados de demonstração se vazio
-        if(records.length === 0) {
-            records.push({
-                id: Date.now() - 10000,
-                data: '2026-06-05',
-                aluno: 'Matilde Sousa',
-                turmas: '3ºA',
-                atividade: 'Oficina de Orientação e Integração Sensorial',
-                objetivos: 'Estimular a discriminação tátil e visual, fomentando a concentração.',
-                descricao: 'Realização de circuito com texturas diversas e reconhecimento de formas geométricas.',
-                avaliacao: 'Observação direta com registo em grelha.',
-                articulacao: 'Articulação com a docente titular da turma e família.',
-                responsaveis: 'Ana Rita Silveira',
-                observacoes: 'Excelente recetividade e empenho da aluna.',
-                images: []
-            });
-            localStorage.setItem('caa_records', JSON.stringify(records));
-        }
     </script>
-
 </body>
 </html>
