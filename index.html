@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APPCovao - Gestão Escolar e CAA</title>
+    <!-- Importar a biblioteca do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #2e6930;
@@ -22,13 +24,11 @@
             padding: 0;
         }
 
-        /* Layout Principal */
         .app-container {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar Desktop */
         .sidebar {
             width: 260px;
             background-color: #1e3f20;
@@ -76,7 +76,6 @@
             overflow-y: auto;
         }
 
-        /* Ecrãs de Autenticação */
         .auth-container {
             max-width: 420px;
             margin: 60px auto;
@@ -98,7 +97,7 @@
             justify-content: center;
             font-weight: bold;
             color: var(--primary);
-            font-size: 24px;
+            font-size: 20px;
         }
 
         .form-group {
@@ -159,7 +158,6 @@
             background-color: #cbd5cb;
         }
 
-        /* Tabelas e Modulares */
         .card {
             background: var(--card-bg);
             padding: 24px;
@@ -196,27 +194,16 @@
         .badge-approved { background: #d1fae5; color: #065f46; }
 
         .hidden { display: none !important; }
-
-        /* Estilos de Impressão */
-        .print-only-content { display: none; }
-
-        @media print {
-            .sidebar, .no-print, button, input, textarea { display: none !important; }
-            .print-only-content { display: block !important; background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 5px; }
-            body { background: white; padding: 0; }
-            .card { box-shadow: none; padding: 0; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- SECÇÃO DE AUTENTICAÇÃO -->
+    <!-- AUTENTICAÇÃO -->
     <div id="authView" class="auth-container">
         <div class="auth-logo">APP</div>
         <h2 style="margin-top:0; color: #1e3f20;">APPCovao</h2>
         <p style="font-size:13px; color: #666; margin-bottom: 25px;">Plataforma de Gestão Escolar e CAA</p>
 
-        <!-- Formulário de Login -->
         <div id="loginFormSection">
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
@@ -234,7 +221,6 @@
             </p>
         </div>
 
-        <!-- Formulário de Registo -->
         <div id="registerFormSection" class="hidden">
             <form onsubmit="handleRegister(event)">
                 <div class="form-group">
@@ -255,7 +241,7 @@
         </div>
     </div>
 
-    <!-- APLICAÇÃO PRINCIPAL (PÓS-LOGIN) -->
+    <!-- APLICAÇÃO -->
     <div id="appView" class="app-container hidden">
         <div class="sidebar">
             <div>
@@ -264,7 +250,7 @@
                 </div>
                 <ul class="sidebar-menu">
                     <li id="menuDashboard" onclick="switchTab('dashboard')" class="active">Painel Principal</li>
-                    <li id="menuCaa" onclick="switchTab('caa')">Registo CAA</li>
+                    <li id="menuCaa" onclick="switchTab('caa')">Módulo CAA</li>
                     <li id="menuAdmin" onclick="switchTab('admin')" class="hidden">Painel Administrador</li>
                 </ul>
             </div>
@@ -275,51 +261,56 @@
         </div>
 
         <div class="main-content">
-            <!-- PAINEL PRINCIPAL -->
             <div id="tabDashboard" class="card">
                 <h2>Bem-vindo ao APPCovao</h2>
-                <p>Selecione uma opção no menu lateral para gerir as atividades pedagógicas, registos do Centro de Apoio à Aprendizagem (CAA) ou aceder ao painel administrativo.</p>
+                <p>Plataforma colaborativa ligada à nuvem para a EB1/PE do Covão e Vargem. Selecione o Módulo CAA para consultar ou submeter registos e fotografias partilhadas.</p>
             </div>
 
             <!-- MÓDULO CAA -->
             <div id="tabCaa" class="card hidden">
                 <h2>CAA - Centro de Apoio à Aprendizagem</h2>
-                <p style="font-size: 13px; color: #666; margin-bottom: 20px;">EB1/PE do Covão e Vargem - Registo de Atividades Pedagógicas</p>
+                <p style="font-size: 13px; color: #666; margin-bottom: 20px;">Registo de Atividades Pedagógicas com Suporte Fotográfico</p>
                 
                 <form id="caaForm" onsubmit="saveCaaActivity(event)">
                     <div class="form-group">
-                        <label>1. Data da Atividade *</label>
+                        <label>Data da Atividade *</label>
                         <input type="date" id="caa_data" required>
                     </div>
                     <div class="form-group">
-                        <label>2. Nome do Aluno *</label>
+                        <label>Nome do Aluno *</label>
                         <input type="text" id="caa_aluno" required>
                     </div>
                     <div class="form-group">
-                        <label>3. Atividade / Descrição *</label>
-                        <textarea id="caa_desc" rows="4" required></textarea>
+                        <label>Atividade / Descrição *</label>
+                        <textarea id="caa_descricao" rows="3" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>4. Observações / Avaliação *</label>
-                        <textarea id="caa_obs" rows="3" required></textarea>
+                        <label>Observações / Avaliação *</label>
+                        <textarea id="caa_obs" rows="2" required></textarea>
                     </div>
-                    <button type="submit">Guardar Atividade CAA</button>
+                    <div class="form-group">
+                        <label>Fotografias (Até 4 imagens)</label>
+                        <input type="file" id="caa_images" accept="image/*" multiple>
+                        <small style="color: #666;">As imagens serão enviadas para o armazenamento em nuvem.</small>
+                    </div>
+                    <button type="submit" id="btnSaveCaa">Guardar Atividade CAA</button>
                 </form>
 
                 <hr style="margin: 30px 0; border:0; border-top:1px solid #eee;">
-                <h3>Atividades Registadas</h3>
+                <h3>Atividades Registadas na Nuvem</h3>
                 <table>
                     <thead>
                         <tr>
                             <th>Data</th>
                             <th>Aluno</th>
-                            <th>Atividade</th>
+                            <th>Descrição</th>
+                            <th>Fotos</th>
                             <th>Autor</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="caaTableBody">
-                        <!-- Preenchido via JS -->
+                        <tr><td colspan="6" style="text-align:center;">A carregar dados...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -327,9 +318,9 @@
             <!-- PAINEL ADMINISTRADOR -->
             <div id="tabAdmin" class="card hidden">
                 <h2>Painel de Administração</h2>
-                <p>Aprovação de contas e gestão global do sistema.</p>
+                <p>Gestão centralizada de utilizadores e aprovação de acessos institucionais.</p>
                 
-                <h3>Utilizadores Pendentes</h3>
+                <h3>Utilizadores Registados</h3>
                 <table>
                     <thead>
                         <tr>
@@ -340,95 +331,98 @@
                         </tr>
                     </thead>
                     <tbody id="adminUsersBody">
-                        <!-- Preenchido via JS -->
+                        <tr><td colspan="4" style="text-align:center;">A carregar utilizadores...</td></tr>
                     </tbody>
                 </table>
-
-                <div style="margin-top: 30px;">
-                    <button onclick="exportData()" style="width: auto;">Descarregar Backup Completo (JSON)</button>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Base de dados local simulada
-        let db = JSON.parse(localStorage.getItem('appcovao_db')) || {
-            users: [
-                { name: 'Administrador', email: 'admin@edu.madeira.gov.pt', pass: 'admin123', role: 'admin', approved: true }
-            ],
-            caa: [],
-            currentUser: null
-        };
-
-        function saveDb() {
-            localStorage.setItem('appcovao_db', JSON.stringify(db));
-        }
+        // CONFIGURAÇÃO SUPABASE
+        const SUPABASE_URL = 'https://ljjagpcddphsioalezga.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ci6Q3Vbd5ualsvdQ_-ggQ_Xk0xDis...'; // Substitui pela tua chave completa se necessário
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentUser = null;
 
         function toggleAuth(isRegister) {
             document.getElementById('loginFormSection').classList.toggle('hidden', isRegister);
             document.getElementById('registerFormSection').classList.toggle('hidden', !isRegister);
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPassword').value;
+            const password = document.getElementById('loginPassword').value;
 
-            const user = db.users.find(u => u.email === email && u.pass === pass);
-            if (!user) {
-                alert('Credenciais inválidas.');
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                alert('Erro no login: ' + error.message);
                 return;
             }
-            if (!user.approved) {
+
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+            if (!profile || !profile.approved) {
                 alert('A sua conta encontra-se pendente de aprovação pelo Administrador.');
+                await supabaseClient.auth.signOut();
                 return;
             }
 
-            db.currentUser = user;
+            currentUser = { ...data.user, ...profile };
             initApp();
         }
 
-        function handleRegister(e) {
+        async function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPassword').value;
+            const password = document.getElementById('regPassword').value;
 
             if (!email.endsWith('@edu.madeira.gov.pt')) {
                 alert('Apenas são permitidos emails institucionais terminados em @edu.madeira.gov.pt');
                 return;
             }
 
-            if (db.users.some(u => u.email === email)) {
-                alert('Este email já está registado.');
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: { data: { full_name: name } }
+            });
+
+            if (error) {
+                alert('Erro no registo: ' + error.message);
                 return;
             }
 
-            db.users.push({ name, email, pass, role: 'teacher', approved: false });
-            saveDb();
-            alert('Registo efetuado com sucesso! Aguarde aprovação do administrador.');
+            alert('Registo submetido com sucesso! A conta aguarda aprovação do Administrador.');
             toggleAuth(false);
         }
 
-        function initApp() {
+        async function initApp() {
             document.getElementById('authView').classList.add('hidden');
             document.getElementById('appView').classList.remove('hidden');
-            document.getElementById('userLoggedInfo').textContent = `${db.currentUser.name} (${db.currentUser.role === 'admin' ? 'Admin' : 'Professor'})`;
+            document.getElementById('userLoggedInfo').textContent = `${currentUser.full_name || currentUser.email} (${currentUser.role === 'admin' ? 'Admin' : 'Professor'})`;
 
-            if (db.currentUser.role === 'admin') {
+            if (currentUser.role === 'admin') {
                 document.getElementById('menuAdmin').classList.remove('hidden');
             } else {
                 document.getElementById('menuAdmin').classList.add('hidden');
             }
 
             switchTab('dashboard');
-            renderCaaTable();
-            renderAdminUsers();
+            loadCaaActivities();
+            if (currentUser.role === 'admin') loadAdminUsers();
         }
 
-        function logout() {
-            db.currentUser = null;
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
             document.getElementById('appView').classList.add('hidden');
             document.getElementById('authView').classList.remove('hidden');
         }
@@ -448,100 +442,142 @@
             } else if (tab === 'caa') {
                 document.getElementById('tabCaa').classList.remove('hidden');
                 document.getElementById('menuCaa').classList.add('active');
+                loadCaaActivities();
             } else if (tab === 'admin') {
                 document.getElementById('tabAdmin').classList.remove('hidden');
                 document.getElementById('menuAdmin').classList.add('active');
-                renderAdminUsers();
+                loadAdminUsers();
             }
         }
 
-        function saveCaaActivity(e) {
+        async function saveCaaActivity(e) {
             e.preventDefault();
-            const newEntry = {
-                id: Date.now(),
-                date: document.getElementById('caa_data').value,
-                aluno: document.getElementById('caa_aluno').value,
-                desc: document.getElementById('caa_desc').value,
-                obs: document.getElementById('caa_obs').value,
-                author: db.currentUser.email
-            };
+            const btn = document.getElementById('btnSaveCaa');
+            btn.disabled = true;
+            btn.textContent = 'A enviar dados e imagens...';
 
-            db.caa.push(newEntry);
-            saveDb();
+            const date = document.getElementById('caa_data').value;
+            const aluno = document.getElementById('caa_aluno').value;
+            const descricao = document.getElementById('caa_descricao').value;
+            const obs = document.getElementById('caa_obs').value;
+            const filesInput = document.getElementById('caa_images');
+
+            let imageUrls = [];
+
+            if (filesInput.files.length > 0) {
+                for (let i = 0; i < Math.min(filesInput.files.length, 4); i++) {
+                    const file = filesInput.files[i];
+                    const fileName = `${Date.now()}_${i}_${file.name}`;
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                        .from('caa-images')
+                        .upload(fileName, file);
+
+                    if (!uploadError) {
+                        const { data: publicURL } = supabaseClient.storage
+                            .from('caa-images')
+                            .getPublicUrl(fileName);
+                        imageUrls.push(publicURL.publicUrl);
+                    }
+                }
+            }
+
+            const { error } = await supabaseClient.from('caa_activities').insert([{
+                date,
+                aluno,
+                descricao,
+                obs,
+                images: imageUrls,
+                author_email: currentUser.email
+            }]);
+
+            btn.disabled = false;
+            btn.textContent = 'Guardar Atividade CAA';
+
+            if (error) {
+                alert('Erro ao guardar: ' + error.message);
+                return;
+            }
+
             document.getElementById('caaForm').reset();
-            renderCaaTable();
-            alert('Atividade CAA guardada com sucesso!');
+            alert('Atividade CAA guardada com sucesso na nuvem!');
+            loadCaaActivities();
         }
 
-        function renderCaaTable() {
+        async function loadCaaActivities() {
             const tbody = document.getElementById('caaTableBody');
+            const { data, error } = await supabaseClient.from('caa_activities').select('*').order('date', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Sem registos encontrados.</td></tr>`;
+                return;
+            }
+
             tbody.innerHTML = '';
-            db.caa.forEach(item => {
+            data.forEach(item => {
+                let imgHtml = '';
+                if (item.images && item.images.length > 0) {
+                    imgHtml = `<div style="display:flex; gap:5px;">`;
+                    item.images.forEach(url => {
+                        imgHtml += `<a href="${url}" target="_blank"><img src="${url}" style="width:40px; height:40px; object-fit:cover; border-radius:3px;" /></a>`;
+                    });
+                    imgHtml += `</div>`;
+                } else {
+                    imgHtml = 'Sem fotos';
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${item.date}</td>
                     <td>${item.aluno}</td>
-                    <td>${item.desc}</td>
-                    <td>${item.author}</td>
+                    <td>${item.descricao}</td>
+                    <td>${imgHtml}</td>
+                    <td>${item.author_email}</td>
                     <td>
-                        ${(db.currentUser.role === 'admin' || db.currentUser.email === item.author) ? `<button onclick="deleteCaa(${item.id})" style="background:#a93226; padding:4px 8px; font-size:12px; width:auto;">Apagar</button>` : ''}
+                        ${(currentUser.role === 'admin' || currentUser.email === item.author_email) ? `<button onclick="deleteCaa('${item.id}')" style="background:#a93226; padding:4px 8px; font-size:12px; width:auto;">Apagar</button>` : ''}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function deleteCaa(id) {
+        async function deleteCaa(id) {
             if (confirm('Tem a certeza que pretende apagar este registo?')) {
-                db.caa = db.caa.filter(i => i.id !== id);
-                saveDb();
-                renderCaaTable();
+                await supabaseClient.from('caa_activities').delete().eq('id', id);
+                loadCaaActivities();
             }
         }
 
-        function renderAdminUsers() {
+        async function loadAdminUsers() {
             const tbody = document.getElementById('adminUsersBody');
+            const { data, error } = await supabaseClient.from('profiles').select('*');
+
+            if (error || !data) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Erro ao carregar utilizadores.</td></tr>`;
+                return;
+            }
+
             tbody.innerHTML = '';
-            db.users.forEach(u => {
+            data.forEach(u => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${u.name}</td>
+                    <td>${u.full_name || 'N/D'}</td>
                     <td>${u.email}</td>
                     <td><span class="badge ${u.approved ? 'badge-approved' : 'badge-pending'}">${u.approved ? 'Aprovado' : 'Pendente'}</span></td>
                     <td>
-                        ${!u.approved ? `<button onclick="approveUser('${u.email}')" style="background:#27ae60; padding:4px 8px; font-size:12px; width:auto;">Aprovar</button>` : ''}
-                        ${u.email !== 'admin@edu.madeira.gov.pt' ? `<button onclick="deleteUser('${u.email}')" style="background:#a93226; padding:4px 8px; font-size:12px; width:auto; margin-left:5px;">Remover</button>` : ''}
+                        ${!u.approved ? `<button onclick="approveUser('${u.id}')" style="background:#27ae60; padding:4px 8px; font-size:12px; width:auto;">Aprovar</button>` : ''}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function approveUser(email) {
-            const user = db.users.find(u => u.email === email);
-            if (user) {
-                user.approved = true;
-                saveDb();
-                renderAdminUsers();
+        async function approveUser(userId) {
+            const { error } = await supabaseClient.from('profiles').update({ approved: true }).eq('id', userId);
+            if (error) {
+                alert('Erro ao aprovar: ' + error.message);
+            } else {
+                loadAdminUsers();
             }
-        }
-
-        function deleteUser(email) {
-            if (confirm('Deseja eliminar este utilizador?')) {
-                db.users = db.users.filter(u => u.email !== email);
-                saveDb();
-                renderAdminUsers();
-            }
-        }
-
-        function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "appcovao_backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
         }
     </script>
 </body>
