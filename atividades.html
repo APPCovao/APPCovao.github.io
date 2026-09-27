@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registar Atividades - APPCovao</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container container-large">
+        <h2>✏️ Registar Atividade</h2>
+        <p>Insere os dados da atividade pedagógica realizada.</p>
 
+        <form onsubmit="saveAtividade(event)">
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="atvData" required>
+            </div>
+            <div class="form-group">
+                <label>Nome do Aluno / Turma</label>
+                <input type="text" id="atvAluno" placeholder="Ex: 4º Ano ou Nome do Aluno" required>
+            </div>
+            <div class="form-group">
+                <label>Descrição da Atividade</label>
+                <textarea id="atvDescricao" rows="3" placeholder="Resumo da atividade..." required></textarea>
+            </div>
+            <button type="submit">Guardar Atividade</button>
+        </form>
+
+        <hr style="margin: 30px 0; border:0; border-top:1px solid #e2e8e2;">
+
+        <h3>Atividades Registadas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Aluno/Turma</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaAtividades">
+                <tr><td colspan="3" style="text-align:center;">A carregar...</td></tr>
+            </tbody>
+        </table>
+
+        <a href="menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        function saveAtividade(e) {
+            e.preventDefault();
+            const nova = {
+                data: document.getElementById('atvData').value,
+                aluno: document.getElementById('atvAluno').value,
+                descricao: document.getElementById('atvDescricao').value
+            };
+
+            let lista = JSON.parse(localStorage.getItem('atividades')) || [];
+            lista.push(nova);
+            localStorage.setItem('atividades', JSON.stringify(lista));
+
+            alert('Atividade guardada com sucesso!');
+            document.querySelector('form').reset();
+            carregarAtividades();
+        }
+
+        function carregarAtividades() {
+            const tbody = document.getElementById('tabelaAtividades');
+            const lista = JSON.parse(localStorage.getItem('atividades')) || [];
+
+            if (lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Sem registos.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            lista.forEach(item => {
+                tbody.innerHTML += `<tr><td>${item.data}</td><td>${item.aluno}</td><td>${item.descricao}</td></tr>`;
+            });
+        }
+
+        window.onload = carregarAtividades;
+    </script>
+</body>
+</html>
