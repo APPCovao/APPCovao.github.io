@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registar Atividade - APPCovao</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container container-large" style="text-align: left;">
+        <h2>✏️ Registar Atividade Geral</h2>
+        <p>Preencha os campos abaixo para submeter uma nova atividade pedagógica.</p>
 
+        <form onsubmit="saveAtividade(event)">
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="atvData" required>
+            </div>
+            <div class="form-group">
+                <label>Aluno / Turma</label>
+                <input type="text" id="atvAluno" placeholder="Ex: 4º Ano" required>
+            </div>
+            <div class="form-group">
+                <label>Descrição da Atividade</label>
+                <textarea id="atvDescricao" rows="4" required></textarea>
+            </div>
+            <button type="submit">Guardar Atividade</button>
+        </form>
+
+        <a href="../menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        function saveAtividade(e) {
+            e.preventDefault();
+            const nova = {
+                data: document.getElementById('atvData').value,
+                aluno: document.getElementById('atvAluno').value,
+                descricao: document.getElementById('atvDescricao').value
+            };
+
+            let lista = JSON.parse(localStorage.getItem('atividades')) || [];
+            lista.push(nova);
+            localStorage.setItem('atividades', JSON.stringify(lista));
+
+            alert('Atividade guardada com sucesso!');
+            document.querySelector('form').reset();
+        }
+    </script>
+</body>
+</html>
