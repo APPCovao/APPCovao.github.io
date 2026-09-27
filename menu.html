@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - APPCovao</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container container-large" style="text-align: left;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="imagens/logo.png" alt="Logo" style="width: 45px; height: 45px; object-fit: contain;" onerror="this.style.display='none'">
+                <div>
+                    <h2 style="margin: 0;">APPCovao</h2>
+                    <p style="margin: 0; font-size: 13px;">Painel de Controlo</p>
+                </div>
+            </div>
+            <button onclick="logout()" class="btn btn-danger" style="width: auto; padding: 10px 16px;">Terminar Sessão</button>
+        </div>
 
+        <div class="menu-section">
+            <h3>📌 Gestão Pedagógica</h3>
+            <div class="menu-grid">
+                <a href="atividades/registar_objetivos.html" class="menu-card">🎯 Registar Objetivos e Metas</a>
+                <a href="atividades/consultar_objetivos.html" class="menu-card">📋 Consultar Objetivos</a>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h3>📝 Atividades Gerais</h3>
+            <div class="menu-grid">
+                <a href="atividades/registar_atividade.html" class="menu-card">✏️ Registar Atividades</a>
+                <a href="atividades/avaliar_atividades.html" class="menu-card">⭐ Avaliação das Atividades</a>
+                <a href="atividades/relatorio_atividades.html" class="menu-card">📊 Relatórios de Atividades</a>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h3>🧩 Módulo CAA</h3>
+            <div class="menu-grid">
+                <a href="caa/registar_atividade_caa.html" class="menu-card">📸 Registar Atividades CAA</a>
+                <a href="caa/relatorio_caa.html" class="menu-card">📈 Relatório do CAA</a>
+            </div>
+        </div>
+        
+        <!-- Secção visível apenas para Admin -->
+        <div class="menu-section" id="adminSection" style="display: none;">
+            <h3>⚙️ Administração Total</h3>
+            <div class="menu-grid">
+                <a href="auth/gerir_utilizadores.html" class="menu-card" style="border-color: var(--danger);">👥 Gerir e Apagar Utilizadores</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+            // Se for admin, mostra a secção de administração
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminSection').style.display = 'block';
+            }
+        };
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
