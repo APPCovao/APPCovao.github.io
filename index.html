@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - APPCovao</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container" style="text-align: center;">
-        <div class="auth-logo">APP</div>
+    <div class="container">
+        <!-- Logótipo na raiz -->
+        <img src="imagens/logo.png" alt="Logótipo" class="auth-logo" onerror="this.style.display='none'">
+        
         <h2>APPCovao</h2>
         <p>Plataforma de Gestão Escolar e CAA</p>
 
-        <!-- Caixa informativa com credenciais de teste -->
-        <div style="background: #e8f0e8; padding: 12px; border-radius: 6px; margin-bottom: 20px; text-align: left; font-size: 13px;">
-            <strong>Credenciais para teste rápido:</strong><br>
-            👑 <strong>Admin:</strong> <code>admin@edu.madeira.gov.pt</code> (Palavra-passe: <code>123</code>)<br>
-            🧑‍🏫 <strong>Professor:</strong> Podes registar uma nova conta abaixo com qualquer email <code>@edu.madeira.gov.pt</code>.
+        <div style="background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 12px; color: var(--primary);">
+            <strong>Contas de Teste:</strong><br>
+            👑 <strong>Admin:</strong> <code>admin@edu.madeira.gov.pt</code> / <code>123</code><br>
+            🧑‍🏫 <strong>Professor:</strong> <code>professor@edu.madeira.gov.pt</code> / <code>123</code>
         </div>
 
         <form onsubmit="handleLogin(event)">
@@ -32,24 +33,20 @@
         </form>
 
         <p style="margin-top: 20px;">
-            Não tens conta? <a href="register.html" class="back-link" style="display: inline; margin: 0;">Registar novo utilizador</a>
+            Não tens conta? <a href="auth/registar_utilizador.html" class="back-link" style="margin:0;">Registar novo utilizador</a>
         </p>
     </div>
 
     <script>
-        // Inicializar dados de teste no localStorage se ainda não existirem
         function initTestData() {
             if (!localStorage.getItem('users')) {
                 const defaultUsers = [
-                    { id: '1', name: 'Administrador Principal', email: 'admin@edu.madeira.gov.pt', password: '123', role: 'admin', approved: true },
-                    { id: '2', name: 'Professor Exemplo', email: 'professor@edu.madeira.gov.pt', password: '123', role: 'user', approved: true },
-                    { id: '3', name: 'Professor Pendente', email: 'novo.prof@edu.madeira.gov.pt', password: '123', role: 'user', approved: false }
+                    { name: 'Administrador', email: 'admin@edu.madeira.gov.pt', password: '123', role: 'admin', approved: true },
+                    { name: 'Professor Exemplo', email: 'professor@edu.madeira.gov.pt', password: '123', role: 'user', approved: true }
                 ];
                 localStorage.setItem('users', JSON.stringify(defaultUsers));
             }
         }
-
-        // Executar ao carregar a página
         window.onload = initTestData;
 
         function handleLogin(e) {
@@ -64,16 +61,12 @@
                 alert('Email ou palavra-passe incorretos.');
                 return;
             }
-
             if (!user.approved) {
-                alert('A sua conta encontra-se pendente de aprovação pelo Administrador.');
+                alert('A sua conta está pendente de aprovação pelo Administrador.');
                 return;
             }
 
-            // Guardar sessão atual
             localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            // Redirecionar para o menu
             window.location.href = 'menu.html';
         }
     </script>
