@@ -3,27 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registar Atividade - APPCovao</title>
+    <title>Criar Atividade - APPCovao</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="container container-large" style="text-align: left;">
-        <h2>✏️ Registar Atividade Geral</h2>
+        <h2>✏️ Criar Atividade</h2>
         <p>Preencha os campos abaixo para submeter uma nova atividade pedagógica.</p>
 
         <form onsubmit="saveAtividade(event)">
             <div class="form-group">
-                <label>Data</label>
-                <input type="date" id="atvData" required>
+                <label>Número da Atividade (Automático)</label>
+                <input type="text" id="atvNumero" readonly style="background-color: #f1f5f9; font-weight: bold; color: var(--text-muted);">
             </div>
+            
             <div class="form-group">
-                <label>Aluno / Turma</label>
-                <input type="text" id="atvAluno" placeholder="Ex: 4º Ano" required>
+                <label>Nome da Atividade</label>
+                <input type="text" id="atvNome" placeholder="Ex: Visita de Estudo ao Museu" required>
             </div>
+
             <div class="form-group">
-                <label>Descrição da Atividade</label>
-                <textarea id="atvDescricao" rows="4" required></textarea>
+                <label>Ano Escolar</label>
+                <input type="text" id="atvAnoEscolar" value="2026/2027" readonly style="background-color: #f1f5f9; color: var(--text-muted);">
             </div>
+
+            <div class="form-group">
+                <label>Responsável</label>
+                <input type="text" id="atvResponsavel" placeholder="Nome do responsável pela atividade" required>
+            </div>
+
+            <div class="form-group">
+                <label>Criado por (Email)</label>
+                <input type="text" id="atvCriadorDisplay" readonly style="background-color: #f1f5f9; color: var(--text-muted);">
+            </div>
+
             <button type="submit">Guardar Atividade</button>
         </form>
 
@@ -31,20 +44,45 @@
     </div>
 
     <script>
+        window.onload = function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Preencher o email do criador no campo visual
+            document.getElementById('atvCriadorDisplay').value = currentUser.email;
+
+            // Calcular o número automático da atividade
+            let lista = JSON.parse(localStorage.getItem('atividades')) || [];
+            const proximoNumero = lista.length + 1;
+            document.getElementById('atvNumero').value = proximoNumero;
+        };
+
         function saveAtividade(e) {
             e.preventDefault();
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            let lista = JSON.parse(localStorage.getItem('atividades')) || [];
+            
+            // Obter a data atual formatada (DD/MM/YYYY ou YYYY-MM-DD)
+            const dataAtual = new Date().toISOString().split('T')[0];
+
             const nova = {
-                data: document.getElementById('atvData').value,
-                aluno: document.getElementById('atvAluno').value,
-                descricao: document.getElementById('atvDescricao').value
+                numero: lista.length + 1,
+                nome: document.getElementById('atvNome').value,
+                anoEscolar: document.getElementById('atvAnoEscolar').value,
+                responsavel: document.getElementById('atvResponsavel').value,
+                criador: currentUser ? currentUser.email : 'desconhecido',
+                dataCriacao: dataAtual
             };
 
-            let lista = JSON.parse(localStorage.getItem('atividades')) || [];
             lista.push(nova);
             localStorage.setItem('atividades', JSON.stringify(lista));
 
-            alert('Atividade guardada com sucesso!');
-            document.querySelector('form').reset();
+            alert('Atividade criada com sucesso!');
+            window.location.href = 'consultar_atividades.html';
         }
     </script>
 </body>
