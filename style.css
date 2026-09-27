@@ -1,1 +1,208 @@
+:root {
+    --primary: #2e6930;
+    --primary-hover: #235224;
+    --bg-color: #f4f6f3;
+    --card-bg: #ffffff;
+    --text-main: #2c3e2d;
+    --text-muted: #666666;
+    --border-color: #c2d0c3;
+    --danger: #a93226;
+    --danger-hover: #922b21;
+    --success: #27ae60;
+}
 
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+    margin: 20px;
+}
+
+.container-large {
+    max-width: 900px;
+}
+
+.auth-logo {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px auto;
+    background: #e8f0e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 20px;
+}
+
+h1, h2, h3 {
+    color: #1e3f20;
+    margin-top: 0;
+}
+
+p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--text-main);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: inherit;
+    background-color: #fafbfc;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--primary);
+    border-color: transparent;
+    background-color: #fff;
+}
+
+button, .btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+button:hover, .btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+    background-color: #e2e8e2;
+    color: var(--text-main);
+    margin-top: 10px;
+}
+.btn-secondary:hover {
+    background-color: #cbd5cb;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8e2;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f0f4f0;
+    font-weight: 600;
+    color: #1e3f20;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-approved { background: #d1fae5; color: #065f46; }
+
+.menu-section {
+    margin-bottom: 25px;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.menu-card {
+    background: #f8faf8;
+    border: 1px solid var(--border-color);
+    padding: 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-card:hover {
+    border-color: var(--primary);
+    background: #f0f6f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46,105,48,0.1);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
