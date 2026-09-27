@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades CAA - APPCovao</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container container-large">
+        <h2>🧩 Registar Atividade - Centro de Apoio à Aprendizagem (CAA)</h2>
+        <p>Registo específico de intervenção pedagógica CAA.</p>
 
+        <form onsubmit="saveCaa(event)">
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="caaData" required>
+            </div>
+            <div class="form-group">
+                <label>Nome do Aluno (CAA)</label>
+                <input type="text" id="caaAluno" required>
+            </div>
+            <div class="form-group">
+                <label>Descrição da Intervenção</label>
+                <textarea id="caaDesc" rows="3" required></textarea>
+            </div>
+            <button type="submit">Guardar Registo CAA</button>
+        </form>
+
+        <a href="menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        function saveCaa(e) {
+            e.preventDefault();
+            alert('Atividade CAA guardada com sucesso!');
+            document.querySelector('form').reset();
+        }
+    </script>
+</body>
+</html>
