@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - APPCovao</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container container-large">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8e2; padding-bottom: 15px; margin-bottom: 20px;">
+            <div>
+                <h2>APPCovao</h2>
+                <p>Plataforma de Gestão Escolar e CAA</p>
+            </div>
+            <button onclick="logout()" class="btn btn-danger" style="width: auto; padding: 8px 16px;">Terminar Sessão</button>
+        </div>
 
+        <div class="menu-section">
+            <h3>📌 Gestão Pedagógica</h3>
+            <div class="menu-grid">
+                <a href="objetivos.html" class="menu-card">🎯 Registar Objetivos e Metas</a>
+                <a href="consultar_objetivos.html" class="menu-card">📋 Consultar Objetivos</a>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h3>📝 Atividades Gerais</h3>
+            <div class="menu-grid">
+                <a href="atividades.html" class="menu-card">✏️ Registar Atividades</a>
+                <a href="avaliacao.html" class="menu-card">⭐ Avaliação das Atividades</a>
+                <a href="relatorio_atividades.html" class="menu-card">📊 Relatórios de Atividades</a>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h3>🧩 Módulo CAA</h3>
+            <div class="menu-grid">
+                <a href="caa_atividades.html" class="menu-card">📸 Registar Atividades CAA</a>
+                <a href="relatorio_caa.html" class="menu-card">📈 Relatório do CAA</a>
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <h3>⚙️ Administração</h3>
+            <div class="menu-grid">
+                <a href="admin_utilizadores.html" class="menu-card">👥 Gestão de Utilizadores</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
