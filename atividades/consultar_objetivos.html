@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Objetivos - APPCovao</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container container-large" style="text-align: left;">
+        <h2>📋 Consultar Objetivos e Metas</h2>
+        <p>Lista de objetivos pedagógicos registados no sistema.</p>
 
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Objetivo / Meta</th>
+                    <th>Estado</th>
+                    <th id="thAcoes" style="display:none;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaObjetivos">
+                <tr><td colspan="4" style="text-align:center;">A carregar...</td></tr>
+            </tbody>
+        </table>
+
+        <a href="../menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+        const isAdmin = currentUser.role === 'admin';
+
+        if (isAdmin) {
+            document.getElementById('thAcoes').style.display = 'table-cell';
+        }
+
+        function carregarObjetivos() {
+            const tbody = document.getElementById('tabelaObjetivos');
+            let objs = JSON.parse(localStorage.getItem('objetivos')) || [];
+
+            if (objs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${isAdmin ? 4 : 3}" style="text-align:center;">Sem objetivos registados.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            objs.forEach((item, index) => {
+                const badgeClass = item.estado === 'Atingido' ? 'badge-approved' : 'badge-pending';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.aluno}</td>
+                        <td>${item.texto}</td>
+                        <td><span class="badge ${badgeClass}">${item.estado}</span></td>
+                        ${isAdmin ? `<td><button onclick="apagarObj(${index})" class="btn-danger" style="padding:4px 8px; font-size:12px; width:auto;">Apagar</button></td>` : ''}
+                    </tr>
+                `;
+            });
+        }
+
+        function apagarObj(index) {
+            if (confirm('Pretende apagar este objetivo?')) {
+                let objs = JSON.parse(localStorage.getItem('objetivos')) || [];
+                objs.splice(index, 1);
+                localStorage.setItem('objetivos', JSON.stringify(objs));
+                carregarObjetivos();
+            }
+        }
+
+        window.onload = carregarObjetivos;
+    </script>
+</body>
+</html>
