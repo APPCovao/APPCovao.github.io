@@ -3,72 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - APPCovao</title>
+    <title>Registos App - Login</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Logótipo na raiz -->
-        <img src="imagens/logo.png" alt="Logótipo" class="auth-logo" onerror="this.style.display='none'">
-        
-        <h2>APPCovao</h2>
-        <p>Plataforma de Gestão Escolar e CAA</p>
-
-        <div style="background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 12px; color: var(--primary);">
-            <strong>Contas de Teste:</strong><br>
-            👑 <strong>Admin:</strong> <code>admin@edu.madeira.gov.pt</code> / <code>123</code><br>
-            🧑‍🏫 <strong>Professor:</strong> <code>professor@edu.madeira.gov.pt</code> / <code>123</code>
-        </div>
-
-        <form onsubmit="handleLogin(event)">
+    <div class="form-container">
+        <h2>Entrar no Sistema</h2>
+        <form id="loginForm">
             <div class="form-group">
-                <label>Email Institucional</label>
-                <input type="email" id="loginEmail" placeholder="nome@edu.madeira.gov.pt" required>
+                <label>Email</label>
+                <input type="email" id="email" required placeholder="exemplo@dominio.com">
             </div>
             <div class="form-group">
-                <label>Palavra-passe</label>
-                <input type="password" id="loginPassword" required>
+                <label>Password</label>
+                <input type="password" id="password" required placeholder="********">
             </div>
-            <button type="submit">Entrar</button>
+            <button type="submit" class="btn">ENTRAR</button>
         </form>
-
-        <p style="margin-top: 20px;">
-            Não tens conta? <a href="auth/registar_utilizador.html" class="back-link" style="margin:0;">Registar novo utilizador</a>
+        <p style="text-align: center; margin-top: 1rem;">
+            Ainda não tem conta? <a href="#" id="showRegister">Criar Conta</a>
         </p>
     </div>
-
-    <script>
-        function initTestData() {
-            if (!localStorage.getItem('users')) {
-                const defaultUsers = [
-                    { name: 'Administrador', email: 'admin@edu.madeira.gov.pt', password: '123', role: 'admin', approved: true },
-                    { name: 'Professor Exemplo', email: 'professor@edu.madeira.gov.pt', password: '123', role: 'user', approved: true }
-                ];
-                localStorage.setItem('users', JSON.stringify(defaultUsers));
-            }
-        }
-        window.onload = initTestData;
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (!user) {
-                alert('Email ou palavra-passe incorretos.');
-                return;
-            }
-            if (!user.approved) {
-                alert('A sua conta está pendente de aprovação pelo Administrador.');
-                return;
-            }
-
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            window.location.href = 'menu.html';
-        }
-    </script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
