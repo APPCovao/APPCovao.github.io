@@ -10,7 +10,6 @@
     --danger: #ef4444;
     --danger-hover: #dc2626;
     --success: #10b981;
-    --warning: #f59e0b;
     --radius: 12px;
     --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
@@ -25,7 +24,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
 }
 
 .container {
@@ -38,25 +36,19 @@ body {
     box-sizing: border-box;
     margin: 20px;
     border: 1px solid var(--border-color);
+    text-align: center;
 }
 
 .container-large {
     max-width: 900px;
+    text-align: left;
 }
 
 .auth-logo {
-    width: 56px;
-    height: 56px;
+    width: 70px;
+    height: 70px;
     margin: 0 auto 20px auto;
-    background: var(--primary-light);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: var(--primary);
-    font-size: 20px;
-    letter-spacing: -0.5px;
+    object-fit: contain;
 }
 
 h1, h2, h3 {
@@ -137,10 +129,6 @@ button:hover, .btn:hover {
     background-color: var(--primary-hover);
 }
 
-button:active {
-    transform: scale(0.99);
-}
-
 .btn-secondary {
     background-color: #f1f5f9;
     color: var(--text-main);
@@ -206,7 +194,7 @@ tr:last-child td {
 }
 
 .menu-section h3 {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -249,9 +237,7 @@ tr:last-child td {
     text-decoration: none;
     font-weight: 600;
     font-size: 14px;
-    transition: color 0.2s;
 }
 .back-link:hover {
-    color: var(--primary-hover);
     text-decoration: underline;
 }
