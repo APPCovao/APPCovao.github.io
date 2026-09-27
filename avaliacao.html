@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - APPCovao</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container container-large">
+        <h2>⭐ Avaliação de Atividades</h2>
+        <p>Regista a avaliação ou o nível de desempenho associado.</p>
 
+        <form onsubmit="saveAvaliacao(event)">
+            <div class="form-group">
+                <label>Nome do Aluno</label>
+                <input type="text" id="avAluno" required>
+            </div>
+            <div class="form-group">
+                <label>Nível / Desempenho</label>
+                <select id="avNivel" required>
+                    <option value="Excelente">Excelente</option>
+                    <option value="Bom">Bom</option>
+                    <option value="Satisfaz">Satisfaz</option>
+                    <option value="Não Satisfaz">Não Satisfaz</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Observações Qualitativas</label>
+                <textarea id="avObs" rows="3" required></textarea>
+            </div>
+            <button type="submit">Guardar Avaliação</button>
+        </form>
+
+        <a href="menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        function saveAvaliacao(e) {
+            e.preventDefault();
+            alert('Avaliação guardada com sucesso!');
+            document.querySelector('form').reset();
+        }
+    </script>
+</body>
+</html>
