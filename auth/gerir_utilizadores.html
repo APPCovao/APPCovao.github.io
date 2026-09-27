@@ -1,1 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Utilizadores - APPCovao</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container container-large" style="text-align: left;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+            <img src="../imagens/logo.png" alt="Logo" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.style.display='none'">
+            <div>
+                <h2>Gestão Total de Utilizadores</h2>
+                <p style="margin: 0;">Aprova novos registos, promove administradores ou remove contas permanentemente.</p>
+            </div>
+        </div>
 
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Cargo</th>
+                    <th>Estado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaAdminUsers">
+                <tr><td colspan="5" style="text-align:center;">A carregar...</td></tr>
+            </tbody>
+        </table>
+
+        <a href="../menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'admin') {
+                alert('Acesso restrito a administradores.');
+                window.location.href = '../menu.html';
+                return;
+            }
+            carregarUtilizadores();
+        };
+
+        function carregarUtilizadores() {
+            const tbody = document.getElementById('tabelaAdminUsers');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Sem utilizadores registados.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            users.forEach((u, index) => {
+                const badgeClass = u.approved ? 'badge-approved' : 'badge-pending';
+                const estadoTexto = u.approved ? 'Aprovado' : 'Pendente';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${u.name || 'N/D'}</td>
+                        <td>${u.email}</td>
+                        <td>${u.role === 'admin' ? 'Administrador' : 'Professor'}</td>
+                        <td><span class="badge ${badgeClass}">${estadoTexto}</span></td>
+                        <td>
+                            ${!u.approved ? `<button onclick="aprovar(${index})" style="background:var(--success); padding:6px 12px; font-size:12px; width:auto;">Aprovar</button>` : ''}
+                            ${u.role !== 'admin' ? `<button onclick="tornarAdmin(${index})" style="background:#2563eb; padding:6px 12px; font-size:12px; width:auto; margin-left:4px;">Tornar Admin</button>` : ''}
+                            <button onclick="apagarUtilizador(${index})" class="btn-danger" style="padding:6px 12px; font-size:12px; width:auto; margin-left:4px;">Apagar Conta</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function aprovar(index) {
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users[index].approved = true;
+            localStorage.setItem('users', JSON.stringify(users));
+            carregarUtilizadores();
+        }
+
+        function tornarAdmin(index) {
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users[index].role = 'admin';
+            localStorage.setItem('users', JSON.stringify(users));
+            carregarUtilizadores();
+        }
+
+        function apagarUtilizador(index) {
+            if (confirm('Tem a certeza absoluta que pretende apagar este utilizador do sistema?')) {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                users.splice(index, 1);
+                localStorage.setItem('users', JSON.stringify(users));
+                carregarUtilizadores();
+            }
+        }
+    </script>
+</body>
+</html>
