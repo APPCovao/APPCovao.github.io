@@ -1,1 +1,46 @@
-
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Registos App</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">⚙️ Painel de Administrador</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+    </nav>
+    <div class="container" style="margin-top: 2rem;">
+        <h2>Gestão de Utilizadores e Permissões</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Como administrador, pode eliminar, alterar ou dar permissões de admin.</p>
+        
+        <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #cbd5e1; text-align: left;">
+                        <th style="padding: 0.5rem;">Utilizador</th>
+                        <th style="padding: 0.5rem;">Email</th>
+                        <th style="padding: 0.5rem;">Função</th>
+                        <th style="padding: 0.5rem;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Preenchido dinamicamente via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="js/auth.js"></script>
+    <script>
+        // Restringir acesso apenas a admins
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if(!user || !user.isAdmin) {
+            alert('Acesso restrito a administradores!');
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>
