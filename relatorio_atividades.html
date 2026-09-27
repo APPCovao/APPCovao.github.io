@@ -1,1 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Atividades - APPCovao</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container container-large">
+        <h2>📊 Relatório de Atividades</h2>
+        <p>Resumo global das atividades realizadas.</p>
 
+        <div style="background: #f8faf8; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+            <p><strong>Total de atividades registadas:</strong> <span id="totalAtividades">0</span></p>
+        </div>
+
+        <button onclick="window.print()" class="btn btn-secondary">Imprimir / Guardar PDF</button>
+        <br><br>
+        <a href="menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        const lista = JSON.parse(localStorage.getItem('atividades')) || [];
+        document.getElementById('totalAtividades').textContent = lista.length;
+    </script>
+</body>
+</html>
