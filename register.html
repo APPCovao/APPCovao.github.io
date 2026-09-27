@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registo - APPCovao</title>
+</head>
+<body>
+    <h2>Registo de Novo Utilizador</h2>
+    <form onsubmit="handleRegister(event)">
+        <div>
+            <label>Nome Completo:</label><br>
+            <input type="text" id="regName" required>
+        </div>
+        <br>
+        <div>
+            <label>Email Institucional (@edu.madeira.gov.pt):</label><br>
+            <input type="email" id="regEmail" placeholder="ex: professor@edu.madeira.gov.pt" required>
+        </div>
+        <br>
+        <div>
+            <label>Palavra-passe:</label><br>
+            <input type="password" id="regPassword" required>
+        </div>
+        <br>
+        <button type="submit">Submeter Registo</button>
+    </form>
+    <p><a href="index.html">Voltar ao Login</a></p>
 
+    <script>
+        function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+
+            // Validação estricta do domínio
+            if (!email.endsWith('@edu.madeira.gov.pt')) {
+                alert('Erro: Apenas são permitidos emails institucionais terminados em @edu.madeira.gov.pt');
+                return;
+            }
+
+            alert('Registo submetido com sucesso! A conta encontra-se pendente de aprovação pelo Administrador.');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
