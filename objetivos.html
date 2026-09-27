@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registar Objetivos - APPCovao</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>🎯 Registar Objetivos e Metas</h2>
+        <p>Define um novo objetivo pedagógico para o aluno.</p>
 
+        <form onsubmit="saveObjetivo(event)">
+            <div class="form-group">
+                <label>Nome do Aluno</label>
+                <input type="text" id="objAluno" required>
+            </div>
+            <div class="form-group">
+                <label>Objetivo / Meta Pedagógica</label>
+                <textarea id="objTexto" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Estado Inicial</label>
+                <select id="objEstado">
+                    <option value="Em progresso">Em progresso</option>
+                    <option value="Atingido">Atingido</option>
+                </select>
+            </div>
+            <button type="submit">Guardar Objetivo</button>
+        </form>
+
+        <a href="menu.html" class="back-link">← Voltar ao Menu Principal</a>
+    </div>
+
+    <script>
+        function saveObjetivo(e) {
+            e.preventDefault();
+            const novo = {
+                aluno: document.getElementById('objAluno').value,
+                texto: document.getElementById('objTexto').value,
+                estado: document.getElementById('objEstado').value
+            };
+
+            let objetivos = JSON.parse(localStorage.getItem('objetivos')) || [];
+            objetivos.push(novo);
+            localStorage.setItem('objetivos', JSON.stringify(objetivos));
+
+            alert('Objetivo registado com sucesso!');
+            document.querySelector('form').reset();
+        }
+    </script>
+</body>
+</html>
