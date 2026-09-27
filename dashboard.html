@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Registos App</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">📊 REGISTOS APP</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Início</a></li>
+            <li><a href="admin.html" id="adminLink" style="display:none;">Painel Admin</a></li>
+            <li><a href="index.html" onclick="localStorage.clear()">Sair</a></li>
+        </ul>
+    </nav>
 
+    <div class="container">
+        <h1>Olá, <span id="userName">Utilizador</span>!</h1>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Gestão de Registos Diários</p>
+
+        <!-- Os 4 Botões Principais Pedidos -->
+        <div class="dashboard-grid">
+            <a href="atividades.html" class="card-btn">
+                <span style="font-size: 2rem;">📝</span>
+                <h3>Atividades</h3>
+                <p>Gerir registos e entradas</p>
+            </a>
+            <a href="requisicoes.html" class="card-btn">
+                <span style="font-size: 2rem;">📋</span>
+                <h3>Requisições</h3>
+                <p>Ver e gerir pedidos</p>
+            </a>
+            <a href="caa.html" class="card-btn">
+                <span style="font-size: 2rem;">💬</span>
+                <h3>CAA</h3>
+                <p>Comunicação Alternativa</p>
+            </a>
+            <a href="relatorios.html" class="card-btn">
+                <span style="font-size: 2rem;">📈</span>
+                <h3>Relatórios</h3>
+                <p>Estatísticas e gráficos</p>
+            </a>
+        </div>
+    </div>
+    <script src="js/auth.js"></script>
+    <script>
+        // Validação simples de sessão e visualização do link Admin
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) window.location.href = 'index.html';
+        else {
+            document.getElementById('userName').innerText = currentUser.name;
+            if(currentUser.isAdmin) {
+                document.getElementById('adminLink').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
