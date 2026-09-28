@@ -137,13 +137,22 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name;
+            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
+            // Debug útil para ver na consola o que o utilizador tem guardado
+            console.log("Utilizador atual logado:", currentUser);
         }
 
-        // Função auxiliar para verificar se é Admin (compatível com diferentes estruturas de dados)
+        // Função abrangente para detetar Administrador independentemente da estrutura do objeto
         function isAdminUser(user) {
             if (!user) return false;
-            return user.isAdmin === true || user.role === 'admin' || user.email === 'admin@regiscovao.pt' || (user.name && user.name.toLowerCase().includes('admin'));
+            return (
+                user.isAdmin === true || 
+                user.role === 'admin' || 
+                user.tipo === 'admin' || 
+                user.perfil === 'admin' || 
+                (user.email && user.email.toLowerCase().includes('admin')) ||
+                (user.name && user.name.toLowerCase().includes('admin'))
+            );
         }
 
         // Dados de Exemplo iniciais (caso o localStorage esteja vazio)
@@ -169,16 +178,16 @@
 
             const userIsAdmin = isAdminUser(currentUser);
 
-            // Inverter a ordem para que a atividade mais recente apareça sempre no topo
+            // Inverter a ordem para que a última atividade criada apareça SEMPRE no topo
             const atividadesInvertidas = [...atividades].reverse();
 
             atividadesInvertidas.forEach(ativ => {
-                // Administradores podem modificar tudo; utilizadores normais só o que criaram
+                // O botão Ver está SEMPRE ativo. Editar/Apagar se for admin ou criador.
                 const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>#${ativ.numero || ativ.id || '-'}</strong></td>
+                    <td><strong>${ativ.numero || ativ.id || '-'}</strong></td>
                     <td><strong>${ativ.titulo}</strong></td>
                     <td>${ativ.criadorNome || 'Desconhecido'}</td>
                     <td>
