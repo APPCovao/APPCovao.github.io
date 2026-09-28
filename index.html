@@ -3,26 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registos App - Login</title>
+    <title>Registos Covão - Login</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="form-container">
-        <h2>Entrar no Sistema</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="email" required placeholder="exemplo@dominio.com">
+    <div class="app-container">
+        <div class="status-bar">
+            <span>9:41 AM</span>
+            <span>📶 🔋</span>
+        </div>
+
+        <!-- ECRÃ DE LOGIN -->
+        <div id="loginScreen">
+            <div class="page-header" style="justify-content: center; background: var(--bg-app); padding: 30px 0;">
+                <!-- Logo carregado da pasta imagens/logo.png -->
+                <img src="imagens/logo.png" alt="Registos Covão Logo" width="120" onerror="this.style.display='none'">
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" required placeholder="********">
+            <div class="content" style="background: white; border-radius: 30px 30px 0 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05);">
+                <h2 style="margin-bottom: 20px; font-size: 22px; color: var(--color-primary); text-align: center;">Registos Covão</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" required placeholder="admin@registos.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" required placeholder="123">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">ENTRAR</button>
+                </form>
+                <button id="showRegister" class="btn btn-secondary" style="margin-top: 10px;">Criar Conta</button>
             </div>
-            <button type="submit" class="btn">ENTRAR</button>
-        </form>
-        <p style="text-align: center; margin-top: 1rem;">
-            Ainda não tem conta? <a href="#" id="showRegister">Criar Conta</a>
-        </p>
+        </div>
+
+        <!-- ECRÃ DE CRIAR CONTA -->
+        <div id="registerScreen" style="display: none;">
+            <div class="page-header">
+                <span id="backToLogin" style="cursor: pointer; margin-right: 15px;">⬅️</span>
+                Criar Conta
+            </div>
+            <div class="content">
+                <form id="registerForm">
+                    <div class="form-group"><label>Nome Completo</label><input type="text" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" required></div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">CRIAR CONTA</button>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="js/auth.js"></script>
 </body>
