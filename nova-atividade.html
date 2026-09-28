@@ -25,7 +25,7 @@
             <form id="novaAtividadeForm">
                 <div class="form-group">
                     <label for="numAtividade">Número da Atividade</label>
-                    <input type="text" id="numAtividade" required placeholder="Ex: 001/2026">
+                    <input type="text" id="numAtividade" readonly style="background-color: #f8fafc; cursor: not-allowed; font-weight: bold; color: var(--color-primary);">
                 </div>
 
                 <div class="form-group">
@@ -67,7 +67,7 @@
 
     <script src="js/auth.js"></script>
     <script>
-        // Verificar autenticação e preencher o campo "Criado por" automaticamente
+        // Verificar autenticação
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser) {
             window.location.href = 'index.html';
@@ -76,34 +76,40 @@
             document.getElementById('criadoPor').value = currentUser.name;
         }
 
+        // Atribuir automaticamente o Número da Atividade seguinte
+        function definirNumeroAutomatico() {
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            // O próximo número será o total de atividades existentes + 1
+            const proximoNumero = atividades.length + 1;
+            document.getElementById('numAtividade').value = proximoNumero;
+        }
+
+        // Executar ao carregar a página
+        definirNumeroAutomatico();
+
         // Lógica de submissão do formulário
         const form = document.getElementById('novaAtividadeForm');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const proximoNumero = atividades.length + 1;
+
             const novaAtividade = {
-                id: Date.now(), // ID único baseado no timestamp atual
-                numero: document.getElementById('numAtividade').value.trim(),
+                id: Date.now(), // ID único interno
+                numero: proximoNumero, // Número sequencial automático
                 titulo: document.getElementById('nomeAtividade').value.trim(),
                 anoLetivo: document.getElementById('anoLetivo').value,
                 tipo: document.getElementById('tipoAtividade').value,
                 criadorId: currentUser.id,
                 criadorNome: currentUser.name,
-                data: new Date().toISOString().split('T')[0] // Data atual (YYYY-MM-DD)
+                data: new Date().toISOString().split('T')[0]
             };
-
-            // Buscar atividades existentes no LocalStorage
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             
-            // Adicionar a nova atividade à lista
             atividades.push(novaAtividade);
-
-            // Guardar de volta no LocalStorage
             localStorage.setItem('atividades', JSON.stringify(atividades));
 
-            alert('Atividade criada com sucesso!');
-            
-            // Redirecionar de volta para a listagem de atividades
+            alert('Atividade ' + proximoNumero + ' criada com sucesso!');
             window.location.href = 'atividades.html';
         });
     </script>
