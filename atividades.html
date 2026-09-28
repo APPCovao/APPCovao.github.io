@@ -115,7 +115,7 @@
             padding: 2rem;
             border-radius: 12px;
             width: 100%;
-            max-width: 650px;
+            max-width: 680px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             max-height: 90vh;
             overflow-y: auto;
@@ -147,6 +147,32 @@
         }
         .badge-sim { background-color: #dcfce7; color: #166534; }
         .badge-nao { background-color: #fee2e2; color: #991b1b; }
+
+        .checkbox-group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.75rem;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -231,6 +257,7 @@
                         <tr>
                             <th style="width: 15%;">Nº Atividade</th>
                             <th>Título / Descrição</th>
+                            <th style="width: 20%;">Média / Nota</th>
                             <th style="width: 25%;">Criado por</th>
                             <th style="width: 20%;">Ações</th>
                         </tr>
@@ -317,6 +344,10 @@
                     <input type="text" id="modalAvTituloAtividade" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
                 <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Média / Nota da Avaliação</label>
+                    <input type="text" id="modalAvMedia" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Comentário / Parecer de Avaliação</label>
                     <textarea id="modalAvComentario" rows="4" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
                 </div>
@@ -328,7 +359,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE OBJETIVO / CONCLUSÕES (EDITAR/VER TODOS OS CAMPOS) -->
+    <!-- MODAL DE OBJETIVO / CONCLUSÕES (COM CHECKBOXES E TODOS OS CAMPOS) -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalObjetivoTitle" style="color: #16a34a;">Detalhes do Registo de Objetivos</h2>
@@ -363,7 +394,19 @@
                     </div>
                 </div>
 
-                <!-- Campos extra/personalizados para garantir que nenhum dado registado fica de fora -->
+                <!-- Caixas de Verificação de Objetivos e Metas -->
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e Metas Associados (Checkboxes)</label>
+                    <div class="checkbox-group-grid" id="modalObjCheckboxesContainer">
+                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Promover o sucesso escolar"> Promover o sucesso escolar</label>
+                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Fomentar a cidadania e participação"> Fomentar a cidadania e participação</label>
+                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Desenvolver competências digitais"> Desenvolver competências digitais</label>
+                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Articulação curricular interdisciplinar"> Articulação curricular interdisciplinar</label>
+                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Envolvimento com a comunidade local"> Envolvimento com a comunidade local</label>
+                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Educação ambiental e sustentabilidade"> Educação ambiental e sustentabilidade</label>
+                    </div>
+                </div>
+
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Tipo / Categoria Extra</label>
@@ -475,7 +518,7 @@
             tbody.innerHTML = '';
 
             if (avaliadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades avaliadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-light);">Ainda não existem atividades avaliadas.</td></tr>`;
                 return;
             }
 
@@ -492,12 +535,14 @@
 
                 const numAtividade = av.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : '-');
                 const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada');
+                const mediaAvaliacao = av.media || av.nota || av.classificacao || '-';
                 const criador = av.avaliadorNome || av.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${numAtividade}</strong></td>
                     <td><strong>${tituloAtividade}</strong></td>
+                    <td><span class="badge" style="background-color: #fef08a; color: #854d0e;">${mediaAvaliacao}</span></td>
                     <td>${criador}</td>
                     <td>
                         <div class="actions-cell">
@@ -624,8 +669,10 @@
             document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
             document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
             document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
+            document.getElementById('modalAvMedia').value = av.media || av.nota || av.classificacao || '';
             document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
 
+            document.getElementById('modalAvMedia').readOnly = somenteLeitura;
             document.getElementById('modalAvComentario').readOnly = somenteLeitura;
             document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('avaliacaoModal').style.display = 'flex';
@@ -642,6 +689,10 @@
                 const matchId = (idInput !== "" && a.id == idInput);
                 const matchIdx = (idInput === "" && idx == idInput);
                 if(matchId || matchIdx) {
+                    a.media = document.getElementById('modalAvMedia').value;
+                    if(a.nota) a.nota = a.media;
+                    if(a.classificacao) a.classificacao = a.media;
+
                     a.comentario = document.getElementById('modalAvComentario').value;
                     if(a.parecer) a.parecer = a.comentario;
                     if(a.texto) a.texto = a.comentario;
@@ -653,7 +704,7 @@
             carregarAvaliacoes();
         }
 
-        // Modais de Objetivos / Conclusões (Exibindo TODOS os campos guardados)
+        // Modais de Objetivos / Conclusões (Com Checkboxes e todos os campos)
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
@@ -679,6 +730,14 @@
             document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
             document.getElementById('modalObjObservacoes').value = reg.observacoes || reg.notas || '';
 
+            // Marcar/Desmarcar checkboxes guardadas
+            const checkboxes = document.querySelectorAll('#modalObjCheckboxesContainer input[type="checkbox"]');
+            const guardadas = reg.objetivosCheckboxes || reg.metas || reg.objetivos || [];
+            checkboxes.forEach(cb => {
+                cb.checked = Array.isArray(guardadas) && guardadas.includes(cb.value);
+                cb.disabled = somenteLeitura;
+            });
+
             document.getElementById('modalObjNomeAtividade').readOnly = somenteLeitura;
             document.getElementById('modalObjPaa').disabled = somenteLeitura;
             document.getElementById('modalObjPee').disabled = somenteLeitura;
@@ -697,11 +756,16 @@
             const id = parseInt(document.getElementById('editObjetivoId').value);
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             
+            // Recolher checkboxes selecionadas
+            const checkboxesSelecionadas = Array.from(document.querySelectorAll('#modalObjCheckboxesContainer input[type="checkbox"]:checked'))
+                                              .map(cb => cb.value);
+
             registos = registos.map(reg => {
                 if(reg.id === id) {
                     reg.nomeAtividade = document.getElementById('modalObjNomeAtividade').value;
                     reg.paa = document.getElementById('modalObjPaa').value;
                     reg.pee = document.getElementById('modalObjPee').value;
+                    reg.objetivosCheckboxes = checkboxesSelecionadas;
                     reg.tipoAtividade = document.getElementById('modalObjTipo').value;
                     reg.periodo = document.getElementById('modalObjPeriodo').value;
                     reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
