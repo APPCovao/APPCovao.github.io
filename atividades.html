@@ -115,7 +115,7 @@
             padding: 2rem;
             border-radius: 12px;
             width: 100%;
-            max-width: 680px;
+            max-width: 750px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             max-height: 90vh;
             overflow-y: auto;
@@ -148,29 +148,39 @@
         .badge-sim { background-color: #dcfce7; color: #166534; }
         .badge-nao { background-color: #fee2e2; color: #991b1b; }
 
-        .checkbox-group-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 0.75rem;
+        /* Estrutura fiel aos objetivos e metas da imagem */
+        .pee-objetivo-box {
             background: #f8fafc;
-            padding: 1rem;
+            border: 1px solid #cbd5e1;
             border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
         }
 
-        .checkbox-item {
+        .pee-obj-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #1e293b;
+            cursor: pointer;
+        }
+
+        .pee-meta-list {
+            margin-top: 0.5rem;
+            margin-left: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .pee-meta-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.85rem;
-            color: #334155;
-            cursor: pointer;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 1.1rem;
-            height: 1.1rem;
+            color: #475569;
             cursor: pointer;
         }
     </style>
@@ -270,16 +280,17 @@
         <!-- ABA 3: OBJETIVOS REGISTADOS -->
         <div id="tabObjetivos" class="tab-content">
             <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Objetivos e Conclusões Registados</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de associações a objetivos, PAA, PEE e conclusões.</p>
+                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Objetivos e Avaliação Global Registados</h3>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de associações a objetivos, PAA, PEE e avaliações globais.</p>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 12%;">Nº Atividade</th>
+                            <th style="width: 10%;">Nº</th>
                             <th>Nome da Atividade</th>
-                            <th style="width: 10%;">PAA</th>
-                            <th style="width: 10%;">PEE</th>
-                            <th style="width: 25%;">Resumo / Conclusões</th>
+                            <th style="width: 8%;">PAA</th>
+                            <th style="width: 8%;">PEE</th>
+                            <th style="width: 15%;">Média Avaliação</th>
+                            <th style="width: 24%;">Resumo / Conclusões</th>
                             <th style="width: 20%;">Ações</th>
                         </tr>
                     </thead>
@@ -359,10 +370,12 @@
         </div>
     </div>
 
-    <!-- MODAL DE OBJETIVO / CONCLUSÕES (COM CHECKBOXES E TODOS OS CAMPOS) -->
+    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL (FIEL À IMAGEM ORIGINAL) -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalObjetivoTitle" style="color: #16a34a;">Detalhes do Registo de Objetivos</h2>
+            <h2 id="modalObjetivoTitle" style="color: #16a34a;">Registo de Objetivos e Avaliação Global</h2>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+            
             <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
                 
@@ -373,20 +386,31 @@
                     </div>
                     <div class="form-group" style="flex: 2;">
                         <label>Nome da Atividade</label>
-                        <input type="text" id="modalObjNomeAtividade" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <input type="text" id="modalObjNomeAtividade" style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;" required>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="flex: 1;">
-                        <label>PAA</label>
+                        <label>Ano Letivo</label>
+                        <input type="text" id="modalObjAnoLetivo" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Tipo de Atividade</label>
+                        <input type="text" id="modalObjTipo" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Integra o PAA?</label>
                         <select id="modalObjPaa" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                             <option value="Sim">Sim</option>
                             <option value="Não">Não</option>
                         </select>
                     </div>
                     <div class="form-group" style="flex: 1;">
-                        <label>PEE</label>
+                        <label>Integra o PEE?</label>
                         <select id="modalObjPee" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                             <option value="Sim">Sim</option>
                             <option value="Não">Não</option>
@@ -394,43 +418,93 @@
                     </div>
                 </div>
 
-                <!-- Caixas de Verificação de Objetivos e Metas -->
+                <!-- Árvore de Objetivos e Metas do PEE exatamente como na imagem -->
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e Metas Associados (Checkboxes)</label>
-                    <div class="checkbox-group-grid" id="modalObjCheckboxesContainer">
-                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Promover o sucesso escolar"> Promover o sucesso escolar</label>
-                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Fomentar a cidadania e participação"> Fomentar a cidadania e participação</label>
-                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Desenvolver competências digitais"> Desenvolver competências digitais</label>
-                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Articulação curricular interdisciplinar"> Articulação curricular interdisciplinar</label>
-                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Envolvimento com a comunidade local"> Envolvimento com a comunidade local</label>
-                        <label class="checkbox-item"><input type="checkbox" name="objCheck" value="Educação ambiental e sustentabilidade"> Educação ambiental e sustentabilidade</label>
+                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Selecione os Objetivos e respetivas Metas do PEE abrangidos[cite: 4]:</label>
+                    
+                    <!-- Objetivo 1 -->
+                    <div class="pee-objetivo-box">
+                        <label class="pee-obj-title">
+                            <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica" onchange="toggleMetaGroup(this, 'metaGroup1')"> 
+                            Objetivo 1: Melhorar a articulação pedagógica[cite: 4]
+                        </label>
+                        <div class="pee-meta-list" id="metaGroup1">
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma"> 
+                                Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma[cite: 4]
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Objetivo 2 -->
+                    <div class="pee-objetivo-box">
+                        <label class="pee-obj-title">
+                            <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos" onchange="toggleMetaGroup(this, 'metaGroup2')"> 
+                            Objetivo 2: Melhorar os resultados académicos dos alunos[cite: 4]
+                        </label>
+                        <div class="pee-meta-list" id="metaGroup2">
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 2: 75% alunos com menções de Bom e Muito Bom no português"> 
+                                Meta 2: 75% alunos com menções de Bom e Muito Bom no português[cite: 4]
+                            </label>
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática"> 
+                                Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática[cite: 4]
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Objetivo 3 -->
+                    <div class="pee-objetivo-box">
+                        <label class="pee-obj-title">
+                            <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas" onchange="toggleMetaGroup(this, 'metaGroup3')"> 
+                            Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas[cite: 4]
+                        </label>
+                        <div class="pee-meta-list" id="metaGroup3">
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias"> 
+                                Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias[cite: 4]
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Objetivo 4 -->
+                    <div class="pee-objetivo-box">
+                        <label class="pee-obj-title">
+                            <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação" onchange="toggleMetaGroup(this, 'metaGroup4')"> 
+                            Objetivo 4: Aumentar a participação da comunidade e encarregados de educação[cite: 4]
+                        </label>
+                        <div class="pee-meta-list" id="metaGroup4">
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 5: Anualmente realizar dois questionários para a comunidade escolar"> 
+                                Meta 5: Anualmente realizar dois questionários para a comunidade escolar[cite: 4]
+                            </label>
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais"> 
+                                Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais[cite: 4]
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Tipo / Categoria Extra</label>
-                        <input type="text" id="modalObjTipo" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Data / Período Registado</label>
-                        <input type="text" id="modalObjPeriodo" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                    </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)[cite: 4]</label>
+                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Resumo / Conclusões Detalhadas</label>
+                    <label>Sugestões / Observações Recolhidas[cite: 4]</label>
+                    <textarea id="modalObjSugestoes" rows="3" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Resumo / Conclusões da Atividade[cite: 4]</label>
                     <textarea id="modalObjResumo" rows="4" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Outras Observações / Campos Adicionais</label>
-                    <textarea id="modalObjObservacoes" rows="2" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
                 </div>
 
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar</button>
+                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Registo de Objetivos</button>
                 </div>
             </form>
         </div>
@@ -509,7 +583,7 @@
             });
         }
 
-        // --- CARREGAR AVALIAÇÕES ---
+        // --- CARREGAR AVALIAÇÕES (INTOCADO) ---
         function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
@@ -556,14 +630,14 @@
             });
         }
 
-        // --- CARREGAR OBJETIVOS E CONCLUSÕES ---
+        // --- CARREGAR OBJETIVOS E AVALIAÇÃO GLOBAL ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             tbody.innerHTML = '';
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-light); padding: 1.5rem;">Ainda não existem registos de objetivos guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-light); padding: 1.5rem;">Ainda não existem registos de objetivos guardados.</td></tr>`;
                 return;
             }
 
@@ -573,7 +647,8 @@
                 const podeModificar = userIsAdmin || (reg.criadorId === currentUser.id);
                 const badgePaa = reg.paa === 'Sim' ? '<span class="badge badge-sim">Sim</span>' : '<span class="badge badge-nao">Não</span>';
                 const badgePee = reg.pee === 'Sim' ? '<span class="badge badge-sim">Sim</span>' : '<span class="badge badge-nao">Não</span>';
-                const resumoCurto = reg.resumoConclusoes ? (reg.resumoConclusoes.length > 40 ? reg.resumoConclusoes.substring(0, 40) + '...' : reg.resumoConclusoes) : 'Sem resumo';
+                const mediaAv = reg.mediaAvaliacao || reg.media || 'Pendente';
+                const resumoCurto = reg.resumoConclusoes ? (reg.resumoConclusoes.length > 35 ? reg.resumoConclusoes.substring(0, 35) + '...' : reg.resumoConclusoes) : 'Sem resumo';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -581,6 +656,7 @@
                     <td><strong>${reg.nomeAtividade || 'Atividade sem nome'}</strong></td>
                     <td>${badgePaa}</td>
                     <td>${badgePee}</td>
+                    <td><span class="badge" style="background-color: #fef08a; color: #854d0e;">${mediaAv}</span></td>
                     <td>${resumoCurto}</td>
                     <td>
                         <div class="actions-cell">
@@ -704,7 +780,12 @@
             carregarAvaliacoes();
         }
 
-        // Modais de Objetivos / Conclusões (Com Checkboxes e todos os campos)
+        // Toggle auxiliar para as metas dependentes no modal
+        function toggleMetaGroup(checkboxObj, groupId) {
+            // Comportamento visual opcional se necessário
+        }
+
+        // Modais de Objetivos e Avaliação Global (Idênticos ao original)
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
@@ -723,28 +804,36 @@
             document.getElementById('editObjetivoId').value = reg.id;
             document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || '-';
             document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || '';
+            document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || '-';
+            document.getElementById('modalObjTipo').value = reg.tipoAtividade || reg.tipo || '-';
             document.getElementById('modalObjPaa').value = reg.paa || 'Sim';
             document.getElementById('modalObjPee').value = reg.pee || 'Sim';
-            document.getElementById('modalObjTipo').value = reg.tipoAtividade || reg.tipo || '';
-            document.getElementById('modalObjPeriodo').value = reg.periodo || reg.data || '';
+            document.getElementById('modalObjMedia').value = reg.mediaAvaliacao || reg.media || 'Pendente';
+            document.getElementById('modalObjSugestoes').value = reg.sugestoes || reg.observacoes || '';
             document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
-            document.getElementById('modalObjObservacoes').value = reg.observacoes || reg.notas || '';
 
-            // Marcar/Desmarcar checkboxes guardadas
-            const checkboxes = document.querySelectorAll('#modalObjCheckboxesContainer input[type="checkbox"]');
-            const guardadas = reg.objetivosCheckboxes || reg.metas || reg.objetivos || [];
-            checkboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadas) && guardadas.includes(cb.value);
+            // Marcar/Desmarcar checkboxes de objetivos e metas guardados
+            const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
+            const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
+            
+            const guardadosObj = reg.objetivosCheckboxes || reg.objetivos || [];
+            const guardadasMeta = reg.metasCheckboxes || reg.metas || [];
+
+            objCheckboxes.forEach(cb => {
+                cb.checked = Array.isArray(guardadosObj) && guardadosObj.includes(cb.value);
+                cb.disabled = somenteLeitura;
+            });
+
+            metaCheckboxes.forEach(cb => {
+                cb.checked = Array.isArray(guardadasMeta) && guardadasMeta.includes(cb.value);
                 cb.disabled = somenteLeitura;
             });
 
             document.getElementById('modalObjNomeAtividade').readOnly = somenteLeitura;
             document.getElementById('modalObjPaa').disabled = somenteLeitura;
             document.getElementById('modalObjPee').disabled = somenteLeitura;
-            document.getElementById('modalObjTipo').readOnly = somenteLeitura;
-            document.getElementById('modalObjPeriodo').readOnly = somenteLeitura;
+            document.getElementById('modalObjSugestoes').readOnly = somenteLeitura;
             document.getElementById('modalObjResumo').readOnly = somenteLeitura;
-            document.getElementById('modalObjObservacoes').readOnly = somenteLeitura;
             
             document.getElementById('modalObjSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('objetivoModal').style.display = 'flex';
@@ -756,20 +845,18 @@
             const id = parseInt(document.getElementById('editObjetivoId').value);
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             
-            // Recolher checkboxes selecionadas
-            const checkboxesSelecionadas = Array.from(document.querySelectorAll('#modalObjCheckboxesContainer input[type="checkbox"]:checked'))
-                                              .map(cb => cb.value);
+            const objSelecionados = Array.from(document.querySelectorAll('#objetivoFormModal input[name="objCheck"]:checked')).map(cb => cb.value);
+            const metasSelecionadas = Array.from(document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked')).map(cb => cb.value);
 
             registos = registos.map(reg => {
                 if(reg.id === id) {
                     reg.nomeAtividade = document.getElementById('modalObjNomeAtividade').value;
                     reg.paa = document.getElementById('modalObjPaa').value;
                     reg.pee = document.getElementById('modalObjPee').value;
-                    reg.objetivosCheckboxes = checkboxesSelecionadas;
-                    reg.tipoAtividade = document.getElementById('modalObjTipo').value;
-                    reg.periodo = document.getElementById('modalObjPeriodo').value;
+                    reg.objetivosCheckboxes = objSelecionados;
+                    reg.metasCheckboxes = metasSelecionadas;
+                    reg.sugestoes = document.getElementById('modalObjSugestoes').value;
                     reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
-                    reg.observacoes = document.getElementById('modalObjObservacoes').value;
                 }
                 return reg;
             });
