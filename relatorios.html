@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades - Registos Covão</title>
+    <title>Relatórios e Estatísticas - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,17 +13,79 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <a href="dashboard.html" style="color: white; text-decoration: none;">⬅️ Voltar ao Menu</a>
+            <span>Olá, <strong id="welcomeName">Utilizador</strong></span>
+            <a href="dashboard.html" class="btn" style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; margin-right: 0.5rem; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem;">Painel</a>
+            <a href="index.html" class="logout-btn" onclick="localStorage.removeItem('currentUser')">Sair</a>
         </div>
     </div>
 
     <div class="container">
         <div class="dashboard-header">
-            <h2>Gestão de Atividades</h2>
+            <div>
+                <h2>Relatórios e Estatísticas</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Visão global dos registos e dados do sistema</p>
+            </div>
+            <a href="dashboard.html" class="btn btn-secondary" style="width: auto; padding: 0.5rem 1rem;">← Voltar ao Painel</a>
         </div>
-        <div style="background: white; padding: 2rem; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-            <p style="color: var(--text-light);">Conteúdo da página de atividades adaptado perfeitamente para qualquer ecrã.</p>
+
+        <h3 style="margin-bottom: 1rem; color: var(--color-primary); margin-top: 1.5rem;">Resumo Geral do Sistema</h3>
+
+        <!-- Grelha de Estatísticas -->
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+            <div class="stat-box" style="border-top: 4px solid var(--color-primary);">
+                <h4>Número de Atividades</h4>
+                <p id="statAtividades" style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">0</p>
+            </div>
+            <div class="stat-box" style="border-top: 4px solid #16a34a;">
+                <h4>Atividades Avaliadas</h4>
+                <p id="statAvaliadas" style="font-size: 2rem; font-weight: bold; color: #16a34a;">0</p>
+            </div>
+            <div class="stat-box" style="border-top: 4px solid #9333ea;">
+                <h4>Registo de Objetivos</h4>
+                <p id="statObjetivos" style="font-size: 2rem; font-weight: bold; color: #9333ea;">0</p>
+            </div>
+            <div class="stat-box" style="border-top: 4px solid var(--color-accent);">
+                <h4>Nº de Requisições</h4>
+                <p id="statRequisicoes" style="font-size: 2rem; font-weight: bold; color: var(--color-accent);">0</p>
+            </div>
+        </div>
+
+        <!-- Área para futuras adições -->
+        <div style="margin-top: 2rem; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Informações Adicionais</h4>
+            <p style="color: var(--text-light); font-size: 0.95rem;">Esta página está preparada para receber novas tabelas, gráficos ou filtros de relatórios conforme precisares mais à frente.</p>
         </div>
     </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('welcomeName').innerText = currentUser.name;
+        }
+
+        // Carregar contagens dinâmicas do localStorage
+        function carregarRelatorios() {
+            // 1. Atividades
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            document.getElementById('statAtividades').innerText = atividades.length;
+
+            // 2. Atividades Avaliadas
+            const avaliadas = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            document.getElementById('statAvaliadas').innerText = avaliadas.length || atividades.filter(a => a.avaliada || a.estado === 'Avaliada').length;
+
+            // 3. Objetivos
+            const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
+            document.getElementById('statObjetivos').innerText = objetivos.length;
+
+            // 4. Requisições
+            const requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
+            document.getElementById('statRequisicoes').innerText = requisicoes.length;
+        }
+
+        carregarRelatorios();
+    </script>
 </body>
 </html>
