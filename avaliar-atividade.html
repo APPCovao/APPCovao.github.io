@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliar Atividade - Registos Covão</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-container {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            margin-top: 2rem;
+        }
 
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background-color: #fff;
+        }
+
+        input[readonly] {
+            background-color: #f8fafc;
+            cursor: not-allowed;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .row-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .row-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-submit {
+            background-color: var(--color-accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        /* Estilos para Modais Personalizados */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .custom-modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            text-align: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-modal h3 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-modal {
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: var(--color-primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="brand">
+            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
+            <span>Registos Covão</span>
+        </div>
+        <div class="user-info">
+            <span>Olá, <strong id="userNameSpan"></strong></span>
+            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 700px;">
+        <div class="dashboard-header" style="margin-top: 2rem;">
+            <div>
+                <h2>Avaliar Atividade</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Insira o número da atividade para carregar os dados e registar a avaliação</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form id="avaliarAtividadeForm" onsubmit="guardarAvaliacao(event)">
+                
+                <div class="form-group">
+                    <label for="numeroAtividade">Número da Atividade</label>
+                    <input type="number" id="numeroAtividade" min="1" required placeholder="Ex: 1, 2, 3..." oninput="carregarDadosAtividadePorNumero()">
+                    <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem;">Atividade não encontrada.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="nomeAtividade">Nome da Atividade</label>
+                    <input type="text" id="nomeAtividade" readonly placeholder="Preenchido automaticamente">
+                </div>
+
+                <div class="form-group">
+                    <label for="anoLetivoAtividade">Ano Letivo</label>
+                    <input type="text" id="anoLetivoAtividade" readonly placeholder="Preenchido automaticamente">
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoAvaliador">Docente / Aluno</label>
+                    <select id="tipoAvaliador" required>
+                        <option value="" disabled selected>Selecione o tipo de avaliador</option>
+                        <option value="Docente">Docente</option>
+                        <option value="Aluno">Aluno</option>
+                    </select>
+                </div>
+
+                <div class="row-grid">
+                    <div class="form-group">
+                        <label for="pertinencia">Pertinência (1-5)</label>
+                        <select id="pertinencia" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="1">1 - Muito Baixa</option>
+                            <option value="2">2 - Baixa</option>
+                            <option value="3">3 - Moderada</option>
+                            <option value="4">4 - Alta</option>
+                            <option value="5">5 - Muito Alta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dinamica">Dinâmica (1-5)</label>
+                        <select id="dinamica" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="1">1 - Muito Fraca</option>
+                            <option value="2">2 - Fraca</option>
+                            <option value="3">3 - Razoável</option>
+                            <option value="4">4 - Boa</option>
+                            <option value="5">5 - Excelente</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interesse">Interesse (1-5)</label>
+                        <select id="interesse" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="1">1 - Nenhum</option>
+                            <option value="2">2 - Baixo</option>
+                            <option value="3">3 - Moderado</option>
+                            <option value="4">4 - Alto</option>
+                            <option value="5">5 - Muito Alto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sugestoes">Sugestões / Observações</label>
+                    <textarea id="sugestoes" rows="4" placeholder="Insira comentários, sugestões ou pontos de melhoria..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Avaliação</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PERSONALIZADO DE SUCESSO -->
+    <div id="successModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✨</div>
+            <h3>Sucesso!</h3>
+            <p id="successMessage">Avaliação registada com sucesso.</p>
+            <button type="button" class="btn-modal" onclick="fecharModalSucesso()">OK</button>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
+        }
+
+        // Função que procura a atividade pelo número inserido e preenche os campos automaticamente
+        function carregarDadosAtividadePorNumero() {
+            const numInput = document.getElementById('numeroAtividade').value;
+            const nomeInput = document.getElementById('nomeAtividade');
+            const anoInput = document.getElementById('anoLetivoAtividade');
+            const aviso = document.getElementById('avisoAtividade');
+
+            if (!numInput) {
+                nomeInput.value = '';
+                anoInput.value = '';
+                aviso.style.display = 'none';
+                return;
+            }
+
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            // Compara com a propriedade .numero ou .id da atividade
+            const ativEncontrada = atividades.find(a => String(a.numero) === String(numInput) || String(a.id) === String(numInput));
+
+            if (ativEncontrada) {
+                nomeInput.value = ativEncontrada.titulo || '';
+                anoInput.value = ativEncontrada.anoLetivo || 'Não especificado';
+                aviso.style.display = 'none';
+            } else {
+                nomeInput.value = '';
+                anoInput.value = '';
+                aviso.style.display = 'block';
+            }
+        }
+
+        function guardarAvaliacao(event) {
+            event.preventDefault();
+
+            const numAtividade = document.getElementById('numeroAtividade').value;
+            const nomeAtividade = document.getElementById('nomeAtividade').value;
+
+            if (!nomeAtividade) {
+                alert('Por favor, introduza um número de atividade válido.');
+                return;
+            }
+
+            const novaAvaliacao = {
+                id: Date.now(),
+                numeroAtividade: numAtividade,
+                nomeAtividade: nomeAtividade,
+                anoLetivo: document.getElementById('anoLetivoAtividade').value,
+                tipoAvaliador: document.getElementById('tipoAvaliador').value,
+                pertinencia: document.getElementById('pertinencia').value,
+                dinamica: document.getElementById('dinamica').value,
+                interesse: document.getElementById('interesse').value,
+                sugestoes: document.getElementById('sugestoes').value.trim(),
+                avaliadorNome: currentUser.name,
+                data: new Date().toISOString().split('T')[0]
+            };
+
+            const avaliacoes = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
+            avaliacoes.push(novaAvaliacao);
+            localStorage.setItem('avaliacoesAtividades', JSON.stringify(avaliacoes));
+
+            document.getElementById('successMessage').innerText = `Avaliação da Atividade #${numAtividade} guardada com sucesso!`;
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        function fecharModalSucesso() {
+            document.getElementById('successModal').style.display = 'none';
+            window.location.href = 'atividades.html';
+        }
+    </script>
+</body>
+</html>
