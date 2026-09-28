@@ -28,21 +28,29 @@
             <a href="admin.html" id="adminHeaderBtn" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; display: none;">⚙️ Painel Admin</a>
         </div>
 
-        <!-- Estatísticas Rápidas -->
-        <div class="stats-grid">
-            <div class="stat-box">
-                <h4>Total de Registos</h4>
-                <p>124</p>
+        <!-- Estatísticas Dinâmicas Atualizadas -->
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="stat-box" style="border-top: 4px solid var(--color-primary);">
+                <h4>Número de Atividades</h4>
+                <p id="statAtividades" style="font-size: 1.8rem; font-weight: bold; color: var(--color-primary);">0</p>
             </div>
-            <div class="stat-box">
-                <h4>Registos Esta Semana</h4>
-                <p>28</p>
+            <div class="stat-box" style="border-top: 4px solid #16a34a;">
+                <h4>Atividades Avaliadas</h4>
+                <p id="statAvaliadas" style="font-size: 1.8rem; font-weight: bold; color: #16a34a;">0</p>
+            </div>
+            <div class="stat-box" style="border-top: 4px solid #9333ea;">
+                <h4>Registo de Objetivos</h4>
+                <p id="statObjetivos" style="font-size: 1.8rem; font-weight: bold; color: #9333ea;">0</p>
+            </div>
+            <div class="stat-box" style="border-top: 4px solid var(--color-accent);">
+                <h4>Nº de Requisições</h4>
+                <p id="statRequisicoes" style="font-size: 1.8rem; font-weight: bold; color: var(--color-accent);">0</p>
             </div>
         </div>
 
         <h3 style="margin-bottom: 1rem; color: var(--color-primary);">Módulos do Sistema</h3>
 
-        <!-- As 5 Opções Pedidas em Grelha Responsiva -->
+        <!-- As Opções do Menu -->
         <div class="menu-grid">
             <a href="atividades.html" class="menu-card" style="border-top-color: var(--color-primary);">
                 <div class="icon">📝</div>
@@ -97,6 +105,28 @@
                 document.getElementById('adminHeaderBtn').style.display = 'inline-block';
             }
         }
+
+        // Carregar contagens dinâmicas do localStorage
+        function atualizarEstatisticas() {
+            // 1. Atividades
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            document.getElementById('statAtividades').innerText = atividades.length;
+
+            // 2. Atividades Avaliadas (procura na chave respetiva ou filtra avaliadas)
+            const avaliadas = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            // Se guardas as avaliações dentro de outra chave ou estrutura, podes ajustar aqui. Caso estejam numa chave própria:
+            document.getElementById('statAvaliadas').innerText = avaliadas.length || atividades.filter(a => a.avaliada || a.estado === 'Avaliada').length;
+
+            // 3. Objetivos
+            const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
+            document.getElementById('statObjetivos').innerText = objetivos.length;
+
+            // 4. Requisições
+            const requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
+            document.getElementById('statRequisicoes').innerText = requisicoes.length;
+        }
+
+        atualizarEstatisticas();
     </script>
 </body>
 </html>
