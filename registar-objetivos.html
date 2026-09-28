@@ -26,7 +26,7 @@
             color: var(--text-main);
         }
 
-        input, select, textarea {
+        input[type="text"], input[type="number"], select, textarea {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #cbd5e1;
@@ -52,6 +52,48 @@
             .row-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* Estilos para o seletor múltiplo de PEE */
+        .pee-objective-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .pee-objective-title {
+            font-weight: bold;
+            color: var(--color-primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-left: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
         }
 
         .btn-submit {
@@ -138,7 +180,7 @@
         <div class="dashboard-header" style="margin-top: 2rem;">
             <div>
                 <h2>Registo de Objetivos e Avaliação Global</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Associe a atividade aos objetivos do PEE, PAA e consolide as avaliações.</p>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             </div>
         </div>
 
@@ -187,24 +229,50 @@
                     </div>
                 </div>
 
-                <!-- Campos dinâmicos do PEE -->
-                <div id="peeContainer" style="display: none; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1.25rem;">
-                    <div class="form-group">
-                        <label for="objetivoPee">Objetivo do PEE</label>
-                        <select id="objetivoPee" onchange="atualizarMetas()">
-                            <option value="" disabled selected>Selecione o Objetivo</option>
-                            <option value="Obj 1">Objetivo 1: Melhorar a articulação pedagógica</option>
-                            <option value="Obj 2">Objetivo 2: Melhorar os resultados académicos dos alunos</option>
-                            <option value="Obj 3">Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</option>
-                            <option value="Obj 4">Objetivo 4: Aumentar a participação da comunidade e encarregados de educação</option>
-                        </select>
+                <!-- Recinto Múltiplo para Seleção de Objetivos e Metas do PEE -->
+                <div id="peeContainer" style="display: none; margin-bottom: 1.25rem;">
+                    <label style="margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--color-primary);">Selecione os Objetivos e respetivas Metas do PEE abrangidos:</label>
+
+                    <!-- Objetivo 1 -->
+                    <div class="pee-objective-box">
+                        <div class="pee-objective-title">
+                            <input type="checkbox" id="obj1Check" onchange="toggleObj(1)"> Objetivo 1: Melhorar a articulação pedagógica
+                        </div>
+                        <div class="meta-checkbox-list" id="listObj1" style="display: none;">
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 1 - Meta 1: Realizar 6 Reuniões de Conselho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma</label>
+                        </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label for="metaPee">Meta do PEE</label>
-                        <select id="metaPee">
-                            <option value="" disabled selected>Selecione primeiro um objetivo</option>
-                        </select>
+                    <!-- Objetivo 2 -->
+                    <div class="pee-objective-box">
+                        <div class="pee-objective-title">
+                            <input type="checkbox" id="obj2Check" onchange="toggleObj(2)"> Objetivo 2: Melhorar os resultados académicos dos alunos
+                        </div>
+                        <div class="meta-checkbox-list" id="listObj2" style="display: none;">
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 2: 75% alunos com Bom/Muito Bom em Português"> Meta 2: 75% alunos com menções de Bom e Muito Bom no português</label>
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 3: 75% alunos com Bom/Muito Bom em Matemática"> Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática</label>
+                        </div>
+                    </div>
+
+                    <!-- Objetivo 3 -->
+                    <div class="pee-objective-box">
+                        <div class="pee-objective-title">
+                            <input type="checkbox" id="obj3Check" onchange="toggleObj(3)"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</label>
+                        </div>
+                        <div class="meta-checkbox-list" id="listObj3" style="display: none;">
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 3 - Meta 4: Realizar pelo menos 6 atividades com tecnologias"> Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias</label>
+                        </div>
+                    </div>
+
+                    <!-- Objetivo 4 -->
+                    <div class="pee-objective-box">
+                        <div class="pee-objective-title">
+                            <input type="checkbox" id="obj4Check" onchange="toggleObj(4)"> Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
+                        </div>
+                        <div class="meta-checkbox-list" id="listObj4" style="display: none;">
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 5: Realizar dois questionários à comunidade escolar"> Meta 5: Anualmente realizar dois questionários para a comunidade escolar</label>
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 6: Envolver os Encarregados de Educação em 6 atividades"> Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais</label>
+                        </div>
                     </div>
                 </div>
 
@@ -247,50 +315,33 @@
             document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
         }
 
-        // Controlar visibilidade dos campos de Objetivos/Metas do PEE
+        // Controlar visibilidade global das caixas do PEE
         function controlarCamposPEE() {
             const val = document.getElementById('peeSelect').value;
             const container = document.getElementById('peeContainer');
             if (val === 'Sim') {
                 container.style.display = 'block';
-                document.getElementById('objetivoPee').setAttribute('required', 'true');
-                document.getElementById('metaPee').setAttribute('required', 'true');
             } else {
                 container.style.display = 'none';
-                document.getElementById('objetivoPee').removeAttribute('required');
-                document.getElementById('metaPee').removeAttribute('required');
+                // Desmarcar todas as checkboxes se selecionar 'Não'
+                for(let i=1; i<=4; i++) {
+                    document.getElementById(`obj${i}Check`).checked = false;
+                    toggleObj(i);
+                }
             }
         }
 
-        // Atualizar opções de Metas com base no Objetivo do PEE selecionado
-        function atualizarMetas() {
-            const obj = document.getElementById('objetivoPee').value;
-            const metaSelect = document.getElementById('metaPee');
-            metaSelect.innerHTML = '<option value="" disabled selected>Selecione a Meta</option>';
+        // Mostrar/ocultar as metas de cada objetivo consoante o objetivo principal esteja selecionado
+        function toggleObj(num) {
+            const isChecked = document.getElementById(`obj${num}Check`).checked;
+            const list = document.getElementById(`listObj${num}`);
+            list.style.display = isChecked ? 'flex' : 'none';
 
-            let metas = [];
-            if (obj === 'Obj 1') {
-                metas = [{val: 'Meta 1', text: 'Meta 1: Realizar 6 Reuniões de Conselho de Turma'}];
-            } else if (obj === 'Obj 2') {
-                metas = [
-                    {val: 'Meta 2', text: 'Meta 2: 75% alunos com Bom/Muito Bom em Português'},
-                    {val: 'Meta 3', text: 'Meta 3: 75% alunos com Bom/Muito Bom em Matemática'}
-                ];
-            } else if (obj === 'Obj 3') {
-                metas = [{val: 'Meta 4', text: 'Meta 4: Pelo menos 6 atividades por área curricular com tecnologias'}];
-            } else if (obj === 'Obj 4') {
-                metas = [
-                    {val: 'Meta 5', text: 'Meta 5: Realizar dois questionários à comunidade escolar'},
-                    {val: 'Meta 6', text: 'Meta 6: Envolver os Encarregados de Educação em 6 atividades'}
-                ];
+            // Se desmarcar o objetivo principal, limpa as metas filhas
+            if (!isChecked) {
+                const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = false);
             }
-
-            metas.forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m.val;
-                opt.textContent = m.text;
-                metaSelect.appendChild(opt);
-            });
         }
 
         // Preencher dados automaticamente com base no número da atividade
@@ -322,7 +373,7 @@
                 tipoInput.value = ativEncontrada.tipo || '';
                 aviso.style.display = 'none';
 
-                // Buscar avaliações associadas a esta atividade para calcular médias e juntar sugestões
+                // Buscar avaliações associadas a esta atividade
                 const avaliacoes = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
                 const avsDaAtividade = avaliacoes.filter(av => String(av.numeroAtividade) === String(numInput));
 
@@ -332,7 +383,7 @@
                     let somaInteresse = 0;
                     let listaSugestoes = [];
 
-                    avsDaAtividade.forEach(av => {
+                    avsDaAtividade.dates = avsDaAtividade.forEach(av => {
                         somaPertinencia += Number(av.pertinencia) || 0;
                         somaDinamica += Number(av.dinamica) || 0;
                         somaInteresse += Number(av.interesse) || 0;
@@ -376,6 +427,13 @@
             }
 
             const peeVal = document.getElementById('peeSelect').value;
+            
+            // Recolher todas as metas selecionadas via checkbox
+            let metasSelecionadas = [];
+            if (peeVal === 'Sim') {
+                const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]:checked');
+                checkboxesMetas.forEach(cb => metasSelecionadas.push(cb.value));
+            }
 
             const novoRegisto = {
                 id: Date.now(),
@@ -385,8 +443,7 @@
                 tipoAtividade: document.getElementById('tipoAtividade').value,
                 paa: document.getElementById('paaSelect').value,
                 pee: peeVal,
-                objetivoPee: peeVal === 'Sim' ? document.getElementById('objetivoPee').value : 'N/A',
-                metaPee: peeVal === 'Sim' ? document.getElementById('metaPee').value : 'N/A',
+                metasPee: metasSelecionadas, // Guarda a lista com todas as metas escolhidas (mesmo que sejam todas)
                 mediasAvaliacao: document.getElementById('mediaAvaliacoes').value,
                 sugestoes: document.getElementById('sugestoesRecolhidas').value,
                 resumoConclusoes: document.getElementById('resumoConclusoes').value.trim(),
