@@ -59,16 +59,6 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
-
-        /* Estilo para etiquetas de estado/tipo */
-        .badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .badge-tipo { background-color: #e0f2fe; color: #0369a1; }
-        .badge-status { background-color: #dcfce7; color: #15803d; }
     </style>
 </head>
 <body>
@@ -127,12 +117,10 @@
             <table>
                 <thead>
                     <tr>
+                        <th style="width: 15%;">Nº da Atividade</th>
                         <th>Título / Descrição</th>
-                        <th>Tipo</th>
-                        <th>Data</th>
-                        <th>Criado por</th>
-                        <th>Estado</th>
-                        <th>Ações</th>
+                        <th style="width: 25%;">Criado por</th>
+                        <th style="width: 20%;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="atividadesTableBody">
@@ -152,11 +140,12 @@
             document.getElementById('userNameSpan').innerText = currentUser.name;
         }
 
-        // Simulação/Gestão de Atividades no LocalStorage com os novos campos
+        // Dados de Exemplo com o campo "numero" incluído
         if (!localStorage.getItem('atividades')) {
             const sampleAtividades = [
-                { id: 1, titulo: 'Atividade de Motricidade Fina', tipo: 'Motricidade', criadorId: 2, criadorNome: 'João Utilizador', data: '2026-03-26', estado: 'Concluída' },
-                { id: 2, titulo: 'Sessão de CAA - Vocabulário Base', tipo: 'Comunicação', criadorId: 1, criadorNome: 'Administrador Covão', data: '2026-03-27', estado: 'Pendente' }
+                { id: 1, numero: 1, titulo: 'Atividade de Motricidade Fina', criadorId: 2, criadorNome: 'João Utilizador' },
+                { id: 2, numero: 2, titulo: 'Sessão de CAA - Vocabulário Base', criadorId: 1, criadorNome: 'Administrador Covão' },
+                { id: 3, numero: 3, titulo: 'Corrida de Sacos', criadorId: 1, criadorNome: 'Administrador Covão' }
             ];
             localStorage.setItem('atividades', JSON.stringify(sampleAtividades));
         }
@@ -168,7 +157,7 @@
             tbody.innerHTML = '';
 
             if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-light);">Ainda não existem atividades registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades registadas.</td></tr>`;
                 return;
             }
 
@@ -178,11 +167,9 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td><strong>#${ativ.numero || '-'}</strong></td>
                     <td><strong>${ativ.titulo}</strong></td>
-                    <td><span class="badge badge-tipo">${ativ.tipo || 'Geral'}</span></td>
-                    <td>${ativ.data}</td>
                     <td>${ativ.criadorNome}</td>
-                    <td><span class="badge badge-status">${ativ.estado || 'Ativo'}</span></td>
                     <td>
                         <div class="actions-cell">
                             <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
