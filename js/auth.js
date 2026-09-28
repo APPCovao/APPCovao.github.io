@@ -7,7 +7,7 @@ if (!localStorage.getItem('users')) {
     localStorage.setItem('users', JSON.stringify(defaultUsers));
 }
 
-// Injetar a estrutura do Modal Personalizado no corpo da página automaticamente se não existir
+// Injetar Modal Personalizado se não existir
 if (!document.getElementById('globalCustomModal')) {
     const modalHTML = `
         <div id="globalCustomModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999; padding:1rem;">
@@ -46,112 +46,89 @@ function fecharModalGlobal() {
     }
 }
 
-// Gestão global de cliques para alternar ecrãs (Login <-> Criar Conta) de forma infalível
+// Alternância de ecrãs inteligente e global baseada em cliques
 document.addEventListener('click', (e) => {
-    const loginScreen = document.getElementById('loginScreen');
-    const registerScreen = document.getElementById('registerScreen');
+    const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-screen') || document.querySelector('#loginForm')?.closest('div');
+    const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-screen') || document.querySelector('#registerForm')?.closest('div');
 
-    if (!loginScreen || !registerScreen) return;
+    const target = e.target.closest('button, a, [role="button"]');
+    if (!target) return;
 
-    const isShowRegister = e.target.closest('#showRegister') || 
-                           e.target.closest('.btn-register') ||
-                           (e.target.innerText && e.target.innerText.toLowerCase().includes('criar conta'));
-    
-    if (isShowRegister) {
+    const text = (target.innerText || '').toLowerCase();
+    const idOrClass = (target.id + ' ' + target.className).toLowerCase();
+
+    if (idOrClass.includes('register') || text.includes('criar conta') || text.includes('registar')) {
         e.preventDefault();
-        loginScreen.style.display = 'none';
-        registerScreen.style.display = 'block';
-        return;
-    }
-
-    const isBackToLogin = e.target.closest('#backToLogin') || 
-                          e.target.closest('.btn-back') ||
-                          (e.target.innerText && e.target.innerText.toLowerCase().includes('voltar ao login'));
-    
-    if (isBackToLogin) {
+        if (loginScreen) loginScreen.style.display = 'none';
+        if (registerScreen) registerScreen.style.display = 'block';
+    } else if (idOrClass.includes('login') || text.includes('voltar') || text.includes('fazer login')) {
         e.preventDefault();
-        registerScreen.style.display = 'none';
-        loginScreen.style.display = 'block';
-        return;
+        if (registerScreen) registerScreen.style.display = 'none';
+        if (loginScreen) loginScreen.style.display = 'block';
     }
 });
 
-// Configuração dos formulários quando o DOM estiver pronto
+// Processamento automático de todos os formulários da página
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Lógica de Login
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+    const forms = document.querySelectorAll('form');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const emailInput = document.getElementById('email');
-            const passInput = document.getElementById('password');
-
-            if (!emailInput || !passInput) return;
-
-            const email = emailInput.value.trim();
-            const password = passInput.value.trim();
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-
-            const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-            if (found) {
-                localStorage.setItem('currentUser', JSON.stringify(found));
-                window.location.href = 'dashboard.html';
-            } else {
-                mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
-            }
-        });
-    }
-
-    // 2. Lógica de Registo
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            const inputs = form.querySelectorAll('input');
             
-            const inputs = registerForm.querySelectorAll('input');
-            if (inputs.length < 3) {
-                mostrarPopup('Atenção', 'O formulário precisa de 3 campos preenchidos.', '⚠️');
-                return;
-            }
+            // Formulário de Registo (3 ou mais campos: Nome, Email, Password)
+            if (inputs.length >= 3) {
+                const nameVal = inputs[0].value.trim();
+                const emailVal = inputs[1].value.trim().toLowerCase();
+                const passVal = inputs[2].value.trim();
 
-            const nameVal = inputs[0].value.trim();
-            const emailVal = inputs[1].value.trim().toLowerCase();
-            const passVal = inputs[2].value.trim();
-
-            if (!nameVal || !emailVal || !passVal) {
-                mostrarPopup('Atenção', 'Por favor, preencha todos os campos.', '⚠️');
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-
-            const existe = users.some(u => u.email.toLowerCase() === emailVal);
-            if (existe) {
-                mostrarPopup('Conta Existente', 'Já existe uma conta com este email!', 'ℹ️');
-                return;
-            }
-
-            const novoUtilizador = {
-                id: Date.now(),
-                name: nameVal,
-                email: emailVal,
-                password: passVal,
-                isAdmin: false
-            };
-
-            users.push(novoUtilizador);
-            localStorage.setItem('users', JSON.stringify(users));
-
-            registerForm.reset();
-            
-            mostrarPopup('Conta Criada!', 'Conta registada com sucesso. Podes fazer login.', '🎉', () => {
-                const loginScreen = document.getElementById('loginScreen');
-                const registerScreen = document.getElementById('registerScreen');
-                if (registerScreen && loginScreen) {
-                    registerScreen.style.display = 'none';
-                    loginScreen.style.display = 'block';
+                if (!nameVal || !emailVal || !passVal) {
+                    mostrarPopup('Atenção', 'Por favor, preencha todos os campos do registo.', '⚠️');
+                    return;
                 }
-            });
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                if (users.some(u => u.email.toLowerCase() === emailVal)) {
+                    mostrarPopup('Conta Existente', 'Já existe uma conta registada com este email!', 'ℹ️');
+                    return;
+                }
+
+                const novoUtilizador = {
+                    id: Date.now(),
+                    name: nameVal,
+                    email: emailVal,
+                    password: passVal,
+                    isAdmin: false
+                };
+
+                users.push(novoUtilizador);
+                localStorage.setItem('users', JSON.stringify(users));
+                form.reset();
+
+                mostrarPopup('Conta Criada!', 'Conta criada com sucesso! Podes agora fazer login.', '🎉', () => {
+                    const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-screen');
+                    const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-screen');
+                    if (registerScreen) registerScreen.style.display = 'none';
+                    if (loginScreen) loginScreen.style.display = 'block';
+                });
+
+            } 
+            // Formulário de Login (2 campos: Email e Password)
+            else if (inputs.length === 2) {
+                const emailVal = inputs[0].value.trim();
+                const passVal = inputs[1].value.trim();
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                const found = users.find(u => u.email.toLowerCase() === emailVal.toLowerCase() && u.password === passVal);
+
+                if (found) {
+                    localStorage.setItem('currentUser', JSON.stringify(found));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
+                }
+            }
         });
-    }
+    });
 });
