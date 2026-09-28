@@ -3,16 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades - Registos Covão</title>
+    <title>Atividades e Registos - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Estilos de Abas (Tabs) */
+        .tabs-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.25rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border-color: #cbd5e1;
+            border-bottom: 2px solid var(--color-white);
+            margin-bottom: -2px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .table-container {
             background: var(--color-white);
             padding: 1.5rem;
-            border-radius: var(--radius);
+            border-radius: 0 0 var(--radius) var(--radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            margin-top: 2rem;
             overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-top: none;
         }
 
         table {
@@ -59,7 +97,7 @@
             opacity: 0.6;
         }
 
-        /* Estilos para Modais Personalizados idênticos ao formulário */
+        /* Modais */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -79,20 +117,8 @@
             width: 100%;
             max-width: 600px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            animation: modalFadeIn 0.3s ease;
             max-height: 90vh;
             overflow-y: auto;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .custom-modal h2 {
-            color: var(--color-primary);
-            margin-bottom: 1.5rem;
-            text-align: center;
         }
 
         .modal-buttons {
@@ -129,8 +155,8 @@
     <div class="container">
         <div class="dashboard-header">
             <div>
-                <h2>Gestão de Atividades</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Crie, avalie ou consulte o histórico completo de atividades</p>
+                <h2>Gestão e Consulta</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Consulte e gira todas as atividades, avaliações e objetivos registados</p>
             </div>
         </div>
 
@@ -154,91 +180,123 @@
             <a href="registar-objetivos.html" class="menu-card" style="border-top-color: #16a34a;">
                 <div class="icon">🎯</div>
                 <div>
-                    <h3>Registar Objetivos e Metas</h3>
+                    <h3>Registar Objetivos</h3>
                     <p>Definir metas associadas</p>
                 </div>
             </a>
         </div>
 
-        <div class="table-container">
-            <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Lista de Atividades Registadas</h3>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades do sistema. Os administradores têm acesso total para gerir todas as entradas.</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 15%;">Nº da Atividade</th>
-                        <th>Título / Descrição</th>
-                        <th style="width: 25%;">Criado por</th>
-                        <th style="width: 20%;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="atividadesTableBody">
-                    <!-- Dinâmico -->
-                </tbody>
-            </table>
+        <!-- SISTEMA DE ABAS (TABS) -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="mudarTab(event, 'tabAtividades')">📝 Atividades Registadas</button>
+            <button class="tab-btn" onclick="mudarTab(event, 'tabAvaliadas')">⭐ Atividades Avaliadas</button>
+            <button class="tab-btn" onclick="mudarTab(event, 'tabObjetivos')">🎯 Objetivos Registados</button>
+        </div>
+
+        <!-- ABA 1: ATIVIDADES REGISTADAS -->
+        <div id="tabAtividades" class="tab-content active">
+            <div class="table-container" style="margin-top: 0;">
+                <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Lista de Atividades Registadas</h3>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades criadas no sistema.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Nº Atividade</th>
+                            <th>Título / Descrição</th>
+                            <th style="width: 25%;">Criado por</th>
+                            <th style="width: 20%;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="atividadesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ABA 2: ATIVIDADES AVALIADAS -->
+        <div id="tabAvaliadas" class="tab-content">
+            <div class="table-container" style="margin-top: 0;">
+                <h3 style="color: var(--color-accent); margin-bottom: 0.5rem;">Lista de Atividades Avaliadas</h3>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as avaliações e pareceres emitidos.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Atividade Ref.</th>
+                            <th>Avaliação / Comentário</th>
+                            <th style="width: 25%;">Avaliador</th>
+                            <th style="width: 20%;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="avaliadasTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ABA 3: OBJETIVOS REGISTADOS -->
+        <div id="tabObjetivos" class="tab-content">
+            <div class="table-container" style="margin-top: 0;">
+                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Lista de Objetivos Registados</h3>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todos os objetivos e metas definidos.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Nº / ID</th>
+                            <th>Descrição do Objetivo / Meta</th>
+                            <th style="width: 25%;">Criado por</th>
+                            <th style="width: 20%;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="objetivosTableBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL IDÊNTICO AO FORMULÁRIO DE CRIAÇÃO (VER / EDITAR) -->
+    <!-- MODAL DE ATIVIDADES -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalTitle">Detalhes da Atividade</h2>
-            
+            <h2 id="modalTitle" style="color: var(--color-primary);">Detalhes da Atividade</h2>
             <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
                 <input type="hidden" id="editAtividadeId">
-                
                 <div class="form-group">
-                    <label for="modalNumAtividade">Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly style="background-color: #f8fafc; cursor: not-allowed; font-weight: bold; color: var(--color-primary);">
+                    <label>Número da Atividade</label>
+                    <input type="text" id="modalNumAtividade" readonly style="background-color: #f8fafc; font-weight: bold;">
                 </div>
-
                 <div class="form-group">
-                    <label for="modalNomeAtividade">Nome da Atividade</label>
-                    <input type="text" id="modalNomeAtividade" required placeholder="Insira o nome da atividade">
+                    <label>Nome da Atividade</label>
+                    <input type="text" id="modalNomeAtividade" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="modalAnoLetivo">Ano Letivo</label>
+                    <label>Ano Letivo</label>
                     <select id="modalAnoLetivo" required>
-                        <option value="" disabled>Selecione o ano letivo</option>
                         <option value="2023/2024">2023/2024</option>
                         <option value="2024/2025">2024/2025</option>
                         <option value="2025/2026">2025/2026</option>
                         <option value="2026/2027">2026/2027</option>
                     </select>
                 </div>
-
                 <div class="form-group">
-                    <label for="modalTipoAtividade">Tipo de Atividade</label>
+                    <label>Tipo de Atividade</label>
                     <select id="modalTipoAtividade" required>
-                        <option value="" disabled>Selecione o tipo de atividade</option>
                         <option value="Atividade">Atividade</option>
                         <option value="Projeto">Projeto</option>
                         <option value="Formação/acção">Formação/acção</option>
                         <option value="Visita de Estudo">Visita de Estudo</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label for="modalCriadoPor">Criado por</label>
-                    <input type="text" id="modalCriadoPor" readonly style="background-color: #f8fafc; cursor: not-allowed;">
-                </div>
-
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModal()">Fechar</button>
-                    <button type="submit" id="modalSaveBtn" class="btn-modal btn-modal-confirm">Guardar Alterações</button>
+                    <button type="submit" id="modalSaveBtn" class="btn-modal btn-modal-confirm">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO PERSONALIZADO (APAGAR) -->
+    <!-- MODAL DE APAGAR GENÉRICO -->
     <div id="confirmModal" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 400px; text-align: center;">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
-            <h3 style="color: #ef4444; margin-bottom: 0.5rem;">Apagar Atividade</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar esta atividade?</p>
+            <h3 style="color: #ef4444; margin-bottom: 0.5rem;">Confirmar Remoção</h3>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar este registo?</p>
             <div class="modal-buttons" style="justify-content: center;">
                 <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
                 <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
@@ -257,22 +315,28 @@
 
         function isAdminUser(user) {
             if (!user) return false;
-            return (
-                user.isAdmin === true || 
-                user.role === 'admin' || 
-                user.tipo === 'admin' || 
-                user.perfil === 'admin' || 
-                (user.email && user.email.toLowerCase().includes('admin')) ||
-                (user.name && user.name.toLowerCase().includes('admin'))
-            );
+            return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
+        }
+
+        // Sistema de troca de abas
+        function mudarTab(evt, tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
         }
 
         let idParaApagar = null;
+        let tipoApagar = null; // 'atividade', 'avaliacao', 'objetivo'
 
+        // --- CARREGAR ATIVIDADES ---
         function carregarAtividades() {
             const tbody = document.getElementById('atividadesTableBody');
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            
             tbody.innerHTML = '';
 
             if (atividades.length === 0) {
@@ -281,11 +345,8 @@
             }
 
             const userIsAdmin = isAdminUser(currentUser);
-            const atividadesInvertidas = [...atividades].reverse();
-
-            atividadesInvertidas.forEach(ativ => {
+            [...atividades].reverse().forEach(ativ => {
                 const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
-
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${ativ.numero || ativ.id || '-'}</strong></td>
@@ -294,8 +355,8 @@
                     <td>
                         <div class="actions-cell">
                             <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled title="Apenas o criador ou o admin podem editar"' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled title="Apenas o criador ou o admin podem apagar"' : ''} onclick="confirmarApagarAtividade(${ativ.id})">Apagar</button>
+                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id}, 'atividade')">Apagar</button>
                         </div>
                     </td>
                 `;
@@ -303,97 +364,151 @@
             });
         }
 
-        function preencherDadosModal(ativ) {
+        // --- CARREGAR AVALIAÇÕES ---
+        function carregarAvaliacoes() {
+            const tbody = document.getElementById('avaliadasTableBody');
+            const avaliadas = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            tbody.innerHTML = '';
+
+            if (avaliadas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades avaliadas.</td></tr>`;
+                return;
+            }
+
+            const userIsAdmin = isAdminUser(currentUser);
+            [...avaliadas].reverse().forEach((av, index) => {
+                const idReal = av.id || index;
+                const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${av.numeroAtividade || av.atividadeNome || 'Ref'}</strong></td>
+                    <td>${av.comentario || av.parecer || av.texto || 'Sem descrição'}</td>
+                    <td>${av.avaliadorNome || av.criadorNome || 'Desconhecido'}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'avaliacao')">Apagar</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CARREGAR OBJETIVOS ---
+        function carregarObjetivos() {
+            const tbody = document.getElementById('objetivosTableBody');
+            const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
+            tbody.innerHTML = '';
+
+            if (objetivos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem objetivos registados.</td></tr>`;
+                return;
+            }
+
+            const userIsAdmin = isAdminUser(currentUser);
+            [...objetivos].reverse().forEach((obj, index) => {
+                const idReal = obj.id || index;
+                const podeModificar = userIsAdmin || (obj.criadorId === currentUser.id);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${obj.numero || obj.id || (index + 1)}</strong></td>
+                    <td><strong>${obj.descricao || obj.titulo || obj.nome || 'Sem descrição'}</strong></td>
+                    <td>${obj.criadorNome || 'Desconhecido'}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'objetivo')">Apagar</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modais de Atividades
+        function verAtividade(id) {
+            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id === id);
+            if(!ativ) return;
+            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
+            preencherModalAtiv(ativ, true);
+        }
+        function editarAtividade(id) {
+            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id === id);
+            if(!ativ) return;
+            document.getElementById('modalTitle').innerText = 'Editar Atividade';
+            preencherModalAtiv(ativ, false);
+        }
+        function preencherModalAtiv(ativ, somenteLeitura) {
             document.getElementById('editAtividadeId').value = ativ.id;
             document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
             document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
             document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
             document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
-            document.getElementById('modalCriadoPor').value = ativ.criadorNome || 'Desconhecido';
-        }
 
-        function verAtividade(id) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const ativ = atividades.find(a => a.id === id);
-            if (!ativ) return;
-
-            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            preencherDadosModal(ativ);
-            
-            // Bloquear campos para modo de leitura
-            document.getElementById('modalNomeAtividade').setAttribute('readonly', true);
-            document.getElementById('modalAnoLetivo').setAttribute('disabled', true);
-            document.getElementById('modalTipoAtividade').setAttribute('disabled', true);
-            document.getElementById('modalSaveBtn').style.display = 'none';
-
+            document.getElementById('modalNomeAtividade').readOnly = somenteLeitura;
+            document.getElementById('modalAnoLetivo').disabled = somenteLeitura;
+            document.getElementById('modalTipoAtividade').disabled = somenteLeitura;
+            document.getElementById('modalSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('atividadeModal').style.display = 'flex';
         }
-
-        function editarAtividade(id) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const ativ = atividades.find(a => a.id === id);
-            if (!ativ) return;
-
-            document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            preencherDadosModal(ativ);
-            
-            // Desbloquear campos para edição
-            document.getElementById('modalNomeAtividade').removeAttribute('readonly');
-            document.getElementById('modalAnoLetivo').removeAttribute('disabled');
-            document.getElementById('modalTipoAtividade').removeAttribute('disabled');
-            document.getElementById('modalSaveBtn').style.display = 'inline-block';
-
-            document.getElementById('atividadeModal').style.display = 'flex';
-        }
-
-        function salvarEdicaoAtividade(event) {
-            event.preventDefault();
+        function fecharModal() { document.getElementById('atividadeModal').style.display = 'none'; }
+        
+        function salvarEdicaoAtividade(e) {
+            e.preventDefault();
             const id = parseInt(document.getElementById('editAtividadeId').value);
-            
-            const novoTitulo = document.getElementById('modalNomeAtividade').value.trim();
-            const novoAnoLetivo = document.getElementById('modalAnoLetivo').value;
-            const novoTipo = document.getElementById('modalTipoAtividade').value;
-
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             atividades = atividades.map(a => {
-                if (a.id === id) {
-                    a.titulo = novoTitulo;
-                    a.anoLetivo = novoAnoLetivo;
-                    a.tipo = novoTipo;
+                if(a.id === id) {
+                    a.titulo = document.getElementById('modalNomeAtividade').value;
+                    a.anoLetivo = document.getElementById('modalAnoLetivo').value;
+                    a.tipo = document.getElementById('modalTipoAtividade').value;
                 }
                 return a;
             });
-
             localStorage.setItem('atividades', JSON.stringify(atividades));
             fecharModal();
             carregarAtividades();
         }
 
-        function fecharModal() {
-            document.getElementById('atividadeModal').style.display = 'none';
-        }
-
-        function confirmarApagarAtividade(id) {
+        // Apagar genérico
+        function confirmarApagar(id, tipo) {
             idParaApagar = id;
+            tipoApagar = tipo;
             document.getElementById('confirmModal').style.display = 'flex';
         }
-
         function fecharConfirmarApagar() {
             idParaApagar = null;
+            tipoApagar = null;
             document.getElementById('confirmModal').style.display = 'none';
         }
 
         document.getElementById('btnConfirmDelete').onclick = function() {
             if (idParaApagar !== null) {
-                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                atividades = atividades.filter(a => a.id !== idParaApagar);
-                localStorage.setItem('atividades', JSON.stringify(atividades));
+                if (tipoApagar === 'atividade') {
+                    let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                    atividades = atividades.filter(a => a.id !== idParaApagar);
+                    localStorage.setItem('atividades', JSON.stringify(atividades));
+                    carregarAtividades();
+                } else if (tipoApagar === 'avaliacao') {
+                    let chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
+                    let avs = JSON.parse(localStorage.getItem(chave)) || [];
+                    avs = avs.filter((a, idx) => a.id !== idParaApagar && idx !== idParaApagar);
+                    localStorage.setItem(chave, JSON.stringify(avs));
+                    carregarAvaliacoes();
+                } else if (tipoApagar === 'objetivo') {
+                    let chave = localStorage.getItem('objetivos') ? 'objetivos' : 'registarObjetivos';
+                    let objs = JSON.parse(localStorage.getItem(chave)) || [];
+                    objs = objs.filter((o, idx) => o.id !== idParaApagar && idx !== idParaApagar);
+                    localStorage.setItem(chave, JSON.stringify(objs));
+                    carregarObjetivos();
+                }
                 fecharConfirmarApagar();
-                carregarAtividades();
             }
         };
 
+        // Inicializar todas as tabelas ao carregar
         carregarAtividades();
+        carregarAvaliacoes();
+        carregarObjetivos();
     </script>
 </body>
 </html>
