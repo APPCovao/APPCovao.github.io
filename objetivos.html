@@ -3,8 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades - Registos Covão</title>
+    <title>Objetivos e Metas - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .objectives-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .objective-card {
+            background: var(--color-white);
+            border-radius: var(--radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border-left: 5px solid var(--color-primary);
+        }
+
+        .objective-header {
+            background-color: #f8fafc;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .objective-header h3 {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .objective-body {
+            padding: 1.5rem;
+        }
+
+        .meta-box {
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-box:last-child {
+            margin-bottom: 0;
+        }
+
+        .meta-title {
+            font-weight: bold;
+            color: var(--color-accent);
+            font-size: 1.05rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .actions-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .actions-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .actions-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0.25rem;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -13,17 +98,132 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <a href="dashboard.html" style="color: white; text-decoration: none;">⬅️ Voltar ao Menu</a>
+            <span>Olá, <strong id="userNameSpan"></strong></span>
+            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
         </div>
     </div>
 
-    <div class="container">
+    <div class="objectives-container">
         <div class="dashboard-header">
-            <h2>Gestão de Atividades</h2>
+            <div>
+                <h2>Objetivos e Metas Pedagógicas</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Consulta dos objetivos estratégicos, metas e respetivas ações planeadas.</p>
+            </div>
         </div>
-        <div style="background: white; padding: 2rem; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-            <p style="color: var(--text-light);">Conteúdo da página de atividades adaptado perfeitamente para qualquer ecrã.</p>
+
+        <!-- OBJETIVO 1 -->
+        <div class="objective-card">
+            <div class="objective-header">
+                <h3>Objetivo 1: Melhorar a articulação pedagógica (nomeadamente o preenchimento atempado da grelha disponibilizada)</h3>
+            </div>
+            <div class="objective-body">
+                <!-- Meta 1 -->
+                <div class="meta-box">
+                    <div class="meta-title">🎯 Meta 1</div>
+                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente realizar seis Reuniões de Concelho de Turma de forma a colmatar as fragilidades identificadas na Turma/Grupo</p>
+                    <ul class="actions-list">
+                        <li>Criar grelhas de registo</li>
+                        <li>Realizar uma sessão de esclarecimento para o preenchimento da grelha</li>
+                        <li>Preencher as grelhas de registo das fragilidades</li>
+                        <li>Monitorizar o preenchimento das grelhas</li>
+                    </ul>
+                </div>
+            </div>
         </div>
+
+        <!-- OBJETIVO 2 -->
+        <div class="objective-card">
+            <div class="objective-header">
+                <h3>Objetivo 2: Melhorar os resultados académicos dos alunos</h3>
+            </div>
+            <div class="objective-body">
+                <!-- Meta 2 -->
+                <div class="meta-box">
+                    <div class="meta-title">🎯 Meta 2</div>
+                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente 75% dos alunos devem atingir as menções de Bom e Muito Bom no português</p>
+                    <ul class="actions-list">
+                        <li>Realizar concursos de escrita, soletração e ortografia</li>
+                        <li>Realizar momentos de leitura através da Hora do Conto</li>
+                        <li>Promover a leitura através de diferentes formatos: textos, encenações, músicas, ilustrações, etc.</li>
+                        <li>Realizar o Concurso “Será que já sei”</li>
+                        <li>Elaborar registo escrito individual ou em grupo das visitas de estudo</li>
+                    </ul>
+                </div>
+
+                <!-- Meta 3 -->
+                <div class="meta-box" style="margin-top: 1rem;">
+                    <div class="meta-title">🎯 Meta 3</div>
+                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente 75% dos alunos devem atingir as menções de Bom e Muito Bom na Matemática</p>
+                    <ul class="actions-list">
+                        <li>Realizar concurso “Será que já sei”</li>
+                        <li>Realizar desafios “Reis da tabuada”</li>
+                        <li>Realizar contagens progressivas e regressivas através de jogos lúdicos/didáticos</li>
+                        <li>Realizar Jogos de Matemática (Campeonato Regional de Jogos de Matemática)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- OBJETIVO 3 -->
+        <div class="objective-card">
+            <div class="objective-header">
+                <h3>Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas dos docentes</h3>
+            </div>
+            <div class="objective-body">
+                <!-- Meta 4 -->
+                <div class="meta-box">
+                    <div class="meta-title">🎯 Meta 4</div>
+                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente cada professor tem que realizar pelo menos 6 atividades por área curricular em cada período com recurso às tecnologias</p>
+                    <ul class="actions-list">
+                        <li>Realizar ações de formação/sensibilização sobre os recursos tecnológicos existentes</li>
+                        <li>Criar recursos de forma colaborativa</li>
+                        <li>Requisitar os tablets para a realização de quizes e/ou pesquisa de informação</li>
+                        <li>Requisitar os robots para lecionar conteúdos matemáticos</li>
+                        <li>Monitorizar as requisições</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- OBJETIVO 4 -->
+        <div class="objective-card">
+            <div class="objective-header">
+                <h3>Objetivo 4: Aumentar a participação da comunidade no processo de autoavaliação</h3>
+            </div>
+            <div class="objective-body">
+                <!-- Meta 5 -->
+                <div class="meta-box">
+                    <div class="meta-title">🎯 Meta 5</div>
+                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente realizar dois questionários para a comunidade escolar</p>
+                    <ul class="actions-list">
+                        <li>Criar os questionários</li>
+                        <li>Aplicar os questionários</li>
+                    </ul>
+                </div>
+
+                <!-- Meta 6 -->
+                <div class="meta-box" style="margin-top: 1rem;">
+                    <div class="meta-title">🎯 Meta 6</div>
+                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Envolver os Encarregados de Educação em 6 atividades/ações/projetos anuais</p>
+                    <ul class="actions-list">
+                        <li>Convidar os pais para a participação em dias festivos</li>
+                        <li>Realizar ações de sensibilização/reuniões com os encarregados de educação</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Verificar autenticação
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
+        }
+    </script>
 </body>
 </html>
