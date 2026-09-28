@@ -390,7 +390,7 @@
             });
         }
 
-        // --- CARREGAR AVALIAÇÕES (Buscando o nome da atividade correspondente) ---
+        // --- CARREGAR AVALIAÇÕES ---
         function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
@@ -408,7 +408,6 @@
                 const idReal = av.id !== undefined ? av.id : index;
                 const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
 
-                // Tenta cruzar a avaliação com a atividade original pelo ID ou pelo Número
                 let atividadeCorrespondente = atividades.find(a => 
                     (av.atividadeId && a.id == av.atividadeId) || 
                     (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
@@ -436,11 +435,18 @@
             });
         }
 
-        // --- CARREGAR OBJETIVOS ---
+        // --- CARREGAR OBJETIVOS (Buscando em 'registarObjetivos' ou 'objetivos') ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
-            const chave = localStorage.getItem('objetivos') ? 'objetivos' : 'registarObjetivos';
-            const objetivos = JSON.parse(localStorage.getItem(chave)) || [];
+            
+            // Verifica as possíveis chaves onde os objetivos podem estar guardados
+            let objetivos = [];
+            if (localStorage.getItem('registarObjetivos')) {
+                objetivos = JSON.parse(localStorage.getItem('registarObjetivos')) || [];
+            } else if (localStorage.getItem('objetivos')) {
+                objetivos = JSON.parse(localStorage.getItem('objetivos')) || [];
+            }
+
             tbody.innerHTML = '';
 
             if (objetivos.length === 0) {
@@ -452,11 +458,16 @@
             [...objetivos].reverse().forEach((obj, index) => {
                 const idReal = obj.id !== undefined ? obj.id : index;
                 const podeModificar = userIsAdmin || (obj.criadorId === currentUser.id);
+
+                const numObjetivo = obj.numero || obj.id || (index + 1);
+                const descObjetivo = obj.descricao || obj.titulo || obj.nome || 'Sem descrição';
+                const criadorNome = obj.criadorNome || 'Desconhecido';
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${obj.numero || obj.id || (index + 1)}</strong></td>
-                    <td><strong>${obj.descricao || obj.titulo || obj.nome || 'Sem descrição'}</strong></td>
-                    <td>${obj.criadorNome || 'Desconhecido'}</td>
+                    <td><strong>${numObjetivo}</strong></td>
+                    <td><strong>${descObjetivo}</strong></td>
+                    <td>${criadorNome}</td>
                     <td>
                         <div class="actions-cell">
                             <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'objetivo')">Apagar</button>
@@ -510,7 +521,7 @@
             localStorage.setItem('atividades', JSON.stringify(atividades));
             fecharModal();
             carregarAtividades();
-            carregarAvaliacoes(); // Atualiza também se mudar o nome da atividade associada
+            carregarAvaliacoes();
         }
 
         // Modais de Avaliação
@@ -597,7 +608,7 @@
                     localStorage.setItem(chave, JSON.stringify(avs));
                     carregarAvaliacoes();
                 } else if (tipoApagar === 'objetivo') {
-                    let chave = localStorage.getItem('objetivos') ? 'objetivos' : 'registarObjetivos';
+                    let chave = localStorage.getItem('registarObjetivos') ? 'registarObjetivos' : 'objetivos';
                     let objs = JSON.parse(localStorage.getItem(chave)) || [];
                     objs = objs.filter((o, idx) => o.id != idParaApagar && idx != idParaApagar);
                     localStorage.setItem(chave, JSON.stringify(objs));
