@@ -1,5 +1,15 @@
 console.log("auth.js carregado com sucesso!");
 
+// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK
+// Se a página atual NÃO for a página de login (index.html) e não houver utilizador logado, redireciona logo para o index.
+const paginaAtual = window.location.pathname.split('/').pop();
+if (paginaAtual !== '' && paginaAtual !== 'index.html') {
+    const usuarioLogado = JSON.parse(localStorage.getItem('currentUser'));
+    if (!usuarioLogado) {
+        window.location.href = 'index.html';
+    }
+}
+
 // 1. Inicializar utilizadores predefinidos
 if (!localStorage.getItem('users')) {
     const defaultUsers = [
@@ -7,10 +17,9 @@ if (!localStorage.getItem('users')) {
         { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false }
     ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
-    console.log("Utilizadores predefinidos criados no localStorage.");
 }
 
-// 2. Injetar Modal Personalizado de forma segura (sem insertAdjacentHTML)
+// 2. Injetar Modal Personalizado de forma segura
 if (!document.getElementById('globalCustomModal')) {
     const modalDiv = document.createElement('div');
     modalDiv.id = 'globalCustomModal';
@@ -63,12 +72,10 @@ document.addEventListener('click', (e) => {
     const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container') || document.querySelector('form#registerForm')?.parentElement;
 
     if (idOrClass.includes('register') || text.includes('criar conta') || text.includes('registar')) {
-        console.log("Botão de registo clicado!");
         if (loginScreen) loginScreen.style.display = 'none';
         if (registerScreen) registerScreen.style.display = 'block';
     } 
     else if (idOrClass.includes('login') || text.includes('voltar') || text.includes('fazer login')) {
-        console.log("Botão de voltar ao login clicado!");
         if (registerScreen) registerScreen.style.display = 'none';
         if (loginScreen) loginScreen.style.display = 'block';
     }
@@ -76,23 +83,17 @@ document.addEventListener('click', (e) => {
 
 // 4. Gestão de Submissão de Formulários
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM totalmente carregado.");
-    
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
 
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            console.log("Tentativa de login submetida.");
             
             const emailInput = loginForm.querySelector('input[type="email"]') || loginForm.querySelectorAll('input')[0];
             const passInput = loginForm.querySelector('input[type="password"]') || loginForm.querySelectorAll('input')[1];
 
-            if (!emailInput || !passInput) {
-                mostrarPopup('Erro', 'Campos de login não encontrados.', '⚠️');
-                return;
-            }
+            if (!emailInput || !passInput) return;
 
             const email = emailInput.value.trim();
             const password = passInput.value.trim();
@@ -101,11 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (found) {
-                console.log("Login bem-sucedido:", found.name);
                 localStorage.setItem('currentUser', JSON.stringify(found));
                 window.location.href = 'dashboard.html';
             } else {
-                console.warn("Credenciais inválidas.");
                 mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
             }
         });
@@ -114,13 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            console.log("Tentativa de registo submetida.");
             
             const inputs = registerForm.querySelectorAll('input');
-            if (inputs.length < 3) {
-                mostrarPopup('Atenção', 'O formulário precisa de pelo menos 3 campos.', '⚠️');
-                return;
-            }
+            if (inputs.length < 3) return;
 
             const nameVal = inputs[0].value.trim();
             const emailVal = inputs[1].value.trim().toLowerCase();
