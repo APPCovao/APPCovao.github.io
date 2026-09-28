@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Atividades e Objetivos - Registos Covão</title>
+    <title>Gestão de Atividades e Objetivos - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .table-container {
+        .section-box {
             background: var(--color-white);
             padding: 1.5rem;
             border-radius: var(--radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             margin-top: 2rem;
+        }
+
+        .table-container {
             overflow-x: auto;
+            margin-top: 1rem;
         }
 
         table {
@@ -62,6 +66,8 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .btn-primary {
@@ -72,6 +78,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
+            display: inline-block;
         }
 
         .btn-primary:hover {
@@ -86,6 +93,39 @@
         }
         .badge-sim { background-color: #dcfce7; color: #166534; }
         .badge-nao { background-color: #fee2e2; color: #991b1b; }
+
+        /* Abas ou Secções Múltiplas */
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            background-color: #f1f5f9;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -101,32 +141,73 @@
     </div>
 
     <div class="container">
-        <div class="header-actions">
+        <div class="dashboard-header" style="margin-top: 2rem;">
             <div>
-                <h2>Gestão de Objetivos e Atividades</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Consulte, edite ou remova os registos de objetivos associados às atividades.</p>
+                <h2>Painel de Atividades</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Consulte o registo geral de atividades e os respetivos objetivos e conclusões associadas.</p>
             </div>
-            <!-- Aponta para o ficheiro do formulário de registo de objetivos -->
-            <a href="registar-objetivos.html" class="btn-primary">➕ Novo Registo de Objetivos</a>
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nº</th>
-                        <th>Nome da Atividade</th>
-                        <th>PAA</th>
-                        <th>PEE</th>
-                        <th>Resumo / Conclusões</th>
-                        <th style="text-align: center;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaRegistosBody">
-                    <!-- Os dados preenchem-se dinamicamente via JavaScript -->
-                </tbody>
-            </table>
+        <!-- Sistema de Abas para Organizar a Informação -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="mudarAba('atividadesGerais', event)">📋 Lista de Atividades Base</button>
+            <button class="tab-btn" onclick="mudarAba('objetivosReg', event)">🎯 Objetivos e Conclusões Registados</button>
         </div>
+
+        <!-- ABA 1: ATIVIDADES GERAIS (O teu conteúdo original) -->
+        <div id="atividadesGerais" class="tab-content active">
+            <div class="section-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Atividades Criadas no Sistema</h3>
+                    <!-- Se tiveres uma página para criar nova atividade base, ajusta o link aqui -->
+                    <a href="criar-atividade.html" class="btn-primary" id="btnNovaAtividade" style="display: none;">➕ Nova Atividade</a>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Título da Atividade</th>
+                                <th>Ano Letivo</th>
+                                <th>Tipo</th>
+                                <th style="text-align: center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAtividadesBody">
+                            <!-- Preenchido via JavaScript com as atividades base -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 2: OBJETIVOS E CONCLUSÕES REGISTADOS (O novo formulário/tabela) -->
+        <div id="objetivosReg" class="tab-content">
+            <div class="section-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Objetivos, PAA, PEE e Conclusões</h3>
+                    <a href="registar-objetivos.html" class="btn-primary">➕ Registar Objetivos / Conclusões</a>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Nome da Atividade</th>
+                                <th>PAA</th>
+                                <th>PEE</th>
+                                <th>Resumo / Conclusões</th>
+                                <th style="text-align: center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaRegistosObjetivosBody">
+                            <!-- Preenchido via JavaScript com os registos de objetivos -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="js/auth.js"></script>
@@ -136,17 +217,56 @@
             window.location.href = 'index.html';
         } else {
             document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
+            // Se quiseres restringir a criação de atividades base apenas a admins/professores específicos, podes controlar aqui
+            document.getElementById('btnNovaAtividade').style.display = 'inline-block';
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            carregarTabelaRegistos();
+            carregarAtividadesBase();
+            carregarTabelaObjetivos();
         });
 
-        function carregarTabelaRegistos() {
-            const tbody = document.getElementById('tabelaRegistosBody');
+        // Alternar entre abas
+        function mudarAba(idAba, event) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(idAba).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Carregar atividades base (da chave 'atividades' do localStorage)
+        function carregarAtividadesBase() {
+            const tbody = document.getElementById('tabelaAtividadesBody');
             tbody.innerHTML = '';
 
-            // Vai buscar os dados guardados pelo formulário de objetivos
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+
+            if (atividades.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades base registadas.</td></tr>`;
+                return;
+            }
+
+            atividades.forEach(ativ => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>#${ativ.numero || '-'}</strong></td>
+                    <td>${ativ.titulo || 'Sem título'}</td>
+                    <td>${ativ.anoLetivo || '-'}</td>
+                    <td>${ativ.tipo || '-'}</td>
+                    <td style="text-align: center; white-space: nowrap;">
+                        <a href="registar-objetivos.html?numero=${ativ.numero}" class="btn-action btn-view" title="Adicionar/Ver Objetivos">🎯 Objetivos</a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Carregar a tabela de objetivos e conclusões registadas (chave 'registosObjetivosAtividades')
+        function carregarTabelaObjetivos() {
+            const tbody = document.getElementById('tabelaRegistosObjetivosBody');
+            tbody.innerHTML = '';
+
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
 
             if (registos.length === 0) {
@@ -169,19 +289,20 @@
                     <td>${resumoCurto}</td>
                     <td style="text-align: center; white-space: nowrap;">
                         <a href="registar-objetivos.html?id=${reg.id}" class="btn-action btn-edit" title="Editar">✏️ Editar</a>
-                        <button onclick="apagarRegisto(${reg.id})" class="btn-action btn-delete" title="Apagar">🗑️ Apagar</button>
+                        <button onclick="apagarRegistoObjetivo(${reg.id})" class="btn-action btn-delete" title="Apagar">🗑️ Apagar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function apagarRegisto(id) {
+        // Apagar registo de objetivos
+        function apagarRegistoObjetivo(id) {
             if (confirm('Tem a certeza de que pretende apagar este registo de objetivos?')) {
                 let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
                 registos = registos.filter(reg => reg.id !== id);
                 localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-                carregarTabelaRegistos();
+                carregarTabelaObjetivos();
             }
         }
     </script>
