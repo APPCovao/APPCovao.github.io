@@ -461,19 +461,21 @@
             });
         }
 
-        // --- CARREGAR OBJETIVOS (Registos vindos de registar-objetivos.html) ---
+        // --- CARREGAR OBJETIVOS ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
             
-            // Busca nas possíveis chaves onde registar-objetivos.html guarda a informação
-            let objetivos = [];
-            if (localStorage.getItem('registarObjetivos')) {
-                objetivos = JSON.parse(localStorage.getItem('registarObjetivos')) || [];
-            } else if (localStorage.getItem('objetivos')) {
-                objetivos = JSON.parse(localStorage.getItem('objetivos')) || [];
-            } else if (localStorage.getItem('objetivosRegistados')) {
-                objetivos = JSON.parse(localStorage.getItem('objetivosRegistados')) || [];
-            }
+            // Unifica todas as possíveis chaves onde os objetivos podem estar guardados
+            let objetivos = [
+                ...(JSON.parse(localStorage.getItem('registarObjetivos')) || []),
+                ...(JSON.parse(localStorage.getItem('objetivos')) || []),
+                ...(JSON.parse(localStorage.getItem('objetivosRegistados')) || [])
+            ];
+
+            // Remove duplicados com base no ID ou conteúdo se houver sobreposição entre chaves
+            objetivos = objetivos.filter((obj, index, self) => 
+                index === self.findIndex(o => (o.id && o.id === obj.id) || JSON.stringify(o) === JSON.stringify(obj))
+            );
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             tbody.innerHTML = '';
@@ -619,8 +621,11 @@
 
         // Modal para Visualizar Detalhes do Registo de Objetivos/Avaliação Global
         function verObjetivo(id) {
-            let chave = localStorage.getItem('registarObjetivos') ? 'registarObjetivos' : (localStorage.getItem('objetivos') ? 'objetivos' : 'objetivosRegistados');
-            let objs = JSON.parse(localStorage.getItem(chave)) || [];
+            let objs = [
+                ...(JSON.parse(localStorage.getItem('registarObjetivos')) || []),
+                ...(JSON.parse(localStorage.getItem('objetivos')) || []),
+                ...(JSON.parse(localStorage.getItem('objetivosRegistados')) || [])
+            ];
             let obj = objs.find(o => (o.id == id) || (objs.indexOf(o) == id));
             if(!obj) return;
 
@@ -688,10 +693,13 @@
                     localStorage.setItem(chave, JSON.stringify(avs));
                     carregarAvaliacoes();
                 } else if (tipoApagar === 'objetivo') {
-                    let chave = localStorage.getItem('registarObjetivos') ? 'registarObjetivos' : (localStorage.getItem('objetivos') ? 'objetivos' : 'objetivosRegistados');
-                    let objs = JSON.parse(localStorage.getItem(chave)) || [];
-                    objs = objs.filter((o, idx) => o.id != idParaApagar && idx != idParaApagar);
-                    localStorage.setItem(chave, JSON.stringify(objs));
+                    ['registarObjetivos', 'objetivos', 'objetivosRegistados'].forEach(chave => {
+                        let objs = JSON.parse(localStorage.getItem(chave)) || [];
+                        if (objs.length > 0) {
+                            objs = objs.filter((o, idx) => o.id != idParaApagar && idx != idParaApagar);
+                            localStorage.setItem(chave, JSON.stringify(objs));
+                        }
+                    });
                     carregarObjetivos();
                 }
                 fecharConfirmarApagar();
