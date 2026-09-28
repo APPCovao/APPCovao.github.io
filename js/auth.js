@@ -78,33 +78,23 @@ if (loginForm) {
     });
 }
 
-// Lógica de Registo de Nova Conta com suporte flexível a IDs
+// Lógica de Registo de Nova Conta (Robusta e Direta)
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // Procura os inputs independentemente dos IDs específicos que o HTML possa ter
         const inputs = registerForm.querySelectorAll('input');
-        let nameVal = '', emailVal = '', passVal = '';
+        
+        // Verifica se existem pelo menos 3 inputs (Nome, Email, Password)
+        if (inputs.length < 3) {
+            mostrarPopup('Atenção', 'O formulário de registo precisa de ter os campos necessários.', '⚠️');
+            return;
+        }
 
-        inputs.forEach(input => {
-            const id = input.id.toLowerCase();
-            const type = input.type.toLowerCase();
-            
-            if (id.includes('name') || id.includes('nome')) {
-                nameVal = input.value.trim();
-            } else if (type === 'email' || id.includes('email')) {
-                emailVal = input.value.trim().toLowerCase();
-            } else if (type === 'password' || id.includes('pass') || id.includes('pwd')) {
-                passVal = input.value.trim();
-            }
-        });
-
-        // Fallback caso venham pela ordem padrão do formulário
-        if (!nameVal && inputs[0]) nameVal = inputs[0].value.trim();
-        if (!emailVal && inputs[1]) emailVal = inputs[1].value.trim().toLowerCase();
-        if (!passVal && inputs[2]) passVal = inputs[2].value.trim();
+        const nameVal = inputs[0].value.trim();
+        const emailVal = inputs[1].value.trim().toLowerCase();
+        const passVal = inputs[2].value.trim();
 
         if (!nameVal || !emailVal || !passVal) {
             mostrarPopup('Atenção', 'Por favor, preencha todos os campos do formulário.', '⚠️');
