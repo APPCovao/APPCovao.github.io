@@ -1,1 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registar Objetivos da Atividade - Registos Covão</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-container {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            margin-top: 2rem;
+        }
 
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background-color: #fff;
+        }
+
+        input[readonly], textarea[readonly] {
+            background-color: #f8fafc;
+            cursor: not-allowed;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .row-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .row-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-submit {
+            background-color: var(--color-accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        /* Modais Personalizados */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .custom-modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            text-align: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-modal h3 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-modal {
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: var(--color-primary);
+            color: white;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="brand">
+            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
+            <span>Registos Covão</span>
+        </div>
+        <div class="user-info">
+            <span>Olá, <strong id="userNameSpan"></strong></span>
+            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 750px;">
+        <div class="dashboard-header" style="margin-top: 2rem;">
+            <div>
+                <h2>Registo de Objetivos e Avaliação Global</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Associe a atividade aos objetivos do PEE, PAA e consolide as avaliações.</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form id="registarObjetivosForm" onsubmit="guardarRegistoObjetivos(event)">
+                
+                <div class="form-group">
+                    <label for="numeroAtividade">Número da Atividade</label>
+                    <input type="number" id="numeroAtividade" min="1" required placeholder="Ex: 1, 2, 3..." oninput="carregarDadosAtividade()">
+                    <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem;">Atividade não encontrada.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="nomeAtividade">Nome da Atividade</label>
+                    <input type="text" id="nomeAtividade" readonly placeholder="Preenchido automaticamente">
+                </div>
+
+                <div class="row-grid">
+                    <div class="form-group">
+                        <label for="anoLetivoAtividade">Ano Letivo</label>
+                        <input type="text" id="anoLetivoAtividade" readonly placeholder="Preenchido automaticamente">
+                    </div>
+                    <div class="form-group">
+                        <label for="tipoAtividade">Tipo de Atividade</label>
+                        <input type="text" id="tipoAtividade" readonly placeholder="Preenchido automaticamente">
+                    </div>
+                </div>
+
+                <div class="row-grid">
+                    <div class="form-group">
+                        <label for="paaSelect">Integra o PAA?</label>
+                        <select id="paaSelect" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="peeSelect">Integra o PEE?</label>
+                        <select id="peeSelect" required onchange="controlarCamposPEE()">
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Campos dinâmicos do PEE -->
+                <div id="peeContainer" style="display: none; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1.25rem;">
+                    <div class="form-group">
+                        <label for="objetivoPee">Objetivo do PEE</label>
+                        <select id="objetivoPee" onchange="atualizarMetas()">
+                            <option value="" disabled selected>Selecione o Objetivo</option>
+                            <option value="Obj 1">Objetivo 1: Melhorar a articulação pedagógica</option>
+                            <option value="Obj 2">Objetivo 2: Melhorar os resultados académicos dos alunos</option>
+                            <option value="Obj 3">Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</option>
+                            <option value="Obj 4">Objetivo 4: Aumentar a participação da comunidade e encarregados de educação</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="metaPee">Meta do PEE</label>
+                        <select id="metaPee">
+                            <option value="" disabled selected>Selecione primeiro um objetivo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mediaAvaliacoes">Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
+                    <input type="text" id="mediaAvaliacoes" readonly placeholder="Calculado automaticamente a partir das avaliações guardadas">
+                </div>
+
+                <div class="form-group">
+                    <label for="sugestoesRecolhidas">Sugestões / Observações Recolhidas</label>
+                    <textarea id="sugestoesRecolhidas" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="resumoConclusoes">Resumo / Conclusões da Atividade</label>
+                    <textarea id="resumoConclusoes" rows="4" required placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Registo de Objetivos</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE SUCESSO -->
+    <div id="successModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎯</div>
+            <h3>Registo Guardado!</h3>
+            <p id="successMessage">Os objetivos e conclusões foram registados com sucesso.</p>
+            <button type="button" class="btn-modal" onclick="fecharModalSucesso()">OK</button>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
+        }
+
+        // Controlar visibilidade dos campos de Objetivos/Metas do PEE
+        function controlarCamposPEE() {
+            const val = document.getElementById('peeSelect').value;
+            const container = document.getElementById('peeContainer');
+            if (val === 'Sim') {
+                container.style.display = 'block';
+                document.getElementById('objetivoPee').setAttribute('required', 'true');
+                document.getElementById('metaPee').setAttribute('required', 'true');
+            } else {
+                container.style.display = 'none';
+                document.getElementById('objetivoPee').removeAttribute('required');
+                document.getElementById('metaPee').removeAttribute('required');
+            }
+        }
+
+        // Atualizar opções de Metas com base no Objetivo do PEE selecionado
+        function atualizarMetas() {
+            const obj = document.getElementById('objetivoPee').value;
+            const metaSelect = document.getElementById('metaPee');
+            metaSelect.innerHTML = '<option value="" disabled selected>Selecione a Meta</option>';
+
+            let metas = [];
+            if (obj === 'Obj 1') {
+                metas = [{val: 'Meta 1', text: 'Meta 1: Realizar 6 Reuniões de Conselho de Turma'}];
+            } else if (obj === 'Obj 2') {
+                metas = [
+                    {val: 'Meta 2', text: 'Meta 2: 75% alunos com Bom/Muito Bom em Português'},
+                    {val: 'Meta 3', text: 'Meta 3: 75% alunos com Bom/Muito Bom em Matemática'}
+                ];
+            } else if (obj === 'Obj 3') {
+                metas = [{val: 'Meta 4', text: 'Meta 4: Pelo menos 6 atividades por área curricular com tecnologias'}];
+            } else if (obj === 'Obj 4') {
+                metas = [
+                    {val: 'Meta 5', text: 'Meta 5: Realizar dois questionários à comunidade escolar'},
+                    {val: 'Meta 6', text: 'Meta 6: Envolver os Encarregados de Educação em 6 atividades'}
+                ];
+            }
+
+            metas.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.val;
+                opt.textContent = m.text;
+                metaSelect.appendChild(opt);
+            });
+        }
+
+        // Preencher dados automaticamente com base no número da atividade
+        function carregarDadosAtividade() {
+            const numInput = document.getElementById('numeroAtividade').value;
+            const nomeInput = document.getElementById('nomeAtividade');
+            const anoInput = document.getElementById('anoLetivoAtividade');
+            const tipoInput = document.getElementById('tipoAtividade');
+            const mediaInput = document.getElementById('mediaAvaliacoes');
+            const sugestoesInput = document.getElementById('sugestoesRecolhidas');
+            const aviso = document.getElementById('avisoAtividade');
+
+            if (!numInput) {
+                nomeInput.value = '';
+                anoInput.value = '';
+                tipoInput.value = '';
+                mediaInput.value = '';
+                sugestoesInput.value = '';
+                aviso.style.display = 'none';
+                return;
+            }
+
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const ativEncontrada = atividades.find(a => String(a.numero) === String(numInput));
+
+            if (ativEncontrada) {
+                nomeInput.value = ativEncontrada.titulo || '';
+                anoInput.value = ativEncontrada.anoLetivo || '';
+                tipoInput.value = ativEncontrada.tipo || '';
+                aviso.style.display = 'none';
+
+                // Buscar avaliações associadas a esta atividade para calcular médias e juntar sugestões
+                const avaliacoes = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
+                const avsDaAtividade = avaliacoes.filter(av => String(av.numeroAtividade) === String(numInput));
+
+                if (avsDaAtividade.length > 0) {
+                    let somaPertinencia = 0;
+                    let somaDinamica = 0;
+                    let somaInteresse = 0;
+                    let listaSugestoes = [];
+
+                    avsDaAtividade.forEach(av => {
+                        somaPertinencia += Number(av.pertinencia) || 0;
+                        somaDinamica += Number(av.dinamica) || 0;
+                        somaInteresse += Number(av.interesse) || 0;
+                        if (av.sugestoes && av.sugestoes.trim() !== '') {
+                            listaSugestoes.push(`- ${av.avaliadorNome} (${av.tipoAvaliador}): ${av.sugestoes}`);
+                        }
+                    });
+
+                    const total = avsDaAtividade.length;
+                    const mediaP = (somaPertinencia / total).toFixed(1);
+                    const mediaD = (somaDinamica / total).toFixed(1);
+                    const mediaI = (somaInteresse / total).toFixed(1);
+                    const mediaGlobal = ((Number(mediaP) + Number(mediaD) + Number(mediaI)) / 3).toFixed(1);
+
+                    mediaInput.value = `Pertinência: ${mediaP} | Dinâmica: ${mediaD} | Interesse: ${mediaI} (Média Global: ${mediaGlobal} / 5) [Baseado em ${total} avaliação(ões)]`;
+                    sugestoesInput.value = listaSugestoes.length > 0 ? listaSugestoes.join('\n') : 'Sem sugestões registadas.';
+                } else {
+                    mediaInput.value = 'Ainda sem avaliações registadas para esta atividade.';
+                    sugestoesInput.value = 'Nenhuma sugestão disponível.';
+                }
+
+            } else {
+                nomeInput.value = '';
+                anoInput.value = '';
+                tipoInput.value = '';
+                mediaInput.value = '';
+                sugestoesInput.value = '';
+                aviso.style.display = 'block';
+            }
+        }
+
+        function guardarRegistoObjetivos(event) {
+            event.preventDefault();
+
+            const numAtividade = document.getElementById('numeroAtividade').value;
+            const nomeAtividade = document.getElementById('nomeAtividade').value;
+
+            if (!nomeAtividade) {
+                alert('Por favor, introduza um número de atividade válido.');
+                return;
+            }
+
+            const peeVal = document.getElementById('peeSelect').value;
+
+            const novoRegisto = {
+                id: Date.now(),
+                numeroAtividade: numAtividade,
+                nomeAtividade: nomeAtividade,
+                anoLetivo: document.getElementById('anoLetivoAtividade').value,
+                tipoAtividade: document.getElementById('tipoAtividade').value,
+                paa: document.getElementById('paaSelect').value,
+                pee: peeVal,
+                objetivoPee: peeVal === 'Sim' ? document.getElementById('objetivoPee').value : 'N/A',
+                metaPee: peeVal === 'Sim' ? document.getElementById('metaPee').value : 'N/A',
+                mediasAvaliacao: document.getElementById('mediaAvaliacoes').value,
+                sugestoes: document.getElementById('sugestoesRecolhidas').value,
+                resumoConclusoes: document.getElementById('resumoConclusoes').value.trim(),
+                registadoPor: currentUser.name,
+                dataRegisto: new Date().toISOString().split('T')[0]
+            };
+
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            registos.push(novoRegisto);
+            localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
+
+            document.getElementById('successMessage').innerText = `Objetivos e conclusões da Atividade #${numAtividade} guardados com sucesso!`;
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        function fecharModalSucesso() {
+            document.getElementById('successModal').style.display = 'none';
+            window.location.href = 'atividades.html';
+        }
+    </script>
+</body>
+</html>
