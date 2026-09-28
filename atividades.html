@@ -234,13 +234,13 @@
         <!-- ABA 3: OBJETIVOS REGISTADOS -->
         <div id="tabObjetivos" class="tab-content">
             <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Lista de Objetivos Registados</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todos os objetivos e metas definidos.</p>
+                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Objetivos e Avaliações Globais Registados</h3>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as associações a objetivos, metas PEE/PAA e avaliações globais efetuadas.</p>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 15%;">Nº / ID</th>
-                            <th>Descrição do Objetivo / Meta</th>
+                            <th style="width: 15%;">Nº Atividade</th>
+                            <th>Atividade / Metas Associadas</th>
                             <th style="width: 25%;">Criado por</th>
                             <th style="width: 20%;">Ações</th>
                         </tr>
@@ -314,6 +314,32 @@
                     <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
+    <div id="objetivoModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <h2 style="color: #16a34a;">Detalhes do Registo de Objetivos e Avaliação Global</h2>
+            <div class="form-group" style="margin-top: 1rem;">
+                <label><strong>Número da Atividade:</strong></label>
+                <p id="modalObjNumAtividade" style="padding: 0.5rem; background: #f8fafc; border-radius: 6px;"></p>
+            </div>
+            <div class="form-group">
+                <label><strong>Atividade Correspondente:</strong></label>
+                <p id="modalObjNomeAtividade" style="padding: 0.5rem; background: #f8fafc; border-radius: 6px;"></p>
+            </div>
+            <div class="form-group">
+                <label><strong>Metas / Objetivos Selecionados (PEE/PAA):</strong></label>
+                <div id="modalObjMetasLista" style="padding: 0.75rem; background: #f8fafc; border-radius: 6px; max-height: 150px; overflow-y: auto; font-size: 0.9rem;"></div>
+            </div>
+            <div class="form-group">
+                <label><strong>Avaliação Global Consolidada:</strong></label>
+                <p id="modalObjAvaliacaoGlobal" style="padding: 0.75rem; background: #f8fafc; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem;"></p>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
+            </div>
         </div>
     </div>
 
@@ -435,22 +461,25 @@
             });
         }
 
-        // --- CARREGAR OBJETIVOS (Buscando em 'registarObjetivos' ou 'objetivos') ---
+        // --- CARREGAR OBJETIVOS (Registos vindos de registar-objetivos.html) ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
             
-            // Verifica as possíveis chaves onde os objetivos podem estar guardados
+            // Busca nas possíveis chaves onde registar-objetivos.html guarda a informação
             let objetivos = [];
             if (localStorage.getItem('registarObjetivos')) {
                 objetivos = JSON.parse(localStorage.getItem('registarObjetivos')) || [];
             } else if (localStorage.getItem('objetivos')) {
                 objetivos = JSON.parse(localStorage.getItem('objetivos')) || [];
+            } else if (localStorage.getItem('objetivosRegistados')) {
+                objetivos = JSON.parse(localStorage.getItem('objetivosRegistados')) || [];
             }
 
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             tbody.innerHTML = '';
 
             if (objetivos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem objetivos registados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem registos de objetivos/avaliações globais.</td></tr>`;
                 return;
             }
 
@@ -459,17 +488,23 @@
                 const idReal = obj.id !== undefined ? obj.id : index;
                 const podeModificar = userIsAdmin || (obj.criadorId === currentUser.id);
 
-                const numObjetivo = obj.numero || obj.id || (index + 1);
-                const descObjetivo = obj.descricao || obj.titulo || obj.nome || 'Sem descrição';
-                const criadorNome = obj.criadorNome || 'Desconhecido';
+                let atividadeCorrespondente = atividades.find(a => 
+                    (obj.atividadeId && a.id == obj.atividadeId) || 
+                    (obj.numeroAtividade && (a.numero == obj.numeroAtividade || a.id == obj.numeroAtividade))
+                );
+
+                const numAtividade = obj.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : (obj.numero || '-'));
+                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (obj.tituloAtividade || obj.atividadeNome || obj.titulo || 'Registo de Objetivos');
+                const criadorNome = obj.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${numObjetivo}</strong></td>
-                    <td><strong>${descObjetivo}</strong></td>
+                    <td><strong>${numAtividade}</strong></td>
+                    <td><strong>${tituloAtividade}</strong></td>
                     <td>${criadorNome}</td>
                     <td>
                         <div class="actions-cell">
+                            <button class="btn-action btn-view" onclick="verObjetivo('${idReal}')">Ver</button>
                             <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'objetivo')">Apagar</button>
                         </div>
                     </td>
@@ -522,6 +557,7 @@
             fecharModal();
             carregarAtividades();
             carregarAvaliacoes();
+            carregarObjetivos();
         }
 
         // Modais de Avaliação
@@ -581,6 +617,49 @@
             carregarAvaliacoes();
         }
 
+        // Modal para Visualizar Detalhes do Registo de Objetivos/Avaliação Global
+        function verObjetivo(id) {
+            let chave = localStorage.getItem('registarObjetivos') ? 'registarObjetivos' : (localStorage.getItem('objetivos') ? 'objetivos' : 'objetivosRegistados');
+            let objs = JSON.parse(localStorage.getItem(chave)) || [];
+            let obj = objs.find(o => (o.id == id) || (objs.indexOf(o) == id));
+            if(!obj) return;
+
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            let atividadeCorrespondente = atividades.find(a => 
+                (obj.atividadeId && a.id == obj.atividadeId) || 
+                (obj.numeroAtividade && (a.numero == obj.numeroAtividade || a.id == obj.numeroAtividade))
+            );
+
+            document.getElementById('modalObjNumAtividade').innerText = obj.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
+            document.getElementById('modalObjNomeAtividade').innerText = atividadeCorrespondente ? atividadeCorrespondente.titulo : (obj.tituloAtividade || obj.atividadeNome || 'Atividade associada');
+            
+            // Metas / Objetivos
+            let metasContainer = document.getElementById('modalObjMetasLista');
+            metasContainer.innerHTML = '';
+            let listaMetas = obj.metas || obj.objetivosSelecionados || obj.metasSelecionadas || [];
+            if (Array.isArray(listaMetas) && listaMetas.length > 0) {
+                let ul = document.createElement('ul');
+                ul.style.paddingLeft = '1.2rem';
+                listaMetas.forEach(m => {
+                    let li = document.createElement('li');
+                    li.innerText = typeof m === 'object' ? (m.descricao || m.nome || JSON.stringify(m)) : m;
+                    ul.appendChild(li);
+                });
+                metasContainer.appendChild(ul);
+            } else {
+                metasContainer.innerText = obj.descricaoMeta || obj.descricao || 'Nenhuma meta específica listada.';
+            }
+
+            // Avaliação Global
+            document.getElementById('modalObjAvaliacaoGlobal').innerText = obj.avaliacaoGlobal || obj.parecerGlobal || obj.comentario || 'Sem avaliação global registada.';
+
+            document.getElementById('objetivoModal').style.display = 'flex';
+        }
+
+        function fecharModalObjetivo() {
+            document.getElementById('objetivoModal').style.display = 'none';
+        }
+
         // Apagar genérico
         function confirmarApagar(id, tipo) {
             idParaApagar = id;
@@ -601,6 +680,7 @@
                     localStorage.setItem('atividades', JSON.stringify(atividades));
                     carregarAtividades();
                     carregarAvaliacoes();
+                    carregarObjetivos();
                 } else if (tipoApagar === 'avaliacao') {
                     let chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
                     let avs = JSON.parse(localStorage.getItem(chave)) || [];
@@ -608,7 +688,7 @@
                     localStorage.setItem(chave, JSON.stringify(avs));
                     carregarAvaliacoes();
                 } else if (tipoApagar === 'objetivo') {
-                    let chave = localStorage.getItem('registarObjetivos') ? 'registarObjetivos' : 'objetivos';
+                    let chave = localStorage.getItem('registarObjetivos') ? 'registarObjetivos' : (localStorage.getItem('objetivos') ? 'objetivos' : 'objetivosRegistados');
                     let objs = JSON.parse(localStorage.getItem(chave)) || [];
                     objs = objs.filter((o, idx) => o.id != idParaApagar && idx != idParaApagar);
                     localStorage.setItem(chave, JSON.stringify(objs));
