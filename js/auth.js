@@ -40,32 +40,36 @@ function fecharModalGlobal() {
     }
 }
 
-// Alternar entre Login e Criar Conta de forma inteligente e abrangente
-document.addEventListener('DOMContentLoaded', () => {
+// Ouvinte global para cliques (funciona sempre, mesmo que os elementos mudem)
+document.addEventListener('click', (e) => {
     const loginScreen = document.getElementById('loginScreen');
     const registerScreen = document.getElementById('registerScreen');
 
-    // Botões para abrir o registo (procura por ID ou por qualquer botão/link que sirva para isso)
-    const showRegister = document.getElementById('showRegister') || document.querySelector('[href*="register"]') || document.querySelector('.btn-register');
-    const backToLogin = document.getElementById('backToLogin') || document.querySelector('[href*="login"]') || document.querySelector('.btn-back');
+    // Identificar se clicou no botão/link de Criar Conta (por ID, texto ou seletor)
+    const target = e.target.closest('#showRegister, [href*="register"], .btn-register');
+    const isRegisterText = e.target.innerText && (e.target.innerText.toLowerCase().includes('criar conta') || e.target.innerText.toLowerCase().includes('registar'));
 
-    if (showRegister && registerScreen && loginScreen) {
-        showRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginScreen.style.display = 'none';
-            registerScreen.style.display = 'block';
-        });
+    if ((target || isRegisterText) && loginScreen && registerScreen) {
+        e.preventDefault();
+        loginScreen.style.display = 'none';
+        registerScreen.style.display = 'block';
+        return;
     }
 
-    if (backToLogin && registerScreen && loginScreen) {
-        backToLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            registerScreen.style.display = 'none';
-            loginScreen.style.display = 'block';
-        });
-    }
+    // Identificar se clicou em Voltar ao Login
+    const backTarget = e.target.closest('#backToLogin, [href*="login"], .btn-back');
+    const isLoginText = e.target.innerText && (e.target.innerText.toLowerCase().includes('voltar ao login') || e.target.innerText.toLowerCase().includes('fazer login'));
 
-    // Lógica de Login
+    if ((backTarget || isLoginText) && loginScreen && registerScreen) {
+        e.preventDefault();
+        registerScreen.style.display = 'none';
+        loginScreen.style.display = 'block';
+        return;
+    }
+});
+
+// Lógica de Login e Registo mal o DOM esteja pronto
+document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -84,14 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Lógica de Registo de Nova Conta
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
             const inputs = registerForm.querySelectorAll('input');
-            
             if (inputs.length < 3) {
                 mostrarPopup('Atenção', 'O formulário de registo precisa de ter os campos necessários.', '⚠️');
                 return;
@@ -128,6 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
             registerForm.reset();
             
             mostrarPopup('Conta Criada!', 'A sua conta foi registada com sucesso. Podes agora fazer login.', '🎉', () => {
+                const loginScreen = document.getElementById('loginScreen');
+                const registerScreen = document.getElementById('registerScreen');
                 if (registerScreen && loginScreen) {
                     registerScreen.style.display = 'none';
                     loginScreen.style.display = 'block';
