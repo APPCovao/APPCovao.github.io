@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Atividade - Registos Covão</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="brand">
+            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
+            <span>Registos Covão</span>
+        </div>
+        <div class="user-info">
+            <span>Olá, <strong id="userNameSpan"></strong></span>
+            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
+        </div>
+    </div>
 
+    <div class="container auth-wrapper" style="min-height: auto; padding: 2rem 1rem;">
+        <div class="auth-card" style="max-width: 600px;">
+            <h2 style="color: var(--color-primary); margin-bottom: 1.5rem; text-align: center;">Registar Nova Atividade</h2>
+            
+            <form id="novaAtividadeForm">
+                <div class="form-group">
+                    <label for="numAtividade">Número da Atividade</label>
+                    <input type="text" id="numAtividade" required placeholder="Ex: 001/2026">
+                </div>
+
+                <div class="form-group">
+                    <label for="nomeAtividade">Nome da Atividade</label>
+                    <input type="text" id="nomeAtividade" required placeholder="Insira o nome da atividade">
+                </div>
+
+                <div class="form-group">
+                    <label for="anoLetivo">Ano Letivo</label>
+                    <select id="anoLetivo" required>
+                        <option value="" disabled selected>Selecione o ano letivo</option>
+                        <option value="2023/2024">2023/2024</option>
+                        <option value="2024/2025">2024/2025</option>
+                        <option value="2025/2026">2025/2026</option>
+                        <option value="2026/2027">2026/2027</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoAtividade">Tipo de Atividade</label>
+                    <select id="tipoAtividade" required>
+                        <option value="" disabled selected>Selecione o tipo de atividade</option>
+                        <option value="Atividade">Atividade</option>
+                        <option value="Projeto">Projeto</option>
+                        <option value="Formação/acção">Formação/acção</option>
+                        <option value="Visita de Estudo">Visita de Estudo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="criadoPor">Criado por</label>
+                    <input type="text" id="criadoPor" readonly style="background-color: #f8fafc; cursor: not-allowed;">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Guardar Atividade</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Verificar autenticação e preencher o campo "Criado por" automaticamente
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('userNameSpan').innerText = currentUser.name;
+            document.getElementById('criadoPor').value = currentUser.name;
+        }
+
+        // Lógica de submissão do formulário
+        const form = document.getElementById('novaAtividadeForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const novaAtividade = {
+                id: Date.now(), // ID único baseado no timestamp atual
+                numero: document.getElementById('numAtividade').value.trim(),
+                titulo: document.getElementById('nomeAtividade').value.trim(),
+                anoLetivo: document.getElementById('anoLetivo').value,
+                tipo: document.getElementById('tipoAtividade').value,
+                criadorId: currentUser.id,
+                criadorNome: currentUser.name,
+                data: new Date().toISOString().split('T')[0] // Data atual (YYYY-MM-DD)
+            };
+
+            // Buscar atividades existentes no LocalStorage
+            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            
+            // Adicionar a nova atividade à lista
+            atividades.push(novaAtividade);
+
+            // Guardar de volta no LocalStorage
+            localStorage.setItem('atividades', JSON.stringify(atividades));
+
+            alert('Atividade criada com sucesso!');
+            
+            // Redirecionar de volta para a listagem de atividades
+            window.location.href = 'atividades.html';
+        });
+    </script>
+</body>
+</html>
