@@ -3,141 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades e Registos - Registos Covão</title>
+    <title>Lista de Atividades e Objetivos - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Estilos de Abas (Tabs) */
-        .tabs-nav {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 2rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0;
-        }
-
-        .tab-btn {
-            padding: 0.75rem 1.25rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background: var(--color-white);
-            color: var(--color-primary);
-            border-color: #cbd5e1;
-            border-bottom: 2px solid var(--color-white);
-            margin-bottom: -2px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
         .table-container {
             background: var(--color-white);
             padding: 1.5rem;
-            border-radius: 0 0 var(--radius) var(--radius);
+            border-radius: var(--radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            margin-top: 2rem;
             overflow-x: auto;
-            border: 1px solid #e2e8f0;
-            border-top: none;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            margin-top: 1rem;
+            font-size: 0.9rem;
         }
 
         th, td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid #e2e8f0;
-            font-size: 0.9rem;
         }
 
         th {
             background-color: #f8fafc;
-            color: var(--text-light);
+            color: var(--color-primary);
             font-weight: 600;
         }
 
-        .actions-cell {
-            display: flex;
-            gap: 0.5rem;
+        tr:hover {
+            background-color: #f8fafc;
         }
 
         .btn-action {
-            padding: 0.35rem 0.65rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
             font-size: 0.8rem;
-            border-radius: 6px;
+            font-weight: 600;
             border: none;
             cursor: pointer;
-            font-weight: 600;
             text-decoration: none;
+            display: inline-block;
+            margin-right: 0.25rem;
         }
 
-        .btn-view { background-color: #0284c7; color: white; }
-        .btn-edit { background-color: #eab308; color: white; }
+        .btn-view { background-color: #3b82f6; color: white; }
+        .btn-edit { background-color: #f59e0b; color: white; }
         .btn-delete { background-color: #ef4444; color: white; }
-        
-        .btn-action:disabled {
-            background-color: #cbd5e1;
-            cursor: not-allowed;
-            opacity: 0.6;
+
+        .btn-action:hover {
+            opacity: 0.9;
         }
 
-        /* Modais */
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        .custom-modal {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-buttons {
+        .header-actions {
             display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
         }
 
-        .btn-modal {
-            padding: 0.5rem 1rem;
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: white;
+            padding: 0.75rem 1.25rem;
             border-radius: 6px;
-            border: none;
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
+            font-size: 0.9rem;
         }
 
-        .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
-        .btn-modal-confirm { background-color: var(--color-primary); color: white; }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .badge-sim { background-color: #dcfce7; color: #166534; }
+        .badge-nao { background-color: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
@@ -148,211 +96,36 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan"></strong></span>
-            <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar ao Menu</a>
+            <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Menu Principal</a>
         </div>
     </div>
 
     <div class="container">
-        <div class="dashboard-header">
+        <div class="header-actions">
             <div>
-                <h2>Gestão e Consulta</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Consulte e gira todas as atividades, avaliações e objetivos registados</p>
+                <h2>Gestão de Objetivos e Atividades</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Consulte, edite ou remova os registos de objetivos associados às atividades.</p>
             </div>
+            <!-- Aponta para o ficheiro do formulário de registo de objetivos -->
+            <a href="registar-objetivos.html" class="btn-primary">➕ Novo Registo de Objetivos</a>
         </div>
 
-        <div class="menu-grid">
-            <a href="nova-atividade.html" class="menu-card" style="border-top-color: var(--color-primary);">
-                <div class="icon">➕</div>
-                <div>
-                    <h3>Nova Atividade</h3>
-                    <p>Criar e registar uma nova atividade</p>
-                </div>
-            </a>
-
-            <a href="avaliar-atividade.html" class="menu-card" style="border-top-color: var(--color-accent);">
-                <div class="icon">⭐</div>
-                <div>
-                    <h3>Avaliar Atividade</h3>
-                    <p>Registar avaliações e feedback</p>
-                </div>
-            </a>
-
-            <a href="registar-objetivos.html" class="menu-card" style="border-top-color: #16a34a;">
-                <div class="icon">🎯</div>
-                <div>
-                    <h3>Registar Objetivos</h3>
-                    <p>Definir metas associadas</p>
-                </div>
-            </a>
-        </div>
-
-        <!-- SISTEMA DE ABAS (TABS) -->
-        <div class="tabs-nav">
-            <button class="tab-btn active" onclick="mudarTab(event, 'tabAtividades')">📝 Atividades Registadas</button>
-            <button class="tab-btn" onclick="mudarTab(event, 'tabAvaliadas')">⭐ Atividades Avaliadas</button>
-            <button class="tab-btn" onclick="mudarTab(event, 'tabObjetivos')">🎯 Objetivos Registados</button>
-        </div>
-
-        <!-- ABA 1: ATIVIDADES REGISTADAS -->
-        <div id="tabAtividades" class="tab-content active">
-            <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Lista de Atividades Registadas</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades criadas no sistema.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="atividadesTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ABA 2: ATIVIDADES AVALIADAS -->
-        <div id="tabAvaliadas" class="tab-content">
-            <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: var(--color-accent); margin-bottom: 0.5rem;">Lista de Atividades Avaliadas</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as avaliações efetuadas.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="avaliadasTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ABA 3: OBJETIVOS REGISTADOS -->
-        <div id="tabObjetivos" class="tab-content">
-            <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Objetivos e Avaliações Globais Registados</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as associações a objetivos, metas PEE/PAA e avaliações globais efetuadas.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Atividade / Metas Associadas</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="objetivosTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE ATIVIDADES -->
-    <div id="atividadeModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalTitle" style="color: var(--color-primary);">Detalhes da Atividade</h2>
-            <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
-                <input type="hidden" id="editAtividadeId">
-                <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly style="background-color: #f8fafc; font-weight: bold;">
-                </div>
-                <div class="form-group">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalNomeAtividade" required>
-                </div>
-                <div class="form-group">
-                    <label>Ano Letivo</label>
-                    <select id="modalAnoLetivo" required>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Atividade</label>
-                    <select id="modalTipoAtividade" required>
-                        <option value="Atividade">Atividade</option>
-                        <option value="Projeto">Projeto</option>
-                        <option value="Formação/acção">Formação/acção</option>
-                        <option value="Visita de Estudo">Visita de Estudo</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModal()">Fechar</button>
-                    <button type="submit" id="modalSaveBtn" class="btn-modal btn-modal-confirm">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE AVALIAÇÃO -->
-    <div id="avaliacaoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent);">Detalhes da Avaliação</h2>
-            <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
-                <input type="hidden" id="editAvaliacaoId">
-                <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly style="background-color: #f8fafc; font-weight: bold;">
-                </div>
-                <div class="form-group">
-                    <label>Título / Descrição da Atividade</label>
-                    <input type="text" id="modalAvTituloAtividade" readonly style="background-color: #f8fafc;">
-                </div>
-                <div class="form-group">
-                    <label>Comentário / Parecer de Avaliação</label>
-                    <textarea id="modalAvComentario" rows="4" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
-                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
-    <div id="objetivoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 style="color: #16a34a;">Detalhes do Registo de Objetivos e Avaliação Global</h2>
-            <div class="form-group" style="margin-top: 1rem;">
-                <label><strong>Número da Atividade:</strong></label>
-                <p id="modalObjNumAtividade" style="padding: 0.5rem; background: #f8fafc; border-radius: 6px;"></p>
-            </div>
-            <div class="form-group">
-                <label><strong>Atividade Correspondente:</strong></label>
-                <p id="modalObjNomeAtividade" style="padding: 0.5rem; background: #f8fafc; border-radius: 6px;"></p>
-            </div>
-            <div class="form-group">
-                <label><strong>Metas / Objetivos Selecionados (PEE/PAA):</strong></label>
-                <div id="modalObjMetasLista" style="padding: 0.75rem; background: #f8fafc; border-radius: 6px; max-height: 150px; overflow-y: auto; font-size: 0.9rem;"></div>
-            </div>
-            <div class="form-group">
-                <label><strong>Avaliação Global Consolidada:</strong></label>
-                <p id="modalObjAvaliacaoGlobal" style="padding: 0.75rem; background: #f8fafc; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem;"></p>
-            </div>
-            <div class="modal-buttons">
-                <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE APAGAR GENÉRICO -->
-    <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
-            <h3 style="color: #ef4444; margin-bottom: 0.5rem;">Confirmar Remoção</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar este registo?</p>
-            <div class="modal-buttons" style="justify-content: center;">
-                <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
-                <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
-            </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nº</th>
+                        <th>Nome da Atividade</th>
+                        <th>PAA</th>
+                        <th>PEE</th>
+                        <th>Resumo / Conclusões</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaRegistosBody">
+                    <!-- Os dados preenchem-se dinamicamente via JavaScript -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -362,375 +135,55 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
+            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
         }
 
-        function isAdminUser(user) {
-            if (!user) return false;
-            return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
-        }
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarTabelaRegistos();
+        });
 
-        // Sistema de troca de abas
-        function mudarTab(evt, tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(c => c.classList.remove('active'));
-
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(b => b.classList.remove('active'));
-
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
-        }
-
-        let idParaApagar = null;
-        let tipoApagar = null;
-
-        // --- CARREGAR ATIVIDADES ---
-        function carregarAtividades() {
-            const tbody = document.getElementById('atividadesTableBody');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+        function carregarTabelaRegistos() {
+            const tbody = document.getElementById('tabelaRegistosBody');
             tbody.innerHTML = '';
 
-            if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades registadas.</td></tr>`;
+            // Vai buscar os dados guardados pelo formulário de objetivos
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+
+            if (registos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem registos de objetivos guardados.</td></tr>`;
                 return;
             }
 
-            const userIsAdmin = isAdminUser(currentUser);
-            [...atividades].reverse().forEach(ativ => {
-                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
+            registos.forEach(reg => {
                 const tr = document.createElement('tr');
+
+                const badgePaa = reg.paa === 'Sim' ? '<span class="badge badge-sim">Sim</span>' : '<span class="badge badge-nao">Não</span>';
+                const badgePee = reg.pee === 'Sim' ? '<span class="badge badge-sim">Sim</span>' : '<span class="badge badge-nao">Não</span>';
+                const resumoCurto = reg.resumoConclusoes ? (reg.resumoConclusoes.length > 60 ? reg.resumoConclusoes.substring(0, 60) + '...' : reg.resumoConclusoes) : 'Sem resumo';
+
                 tr.innerHTML = `
-                    <td><strong>${ativ.numero || ativ.id || '-'}</strong></td>
-                    <td><strong>${ativ.titulo}</strong></td>
-                    <td>${ativ.criadorNome || 'Desconhecido'}</td>
-                    <td>
-                        <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id}, 'atividade')">Apagar</button>
-                        </div>
+                    <td><strong>#${reg.numeroAtividade}</strong></td>
+                    <td>${reg.nomeAtividade || 'Atividade sem nome'}</td>
+                    <td>${badgePaa}</td>
+                    <td>${badgePee}</td>
+                    <td>${resumoCurto}</td>
+                    <td style="text-align: center; white-space: nowrap;">
+                        <a href="registar-objetivos.html?id=${reg.id}" class="btn-action btn-edit" title="Editar">✏️ Editar</a>
+                        <button onclick="apagarRegisto(${reg.id})" class="btn-action btn-delete" title="Apagar">🗑️ Apagar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- CARREGAR AVALIAÇÕES ---
-        function carregarAvaliacoes() {
-            const tbody = document.getElementById('avaliadasTableBody');
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (avaliadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades avaliadas.</td></tr>`;
-                return;
+        function apagarRegisto(id) {
+            if (confirm('Tem a certeza de que pretende apagar este registo de objetivos?')) {
+                let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+                registos = registos.filter(reg => reg.id !== id);
+                localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
+                carregarTabelaRegistos();
             }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...avaliadas].reverse().forEach((av, index) => {
-                const idReal = av.id !== undefined ? av.id : index;
-                const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => 
-                    (av.atividadeId && a.id == av.atividadeId) || 
-                    (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                    (av.id && a.id == av.id)
-                );
-
-                const numAtividade = av.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : '-');
-                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada');
-                const criador = av.avaliadorNome || av.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${numAtividade}</strong></td>
-                    <td><strong>${tituloAtividade}</strong></td>
-                    <td>${criador}</td>
-                    <td>
-                        <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verAvaliacao('${idReal}')">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao('${idReal}')">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'avaliacao')">Apagar</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
-
-        // --- CARREGAR OBJETIVOS (COM VARREDURA INTELIGENTE DE LOCALSTORAGE) ---
-        function carregarObjetivos() {
-            const tbody = document.getElementById('objetivosTableBody');
-            
-            // Varre todas as chaves existentes no localStorage para apanhar qualquer dado guardado por registar-objetivos.html
-            let objetivosUnicos = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                // Procura chaves que contenham objetivos, metas, registar ou avaliacao global
-                if (key.toLowerCase().includes('objetivo') || key.toLowerCase().includes('meta') || key.toLowerCase().includes('registar') || key.toLowerCase().includes('global')) {
-                    try {
-                        const dados = JSON.parse(localStorage.getItem(key));
-                        if (Array.isArray(dados)) {
-                            objetivosUnicos.push(...dados);
-                        } else if (dados && typeof dados === 'object') {
-                            // Se for um único objeto guardado diretamente
-                            objetivosUnicos.push(dados);
-                        }
-                    } catch (e) {
-                        // Ignora se não for JSON válido
-                    }
-                }
-            }
-
-            // Remove duplicados exatos ou por ID
-            let objetivos = objetivosUnicos.filter((obj, index, self) => 
-                index === self.findIndex(o => (o && obj && o.id && o.id === obj.id) || JSON.stringify(o) === JSON.stringify(obj))
-            );
-
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (objetivos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem registos de objetivos/avaliações globais. (Dica: Certifique-se de que submeteu o formulário em registar-objetivos.html)</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...objetivos].reverse().forEach((obj, index) => {
-                const idReal = obj.id !== undefined ? obj.id : index;
-                const podeModificar = userIsAdmin || (obj.criadorId === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => 
-                    (obj.atividadeId && a.id == obj.atividadeId) || 
-                    (obj.numeroAtividade && (a.numero == obj.numeroAtividade || a.id == obj.numeroAtividade))
-                );
-
-                const numAtividade = obj.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : (obj.numero || '-'));
-                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (obj.tituloAtividade || obj.atividadeNome || obj.titulo || 'Registo de Objetivos');
-                const criadorNome = obj.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${numAtividade}</strong></td>
-                    <td><strong>${tituloAtividade}</strong></td>
-                    <td>${criadorNome}</td>
-                    <td>
-                        <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verObjetivo('${idReal}')">Ver</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'objetivo')">Apagar</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Modais de Atividades
-        function verAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            preencherModalAtiv(ativ, true);
-        }
-        function editarAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            preencherModalAtiv(ativ, false);
-        }
-        function preencherModalAtiv(ativ, somenteLeitura) {
-            document.getElementById('editAtividadeId').value = ativ.id;
-            document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
-            document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
-            document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
-
-            document.getElementById('modalNomeAtividade').readOnly = somenteLeitura;
-            document.getElementById('modalAnoLetivo').disabled = somenteLeitura;
-            document.getElementById('modalTipoAtividade').disabled = somenteLeitura;
-            document.getElementById('modalSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('atividadeModal').style.display = 'flex';
-        }
-        function fecharModal() { document.getElementById('atividadeModal').style.display = 'none'; }
-        
-        function salvarEdicaoAtividade(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editAtividadeId').value);
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            atividades = atividades.map(a => {
-                if(a.id === id) {
-                    a.titulo = document.getElementById('modalNomeAtividade').value;
-                    a.anoLetivo = document.getElementById('modalAnoLetivo').value;
-                    a.tipo = document.getElementById('modalTipoAtividade').value;
-                }
-                return a;
-            });
-            localStorage.setItem('atividades', JSON.stringify(atividades));
-            fecharModal();
-            carregarAtividades();
-            carregarAvaliacoes();
-            carregarObjetivos();
-        }
-
-        // Modais de Avaliação
-        function verAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
-            preencherModalAvaliacao(av, true);
-        }
-        function editarAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
-            preencherModalAvaliacao(av, false);
-        }
-        function preencherModalAvaliacao(av, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => 
-                (av.atividadeId && a.id == av.atividadeId) || 
-                (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                (av.id && a.id == av.id)
-            );
-
-            document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
-            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-            document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
-            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
-
-            document.getElementById('modalAvComentario').readOnly = somenteLeitura;
-            document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('avaliacaoModal').style.display = 'flex';
-        }
-        function fecharModalAvaliacao() { document.getElementById('avaliacaoModal').style.display = 'none'; }
-
-        function salvarEdicaoAvaliacao(e) {
-            e.preventDefault();
-            const idInput = document.getElementById('editAvaliacaoId').value;
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            let avs = JSON.parse(localStorage.getItem(chave)) || [];
-            
-            avs = avs.map((a, idx) => {
-                const matchId = (idInput !== "" && a.id == idInput);
-                const matchIdx = (idInput === "" && idx == idInput);
-                if(matchId || matchIdx) {
-                    a.comentario = document.getElementById('modalAvComentario').value;
-                    if(a.parecer) a.parecer = a.comentario;
-                    if(a.texto) a.texto = a.comentario;
-                }
-                return a;
-            });
-            localStorage.setItem(chave, JSON.stringify(avs));
-            fecharModalAvaliacao();
-            carregarAvaliacoes();
-        }
-
-        // Modal para Visualizar Detalhes do Registo de Objetivos/Avaliação Global
-        function verObjetivo(id) {
-            let objs = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.toLowerCase().includes('objetivo') || key.toLowerCase().includes('meta') || key.toLowerCase().includes('registar') || key.toLowerCase().includes('global')) {
-                    try {
-                        const dados = JSON.parse(localStorage.getItem(key));
-                        if (Array.isArray(dados)) objs.push(...dados);
-                        else if (dados && typeof dados === 'object') objs.push(dados);
-                    } catch (e) {}
-                }
-            }
-            let obj = objs.find(o => (o && o.id == id) || (objs.indexOf(o) == id));
-            if(!obj) return;
-
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            let atividadeCorrespondente = atividades.find(a => 
-                (obj.atividadeId && a.id == obj.atividadeId) || 
-                (obj.numeroAtividade && (a.numero == obj.numeroAtividade || a.id == obj.numeroAtividade))
-            );
-
-            document.getElementById('modalObjNumAtividade').innerText = obj.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-            document.getElementById('modalObjNomeAtividade').innerText = atividadeCorrespondente ? atividadeCorrespondente.titulo : (obj.tituloAtividade || obj.atividadeNome || 'Atividade associada');
-            
-            let metasContainer = document.getElementById('modalObjMetasLista');
-            metasContainer.innerHTML = '';
-            let listaMetas = obj.metas || obj.objetivosSelecionados || obj.metasSelecionadas || [];
-            if (Array.isArray(listaMetas) && listaMetas.length > 0) {
-                let ul = document.createElement('ul');
-                ul.style.paddingLeft = '1.2rem';
-                listaMetas.forEach(m => {
-                    let li = document.createElement('li');
-                    li.innerText = typeof m === 'object' ? (m.descricao || m.nome || JSON.stringify(m)) : m;
-                    ul.appendChild(li);
-                });
-                metasContainer.appendChild(ul);
-            } else {
-                metasContainer.innerText = obj.descricaoMeta || obj.descricao || 'Nenhuma meta específica listada.';
-            }
-
-            document.getElementById('modalObjAvaliacaoGlobal').innerText = obj.avaliacaoGlobal || obj.parecerGlobal || obj.comentario || 'Sem avaliação global registada.';
-            document.getElementById('objetivoModal').style.display = 'flex';
-        }
-
-        function fecharModalObjetivo() {
-            document.getElementById('objetivoModal').style.display = 'none';
-        }
-
-        // Apagar genérico
-        function confirmarApagar(id, tipo) {
-            idParaApagar = id;
-            tipoApagar = tipo;
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-        function fecharConfirmarApagar() {
-            idParaApagar = null;
-            tipoApagar = null;
-            document.getElementById('confirmModal').style.display = 'none';
-        }
-
-        document.getElementById('btnConfirmDelete').onclick = function() {
-            if (idParaApagar !== null) {
-                if (tipoApagar === 'atividade') {
-                    let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                    atividades = atividades.filter(a => a.id != idParaApagar);
-                    localStorage.setItem('atividades', JSON.stringify(atividades));
-                    carregarAtividades();
-                    carregarAvaliacoes();
-                    carregarObjetivos();
-                } else if (tipoApagar === 'avaliacao') {
-                    let chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-                    let avs = JSON.parse(localStorage.getItem(chave)) || [];
-                    avs = avs.filter((a, idx) => a.id != idParaApagar && idx != idParaApagar);
-                    localStorage.setItem(chave, JSON.stringify(avs));
-                    carregarAvaliacoes();
-                } else if (tipoApagar === 'objetivo') {
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const key = localStorage.key(i);
-                        if (key.toLowerCase().includes('objetivo') || key.toLowerCase().includes('meta') || key.toLowerCase().includes('registar') || key.toLowerCase().includes('global')) {
-                            try {
-                                let dados = JSON.parse(localStorage.getItem(key));
-                                if (Array.isArray(dados)) {
-                                    dados = dados.filter((o, idx) => o && o.id != idParaApagar && idx != idParaApagar);
-                                    localStorage.setItem(key, JSON.stringify(dados));
-                                }
-                            } catch (e) {}
-                        }
-                    }
-                    carregarObjetivos();
-                }
-                fecharConfirmarApagar();
-            }
-        };
-
-        // Inicializar todas as tabelas ao carregar
-        carregarAtividades();
-        carregarAvaliacoes();
-        carregarObjetivos();
     </script>
 </body>
 </html>
