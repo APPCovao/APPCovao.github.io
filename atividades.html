@@ -13,17 +13,57 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <a href="dashboard.html" style="color: white; text-decoration: none;">⬅️ Voltar ao Menu</a>
+            <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar ao Menu</a>
         </div>
     </div>
 
     <div class="container">
+        <!-- Cabeçalho da Página -->
         <div class="dashboard-header">
-            <h2>Gestão de Atividades</h2>
+            <div>
+                <h2>Gestão de Atividades</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Selecione a ação desejada para gerir as atividades</p>
+            </div>
         </div>
-        <div style="background: white; padding: 2rem; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-            <p style="color: var(--text-light);">Conteúdo da página de atividades adaptado perfeitamente para qualquer ecrã.</p>
+
+        <!-- Grelha com os 3 Botões Principais -->
+        <div class="menu-grid">
+            <!-- Botão 1: Nova Atividade -->
+            <a href="nova-atividade.html" class="menu-card" style="border-top-color: var(--color-primary);">
+                <div class="icon">➕</div>
+                <div>
+                    <h3>Nova Atividade</h3>
+                    <p>Criar e registar uma nova atividade</p>
+                </div>
+            </a>
+
+            <!-- Botão 2: Avaliar Atividade -->
+            <a href="avaliar-atividade.html" class="menu-card" style="border-top-color: var(--color-accent);">
+                <div class="icon">⭐</div>
+                <div>
+                    <h3>Avaliar Atividade</h3>
+                    <p>Registar avaliações e feedback</p>
+                </div>
+            </a>
+
+            <!-- Botão 3: Registar Objetivos e Metas -->
+            <a href="registar-objetivos.html" class="menu-card" style="border-top-color: #16a34a;">
+                <div class="icon">🎯</div>
+                <div>
+                    <h3>Registar Objetivos e Metas</h3>
+                    <p>Definir metas associadas</p>
+                </div>
+            </a>
         </div>
     </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Segurança simples para garantir que o utilizador está autenticado
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        }
+    </script>
 </body>
 </html>
