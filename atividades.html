@@ -383,7 +383,7 @@
         }
 
         let idParaApagar = null;
-        let tipoApagar = null; // 'atividade', 'avaliacao', 'objetivo'
+        let tipoApagar = null;
 
         // --- CARREGAR ATIVIDADES ---
         function carregarAtividades() {
@@ -461,27 +461,40 @@
             });
         }
 
-        // --- CARREGAR OBJETIVOS ---
+        // --- CARREGAR OBJETIVOS (COM VARREDURA INTELIGENTE DE LOCALSTORAGE) ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
             
-            // Unifica todas as possíveis chaves onde os objetivos podem estar guardados
-            let objetivos = [
-                ...(JSON.parse(localStorage.getItem('registarObjetivos')) || []),
-                ...(JSON.parse(localStorage.getItem('objetivos')) || []),
-                ...(JSON.parse(localStorage.getItem('objetivosRegistados')) || [])
-            ];
+            // Varre todas as chaves existentes no localStorage para apanhar qualquer dado guardado por registar-objetivos.html
+            let objetivosUnicos = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                // Procura chaves que contenham objetivos, metas, registar ou avaliacao global
+                if (key.toLowerCase().includes('objetivo') || key.toLowerCase().includes('meta') || key.toLowerCase().includes('registar') || key.toLowerCase().includes('global')) {
+                    try {
+                        const dados = JSON.parse(localStorage.getItem(key));
+                        if (Array.isArray(dados)) {
+                            objetivosUnicos.push(...dados);
+                        } else if (dados && typeof dados === 'object') {
+                            // Se for um único objeto guardado diretamente
+                            objetivosUnicos.push(dados);
+                        }
+                    } catch (e) {
+                        // Ignora se não for JSON válido
+                    }
+                }
+            }
 
-            // Remove duplicados com base no ID ou conteúdo se houver sobreposição entre chaves
-            objetivos = objetivos.filter((obj, index, self) => 
-                index === self.findIndex(o => (o.id && o.id === obj.id) || JSON.stringify(o) === JSON.stringify(obj))
+            // Remove duplicados exatos ou por ID
+            let objetivos = objetivosUnicos.filter((obj, index, self) => 
+                index === self.findIndex(o => (o && obj && o.id && o.id === obj.id) || JSON.stringify(o) === JSON.stringify(obj))
             );
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             tbody.innerHTML = '';
 
             if (objetivos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem registos de objetivos/avaliações globais.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem registos de objetivos/avaliações globais. (Dica: Certifique-se de que submeteu o formulário em registar-objetivos.html)</td></tr>`;
                 return;
             }
 
@@ -621,12 +634,18 @@
 
         // Modal para Visualizar Detalhes do Registo de Objetivos/Avaliação Global
         function verObjetivo(id) {
-            let objs = [
-                ...(JSON.parse(localStorage.getItem('registarObjetivos')) || []),
-                ...(JSON.parse(localStorage.getItem('objetivos')) || []),
-                ...(JSON.parse(localStorage.getItem('objetivosRegistados')) || [])
-            ];
-            let obj = objs.find(o => (o.id == id) || (objs.indexOf(o) == id));
+            let objs = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.toLowerCase().includes('objetivo') || key.toLowerCase().includes('meta') || key.toLowerCase().includes('registar') || key.toLowerCase().includes('global')) {
+                    try {
+                        const dados = JSON.parse(localStorage.getItem(key));
+                        if (Array.isArray(dados)) objs.push(...dados);
+                        else if (dados && typeof dados === 'object') objs.push(dados);
+                    } catch (e) {}
+                }
+            }
+            let obj = objs.find(o => (o && o.id == id) || (objs.indexOf(o) == id));
             if(!obj) return;
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
@@ -638,7 +657,6 @@
             document.getElementById('modalObjNumAtividade').innerText = obj.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
             document.getElementById('modalObjNomeAtividade').innerText = atividadeCorrespondente ? atividadeCorrespondente.titulo : (obj.tituloAtividade || obj.atividadeNome || 'Atividade associada');
             
-            // Metas / Objetivos
             let metasContainer = document.getElementById('modalObjMetasLista');
             metasContainer.innerHTML = '';
             let listaMetas = obj.metas || obj.objetivosSelecionados || obj.metasSelecionadas || [];
@@ -655,9 +673,7 @@
                 metasContainer.innerText = obj.descricaoMeta || obj.descricao || 'Nenhuma meta específica listada.';
             }
 
-            // Avaliação Global
             document.getElementById('modalObjAvaliacaoGlobal').innerText = obj.avaliacaoGlobal || obj.parecerGlobal || obj.comentario || 'Sem avaliação global registada.';
-
             document.getElementById('objetivoModal').style.display = 'flex';
         }
 
@@ -693,13 +709,18 @@
                     localStorage.setItem(chave, JSON.stringify(avs));
                     carregarAvaliacoes();
                 } else if (tipoApagar === 'objetivo') {
-                    ['registarObjetivos', 'objetivos', 'objetivosRegistados'].forEach(chave => {
-                        let objs = JSON.parse(localStorage.getItem(chave)) || [];
-                        if (objs.length > 0) {
-                            objs = objs.filter((o, idx) => o.id != idParaApagar && idx != idParaApagar);
-                            localStorage.setItem(chave, JSON.stringify(objs));
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key.toLowerCase().includes('objetivo') || key.toLowerCase().includes('meta') || key.toLowerCase().includes('registar') || key.toLowerCase().includes('global')) {
+                            try {
+                                let dados = JSON.parse(localStorage.getItem(key));
+                                if (Array.isArray(dados)) {
+                                    dados = dados.filter((o, idx) => o && o.id != idParaApagar && idx != idParaApagar);
+                                    localStorage.setItem(key, JSON.stringify(dados));
+                                }
+                            } catch (e) {}
                         }
-                    });
+                    }
                     carregarObjetivos();
                 }
                 fecharConfirmarApagar();
