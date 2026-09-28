@@ -3,56 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Registos App</title>
+    <title>Dashboard - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">📊 REGISTOS APP</div>
-        <ul class="nav-links">
-            <li><a href="dashboard.html">Início</a></li>
-            <li><a href="admin.html" id="adminLink" style="display:none;">Painel Admin</a></li>
-            <li><a href="index.html" onclick="localStorage.clear()">Sair</a></li>
-        </ul>
-    </nav>
+    <div class="app-container">
+        <div class="status-bar">
+            <span>9:41 AM</span>
+            <span>📶 🔋</span>
+        </div>
 
-    <div class="container">
-        <h1>Olá, <span id="userName">Utilizador</span>!</h1>
-        <p style="color: var(--text-muted); margin-bottom: 1rem;">Gestão de Registos Diários</p>
+        <div class="dashboard-welcome">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="font-size: 18px;">Registos Covão</h1>
+                    <p style="font-size: 13px; opacity: 0.9;">Olá, <span id="welcomeName">Utilizador</span></p>
+                </div>
+                <a href="index.html" onclick="localStorage.removeItem('currentUser')" style="color: white; font-size: 12px; text-decoration: underline;">Sair</a>
+            </div>
 
-        <!-- Os 4 Botões Principais Pedidos -->
-        <div class="dashboard-grid">
-            <a href="atividades.html" class="card-btn">
-                <span style="font-size: 2rem;">📝</span>
-                <h3>Atividades</h3>
-                <p>Gerir registos e entradas</p>
-            </a>
-            <a href="requisicoes.html" class="card-btn">
-                <span style="font-size: 2rem;">📋</span>
-                <h3>Requisições</h3>
-                <p>Ver e gerir pedidos</p>
-            </a>
-            <a href="caa.html" class="card-btn">
-                <span style="font-size: 2rem;">💬</span>
-                <h3>CAA</h3>
-                <p>Comunicação Alternativa</p>
-            </a>
-            <a href="relatorios.html" class="card-btn">
-                <span style="font-size: 2rem;">📈</span>
-                <h3>Relatórios</h3>
-                <p>Estatísticas e gráficos</p>
-            </a>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h4>Total Registos</h4>
+                    <p style="color: var(--color-primary);">124</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Esta Semana</h4>
+                    <p style="color: var(--color-primary);">28</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <p style="font-size: 12px; color: var(--text-light); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">Menu Principal</p>
+            
+            <!-- As 5 Opções Exatas Pedidas -->
+            <div class="menu-list">
+                <a href="atividades.html" class="menu-item" style="border-left: 4px solid var(--color-primary);">
+                    <span>📝</span>
+                    <div>
+                        <strong>Atividades</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Gerir registos diários</p>
+                    </div>
+                </a>
+
+                <a href="caa.html" class="menu-item" style="border-left: 4px solid #16a34a;">
+                    <span>💬</span>
+                    <div>
+                        <strong>CAA</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Comunicação Alternativa</p>
+                    </div>
+                </a>
+
+                <a href="requisicoes.html" class="menu-item" style="border-left: 4px solid var(--color-accent);">
+                    <span>📋</span>
+                    <div>
+                        <strong>Requisições</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Consultar pedidos</p>
+                    </div>
+                </a>
+
+                <a href="objetivos.html" class="menu-item" style="border-left: 4px solid #9333ea;">
+                    <span>🎯</span>
+                    <div>
+                        <strong>Objetivos</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Metas e progresso</p>
+                    </div>
+                </a>
+
+                <a href="relatorios.html" class="menu-item" style="border-left: 4px solid #0284c7;">
+                    <span>📊</span>
+                    <div>
+                        <strong>Relatórios</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Estatísticas gerais</p>
+                    </div>
+                </a>
+
+                <!-- Visível apenas se for Admin -->
+                <a href="admin.html" id="adminMenuBtn" class="menu-item" style="border-left: 4px solid #dc2626; display: none;">
+                    <span>⚙️</span>
+                    <div>
+                        <strong>Painel Admin</strong>
+                        <p style="font-size: 12px; color: var(--text-light);">Gerir utilizadores e acessos</p>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
+
     <script src="js/auth.js"></script>
     <script>
-        // Validação simples de sessão e visualização do link Admin
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(!currentUser) window.location.href = 'index.html';
-        else {
-            document.getElementById('userName').innerText = currentUser.name;
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('welcomeName').innerText = currentUser.name;
             if(currentUser.isAdmin) {
-                document.getElementById('adminLink').style.display = 'block';
+                document.getElementById('adminMenuBtn').style.display = 'flex';
             }
         }
     </script>
