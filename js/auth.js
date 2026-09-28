@@ -25,30 +25,36 @@ if (!document.getElementById('globalCustomModal')) {
 let globalModalCallback = null;
 
 function mostrarPopup(titulo, mensagem, icone = '🎉', callback = null) {
-    document.getElementById('globalModalTitle').innerText = titulo;
-    document.getElementById('globalModalMessage').innerText = mensagem;
-    document.getElementById('globalModalIcon').innerText = icone;
-    document.getElementById('globalCustomModal').style.display = 'flex';
+    const titleEl = document.getElementById('globalModalTitle');
+    const msgEl = document.getElementById('globalModalMessage');
+    const iconEl = document.getElementById('globalModalIcon');
+    const modalEl = document.getElementById('globalCustomModal');
+    
+    if (titleEl) titleEl.innerText = titulo;
+    if (msgEl) msgEl.innerText = mensagem;
+    if (iconEl) iconEl.innerText = icone;
+    if (modalEl) modalEl.style.display = 'flex';
     globalModalCallback = callback;
 }
 
 function fecharModalGlobal() {
-    document.getElementById('globalCustomModal').style.display = 'none';
+    const modalEl = document.getElementById('globalCustomModal');
+    if (modalEl) modalEl.style.display = 'none';
     if (typeof globalModalCallback === 'function') {
         globalModalCallback();
         globalModalCallback = null;
     }
 }
 
-// Gestão global de cliques para alternar ecrãs (Login <-> Criar Conta)
+// Gestão global de cliques para alternar ecrãs (Login <-> Criar Conta) de forma infalível
 document.addEventListener('click', (e) => {
     const loginScreen = document.getElementById('loginScreen');
     const registerScreen = document.getElementById('registerScreen');
 
     if (!loginScreen || !registerScreen) return;
 
-    // Detetar clique para ir para o Registo
     const isShowRegister = e.target.closest('#showRegister') || 
+                           e.target.closest('.btn-register') ||
                            (e.target.innerText && e.target.innerText.toLowerCase().includes('criar conta'));
     
     if (isShowRegister) {
@@ -58,8 +64,8 @@ document.addEventListener('click', (e) => {
         return;
     }
 
-    // Detetar clique para voltar ao Login
     const isBackToLogin = e.target.closest('#backToLogin') || 
+                          e.target.closest('.btn-back') ||
                           (e.target.innerText && e.target.innerText.toLowerCase().includes('voltar ao login'));
     
     if (isBackToLogin) {
