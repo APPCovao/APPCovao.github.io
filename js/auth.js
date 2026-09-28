@@ -1,25 +1,30 @@
-// Inicializar utilizadores predefinidos caso não existam
+console.log("auth.js carregado com sucesso!");
+
+// 1. Inicializar utilizadores predefinidos
 if (!localStorage.getItem('users')) {
     const defaultUsers = [
         { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true },
         { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false }
     ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
+    console.log("Utilizadores predefinidos criados no localStorage.");
 }
 
-// Injetar Modal Personalizado se não existir
+// 2. Injetar Modal Personalizado de forma segura (sem insertAdjacentHTML)
 if (!document.getElementById('globalCustomModal')) {
-    const modalHTML = `
-        <div id="globalCustomModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999; padding:1rem;">
-            <div style="background:white; padding:2rem; border-radius:12px; width:100%; max-width:400px; box-shadow:0 4px 20px rgba(0,0,0,0.15); text-align:center;">
-                <div id="globalModalIcon" style="font-size:2.5rem; margin-bottom:0.5rem;">🎉</div>
-                <h3 id="globalModalTitle" style="color: #0f766e; margin-bottom:0.5rem;">Aviso</h3>
-                <p id="globalModalMessage" style="color: #64748b; margin-bottom:1.5rem; font-size:0.95rem;"></p>
-                <button type="button" id="globalModalBtn" onclick="fecharModalGlobal()" style="padding:0.75rem 1.25rem; border-radius:6px; border:none; font-weight:600; cursor:pointer; background-color: #0f766e; color:white; width:100%;">OK</button>
-            </div>
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'globalCustomModal';
+    modalDiv.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999; padding:1rem;";
+    
+    modalDiv.innerHTML = `
+        <div style="background:white; padding:2rem; border-radius:12px; width:100%; max-width:400px; box-shadow:0 4px 20px rgba(0,0,0,0.15); text-align:center;">
+            <div id="globalModalIcon" style="font-size:2.5rem; margin-bottom:0.5rem;">🎉</div>
+            <h3 id="globalModalTitle" style="color: #0f766e; margin-bottom:0.5rem;">Aviso</h3>
+            <p id="globalModalMessage" style="color: #64748b; margin-bottom:1.5rem; font-size:0.95rem;"></p>
+            <button type="button" id="globalModalBtn" onclick="fecharModalGlobal()" style="padding:0.75rem 1.25rem; border-radius:6px; border:none; font-weight:600; cursor:pointer; background-color: #0f766e; color:white; width:100%;">OK</button>
         </div>
     `;
-    document.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.appendChild(modalDiv);
 }
 
 let globalModalCallback = null;
@@ -46,89 +51,110 @@ function fecharModalGlobal() {
     }
 }
 
-// Alternância de ecrãs inteligente e global baseada em cliques
+// 3. Gestão de cliques universal (Botões de transição)
 document.addEventListener('click', (e) => {
-    const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-screen') || document.querySelector('#loginForm')?.closest('div');
-    const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-screen') || document.querySelector('#registerForm')?.closest('div');
-
-    const target = e.target.closest('button, a, [role="button"]');
+    const target = e.target.closest('button, a, [role="button"], div');
     if (!target) return;
 
     const text = (target.innerText || '').toLowerCase();
     const idOrClass = (target.id + ' ' + target.className).toLowerCase();
 
+    const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container') || document.querySelector('form#loginForm')?.parentElement;
+    const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container') || document.querySelector('form#registerForm')?.parentElement;
+
     if (idOrClass.includes('register') || text.includes('criar conta') || text.includes('registar')) {
-        e.preventDefault();
+        console.log("Botão de registo clicado!");
         if (loginScreen) loginScreen.style.display = 'none';
         if (registerScreen) registerScreen.style.display = 'block';
-    } else if (idOrClass.includes('login') || text.includes('voltar') || text.includes('fazer login')) {
-        e.preventDefault();
+    } 
+    else if (idOrClass.includes('login') || text.includes('voltar') || text.includes('fazer login')) {
+        console.log("Botão de voltar ao login clicado!");
         if (registerScreen) registerScreen.style.display = 'none';
         if (loginScreen) loginScreen.style.display = 'block';
     }
 });
 
-// Processamento automático de todos os formulários da página
+// 4. Gestão de Submissão de Formulários
 document.addEventListener('DOMContentLoaded', () => {
-    const forms = document.querySelectorAll('form');
+    console.log("DOM totalmente carregado.");
+    
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
 
-    forms.forEach(form => {
-        form.addEventListener('submit', (e) => {
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const inputs = form.querySelectorAll('input');
+            console.log("Tentativa de login submetida.");
             
-            // Formulário de Registo (3 ou mais campos: Nome, Email, Password)
-            if (inputs.length >= 3) {
-                const nameVal = inputs[0].value.trim();
-                const emailVal = inputs[1].value.trim().toLowerCase();
-                const passVal = inputs[2].value.trim();
+            const emailInput = loginForm.querySelector('input[type="email"]') || loginForm.querySelectorAll('input')[0];
+            const passInput = loginForm.querySelector('input[type="password"]') || loginForm.querySelectorAll('input')[1];
 
-                if (!nameVal || !emailVal || !passVal) {
-                    mostrarPopup('Atenção', 'Por favor, preencha todos os campos do registo.', '⚠️');
-                    return;
-                }
+            if (!emailInput || !passInput) {
+                mostrarPopup('Erro', 'Campos de login não encontrados.', '⚠️');
+                return;
+            }
 
-                let users = JSON.parse(localStorage.getItem('users')) || [];
-                if (users.some(u => u.email.toLowerCase() === emailVal)) {
-                    mostrarPopup('Conta Existente', 'Já existe uma conta registada com este email!', 'ℹ️');
-                    return;
-                }
+            const email = emailInput.value.trim();
+            const password = passInput.value.trim();
+            const users = JSON.parse(localStorage.getItem('users')) || [];
 
-                const novoUtilizador = {
-                    id: Date.now(),
-                    name: nameVal,
-                    email: emailVal,
-                    password: passVal,
-                    isAdmin: false
-                };
-
-                users.push(novoUtilizador);
-                localStorage.setItem('users', JSON.stringify(users));
-                form.reset();
-
-                mostrarPopup('Conta Criada!', 'Conta criada com sucesso! Podes agora fazer login.', '🎉', () => {
-                    const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-screen');
-                    const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-screen');
-                    if (registerScreen) registerScreen.style.display = 'none';
-                    if (loginScreen) loginScreen.style.display = 'block';
-                });
-
-            } 
-            // Formulário de Login (2 campos: Email e Password)
-            else if (inputs.length === 2) {
-                const emailVal = inputs[0].value.trim();
-                const passVal = inputs[1].value.trim();
-
-                let users = JSON.parse(localStorage.getItem('users')) || [];
-                const found = users.find(u => u.email.toLowerCase() === emailVal.toLowerCase() && u.password === passVal);
-
-                if (found) {
-                    localStorage.setItem('currentUser', JSON.stringify(found));
-                    window.location.href = 'dashboard.html';
-                } else {
-                    mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
-                }
+            const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+            
+            if (found) {
+                console.log("Login bem-sucedido:", found.name);
+                localStorage.setItem('currentUser', JSON.stringify(found));
+                window.location.href = 'dashboard.html';
+            } else {
+                console.warn("Credenciais inválidas.");
+                mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
             }
         });
-    });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log("Tentativa de registo submetida.");
+            
+            const inputs = registerForm.querySelectorAll('input');
+            if (inputs.length < 3) {
+                mostrarPopup('Atenção', 'O formulário precisa de pelo menos 3 campos.', '⚠️');
+                return;
+            }
+
+            const nameVal = inputs[0].value.trim();
+            const emailVal = inputs[1].value.trim().toLowerCase();
+            const passVal = inputs[2].value.trim();
+
+            if (!nameVal || !emailVal || !passVal) {
+                mostrarPopup('Atenção', 'Por favor, preencha todos os campos.', '⚠️');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(u => u.email.toLowerCase() === emailVal)) {
+                mostrarPopup('Conta Existente', 'Já existe uma conta com este email!', 'ℹ️');
+                return;
+            }
+
+            const novoUtilizador = {
+                id: Date.now(),
+                name: nameVal,
+                email: emailVal,
+                password: passVal,
+                isAdmin: false
+            };
+
+            users.push(novoUtilizador);
+            localStorage.setItem('users', JSON.stringify(users));
+            registerForm.reset();
+
+            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! Podes fazer login.', '🎉', () => {
+                const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container');
+                const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container');
+                if (registerScreen) registerScreen.style.display = 'none';
+                if (loginScreen) loginScreen.style.display = 'block';
+            });
+        });
+    }
 });
