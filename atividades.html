@@ -112,7 +112,7 @@
         <!-- Lista de Atividades Criadas -->
         <div class="table-container">
             <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Lista de Atividades Registadas</h3>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades do sistema. Apenas podes editar ou apagar as que criaste (exceto Administradores).</p>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades do sistema. Os administradores têm acesso total para gerir todas as entradas.</p>
             
             <table>
                 <thead>
@@ -140,7 +140,13 @@
             document.getElementById('userNameSpan').innerText = currentUser.name;
         }
 
-        // Dados de Exemplo com o campo "numero" incluído
+        // Função auxiliar para verificar se é Admin (compatível com diferentes estruturas de dados)
+        function isAdminUser(user) {
+            if (!user) return false;
+            return user.isAdmin === true || user.role === 'admin' || user.email === 'admin@regiscovao.pt' || (user.name && user.name.toLowerCase().includes('admin'));
+        }
+
+        // Dados de Exemplo iniciais (caso o localStorage esteja vazio)
         if (!localStorage.getItem('atividades')) {
             const sampleAtividades = [
                 { id: 1, numero: 1, titulo: 'Atividade de Motricidade Fina', criadorId: 2, criadorNome: 'João Utilizador' },
@@ -161,15 +167,20 @@
                 return;
             }
 
-            atividades.forEach(ativ => {
-                // Verificar permissão: É admin OU é o criador da atividade?
-                const podeModificar = currentUser.isAdmin || (ativ.criadorId === currentUser.id);
+            const userIsAdmin = isAdminUser(currentUser);
+
+            // Inverter a ordem para que a atividade mais recente apareça sempre no topo
+            const atividadesInvertidas = [...atividades].reverse();
+
+            atividadesInvertidas.forEach(ativ => {
+                // Administradores podem modificar tudo; utilizadores normais só o que criaram
+                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>#${ativ.numero || '-'}</strong></td>
+                    <td><strong>#${ativ.numero || ativ.id || '-'}</strong></td>
                     <td><strong>${ativ.titulo}</strong></td>
-                    <td>${ativ.criadorNome}</td>
+                    <td>${ativ.criadorNome || 'Desconhecido'}</td>
                     <td>
                         <div class="actions-cell">
                             <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
