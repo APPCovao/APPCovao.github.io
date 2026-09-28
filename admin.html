@@ -5,15 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - Registos App</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .btn-action {
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            border: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-toggle {
+            background-color: #f1f5f9;
+            color: var(--color-primary);
+            margin-right: 0.5rem;
+        }
+        .btn-toggle:hover { background-color: #e2e8f0; }
+        .btn-delete {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+        .btn-delete:hover { background-color: #fecaca; }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="logo">⚙️ Painel de Administrador</div>
         <ul class="nav-links">
-            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dashboard.html" style="color: white; text-decoration: none;">Dashboard</a></li>
         </ul>
     </nav>
-    <div class="container" style="margin-top: 2rem;">
+    <div class="container" style="margin-top: 2rem; max-width: 900px;">
         <h2>Gestão de Utilizadores e Permissões</h2>
         <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Como administrador, pode eliminar, alterar ou dar permissões de admin.</p>
         
@@ -21,10 +42,10 @@
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="border-bottom: 2px solid #cbd5e1; text-align: left;">
-                        <th style="padding: 0.5rem;">Utilizador</th>
-                        <th style="padding: 0.5rem;">Email</th>
-                        <th style="padding: 0.5rem;">Função</th>
-                        <th style="padding: 0.5rem;">Ações</th>
+                        <th style="padding: 0.75rem;">Utilizador</th>
+                        <th style="padding: 0.75rem;">Email</th>
+                        <th style="padding: 0.75rem;">Função</th>
+                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -33,14 +54,83 @@
             </table>
         </div>
     </div>
+
     <script src="js/auth.js"></script>
     <script>
         // Restringir acesso apenas a admins
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        if(!user || !user.isAdmin) {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser || !currentUser.isAdmin) {
             alert('Acesso restrito a administradores!');
             window.location.href = 'dashboard.html';
         }
+
+        // Função para carregar e desenhar os utilizadores na tabela
+        function carregarUtilizadores() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            // Vai buscar a lista global de utilizadores (Certifica-te que no teu registo guardas na chave 'users')
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Se por acaso a lista estiver vazia mas houver um currentUser logado, insere-o para não ficar em branco
+            if (users.length === 0 && currentUser) {
+                users.push(currentUser);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            users.forEach((u, index) => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #f1f5f9';
+
+                const isAdm = u.isAdmin ? '<span style="color: var(--color-primary); font-weight: bold;">Administrador</span>' : 'Utilizador Padrão';
+
+                tr.innerHTML = `
+                    <td style="padding: 0.75rem;">${u.name || u.nome || 'Sem Nome'}</td>
+                    <td style="padding: 0.75rem; color: var(--text-muted);">${u.email}</td>
+                    <td style="padding: 0.75rem;">${isAdm}</td>
+                    <td style="padding: 0.75rem; text-align: right;">
+                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${index})">
+                            ${u.isAdmin ? 'Remover Admin' : 'Tornar Admin'}
+                        </button>
+                        <button class="btn-action btn-delete" onclick="eliminarUtilizador(${index})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function alternarAdmin(index) {
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Impedir que o próprio admin tire os seus próprios privilégios por acidente
+            if (users[index].email === currentUser.email) {
+                alert('Não pode alterar as suas próprias permissões de administrador.');
+                return;
+            }
+
+            users[index].isAdmin = !users[index].isAdmin;
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            carregarUtilizadores();
+        }
+
+        function eliminarUtilizador(index) {
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users[index].email === currentUser.email) {
+                alert('Não pode eliminar a sua própria conta ativa.');
+                return;
+            }
+
+            if (confirm('Tem a certeza que pretende eliminar este utilizador?')) {
+                users.splice(index, 1);
+                localStorage.setItem('users', JSON.stringify(users));
+                carregarUtilizadores();
+            }
+        }
+
+        // Executar ao carregar a página
+        carregarUtilizadores();
     </script>
 </body>
 </html>
