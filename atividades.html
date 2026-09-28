@@ -52,8 +52,14 @@
         .btn-view { background-color: #0284c7; color: white; }
         .btn-edit { background-color: #eab308; color: white; }
         .btn-delete { background-color: #ef4444; color: white; }
+        
+        .btn-action:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
 
-        /* Estilos para Modais Personalizados */
+        /* Estilos para Modais Personalizados idênticos ao formulário */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -62,16 +68,20 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 1rem;
+            overflow-y: auto;
         }
 
         .custom-modal {
             background: white;
             padding: 2rem;
             border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
+            width: 100%;
+            max-width: 600px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             animation: modalFadeIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes modalFadeIn {
@@ -79,29 +89,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .custom-modal h3 {
-            margin-bottom: 1rem;
+        .custom-modal h2 {
             color: var(--color-primary);
-        }
-
-        .custom-modal .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .custom-modal label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-            color: var(--text-main);
-        }
-
-        .custom-modal input, .custom-modal textarea {
-            width: 100%;
-            padding: 0.6rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
 
         .modal-buttons {
@@ -189,26 +180,49 @@
         </div>
     </div>
 
-    <!-- MODAL PERSONALIZADO (VER / EDITAR) -->
+    <!-- MODAL IDÊNTICO AO FORMULÁRIO DE CRIAÇÃO (VER / EDITAR) -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h3 id="modalTitle">Detalhes da Atividade</h3>
+            <h2 id="modalTitle">Detalhes da Atividade</h2>
+            
             <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
                 <input type="hidden" id="editAtividadeId">
                 
                 <div class="form-group">
-                    <label for="modalNumero">Número da Atividade</label>
-                    <input type="text" id="modalNumero" readonly>
+                    <label for="modalNumAtividade">Número da Atividade</label>
+                    <input type="text" id="modalNumAtividade" readonly style="background-color: #f8fafc; cursor: not-allowed; font-weight: bold; color: var(--color-primary);">
                 </div>
 
                 <div class="form-group">
-                    <label for="modalTitulo">Título / Descrição</label>
-                    <input type="text" id="modalTitulo" required>
+                    <label for="modalNomeAtividade">Nome da Atividade</label>
+                    <input type="text" id="modalNomeAtividade" required placeholder="Insira o nome da atividade">
                 </div>
 
                 <div class="form-group">
-                    <label for="modalDetalhes">Detalhes / Observações</label>
-                    <textarea id="modalDetalhes" rows="4"></textarea>
+                    <label for="modalAnoLetivo">Ano Letivo</label>
+                    <select id="modalAnoLetivo" required>
+                        <option value="" disabled>Selecione o ano letivo</option>
+                        <option value="2023/2024">2023/2024</option>
+                        <option value="2024/2025">2024/2025</option>
+                        <option value="2025/2026">2025/2026</option>
+                        <option value="2026/2027">2026/2027</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalTipoAtividade">Tipo de Atividade</label>
+                    <select id="modalTipoAtividade" required>
+                        <option value="" disabled>Selecione o tipo de atividade</option>
+                        <option value="Atividade">Atividade</option>
+                        <option value="Projeto">Projeto</option>
+                        <option value="Formação/acção">Formação/acção</option>
+                        <option value="Visita de Estudo">Visita de Estudo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalCriadoPor">Criado por</label>
+                    <input type="text" id="modalCriadoPor" readonly style="background-color: #f8fafc; cursor: not-allowed;">
                 </div>
 
                 <div class="modal-buttons">
@@ -223,8 +237,8 @@
     <div id="confirmModal" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 400px; text-align: center;">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
-            <h3 style="color: #ef4444;">Apagar Atividade</h3>
-            <p id="confirmText" style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar esta atividade?</p>
+            <h3 style="color: #ef4444; margin-bottom: 0.5rem;">Apagar Atividade</h3>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar esta atividade?</p>
             <div class="modal-buttons" style="justify-content: center;">
                 <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
                 <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
@@ -289,19 +303,27 @@
             });
         }
 
+        function preencherDadosModal(ativ) {
+            document.getElementById('editAtividadeId').value = ativ.id;
+            document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
+            document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
+            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
+            document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
+            document.getElementById('modalCriadoPor').value = ativ.criadorNome || 'Desconhecido';
+        }
+
         function verAtividade(id) {
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const ativ = atividades.find(a => a.id === id);
             if (!ativ) return;
 
             document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            document.getElementById('modalNumero').value = ativ.numero || ativ.id;
-            document.getElementById('modalTitulo').value = ativ.titulo || '';
-            document.getElementById('modalDetalhes').value = ativ.detalhes || ativ.descricao || '';
+            preencherDadosModal(ativ);
             
             // Bloquear campos para modo de leitura
-            document.getElementById('modalTitulo').setAttribute('readonly', true);
-            document.getElementById('modalDetalhes').setAttribute('readonly', true);
+            document.getElementById('modalNomeAtividade').setAttribute('readonly', true);
+            document.getElementById('modalAnoLetivo').setAttribute('disabled', true);
+            document.getElementById('modalTipoAtividade').setAttribute('disabled', true);
             document.getElementById('modalSaveBtn').style.display = 'none';
 
             document.getElementById('atividadeModal').style.display = 'flex';
@@ -313,14 +335,12 @@
             if (!ativ) return;
 
             document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            document.getElementById('editAtividadeId').value = ativ.id;
-            document.getElementById('modalNumero').value = ativ.numero || ativ.id;
-            document.getElementById('modalTitulo').value = ativ.titulo || '';
-            document.getElementById('modalDetalhes').value = ativ.detalhes || ativ.descricao || '';
+            preencherDadosModal(ativ);
             
             // Desbloquear campos para edição
-            document.getElementById('modalTitulo').removeAttribute('readonly');
-            document.getElementById('modalDetalhes').removeAttribute('readonly');
+            document.getElementById('modalNomeAtividade').removeAttribute('readonly');
+            document.getElementById('modalAnoLetivo').removeAttribute('disabled');
+            document.getElementById('modalTipoAtividade').removeAttribute('disabled');
             document.getElementById('modalSaveBtn').style.display = 'inline-block';
 
             document.getElementById('atividadeModal').style.display = 'flex';
@@ -329,14 +349,17 @@
         function salvarEdicaoAtividade(event) {
             event.preventDefault();
             const id = parseInt(document.getElementById('editAtividadeId').value);
-            const novoTitulo = document.getElementById('modalTitulo').value;
-            const novosDetalhes = document.getElementById('modalDetalhes').value;
+            
+            const novoTitulo = document.getElementById('modalNomeAtividade').value.trim();
+            const novoAnoLetivo = document.getElementById('modalAnoLetivo').value;
+            const novoTipo = document.getElementById('modalTipoAtividade').value;
 
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             atividades = atividades.map(a => {
                 if (a.id === id) {
                     a.titulo = novoTitulo;
-                    a.detalhes = novosDetalhes;
+                    a.anoLetivo = novoAnoLetivo;
+                    a.tipo = novoTipo;
                 }
                 return a;
             });
