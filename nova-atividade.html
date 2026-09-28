@@ -46,7 +46,7 @@
         }
 
         .btn-modal {
-            padding: 0.5rem 1.25rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 6px;
             border: none;
             font-weight: 600;
@@ -137,49 +137,75 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name;
-            document.getElementById('criadoPor').value = currentUser.name;
+            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
+            document.getElementById('criadoPor').value = currentUser.name || 'Utilizador';
         }
 
-        // Atribuir automaticamente o Número da Atividade seguinte
+        // Atribuir automaticamente o Número da Atividade seguinte com segurança
         function definirNumeroAutomatico() {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const proximoNumero = atividades.length + 1;
-            document.getElementById('numAtividade').value = proximoNumero;
+            try {
+                const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                const proximoNumero = atividades.length + 1;
+                const inputNum = document.getElementById('numAtividade');
+                if (inputNum) {
+                    inputNum.value = proximoNumero;
+                }
+            } catch (error) {
+                console.error("Erro ao carregar número automático:", error);
+                document.getElementById('numAtividade').value = 1;
+            }
         }
 
-        // Executar ao carregar a página
-        definiirNumeroAutomatico();
+        // Executar imediatamente ao carregar o script
+        definirNumeroAutomatico();
 
         // Lógica de submissão do formulário
         const form = document.getElementById('novaAtividadeForm');
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Impede o recarregamento imediato
 
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const proximoNumero = atividades.length + 1;
+                let atividades = [];
+                try {
+                    atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                } catch (err) {
+                    atividades = [];
+                }
 
-            const novaAtividade = {
-                id: Date.now(), // ID único interno
-                numero: proximoNumero, // Número sequencial automático
-                titulo: document.getElementById('nomeAtividade').value.trim(),
-                anoLetivo: document.getElementById('anoLetivo').value,
-                tipo: document.getElementById('tipoAtividade').value,
-                criadorId: currentUser.id,
-                criadorNome: currentUser.name,
-                data: new Date().toISOString().split('T')[0]
-            };
-            
-            atividades.push(novaAtividade);
-            localStorage.setItem('atividades', JSON.stringify(atividades));
+                const proximoNumero = atividades.length + 1;
 
-            // Mostrar popup personalizado em vez do alert
-            document.getElementById('successMessage').innerText = `Atividade #${proximoNumero} criada com sucesso!`;
-            document.getElementById('successModal').style.display = 'flex';
-        });
+                const novaAtividade = {
+                    id: Date.now(),
+                    numero: proximoNumero,
+                    titulo: document.getElementById('nomeAtividade').value.trim(),
+                    anoLetivo: document.getElementById('anoLetivo').value,
+                    tipo: document.getElementById('tipoAtividade').value,
+                    criadorId: currentUser.id || '',
+                    criadorNome: currentUser.name || '',
+                    data: new Date().toISOString().split('T')[0]
+                };
+                
+                atividades.push(novaAtividade);
+                localStorage.setItem('atividades', JSON.stringify(atividades));
+
+                // Atualizar o texto do modal e exibi-lo corretamente via flex
+                const msgElement = document.getElementById('successMessage');
+                const modalElement = document.getElementById('successModal');
+                
+                if (msgElement) {
+                    msgElement.innerText = `Atividade #${proximoNumero} criada com sucesso!`;
+                }
+                if (modalElement) {
+                    modalElement.style.display = 'flex';
+                }
+            });
+        }
 
         function fecharModalSucesso() {
-            document.getElementById('successModal').style.display = 'none';
+            const modalElement = document.getElementById('successModal');
+            if (modalElement) {
+                modalElement.style.display = 'none';
+            }
             window.location.href = 'atividades.html';
         }
     </script>
