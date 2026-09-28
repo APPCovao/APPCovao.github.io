@@ -40,93 +40,99 @@ function fecharModalGlobal() {
     }
 }
 
-// Alternar entre Login e Criar Conta
-const showRegister = document.getElementById('showRegister');
-const backToLogin = document.getElementById('backToLogin');
-const loginScreen = document.getElementById('loginScreen');
-const registerScreen = document.getElementById('registerScreen');
+// Alternar entre Login e Criar Conta de forma inteligente e abrangente
+document.addEventListener('DOMContentLoaded', () => {
+    const loginScreen = document.getElementById('loginScreen');
+    const registerScreen = document.getElementById('registerScreen');
 
-if (showRegister) {
-    showRegister.addEventListener('click', () => {
-        loginScreen.style.display = 'none';
-        registerScreen.style.display = 'block';
-    });
-}
-if (backToLogin) {
-    backToLogin.addEventListener('click', () => {
-        registerScreen.style.display = 'none';
-        loginScreen.style.display = 'block';
-    });
-}
+    // Botões para abrir o registo (procura por ID ou por qualquer botão/link que sirva para isso)
+    const showRegister = document.getElementById('showRegister') || document.querySelector('[href*="register"]') || document.querySelector('.btn-register');
+    const backToLogin = document.getElementById('backToLogin') || document.querySelector('[href*="login"]') || document.querySelector('.btn-back');
 
-// Lógica de Login
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const users = JSON.parse(localStorage.getItem('users')) || [];
+    if (showRegister && registerScreen && loginScreen) {
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginScreen.style.display = 'none';
+            registerScreen.style.display = 'block';
+        });
+    }
 
-        const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-        if (found) {
-            localStorage.setItem('currentUser', JSON.stringify(found));
-            window.location.href = 'dashboard.html';
-        } else {
-            mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
-        }
-    });
-}
+    if (backToLogin && registerScreen && loginScreen) {
+        backToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerScreen.style.display = 'none';
+            loginScreen.style.display = 'block';
+        });
+    }
 
-// Lógica de Registo de Nova Conta (Robusta e Direta)
-const registerForm = document.getElementById('registerForm');
-if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const inputs = registerForm.querySelectorAll('input');
-        
-        // Verifica se existem pelo menos 3 inputs (Nome, Email, Password)
-        if (inputs.length < 3) {
-            mostrarPopup('Atenção', 'O formulário de registo precisa de ter os campos necessários.', '⚠️');
-            return;
-        }
+    // Lógica de Login
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const users = JSON.parse(localStorage.getItem('users')) || [];
 
-        const nameVal = inputs[0].value.trim();
-        const emailVal = inputs[1].value.trim().toLowerCase();
-        const passVal = inputs[2].value.trim();
-
-        if (!nameVal || !emailVal || !passVal) {
-            mostrarPopup('Atenção', 'Por favor, preencha todos os campos do formulário.', '⚠️');
-            return;
-        }
-
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-
-        const existe = users.some(u => u.email.toLowerCase() === emailVal);
-        if (existe) {
-            mostrarPopup('Conta Existente', 'Já existe uma conta registada com este email!', 'ℹ️');
-            return;
-        }
-
-        const novoUtilizador = {
-            id: Date.now(),
-            name: nameVal,
-            email: emailVal,
-            password: passVal,
-            isAdmin: false
-        };
-
-        users.push(novoUtilizador);
-        localStorage.setItem('users', JSON.stringify(users));
-
-        registerForm.reset();
-        
-        mostrarPopup('Conta Criada!', 'A sua conta foi registada com sucesso. Podes agora fazer login.', '🎉', () => {
-            if (registerScreen && loginScreen) {
-                registerScreen.style.display = 'none';
-                loginScreen.style.display = 'block';
+            const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+            if (found) {
+                localStorage.setItem('currentUser', JSON.stringify(found));
+                window.location.href = 'dashboard.html';
+            } else {
+                mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
             }
         });
-    });
-}
+    }
+
+    // Lógica de Registo de Nova Conta
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const inputs = registerForm.querySelectorAll('input');
+            
+            if (inputs.length < 3) {
+                mostrarPopup('Atenção', 'O formulário de registo precisa de ter os campos necessários.', '⚠️');
+                return;
+            }
+
+            const nameVal = inputs[0].value.trim();
+            const emailVal = inputs[1].value.trim().toLowerCase();
+            const passVal = inputs[2].value.trim();
+
+            if (!nameVal || !emailVal || !passVal) {
+                mostrarPopup('Atenção', 'Por favor, preencha todos os campos do formulário.', '⚠️');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            const existe = users.some(u => u.email.toLowerCase() === emailVal);
+            if (existe) {
+                mostrarPopup('Conta Existente', 'Já existe uma conta registada com este email!', 'ℹ️');
+                return;
+            }
+
+            const novoUtilizador = {
+                id: Date.now(),
+                name: nameVal,
+                email: emailVal,
+                password: passVal,
+                isAdmin: false
+            };
+
+            users.push(novoUtilizador);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            registerForm.reset();
+            
+            mostrarPopup('Conta Criada!', 'A sua conta foi registada com sucesso. Podes agora fazer login.', '🎉', () => {
+                if (registerScreen && loginScreen) {
+                    registerScreen.style.display = 'none';
+                    loginScreen.style.display = 'block';
+                }
+            });
+        });
+    }
+});
