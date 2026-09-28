@@ -1,10 +1,10 @@
 :root {
-  --bg-app: #f0f4f7;
-  --color-primary: #15515b; /* Azul Petróleo / Verde Escuro */
-  --color-accent: #e66b31;  /* Laranja */
+  --bg-app: #f1f5f9;
+  --color-primary: #115e59; /* Azul Petróleo / Verde Escuro */
+  --color-accent: #f97316;  /* Laranja */
   --color-white: #ffffff;
-  --text-dark: #333333;
-  --text-light: #666666;
+  --text-dark: #1e293b;
+  --text-light: #64748b;
   --radius: 12px;
 }
 
@@ -18,146 +18,221 @@
 body {
   background-color: var(--bg-app);
   color: var(--text-dark);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-}
-
-.app-container {
-  width: 375px;
-  height: 812px;
-  background: var(--bg-app);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  border-radius: 40px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  position: relative;
-  border: 12px solid #1a1a1a;
 }
 
-.status-bar {
-  height: 44px;
-  background: var(--color-primary);
-  color: white;
+/* Navbar Moderna Superior */
+.navbar {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.navbar .brand img {
+  height: 35px;
+  width: auto;
+}
+
+.navbar .user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 0.95rem;
+}
+
+.navbar a.logout-btn {
+  color: #fed7aa;
+  text-decoration: none;
   font-weight: 600;
 }
 
-.page-header {
-  background: var(--color-primary);
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-}
-
-.page-header a {
-  color: white;
-  text-decoration: none;
-  margin-right: 15px;
-}
-
-.content {
+/* Contentor Adaptável (Fluido para PC e Telemóvel) */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
   flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background-color: #f4f7f6;
+}
+
+/* Formulários (Login / Registo) Centrados e Elegantes */
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+}
+
+.auth-card {
+  background: var(--color-white);
+  padding: 2.5rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 420px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 14px;
+  font-size: 0.9rem;
   color: var(--text-light);
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
-.form-group input, .form-group select {
+.form-group input, .form-group select, .form-group textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
 }
 
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(17, 94, 89, 0.1);
+}
+
+/* Botões */
 .btn {
   width: 100%;
-  padding: 15px;
+  padding: 0.85rem;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
-  display: block;
-  margin-bottom: 10px;
+  display: inline-block;
+  transition: opacity 0.2s;
 }
 
 .btn-primary {
   background-color: var(--color-accent);
-  color: white;
+  color: var(--color-white);
 }
 
 .btn-secondary {
   background-color: transparent;
   color: var(--color-primary);
   border: 1px solid var(--color-primary);
+  margin-top: 10px;
 }
 
-.dashboard-welcome {
-  background: var(--color-primary);
-  color: white;
-  padding: 20px;
+.btn:hover {
+  opacity: 0.9;
 }
 
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.stat-card {
+/* Dashboard Cards e Grid (Ajusta-se automaticamente de PC para Telemóvel) */
+.dashboard-header {
   background: var(--color-white);
-  padding: 12px;
+  padding: 1.5rem 2rem;
   border-radius: var(--radius);
-  color: var(--text-dark);
-}
-
-.stat-card h4 { font-size: 12px; color: var(--text-light); }
-.stat-card p { font-size: 20px; font-weight: bold; margin-top: 3px; }
-
-/* Menu com as 5 opções */
-.menu-list {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  margin-bottom: 2rem;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.menu-item {
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
   background: var(--color-white);
-  padding: 15px;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  border-left: 4px solid var(--color-primary);
+}
+
+.stat-box h4 {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+}
+
+.stat-box p {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-top: 0.25rem;
+}
+
+/* As 5 Opções do Menu Principal em Grelha Responsiva */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.menu-card {
+  background: var(--color-white);
+  padding: 1.5rem;
   border-radius: var(--radius);
   text-decoration: none;
   color: var(--text-dark);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
   display: flex;
   align-items: center;
-  gap: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: transform 0.2s;
+  gap: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-top: 4px solid var(--color-primary);
 }
 
-.menu-item:hover { transform: translateX(4px); }
-.menu-item span { font-size: 1.5rem; }
+.menu-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.menu-card .icon {
+  font-size: 2.2rem;
+}
+
+.menu-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.menu-card p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+/* Ajustes Específicos para Telemóveis */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 1rem;
+  }
+  .auth-card {
+    padding: 1.5rem;
+    box-shadow: none;
+    background: transparent;
+  }
+}
