@@ -216,13 +216,13 @@
         <div id="tabAvaliadas" class="tab-content">
             <div class="table-container" style="margin-top: 0;">
                 <h3 style="color: var(--color-accent); margin-bottom: 0.5rem;">Lista de Atividades Avaliadas</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as avaliações e pareceres emitidos.</p>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as avaliações efetuadas.</p>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 15%;">Atividade Ref.</th>
-                            <th>Avaliação / Comentário</th>
-                            <th style="width: 25%;">Avaliador</th>
+                            <th style="width: 15%;">Nº Atividade</th>
+                            <th>Título / Descrição</th>
+                            <th style="width: 25%;">Criado por</th>
                             <th style="width: 20%;">Ações</th>
                         </tr>
                     </thead>
@@ -286,6 +286,32 @@
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModal()">Fechar</button>
                     <button type="submit" id="modalSaveBtn" class="btn-modal btn-modal-confirm">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE AVALIAÇÃO -->
+    <div id="avaliacaoModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent);">Detalhes da Avaliação</h2>
+            <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
+                <input type="hidden" id="editAvaliacaoId">
+                <div class="form-group">
+                    <label>Número da Atividade</label>
+                    <input type="text" id="modalAvNumAtividade" readonly style="background-color: #f8fafc; font-weight: bold;">
+                </div>
+                <div class="form-group">
+                    <label>Título / Descrição da Atividade</label>
+                    <input type="text" id="modalAvTituloAtividade" readonly style="background-color: #f8fafc;">
+                </div>
+                <div class="form-group">
+                    <label>Comentário / Parecer de Avaliação</label>
+                    <textarea id="modalAvComentario" rows="4" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
+                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar</button>
                 </div>
             </form>
         </div>
@@ -367,7 +393,8 @@
         // --- CARREGAR AVALIAÇÕES ---
         function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
-            const avaliadas = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
+            const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
             tbody.innerHTML = '';
 
             if (avaliadas.length === 0) {
@@ -381,11 +408,13 @@
                 const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${av.numeroAtividade || av.atividadeNome || 'Ref'}</strong></td>
-                    <td>${av.comentario || av.parecer || av.texto || 'Sem descrição'}</td>
+                    <td><strong>${av.numeroAtividade || av.numero || '-'}</strong></td>
+                    <td><strong>${av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada'}</strong></td>
                     <td>${av.avaliadorNome || av.criadorNome || 'Desconhecido'}</td>
                     <td>
                         <div class="actions-cell">
+                            <button class="btn-action btn-view" onclick="verAvaliacao(${idReal})">Ver</button>
+                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao(${idReal})">Editar</button>
                             <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'avaliacao')">Apagar</button>
                         </div>
                     </td>
@@ -397,7 +426,8 @@
         // --- CARREGAR OBJETIVOS ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
-            const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
+            const chave = localStorage.getItem('objetivos') ? 'objetivos' : 'registarObjetivos';
+            const objetivos = JSON.parse(localStorage.getItem(chave)) || [];
             tbody.innerHTML = '';
 
             if (objetivos.length === 0) {
@@ -467,6 +497,56 @@
             localStorage.setItem('atividades', JSON.stringify(atividades));
             fecharModal();
             carregarAtividades();
+        }
+
+        // Modais de Avaliação
+        function verAvaliacao(id) {
+            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
+            const avs = JSON.parse(localStorage.getItem(chave)) || [];
+            const av = avs.find(a => (a.id === id) || (avs.indexOf(a) === id));
+            if(!av) return;
+            document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
+            preencherModalAvaliacao(av, true);
+        }
+        function editarAvaliacao(id) {
+            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
+            const avs = JSON.parse(localStorage.getItem(chave)) || [];
+            const av = avs.find(a => (a.id === id) || (avs.indexOf(a) === id));
+            if(!av) return;
+            document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
+            preencherModalAvaliacao(av, false);
+        }
+        function preencherModalAvaliacao(av, somenteLeitura) {
+            document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
+            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || av.numero || '-';
+            document.getElementById('modalAvTituloAtividade').value = av.tituloAtividade || av.atividadeNome || av.titulo || '';
+            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
+
+            document.getElementById('modalAvComentario').readOnly = somenteLeitura;
+            document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
+            document.getElementById('avaliacaoModal').style.display = 'flex';
+        }
+        function fecharModalAvaliacao() { document.getElementById('avaliacaoModal').style.display = 'none'; }
+
+        function salvarEdicaoAvaliacao(e) {
+            e.preventDefault();
+            const idInput = document.getElementById('editAvaliacaoId').value;
+            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
+            let avs = JSON.parse(localStorage.getItem(chave)) || [];
+            
+            avs = avs.map((a, idx) => {
+                const matchId = (idInput !== "" && a.id == idInput);
+                const matchIdx = (idInput === "" && idx == idInput);
+                if(matchId || matchIdx || (a.id === idInput)) {
+                    a.comentario = document.getElementById('modalAvComentario').value;
+                    if(a.parecer) a.parecer = a.comentario;
+                    if(a.texto) a.texto = a.comentario;
+                }
+                return a;
+            });
+            localStorage.setItem(chave, JSON.stringify(avs));
+            fecharModalAvaliacao();
+            carregarAvaliacoes();
         }
 
         // Apagar genérico
