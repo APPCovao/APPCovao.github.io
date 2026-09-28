@@ -5,6 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atividades - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos adicionais para a tabela de listagem */
+        .table-container {
+            background: var(--color-white);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-view { background-color: #0284c7; color: white; }
+        .btn-edit { background-color: #eab308; color: white; }
+        .btn-delete { background-color: #ef4444; color: white; }
+        
+        .btn-action:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -13,6 +68,7 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
+            <span>Olá, <strong id="userNameSpan"></strong></span>
             <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar ao Menu</a>
         </div>
     </div>
@@ -22,13 +78,12 @@
         <div class="dashboard-header">
             <div>
                 <h2>Gestão de Atividades</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Selecione a ação desejada para gerir as atividades</p>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Crie, avalie ou consulte o histórico completo de atividades</p>
             </div>
         </div>
 
         <!-- Grelha com os 3 Botões Principais -->
         <div class="menu-grid">
-            <!-- Botão 1: Nova Atividade -->
             <a href="nova-atividade.html" class="menu-card" style="border-top-color: var(--color-primary);">
                 <div class="icon">➕</div>
                 <div>
@@ -37,7 +92,6 @@
                 </div>
             </a>
 
-            <!-- Botão 2: Avaliar Atividade -->
             <a href="avaliar-atividade.html" class="menu-card" style="border-top-color: var(--color-accent);">
                 <div class="icon">⭐</div>
                 <div>
@@ -46,7 +100,6 @@
                 </div>
             </a>
 
-            <!-- Botão 3: Registar Objetivos e Metas -->
             <a href="registar-objetivos.html" class="menu-card" style="border-top-color: #16a34a;">
                 <div class="icon">🎯</div>
                 <div>
@@ -55,15 +108,100 @@
                 </div>
             </a>
         </div>
+
+        <!-- Lista de Atividades Criadas -->
+        <div class="table-container">
+            <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Lista de Atividades Registadas</h3>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades do sistema. Apenas podes editar ou apagar as que criaste (exceto Administradores).</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título / Descrição</th>
+                        <th>Criado por</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="atividadesTableBody">
+                    <!-- Os dados serão injetados dinamicamente por JavaScript -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="js/auth.js"></script>
     <script>
-        // Segurança simples para garantir que o utilizador está autenticado
+        // Verificar autenticação
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser) {
             window.location.href = 'index.html';
+        } else {
+            document.getElementById('userNameSpan').innerText = currentUser.name;
         }
+
+        // Simulação/Gestão de Atividades no LocalStorage para testes dinâmicos
+        if (!localStorage.getItem('atividades')) {
+            const sampleAtividades = [
+                { id: 1, titulo: 'Atividade de Motricidade Fina', criadorId: 2, criadorNome: 'João Utilizador', data: '2026-03-26' },
+                { id: 2, titulo: 'Sessão de CAA - Vocabulário Base', criadorId: 1, criadorNome: 'Administrador Covão', data: '2026-03-27' }
+            ];
+            localStorage.setItem('atividades', JSON.stringify(sampleAtividades));
+        }
+
+        function carregarAtividades() {
+            const tbody = document.getElementById('atividadesTableBody');
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            
+            tbody.innerHTML = '';
+
+            if (atividades.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades registadas.</td></tr>`;
+                return;
+            }
+
+            atividades.forEach(ativ => {
+                // Verificar permissão: É admin OU é o criador da atividade?
+                const podeModificar = currentUser.isAdmin || (ativ.criadorId === currentUser.id);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${ativ.titulo}</strong></td>
+                    <td>${ativ.criadorNome}</td>
+                    <td>${ativ.data}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
+                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled title="Apenas o criador ou o admin podem editar"' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled title="Apenas o criador ou o admin podem apagar"' : ''} onclick="apagarAtividade(${ativ.id})">Apagar</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function verAtividade(id) {
+            alert('A abrir detalhes da atividade ID: ' + id);
+            // Aqui podes redirecionar ou abrir um modal com os detalhes
+        }
+
+        function editarAtividade(id) {
+            alert('A editar atividade ID: ' + id);
+            // Redirecionar para página de edição
+        }
+
+        function apagarAtividade(id) {
+            if(confirm('Tens a certeza que pretendes apagar esta atividade?')) {
+                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                atividades = atividades.filter(a => a.id !== id);
+                localStorage.setItem('atividades', JSON.stringify(atividades));
+                carregarAtividades();
+            }
+        }
+
+        // Executar carregamento ao abrir a página
+        carregarAtividades();
     </script>
 </body>
 </html>
