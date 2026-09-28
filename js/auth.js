@@ -1,4 +1,4 @@
-// Inicializa utilizadores predefinidos
+// Inicializar utilizadores predefinidos
 if (!localStorage.getItem('users')) {
     const defaultUsers = [
         { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true },
@@ -7,7 +7,7 @@ if (!localStorage.getItem('users')) {
     localStorage.setItem('users', JSON.stringify(defaultUsers));
 }
 
-// Troca de ecrãs no login
+// Alternar entre Login e Criar Conta
 const showRegister = document.getElementById('showRegister');
 const backToLogin = document.getElementById('backToLogin');
 const loginScreen = document.getElementById('loginScreen');
@@ -26,7 +26,7 @@ if (backToLogin) {
     });
 }
 
-// Submissão do Login
+// Lógica de Login
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
