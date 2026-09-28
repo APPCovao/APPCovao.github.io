@@ -390,11 +390,12 @@
             });
         }
 
-        // --- CARREGAR AVALIAÇÕES ---
+        // --- CARREGAR AVALIAÇÕES (Buscando o nome da atividade correspondente) ---
         function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             tbody.innerHTML = '';
 
             if (avaliadas.length === 0) {
@@ -404,18 +405,30 @@
 
             const userIsAdmin = isAdminUser(currentUser);
             [...avaliadas].reverse().forEach((av, index) => {
-                const idReal = av.id || index;
+                const idReal = av.id !== undefined ? av.id : index;
                 const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
+
+                // Tenta cruzar a avaliação com a atividade original pelo ID ou pelo Número
+                let atividadeCorrespondente = atividades.find(a => 
+                    (av.atividadeId && a.id == av.atividadeId) || 
+                    (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
+                    (av.id && a.id == av.id)
+                );
+
+                const numAtividade = av.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : '-');
+                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada');
+                const criador = av.avaliadorNome || av.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${av.numeroAtividade || av.numero || '-'}</strong></td>
-                    <td><strong>${av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada'}</strong></td>
-                    <td>${av.avaliadorNome || av.criadorNome || 'Desconhecido'}</td>
+                    <td><strong>${numAtividade}</strong></td>
+                    <td><strong>${tituloAtividade}</strong></td>
+                    <td>${criador}</td>
                     <td>
                         <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verAvaliacao(${idReal})">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao(${idReal})">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'avaliacao')">Apagar</button>
+                            <button class="btn-action btn-view" onclick="verAvaliacao('${idReal}')">Ver</button>
+                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao('${idReal}')">Editar</button>
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'avaliacao')">Apagar</button>
                         </div>
                     </td>
                 `;
@@ -437,7 +450,7 @@
 
             const userIsAdmin = isAdminUser(currentUser);
             [...objetivos].reverse().forEach((obj, index) => {
-                const idReal = obj.id || index;
+                const idReal = obj.id !== undefined ? obj.id : index;
                 const podeModificar = userIsAdmin || (obj.criadorId === currentUser.id);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -446,7 +459,7 @@
                     <td>${obj.criadorNome || 'Desconhecido'}</td>
                     <td>
                         <div class="actions-cell">
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'objetivo')">Apagar</button>
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'objetivo')">Apagar</button>
                         </div>
                     </td>
                 `;
@@ -456,13 +469,13 @@
 
         // Modais de Atividades
         function verAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id === id);
+            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
             if(!ativ) return;
             document.getElementById('modalTitle').innerText = 'Consultar Atividade';
             preencherModalAtiv(ativ, true);
         }
         function editarAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id === id);
+            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
             if(!ativ) return;
             document.getElementById('modalTitle').innerText = 'Editar Atividade';
             preencherModalAtiv(ativ, false);
@@ -497,13 +510,14 @@
             localStorage.setItem('atividades', JSON.stringify(atividades));
             fecharModal();
             carregarAtividades();
+            carregarAvaliacoes(); // Atualiza também se mudar o nome da atividade associada
         }
 
         // Modais de Avaliação
         function verAvaliacao(id) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id === id) || (avs.indexOf(a) === id));
+            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
             if(!av) return;
             document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
             preencherModalAvaliacao(av, true);
@@ -511,15 +525,22 @@
         function editarAvaliacao(id) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id === id) || (avs.indexOf(a) === id));
+            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
             if(!av) return;
             document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
             preencherModalAvaliacao(av, false);
         }
         function preencherModalAvaliacao(av, somenteLeitura) {
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const atividadeCorrespondente = atividades.find(a => 
+                (av.atividadeId && a.id == av.atividadeId) || 
+                (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
+                (av.id && a.id == av.id)
+            );
+
             document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
-            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || av.numero || '-';
-            document.getElementById('modalAvTituloAtividade').value = av.tituloAtividade || av.atividadeNome || av.titulo || '';
+            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
+            document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
             document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
 
             document.getElementById('modalAvComentario').readOnly = somenteLeitura;
@@ -537,7 +558,7 @@
             avs = avs.map((a, idx) => {
                 const matchId = (idInput !== "" && a.id == idInput);
                 const matchIdx = (idInput === "" && idx == idInput);
-                if(matchId || matchIdx || (a.id === idInput)) {
+                if(matchId || matchIdx) {
                     a.comentario = document.getElementById('modalAvComentario').value;
                     if(a.parecer) a.parecer = a.comentario;
                     if(a.texto) a.texto = a.comentario;
@@ -565,19 +586,20 @@
             if (idParaApagar !== null) {
                 if (tipoApagar === 'atividade') {
                     let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                    atividades = atividades.filter(a => a.id !== idParaApagar);
+                    atividades = atividades.filter(a => a.id != idParaApagar);
                     localStorage.setItem('atividades', JSON.stringify(atividades));
                     carregarAtividades();
+                    carregarAvaliacoes();
                 } else if (tipoApagar === 'avaliacao') {
                     let chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
                     let avs = JSON.parse(localStorage.getItem(chave)) || [];
-                    avs = avs.filter((a, idx) => a.id !== idParaApagar && idx !== idParaApagar);
+                    avs = avs.filter((a, idx) => a.id != idParaApagar && idx != idParaApagar);
                     localStorage.setItem(chave, JSON.stringify(avs));
                     carregarAvaliacoes();
                 } else if (tipoApagar === 'objetivo') {
                     let chave = localStorage.getItem('objetivos') ? 'objetivos' : 'registarObjetivos';
                     let objs = JSON.parse(localStorage.getItem(chave)) || [];
-                    objs = objs.filter((o, idx) => o.id !== idParaApagar && idx !== idParaApagar);
+                    objs = objs.filter((o, idx) => o.id != idParaApagar && idx != idParaApagar);
                     localStorage.setItem(chave, JSON.stringify(objs));
                     carregarObjetivos();
                 }
