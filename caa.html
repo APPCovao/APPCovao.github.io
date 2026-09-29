@@ -199,7 +199,6 @@
             padding-top: 20px;
         }
 
-        /* Padronização exata de altura, margens e aspeto para todos os botões do formulário */
         .btn-container button {
             background-color: var(--primary);
             color: white;
@@ -232,7 +231,6 @@
             background-color: #edebe9;
         }
 
-        /* Estilo otimizado para impressão: mantém as caixas e limpa os elementos visuais de edição */
         @media print {
             body * {
                 visibility: hidden;
@@ -267,7 +265,6 @@
 </head>
 <body>
 
-    <!-- Barra de Navegação -->
     <nav class="navbar" style="background: #0f766e; padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-radius: 6px;">
         <div class="logo" style="font-weight: bold; font-size: 1.1rem;">🏫 Gestão CAA</div>
         <ul class="nav-links" style="list-style: none; display: flex; gap: 1.5rem; margin: 0;">
@@ -278,7 +275,6 @@
 
     <div class="container">
         
-        <!-- Cabeçalho Principal (Lista) -->
         <div id="seccaoCabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <div>
                 <h2>Registos do CAA</h2>
@@ -287,7 +283,6 @@
             <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white; height: 41px; padding: 0 20px; border-radius: 4px; border: none; font-weight: 600; cursor: pointer;">+ Novo Registo</button>
         </div>
 
-        <!-- Tabela da Lista de Registos -->
         <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -299,12 +294,10 @@
                     </tr>
                 </thead>
                 <tbody id="caaTableBody">
-                    <!-- Preenchido dinamicamente via JS -->
                 </tbody>
             </table>
         </div>
 
-        <!-- Formulário Completo (Oculto inicialmente) -->
         <div id="containerFormulario" style="display: none;">
             <div class="header-section">
                 <div class="logo-container" title="Logótipo Institucional">
@@ -489,9 +482,9 @@
             const campoResp = document.getElementById('responsaveis');
             campoResp.value = nomeResponsavel;
             campoResp.readOnly = true;
-            campoResp.style.backgroundColor = '#e2e8f0';
-            campoResp.style.color = '#1e293b';
-            campoResp.style.fontWeight = 'normal';
+            campoResp.style.backgroundColor = '#e9ecef';
+            campoResp.style.fontWeight = 'bold';
+            campoResp.style.color = '#212529';
 
             document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -537,7 +530,6 @@
 
             document.getElementById('editIndex').value = index;
             
-            // Atribuir valores
             const campoNum = document.getElementById('numero_atividade');
             campoNum.value = reg.numero_atividade || (index + 1);
             
@@ -554,8 +546,11 @@
             
             document.getElementById('observacoes').value = reg.observacoes;
 
-            // Aplicar estilo específico de bloqueio (fundo cinzento e bold) para os campos Nº da Atividade e Responsável no modo "Ver"
+            ajustarModoFormulario(true);
+
+            // Bloqueio visual e interativo para o modo "Ver" (Nº Atividade e Responsável a bold e cinzento)
             [campoNum, campoResp].forEach(el => {
+                el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
                 el.style.fontWeight = 'bold';
                 el.style.color = '#212529';
@@ -576,8 +571,6 @@
                     previewContainer.appendChild(wrapper);
                 });
             }
-
-            ajustarModoFormulario(true);
 
             document.getElementById('formTitle').innerText = 'Visualizar Registo CAA';
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -642,11 +635,7 @@
             
             const campoNum = document.getElementById('numero_atividade');
             campoNum.value = reg.numero_atividade || (index + 1);
-            campoNum.readOnly = false;
-            campoNum.style.backgroundColor = '#ffffff';
-            campoNum.style.color = '#323130';
-            campoNum.style.fontWeight = 'normal';
-
+            
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -657,12 +646,16 @@
 
             const campoResp = document.getElementById('responsaveis');
             campoResp.value = reg.responsaveis;
-            campoResp.readOnly = true;
-            campoResp.style.backgroundColor = '#e2e8f0';
-            campoResp.style.color = '#1e293b';
-            campoResp.style.fontWeight = 'normal';
 
             document.getElementById('observacoes').value = reg.observacoes;
+
+            // Bloqueio para o modo "Editar" (Nº Atividade e Responsável ficam bloqueados a bold e cinzentos)
+            [campoNum, campoResp].forEach(el => {
+                el.readOnly = true;
+                el.style.backgroundColor = '#e9ecef';
+                el.style.fontWeight = 'bold';
+                el.style.color = '#212529';
+            });
 
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
