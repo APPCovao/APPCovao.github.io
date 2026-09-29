@@ -3,27 +3,521 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades - Registos Covão</title>
+    <title>CAA - Centro de Apoio à Aprendizagem</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary: #0078d4;
+            --primary-hover: #106ebe;
+            --bg-color: #f3f2f1;
+            --card-bg: #ffffff;
+            --text-main: #323130;
+            --border-color: #8a8886;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .header-title {
+            flex-grow: 1;
+        }
+
+        .header-title h2 {
+            color: #605e5c;
+            font-size: 14px;
+            margin: 0 0 4px 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title h1 {
+            color: var(--primary);
+            font-size: 22px;
+            margin: 0 0 4px 0;
+        }
+
+        .header-title p {
+            margin: 0;
+            font-size: 13px;
+            color: #605e5c;
+        }
+
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-container svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #a80000;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        .char-counter {
+            font-size: 11px;
+            color: #605e5c;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 6px;
+            background: #faf9f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #edebe9;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+            border-top: 1px solid #edebe9;
+            padding-top: 20px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button.btn-secondary {
+            background-color: #f3f2f1;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        button.btn-secondary:hover {
+            background-color: #edebe9;
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="brand">
-            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span>Registos Covão</span>
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar" style="background: #0f766e; padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-radius: 6px;">
+        <div class="logo" style="font-weight: bold; font-size: 1.1rem;">🏫 Gestão CAA</div>
+        <ul class="nav-links" style="list-style: none; display: flex; gap: 1.5rem; margin: 0;">
+            <li><a href="dashboard.html" style="color: white; text-decoration: none;">Dashboard</a></li>
+            <li><a href="#" id="logoutBtn" style="color: white; text-decoration: none;">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Cabeçalho com o botão para alternar ou geristar -->
+        <div id="seccaoCabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+                <h2>Registos do CAA</h2>
+                <p style="color: #605e5c; margin: 0;">Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
+            </div>
+            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white;">+ Novo Registo</button>
         </div>
-        <div class="user-info">
-            <a href="dashboard.html" style="color: white; text-decoration: none;">⬅️ Voltar ao Menu</a>
+
+        <!-- Tabela da Lista de Registos (Inicialmente Visível) -->
+        <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #edebe9; text-align: left; font-size: 14px;">
+                        <th style="padding: 0.75rem;">Data</th>
+                        <th style="padding: 0.75rem;">Aluno</th>
+                        <th style="padding: 0.75rem;">Atividade</th>
+                        <th style="padding: 0.75rem;">Responsável</th>
+                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="caaTableBody">
+                    <!-- Preenchido dinamicamente via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Formulário (Oculto por predefinição, abre ao clicar em Novo Registo) -->
+        <div id="containerFormulario" style="display: none; margin-top: 1rem;">
+            <div class="header-section">
+                <div class="logo-container">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="#f3f9fd" stroke="#0078d4" stroke-width="3"/>
+                        <path d="M50 20 L75 38 L75 65 L50 82 L25 65 L25 38 Z" fill="none" stroke="#0078d4" stroke-width="2.5"/>
+                        <text x="50" y="52" font-family="Segoe UI, sans-serif" font-weight="bold" font-size="22" fill="#0078d4" text-anchor="middle">CAA</text>
+                    </svg>
+                </div>
+                <div class="header-title">
+                    <h2>EB1/PE do Covão e Vargem</h2>
+                    <h1 id="formTitle">Registo de Atividades Pedagógicas</h1>
+                    <p id="formSubtitle">Centro de Apoio à Aprendizagem</p>
+                </div>
+            </div>
+
+            <form id="caaForm">
+                <input type="hidden" id="editIndex" value="">
+                
+                <div class="form-group">
+                    <label for="data_atividade">1. Data da Atividade <span class="required">*</span></label>
+                    <input type="date" id="data_atividade" name="data_atividade" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nome_aluno">2. Nome do Aluno <span class="required">*</span></label>
+                    <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" placeholder="Introduza o nome do aluno" required>
+                </div>
+
+                <div class="form-group">
+                    <label>3. Turma(s) / Sala(s) (Pode selecionar várias)</label>
+                    <div class="checkbox-grid" id="turmasContainer">
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºA"> 1ºA</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºB"> 1ºB</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="2ºA"> 2ºA</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="2ºB"> 2ºB</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="3ºA"> 3ºA</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="3ºB"> 3ºB</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="4ºA"> 4ºA</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="4ºB"> 4ºB</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="Abelhinhas"> Abelhinhas</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="Arco-Íris"> Arco-Íris</label>
+                        <label class="checkbox-item"><input type="checkbox" name="turma" value="Flores"> Flores</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="atividade">4. Atividade <span class="required">*</span></label>
+                    <input type="text" id="atividade" name="atividade" maxlength="1000" placeholder="Introduza a atividade" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="objetivos">5. Objetivos <span class="required">*</span></label>
+                    <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza os objetivos" oninput="updateCounter(this, 'counter-obj')" required></textarea>
+                    <div id="counter-obj" class="char-counter">Máximo de 5000 carateres</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="descricao_atividade">6. Descrição da Atividade <span class="required">*</span></label>
+                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Descrição detalhada" oninput="updateCounter(this, 'counter-desc')" required></textarea>
+                    <div id="counter-desc" class="char-counter">Máximo de 10000 carateres</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="formas_avaliacao">7. Formas de Avaliação <span class="required">*</span></label>
+                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Formas de avaliação" oninput="updateCounter(this, 'counter-av')" required></textarea>
+                    <div id="counter-av" class="char-counter">Máximo de 5000 carateres</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="articulacao">8. Articulação <span class="required">*</span></label>
+                    <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Articulação curricular" oninput="updateCounter(this, 'counter-art')" required></textarea>
+                    <div id="counter-art" class="char-counter">Máximo de 5000 carateres</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="responsaveis">9. Responsável(eis) <span class="required">*</span></label>
+                    <!-- Campo com preenchimento automático a negrito e cinzento escuro, readonly -->
+                    <input type="text" id="responsaveis" name="responsaveis" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label for="observacoes">10. Observações <span class="required">*</span></label>
+                    <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Observações adicionais" oninput="updateCounter(this, 'counter-obs')" required></textarea>
+                    <div id="counter-obs" class="char-counter">Máximo de 5000 carateres</div>
+                </div>
+
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="fecharFormulario()">Cancelar</button>
+                    <button type="submit" id="btnSubmit">Guardar Registo</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div class="container">
-        <div class="dashboard-header">
-            <h2>Gestão de Atividades</h2>
-        </div>
-        <div style="background: white; padding: 2rem; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-            <p style="color: var(--text-light);">Conteúdo da página de atividades adaptado perfeitamente para qualquer ecrã.</p>
+    <!-- Modal de Visualização (Ver) -->
+    <div id="modalVer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3>Detalhes do Registo CAA</h3>
+            <div id="modalVerConteudo" style="margin: 1rem 0; line-height: 1.6; color: #323130;"></div>
+            <button onclick="fecharModalVer()" style="background-color: #0078d4; color: white;">Fechar</button>
         </div>
     </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Verificar autenticação
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        });
+
+        // Carregar Registos na Tabela
+        function carregarRegistos() {
+            const tbody = document.getElementById('caaTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+
+            if (registos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1rem; text-align: center; color: #605e5c;">Sem registos do CAA guardados.</td></tr>`;
+                return;
+            }
+
+            registos.forEach((reg, index) => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #f3f2f1';
+
+                const temPermissao = currentUser.isAdmin || reg.userEmail === currentUser.email;
+
+                tr.innerHTML = `
+                    <td style="padding: 0.75rem;">${reg.data_atividade}</td>
+                    <td style="padding: 0.75rem;">${reg.nome_aluno}</td>
+                    <td style="padding: 0.75rem;">${reg.atividade}</td>
+                    <td style="padding: 0.75rem;">${reg.responsaveis}</td>
+                    <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
+                        <button onclick="verRegisto(${index})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px;">Ver</button>
+                        ${temPermissao ? `
+                            <button onclick="editarRegisto(${index})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px;">Editar</button>
+                            <button onclick="eliminarRegisto(${index})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem;">Apagar</button>
+                        ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function abrirFormularioCriacao() {
+            document.getElementById('editIndex').value = '';
+            document.getElementById('caaForm').reset();
+            document.getElementById('data_atividade').valueAsDate = new Date();
+
+            // Preenchimento automático do responsável a partir da sessão ativa
+            const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
+            document.getElementById('responsaveis').value = nomeResponsavel;
+
+            document.getElementById('formTitle').innerText = 'Registar Nova Atividade Pedagógica';
+            document.getElementById('containerTabela').parentElement.style.display = 'none';
+            document.getElementById('containerFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function fecharFormulario() {
+            document.getElementById('containerFormulario').style.display = 'none';
+            document.getElementById('containerTabela').parentElement.style.display = 'block';
+            document.getElementById('caaForm').reset();
+        }
+
+        // Submeter formulário (Criar ou Atualizar)
+        document.getElementById('caaForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const index = document.getElementById('editIndex').value;
+
+            // Recolher turmas selecionadas
+            const turmasChecked = document.querySelectorAll('input[name="turma"]:checked');
+            const turmasValues = Array.from(turmasChecked).map(cb => cb.value).join(', ');
+
+            const novoReg = {
+                data_atividade: document.getElementById('data_atividade').value,
+                nome_aluno: document.getElementById('nome_aluno').value.trim(),
+                turmas: turmasValues,
+                atividade: document.getElementById('atividade').value.trim(),
+                objetivos: document.getElementById('objetivos').value.trim(),
+                descricao_atividade: document.getElementById('descricao_atividade').value.trim(),
+                formas_avaliacao: document.getElementById('formas_avaliacao').value.trim(),
+                articulacao: document.getElementById('articulacao').value.trim(),
+                responsaveis: document.getElementById('responsaveis').value.trim(),
+                observacoes: document.getElementById('observacoes').value.trim(),
+                userEmail: index !== "" ? registos[index].userEmail : currentUser.email
+            };
+
+            if (index === "") {
+                registos.push(novoReg);
+                alert('Registo guardado com sucesso!');
+            } else {
+                registos[index] = novoReg;
+                alert('Registo atualizado com sucesso!');
+            }
+
+            localStorage.setItem('registosCAA', JSON.stringify(registos));
+            fecharFormulario();
+            carregarRegistos();
+        });
+
+        function verRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+            if (!reg) return;
+
+            const conteudo = `
+                <p><strong>Data da Atividade:</strong> ${reg.data_atividade}</p>
+                <p><strong>Nome do Aluno:</strong> ${reg.nome_aluno}</p>
+                <p><strong>Turmas:</strong> ${reg.turmas || 'Nenhuma'}</p>
+                <p><strong>Atividade:</strong> ${reg.atividade}</p>
+                <p><strong>Objetivos:</strong><br>${reg.objetivos}</p>
+                <p><strong>Descrição da Atividade:</strong><br>${reg.descricao_atividade}</p>
+                <p><strong>Formas de Avaliação:</strong><br>${reg.formas_avaliacao}</p>
+                <p><strong>Articulação:</strong><br>${reg.articulacao}</p>
+                <p><strong>Responsável(eis):</strong> ${reg.responsaveis}</p>
+                <p><strong>Observações:</strong><br>${reg.observacoes}</p>
+            `;
+
+            document.getElementById('modalVerConteudo').innerHTML = conteudo;
+            document.getElementById('modalVer').style.display = 'flex';
+        }
+
+        function fecharModalVer() {
+            document.getElementById('modalVer').style.display = 'none';
+        }
+
+        function editarRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+
+            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
+                alert('Não tens permissão para editar este registo.');
+                return;
+            }
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('data_atividade').value = reg.data_atividade;
+            document.getElementById('nome_aluno').value = reg.nome_aluno;
+            document.getElementById('atividade').value = reg.atividade;
+            document.getElementById('objetivos').value = reg.objetivos;
+            document.getElementById('descricao_atividade').value = reg.descricao_atividade;
+            document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
+            document.getElementById('articulacao').value = reg.articulacao;
+            document.getElementById('responsaveis').value = reg.responsaveis;
+            document.getElementById('observacoes').value = reg.observacoes;
+
+            // Marcar checkboxes das turmas
+            const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
+            document.querySelectorAll('input[name="turma"]').forEach(cb => {
+                cb.checked = turmasArray.includes(cb.value);
+            });
+
+            document.getElementById('formTitle').innerText = 'Editar Registo CAA';
+            document.getElementById('containerTabela').parentElement.style.display = 'none';
+            document.getElementById('containerFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function eliminarRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+
+            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
+                alert('Não tens permissão para eliminar este registo.');
+                return;
+            }
+
+            if (confirm('Tens a certeza que pretendes eliminar este registo?')) {
+                registos.splice(index, 1);
+                localStorage.setItem('registosCAA', JSON.stringify(registos));
+                carregarRegistos();
+            }
+        }
+
+        function updateCounter(textarea, counterId) {
+            const currentLength = textarea.value.length;
+            const maxLength = textarea.getAttribute('maxlength');
+            document.getElementById(counterId).textContent = currentLength + ' / ' + maxLength + ' carateres';
+        }
+
+        // Inicializar tabela ao carregar a página
+        carregarRegistos();
+    </script>
 </body>
 </html>
