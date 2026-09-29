@@ -303,12 +303,15 @@
 
     </div>
 
-    <!-- Modal de Visualização (Ver) -->
-    <div id="modalVer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3>Detalhes da Requisição</h3>
-            <div id="modalVerConteudo" style="margin: 1rem 0; line-height: 1.6; color: #334155;"></div>
-            <button onclick="fecharModalVer()" style="background-color: #0f766e; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Fechar</button>
+    <!-- Popup Personalizado -->
+    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
+        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">📦</div>
+            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: #0f766e;">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 20px 0; color: #323130; line-height: 1.5;"></p>
+            <div id="popupButtons" style="display: flex; justify-content: center; gap: 10px;">
+                <button onclick="fecharPopup()" style="background-color: #0f766e; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>
+            </div>
         </div>
     </div>
 
@@ -324,6 +327,27 @@
             localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
+
+        // Função universal para Popup Personalizado
+        function mostrarPopupPersonalizado(titulo, mensagem, icone = '📦', callback = null) {
+            document.getElementById('popupTitle').innerText = titulo;
+            document.getElementById('popupMessage').innerText = mensagem;
+            document.getElementById('popupIcon').innerText = icone;
+            
+            const btnContainer = document.getElementById('popupButtons');
+            btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #0f766e; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
+            
+            document.getElementById('customPopup').style.display = 'flex';
+
+            document.getElementById('popupOkBtn').onclick = () => {
+                document.getElementById('customPopup').style.display = 'none';
+                if (callback) callback();
+            };
+        }
+
+        function fecharPopup() {
+            document.getElementById('customPopup').style.display = 'none';
+        }
 
         function carregarRequisicoes() {
             const tbody = document.getElementById('requisicoesTableBody');
@@ -369,14 +393,14 @@
             document.getElementById('requisicaoForm').reset();
             document.getElementById('dataReq').valueAsDate = new Date();
 
-            // CORREÇÃO: Descobre o maior número existente no array de requisições e soma 1
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             let proximoNumero = 1;
             
             if (requisicoes.length > 0) {
-                const numeros = requisicoes.map(r => parseInt(r.numero_requisicao) || 0);
-                const maiorNumero = Math.max(...numeros);
-                proximoNumero = maiorNumero + 1;
+                const numeros = requisicoes.map(r => parseInt(r.numero_requisicao) || 0).filter(n => !isNaN(n));
+                if (numeros.length > 0) {
+                    proximoNumero = Math.max(...numeros) + 1;
+                }
             }
             
             const campoNum = document.getElementById('numero_requisicao');
@@ -386,7 +410,19 @@
             const campoResp = document.getElementById('respReq');
             campoResp.value = nomeResponsavel;
 
-            // Bloqueio rigoroso (cinzento e bold)
+            // Desbloquear todos os campos do formulário para inserção
+            const todosCampos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
+            todosCampos.forEach(el => {
+                if(el.type !== 'hidden') {
+                    el.disabled = false;
+                    el.readOnly = false;
+                    el.style.backgroundColor = '#fff';
+                    el.style.fontWeight = 'normal';
+                    el.style.color = '#323130';
+                }
+            });
+
+            // Bloquear especificamente Nº e Responsável por regra de segurança
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
@@ -396,6 +432,7 @@
 
             document.getElementById('formTitle').innerText = 'Registar Nova Requisição';
             document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo para requisitar equipamentos.';
+            document.getElementById('btnSubmit').style.display = 'inline-flex';
             document.getElementById('btnSubmit').innerText = 'Guardar Requisição';
 
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -418,7 +455,7 @@
             const index = document.getElementById('editIndex').value;
 
             const novaReq = {
-                numero_requisicao: document.getElementById('numero_requisicao').value,
+                numero_requisicao: parseInt(document.getElementById('numero_requisicao').value),
                 responsavel: document.getElementById('respReq').value.trim(),
                 anoLetivo: document.getElementById('anoLetivoReq').value,
                 data: document.getElementById('dataReq').value,
@@ -431,39 +468,56 @@
 
             if (index === "") {
                 requisicoes.push(novaReq);
-                mostrarMensagem('Requisição guardada com sucesso!');
+                mostrarPopupPersonalizado('Sucesso', 'Requisição guardada com sucesso!', '✨', () => {
+                    fecharFormulario();
+                    carregarRequisicoes();
+                });
             } else {
                 requisicoes[index] = novaReq;
-                mostrarMensagem('Requisição atualizada com sucesso!');
+                mostrarPopupPersonalizado('Sucesso', 'Requisição atualizada com sucesso!', '✨', () => {
+                    fecharFormulario();
+                    carregarRequisicoes();
+                });
             }
 
             localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
-            fecharFormulario();
-            carregarRequisicoes();
         });
 
+        // VER: Abre o formulário com TODOS os campos bloqueados
         function verRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
             if (!req) return;
 
-            const conteudo = `
-                <p><strong>Nº Requisição:</strong> ${req.numero_requisicao}</p>
-                <p><strong>Responsável:</strong> ${req.responsavel}</p>
-                <p><strong>Ano Letivo:</strong> ${req.anoLetivo}</p>
-                <p><strong>Data:</strong> ${req.data}</p>
-                <p><strong>Turma:</strong> ${req.turma}</p>
-                <p><strong>Área:</strong> ${req.area}</p>
-                <p><strong>Equipamento:</strong> ${req.equipamento}</p>
-                <p><strong>Quantidade:</strong> ${req.quantidade}</p>
-            `;
+            document.getElementById('editIndex').value = index;
+            
+            document.getElementById('numero_requisicao').value = req.numero_requisicao;
+            document.getElementById('respReq').value = req.responsavel;
+            document.getElementById('anoLetivoReq').value = req.anoLetivo;
+            document.getElementById('dataReq').value = req.data;
+            document.getElementById('turmaReq').value = req.turma;
+            document.getElementById('areaReq').value = req.area;
+            document.getElementById('equipamentoReq').value = req.equipamento;
+            document.getElementById('qtdReq').value = req.quantidade;
 
-            document.getElementById('modalVerConteudo').innerHTML = conteudo;
-            document.getElementById('modalVer').style.display = 'flex';
-        }
+            // Bloquear TODOS os campos do formulário (modo visualização)
+            const todosCampos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
+            todosCampos.forEach(el => {
+                if(el.type !== 'hidden') {
+                    el.disabled = true;
+                    el.style.backgroundColor = '#e9ecef';
+                    el.style.color = '#212529';
+                }
+            });
 
-        function fecharModalVer() {
-            document.getElementById('modalVer').style.display = 'none';
+            document.getElementById('formTitle').innerText = 'Detalhes da Requisição';
+            document.getElementById('formSubtitle').innerText = 'Modo de visualização (campos bloqueados).';
+            document.getElementById('btnSubmit').style.display = 'none'; // Esconde o botão de guardar
+
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
+            document.getElementById('containerFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function editarRequisicao(index) {
@@ -471,7 +525,7 @@
             const req = requisicoes[index];
 
             if (!currentUser.isAdmin && req.userEmail !== currentUser.email) {
-                alert('Não tens permissão para editar esta requisição.');
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar esta requisição.', '🔒');
                 return;
             }
 
@@ -483,6 +537,19 @@
             const campoResp = document.getElementById('respReq');
             campoResp.value = req.responsavel;
 
+            // Libertar campos para edição
+            const todosCampos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
+            todosCampos.forEach(el => {
+                if(el.type !== 'hidden') {
+                    el.disabled = false;
+                    el.readOnly = false;
+                    el.style.backgroundColor = '#fff';
+                    el.style.fontWeight = 'normal';
+                    el.style.color = '#323130';
+                }
+            });
+
+            // Manter Nº e Responsável bloqueados por segurança
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
@@ -499,6 +566,7 @@
 
             document.getElementById('formTitle').innerText = 'Editar Requisição';
             document.getElementById('formSubtitle').innerText = 'Modifique os dados da requisição abaixo.';
+            document.getElementById('btnSubmit').style.display = 'inline-flex';
             document.getElementById('btnSubmit').innerText = 'Atualizar Requisição';
 
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -507,27 +575,29 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // APAGAR E RENUMERAR SEQUENCIALMENTE
         function eliminarRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
 
             if (!currentUser.isAdmin && req.userEmail !== currentUser.email) {
-                alert('Não tens permissão para eliminar esta requisição.');
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para eliminar esta requisição.', '🔒');
                 return;
             }
 
+            // Confirmação personalizada ou nativa antes de apagar
             if (confirm('Tens a certeza que pretendes eliminar esta requisição?')) {
+                // Remove o item selecionado
                 requisicoes.splice(index, 1);
+
+                // REINDEXAR / RENUMERAR todos os números sequencialmente de 1 em diante
+                requisicoes.forEach((r, idx) => {
+                    r.numero_requisicao = idx + 1;
+                });
+
                 localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
                 carregarRequisicoes();
-            }
-        }
-
-        function mostrarMensagem(msg) {
-            if (typeof mostrarPopup === 'function') {
-                mostrarPopup('Sucesso', msg, '📦');
-            } else {
-                alert(msg);
+                mostrarPopupPersonalizado('Sucesso', 'Requisição eliminada e numeração atualizada com sucesso!', '🗑️');
             }
         }
 
