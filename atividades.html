@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades e Registos - Registos Covão</title>
+    <title>Atividades - EB1/PE do Covão e Vargem</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
         /* Controlo de Visibilidade das Secções */
@@ -41,7 +41,7 @@
         .btn-voltar:hover { background-color: #475569; }
 
         .btn-novo-registo {
-            background-color: var(--color-primary);
+            background-color: #0f766e;
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 6px;
@@ -56,9 +56,9 @@
         .btn-novo-registo:hover { opacity: 0.9; }
 
         .table-container {
-            background: var(--color-white);
+            background: #ffffff;
             padding: 1.5rem;
-            border-radius: var(--radius);
+            border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             overflow-x: auto;
             border: 1px solid #e2e8f0;
@@ -79,7 +79,7 @@
 
         th {
             background-color: #f8fafc;
-            color: var(--text-light);
+            color: #64748b;
             font-weight: 600;
         }
 
@@ -126,7 +126,7 @@
             padding: 2rem;
             border-radius: 12px;
             width: 100%;
-            max-width: 750px;
+            max-width: 600px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             max-height: 90vh;
             overflow-y: auto;
@@ -149,7 +149,7 @@
 
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         
-        /* Campos com suporte a readonly/disabled no modal (Cinzento mais escuro e texto a bold) */
+        /* Campos com suporte a readonly/disabled no modal */
         .custom-modal input:disabled, 
         .custom-modal select:disabled, 
         .custom-modal textarea:disabled,
@@ -162,89 +162,93 @@
             border-color: #94a3b8 !important;
         }
 
-        /* Estrutura Exata de Objetivos e Metas PEE (Baseada na imagem) */
-        .pee-objetivo-box {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .menu-card {
+            background: white;
+            padding: 1.5rem;
             border-radius: 8px;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 4px solid #0f766e;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .pee-obj-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: bold;
-            font-size: 0.9rem;
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .menu-card .icon {
+            font-size: 2rem;
+        }
+
+        .menu-card h3 {
+            margin: 0 0 0.5rem 0;
             color: #1e293b;
+            font-size: 1.1rem;
         }
 
-        .pee-meta-list {
-            margin-top: 0.5rem;
-            margin-left: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .pee-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .menu-card p {
+            margin: 0;
+            color: #64748b;
             font-size: 0.85rem;
-            color: #475569;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="brand">
-            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span>Registos Covão</span>
+    <div class="navbar" style="background: #0f766e; padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; border-radius: 6px; margin-bottom: 2rem;">
+        <div class="brand" style="font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🏫 EB1/PE do Covão e Vargem</span>
         </div>
-        <div class="user-info">
+        <div class="user-info" style="display: flex; align-items: center; gap: 1rem;">
             <span>Olá, <strong id="userNameSpan"></strong></span>
             <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar ao Menu</a>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
         
         <!-- ================= VISTA 1: MENU PRINCIPAL (HUB DE 3 CARTÕES) ================= -->
         <div id="secaoMenu" class="app-section active">
             <div class="dashboard-header" style="margin-bottom: 2rem;">
-                <div>
-                    <h2>Gestão e Consulta de Atividades</h2>
-                    <p style="color: var(--text-light); font-size: 0.9rem;">Selecione a opção desejada para consultar, gerar ou gerir os registos</p>
-                </div>
+                <h2>Gestão e Consulta de Atividades</h2>
+                <p style="color: #64748b; font-size: 0.9rem;">Selecione a opção desejada para consultar, criar ou gerir os registos de atividades</p>
             </div>
 
             <div class="menu-grid">
                 <!-- Cartão 1: Atividades Registadas -->
-                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: var(--color-primary); cursor: pointer;">
-                    <div class="icon">➕</div>
+                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: #0f766e; cursor: pointer;">
+                    <div class="icon">📋</div>
                     <div>
-                        <h3>Nova Atividade</h3>
-                        <p>Criar, consultar e gerir atividades registadas</p>
+                        <h3>Atividades Registadas</h3>
+                        <p>Criar, consultar e gerir todas as atividades pedagógicas criadas</p>
                     </div>
                 </div>
 
-                <!-- Cartão 2: Avaliar Atividade -->
-                <div onclick="mostrarSecao('secaoAvaliadas')" class="menu-card" style="border-top-color: var(--color-accent); cursor: pointer;">
-                    <div class="icon">⭐</div>
+                <!-- Cartão 2: Estatísticas / Resumo -->
+                <div onclick="mostrarSecao('secaoEstatisticas')" class="menu-card" style="border-top-color: #0284c7; cursor: pointer;">
+                    <div class="icon">📊</div>
                     <div>
-                        <h3>Avaliar Atividade</h3>
-                        <p>Consultar e registar avaliações e feedback</p>
+                        <h3>Resumo Estatístico</h3>
+                        <p>Visualizar métricas e contadores globais das atividades</p>
                     </div>
                 </div>
 
-                <!-- Cartão 3: Registar Objetivos -->
-                <div onclick="mostrarSecao('secaoObjetivos')" class="menu-card" style="border-top-color: #16a34a; cursor: pointer;">
-                    <div class="icon">🎯</div>
+                <!-- Cartão 3: Documentação / Ajuda -->
+                <div onclick="mostrarSecao('secaoAjuda')" class="menu-card" style="border-top-color: #16a34a; cursor: pointer;">
+                    <div class="icon">💡</div>
                     <div>
-                        <h3>Registar Objetivos</h3>
-                        <p>Definir metas associadas e avaliações globais</p>
+                        <h3>Informações & Ajuda</h3>
+                        <p>Instruções de preenchimento e normas de registo</p>
                     </div>
                 </div>
             </div>
@@ -255,11 +259,11 @@
             <div class="section-header-nav">
                 <div>
                     <h2>Atividades Registadas</h2>
-                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta e gestão de todas as atividades criadas no sistema.</p>
+                    <p style="color: #64748b; font-size: 0.85rem;">Consulta, edição e gestão de todas as atividades criadas no sistema.</p>
                 </div>
                 <div style="display: flex; gap: 0.75rem;">
                     <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="nova-atividade.html" class="btn-novo-registo">➕ Criar Nova Atividade</a>
+                    <button class="btn-novo-registo" onclick="abrirFormularioCriacao()">➕ Nova Atividade</button>
                 </div>
             </div>
 
@@ -268,8 +272,8 @@
                     <thead>
                         <tr>
                             <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th style="width: 25%;">Criado por</th>
+                            <th>Título da Atividade</th>
+                            <th style="width: 25%;">Responsável</th>
                             <th style="width: 20%;">Ações</th>
                         </tr>
                     </thead>
@@ -278,321 +282,81 @@
             </div>
         </div>
 
-        <!-- ================= VISTA 3: LISTA DE ATIVIDADES AVALIADAS ================= -->
-        <div id="secaoAvaliadas" class="app-section">
+        <!-- ================= VISTA 3: ESTATÍSTICAS ================= -->
+        <div id="secaoEstatisticas" class="app-section">
             <div class="section-header-nav">
                 <div>
-                    <h2>Atividades Avaliadas</h2>
-                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta e gestão de todas as avaliações efetuadas.</p>
+                    <h2>Resumo Estatístico</h2>
+                    <p style="color: #64748b; font-size: 0.85rem;">Dados globais referentes às atividades registadas.</p>
                 </div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="avaliar-atividade.html" class="btn-novo-registo" style="background-color: var(--color-accent);">⭐ Avaliar Atividade</a>
-                </div>
+                <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
             </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="avaliadasTableBody"></tbody>
-                </table>
+            <div class="table-container" style="text-align: center; padding: 3rem;">
+                <h3 id="statTotalAtividades" style="color: #0f766e; font-size: 2rem; margin-bottom: 0.5rem;">0</h3>
+                <p style="color: #64748b; font-size: 1rem;">Total de Atividades Registadas no Sistema</p>
             </div>
         </div>
 
-        <!-- ================= VISTA 4: OBJETIVOS REGISTADOS ================= -->
-        <div id="secaoObjetivos" class="app-section">
+        <!-- ================= VISTA 4: AJUDA ================= -->
+        <div id="secaoAjuda" class="app-section">
             <div class="section-header-nav">
                 <div>
-                    <h2>Objetivos e Avaliações Globais</h2>
-                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
+                    <h2>Informações & Ajuda</h2>
+                    <p style="color: #64748b; font-size: 0.85rem;">Orientações para o correto registo de atividades.</p>
                 </div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="registar-objetivos.html" class="btn-novo-registo" style="background-color: #16a34a;">🎯 Registar Objetivos</a>
-                </div>
+                <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
             </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Atividade / Metas Associadas</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="objetivosTableBody"></tbody>
-                </table>
+            <div class="table-container" style="line-height: 1.6; color: #334155;">
+                <h3>Instruções de Utilização</h3>
+                <p>1. Utilize o botão <strong>Nova Atividade</strong> para preencher o formulário de registo pedagógico.</p>
+                <p>2. Cada utilizador pode editar ou apagar os seus próprios registos. Os administradores possuem acesso global de gestão.</p>
+                <p>3. Certifique-se de preencher todos os campos obrigatórios assinalados com asterisco (*).</p>
             </div>
         </div>
 
     </div>
 
-    <!-- MODAL DE ATIVIDADES -->
+    <!-- MODAL DE ATIVIDADE (VER / EDITAR) -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalTitle" style="color: var(--color-primary);">Detalhes da Atividade</h2>
+            <h2 id="modalTitle" style="color: #0f766e; margin-bottom: 1rem;">Detalhes da Atividade</h2>
             <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
-                <input type="hidden" id="editAtividadeId">
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                <input type="hidden" id="editAtividadeIndex">
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Nº da Atividade</label>
+                        <input type="text" id="modalNumero" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Data da Atividade</label>
+                        <input type="date" id="modalData" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    </div>
                 </div>
+
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalNomeAtividade" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Título da Atividade</label>
+                    <input type="text" id="modalTitulo" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                 </div>
+
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Ano Letivo</label>
-                    <select id="modalAnoLetivo" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Responsável(eis)</label>
+                    <input type="text" id="modalResponsaveis" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                 </div>
+
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Tipo de Atividade</label>
-                    <select id="modalTipoAtividade" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                        <option value="Atividade">Atividade</option>
-                        <option value="Projeto">Projeto</option>
-                        <option value="Formação/acção">Formação/acção</option>
-                        <option value="Visita de Estudo">Visita de Estudo</option>
-                    </select>
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Descrição da Atividade</label>
+                    <textarea id="modalDescricao" rows="5" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
                 </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Observações</label>
+                    <textarea id="modalObservacoes" rows="3" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+                </div>
+
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModal()">Fechar</button>
-                    <button type="submit" id="modalSaveBtn" class="btn-modal btn-modal-confirm">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE AVALIAÇÃO -->
-    <div id="avaliacaoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-bottom: 1rem;">Avaliar Atividade</h2>
-            <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
-                <input type="hidden" id="editAvaliacaoId">
-                
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalAvTituloAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Ano Letivo</label>
-                    <input type="text" id="modalAvAnoLetivo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Docente / Aluno</label>
-                    <select id="modalAvDocenteAluno" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                        <option value="">Selecione o tipo de avaliador</option>
-                        <option value="Docente">Docente</option>
-                        <option value="Aluno">Aluno</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Pertinência (1-5)</label>
-                        <select id="modalAvPertinencia" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Dinâmica (1-5)</label>
-                        <select id="modalAvDinamica" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Interesse (1-5)</label>
-                        <select id="modalAvInteresse" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Sugestões / Observações</label>
-                    <textarea id="modalAvComentario" rows="4" placeholder="Insira comentários, sugestões ou pontos de melhoria..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
-                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
-    <div id="objetivoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-bottom: 0.25rem;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
-            
-            <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
-                <input type="hidden" id="editObjetivoId">
-                
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalObjNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalObjNomeAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Integra o PAA?</label>
-                        <select id="modalObjPaa" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                            <option value="">Selecione</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Integra o PEE?</label>
-                        <select id="modalObjPee" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                            <option value="">Selecione</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- OBJETIVOS E METAS DO PEE (COM CAIXAS DE VERIFICAÇÃO) -->
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e respetivas Metas do PEE abrangidos:</label>
-                    
-                    <!-- Objetivo 1 -->
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> 
-                            Objetivo 1: Melhorar a articulação pedagógica
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma"> 
-                                Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo 2 -->
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> 
-                            Objetivo 2: Melhorar os resultados académicos dos alunos
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 2: 75% alunos com menções de Bom e Muito Bom no português"> 
-                                Meta 2: 75% alunos com menções de Bom e Muito Bom no português
-                            </label>
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática"> 
-                                Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo 3 -->
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> 
-                            Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias"> 
-                                Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo 4 -->
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> 
-                            Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 5: Anualmente realizar dois questionários para a comunidade escolar"> 
-                                Meta 5: Anualmente realizar dois questionários para a comunidade escolar
-                            </label>
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais"> 
-                                Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
-                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Sugestões / Observações Recolhidas</label>
-                    <textarea id="modalObjSugestoes" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Resumo / Conclusões da Atividade</label>
-                    <textarea id="modalObjResumo" rows="4" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Registo de Objetivos</button>
+                    <button type="submit" id="modalSaveBtn" class="btn-modal" style="background-color: #0f766e; color: white;">Guardar Alterações</button>
                 </div>
             </form>
         </div>
@@ -603,7 +367,7 @@
         <div class="custom-modal" style="max-width: 400px; text-align: center;">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
             <h3 style="color: #ef4444; margin-bottom: 0.5rem;">Confirmar Remoção</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar este registo?</p>
+            <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar este registo?</p>
             <div class="modal-buttons" style="justify-content: center;">
                 <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
                 <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
@@ -632,117 +396,35 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        let idParaApagar = null;
-        let tipoApagar = null;
+        let indexParaApagar = null;
 
-        // --- CARREGAR ATIVIDADES ---
         function carregarAtividades() {
             const tbody = document.getElementById('atividadesTableBody');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
             tbody.innerHTML = '';
 
-            if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades registadas.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...atividades].reverse().forEach(ativ => {
-                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${ativ.numero || ativ.id || '-'}</strong></td>
-                    <td><strong>${ativ.titulo}</strong></td>
-                    <td>${ativ.criadorNome || 'Desconhecido'}</td>
-                    <td>
-                        <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id}, 'atividade')">Apagar</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- CARREGAR AVALIAÇÕES ---
-        function carregarAvaliacoes() {
-            const tbody = document.getElementById('avaliadasTableBody');
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (avaliadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades avaliadas.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...avaliadas].reverse().forEach((av, index) => {
-                const idReal = av.id !== undefined ? av.id : index;
-                const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => 
-                    (av.atividadeId && a.id == av.atividadeId) || 
-                    (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                    (av.id && a.id == av.id)
-                );
-
-                const numAtividade = av.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : '-');
-                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada');
-                const criador = av.avaliadorNome || av.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${numAtividade}</strong></td>
-                    <td><strong>${tituloAtividade}</strong></td>
-                    <td>${criador}</td>
-                    <td>
-                        <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verAvaliacao('${idReal}')">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao('${idReal}')">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'avaliacao')">Apagar</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- CARREGAR OBJETIVOS ---
-        function carregarObjetivos() {
-            const tbody = document.getElementById('objetivosTableBody');
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
+            document.getElementById('statTotalAtividades').innerText = registos.length;
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem registos de objetivos.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">Ainda não existem atividades registadas.</td></tr>`;
                 return;
             }
 
             const userIsAdmin = isAdminUser(currentUser);
-            [...registos].reverse().forEach(reg => {
-                const idReal = reg.id;
-                const podeModificar = userIsAdmin || (reg.criadorId === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-                const numAtividade = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-                const tituloAtividade = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade');
-                const criadorNome = reg.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
-
+            [...registos].reverse().forEach((reg, iReverso) => {
+                const indexReal = registos.length - 1 - iReverso;
+                const podeModificar = userIsAdmin || (reg.userEmail === currentUser.email);
                 const tr = document.createElement('tr');
+                
                 tr.innerHTML = `
-                    <td><strong>${numAtividade}</strong></td>
-                    <td><strong>${tituloAtividade}</strong></td>
-                    <td>${criadorNome}</td>
+                    <td><strong>${reg.numero_atividade || (indexReal + 1)}</strong></td>
+                    <td><strong>${reg.titulo_atividade}</strong></td>
+                    <td>${reg.responsaveis}</td>
                     <td>
                         <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verObjetivo(${idReal})">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarObjetivo(${idReal})">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'objetivo')">Apagar</button>
+                            <button class="btn-action btn-view" onclick="verAtividade(${indexReal})">Ver</button>
+                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${indexReal})">Editar</button>
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${indexReal})">Apagar</button>
                         </div>
                     </td>
                 `;
@@ -750,261 +432,110 @@
             });
         }
 
-        // Modais de Atividade
-        function verAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            preencherModalAtiv(ativ, true);
+        function abrirFormularioCriacao() {
+            window.location.href = 'nova-atividade.html';
         }
-        function editarAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            preencherModalAtiv(ativ, false);
-        }
-        function preencherModalAtiv(ativ, somenteLeitura) {
-            document.getElementById('editAtividadeId').value = ativ.id;
-            document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
-            document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
-            document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
 
-            document.getElementById('modalNumAtividade').readOnly = true;
-            document.getElementById('modalNomeAtividade').readOnly = somenteLeitura;
-            document.getElementById('modalAnoLetivo').disabled = somenteLeitura;
-            document.getElementById('modalTipoAtividade').disabled = somenteLeitura;
+        function verAtividade(index) {
+            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+            const reg = registos[index];
+            if(!reg) return;
+            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
+            preencherModalAtiv(reg, index, true);
+        }
+
+        function editarAtividade(index) {
+            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+            const reg = registos[index];
+            if(!reg) return;
+
+            const userIsAdmin = isAdminUser(currentUser);
+            if (!userIsAdmin && reg.userEmail !== currentUser.email) {
+                alert('Não tens permissão para editar este registo.');
+                return;
+            }
+
+            document.getElementById('modalTitle').innerText = 'Editar Atividade';
+            preencherModalAtiv(reg, index, false);
+        }
+
+        function preencherModalAtiv(reg, index, somenteLeitura) {
+            document.getElementById('editAtividadeIndex').value = index;
+            document.getElementById('modalNumero').value = reg.numero_atividade || (index + 1);
+            document.getElementById('modalData').value = reg.data_atividade || '';
+            document.getElementById('modalTitulo').value = reg.titulo_atividade || '';
+            document.getElementById('modalResponsaveis').value = reg.responsaveis || '';
+            document.getElementById('modalDescricao').value = reg.descricao || '';
+            document.getElementById('modalObservacoes').value = reg.observacoes || '';
+
+            document.getElementById('modalNumero').readOnly = true;
+            document.getElementById('modalData').readOnly = somenteLeitura;
+            document.getElementById('modalTitulo').readOnly = somenteLeitura;
+            document.getElementById('modalResponsaveis').readOnly = somenteLeitura;
+            document.getElementById('modalDescricao').readOnly = somenteLeitura;
+            document.getElementById('modalObservacoes').readOnly = somenteLeitura;
+
             document.getElementById('modalSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('atividadeModal').style.display = 'flex';
         }
-        function fecharModal() { document.getElementById('atividadeModal').style.display = 'none'; }
-        
+
+        function fecharModal() {
+            document.getElementById('atividadeModal').style.display = 'none';
+        }
+
         function salvarEdicaoAtividade(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('editAtividadeId').value);
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            atividades = atividades.map(a => {
-                if(a.id === id) {
-                    a.titulo = document.getElementById('modalNomeAtividade').value;
-                    a.anoLetivo = document.getElementById('modalAnoLetivo').value;
-                    a.tipo = document.getElementById('modalTipoAtividade').value;
-                }
-                return a;
-            });
-            localStorage.setItem('atividades', JSON.stringify(atividades));
+            const index = parseInt(document.getElementById('editAtividadeIndex').value);
+            let registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+            
+            if(registos[index]) {
+                registos[index].data_atividade = document.getElementById('modalData').value;
+                registos[index].titulo_atividade = document.getElementById('modalTitulo').value.trim();
+                registos[index].responsaveis = document.getElementById('modalResponsaveis').value.trim();
+                registos[index].descricao = document.getElementById('modalDescricao').value.trim();
+                registos[index].observacoes = document.getElementById('modalObservacoes').value.trim();
+                
+                localStorage.setItem('registosAtividades', JSON.stringify(registos));
+            }
             fecharModal();
             carregarAtividades();
-            carregarAvaliacoes();
-            carregarObjetivos();
         }
 
-        // Modais de Avaliação
-        function verAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
-            preencherModalAvaliacao(av, true);
-        }
-
-        function editarAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
-            preencherModalAvaliacao(av, false);
-        }
-
-        function preencherModalAvaliacao(av, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => 
-                (av.atividadeId && a.id == av.atividadeId) || 
-                (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                (av.id && a.id == av.id)
-            );
-
-            document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
-            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-            document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
-            document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
+        function confirmarApagar(index) {
+            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+            const reg = registos[index];
+            const userIsAdmin = isAdminUser(currentUser);
             
-            document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.tipoAvaliador || av.avaliadorTipo || '';
-            document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
-            document.getElementById('modalAvDinamica').value = av.dinamica || '';
-            document.getElementById('modalAvInteresse').value = av.interesse || '';
-            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
+            if (!userIsAdmin && reg && reg.userEmail !== currentUser.email) {
+                alert('Não tens permissão para eliminar este registo.');
+                return;
+            }
 
-            document.getElementById('modalAvNumAtividade').readOnly = true;
-            document.getElementById('modalAvTituloAtividade').readOnly = true;
-            document.getElementById('modalAvAnoLetivo').readOnly = true;
-
-            document.getElementById('modalAvDocenteAluno').disabled = somenteLeitura;
-            document.getElementById('modalAvPertinencia').disabled = somenteLeitura;
-            document.getElementById('modalAvDinamica').disabled = somenteLeitura;
-            document.getElementById('modalAvInteresse').disabled = somenteLeitura;
-            document.getElementById('modalAvComentario').readOnly = somenteLeitura;
-
-            document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('avaliacaoModal').style.display = 'flex';
-        }
-
-        function fecharModalAvaliacao() { document.getElementById('avaliacaoModal').style.display = 'none'; }
-
-        function salvarEdicaoAvaliacao(e) {
-            e.preventDefault();
-            const idInput = document.getElementById('editAvaliacaoId').value;
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            let avs = JSON.parse(localStorage.getItem(chave)) || [];
-            
-            avs = avs.map((a, idx) => {
-                const matchId = (idInput !== "" && a.id == idInput);
-                const matchIdx = (idInput === "" && idx == idInput);
-                if(matchId || matchIdx) {
-                    a.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
-                    a.pertinencia = document.getElementById('modalAvPertinencia').value;
-                    a.dinamica = document.getElementById('modalAvDinamica').value;
-                    a.interesse = document.getElementById('modalAvInteresse').value;
-                    a.comentario = document.getElementById('modalAvComentario').value;
-                }
-                return a;
-            });
-            localStorage.setItem(chave, JSON.stringify(avs));
-            fecharModalAvaliacao();
-            carregarAvaliacoes();
-        }
-
-        // --- MODAIS DE OBJETIVOS ---
-        function verObjetivo(id) {
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const reg = registos.find(r => r.id === id);
-            if(!reg) return;
-            document.getElementById('modalObjetivoTitle').innerText = 'Consultar Registo de Objetivos';
-            preencherModalObjetivo(reg, true);
-        }
-
-        function editarObjetivo(id) {
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const reg = registos.find(r => r.id === id);
-            if(!reg) return;
-            document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
-            preencherModalObjetivo(reg, false);
-        }
-
-        function preencherModalObjetivo(reg, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-
-            document.getElementById('editObjetivoId').value = reg.id;
-            document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-            document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : '');
-            document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
-            document.getElementById('modalObjTipo').value = reg.tipoAtividade || reg.tipo || (atividadeCorrespondente ? atividadeCorrespondente.tipo : '-');
-            
-            document.getElementById('modalObjPaa').value = reg.paa || '';
-            document.getElementById('modalObjPee').value = reg.pee || '';
-            document.getElementById('modalObjMedia').value = reg.mediaAvaliacao || reg.media || 'Pendente';
-            document.getElementById('modalObjSugestoes').value = reg.sugestoes || reg.observacoes || '';
-            document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
-
-            document.getElementById('modalObjNumAtividade').readOnly = true;
-            document.getElementById('modalObjNomeAtividade').readOnly = true;
-            document.getElementById('modalObjAnoLetivo').readOnly = true;
-            document.getElementById('modalObjTipo').readOnly = true;
-            document.getElementById('modalObjMedia').readOnly = true;
-            document.getElementById('modalObjSugestoes').readOnly = true;
-
-            const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
-            const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
-            
-            const guardadosObj = reg.objetivosCheckboxes || reg.objetivos || [];
-            const guardadasMeta = reg.metasCheckboxes || reg.metas || [];
-
-            objCheckboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadosObj) && guardadosObj.includes(cb.value);
-                cb.disabled = somenteLeitura;
-            });
-
-            metaCheckboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadasMeta) && guardadasMeta.includes(cb.value);
-                cb.disabled = somenteLeitura;
-            });
-
-            document.getElementById('modalObjPaa').disabled = somenteLeitura;
-            document.getElementById('modalObjPee').disabled = somenteLeitura;
-            document.getElementById('modalObjResumo').readOnly = somenteLeitura;
-            
-            document.getElementById('modalObjSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('objetivoModal').style.display = 'flex';
-        }
-
-        function fecharModalObjetivo() { document.getElementById('objetivoModal').style.display = 'none'; }
-
-        function salvarEdicaoObjetivo(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editObjetivoId').value);
-            let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            
-            const objSelecionados = Array.from(document.querySelectorAll('#objetivoFormModal input[name="objCheck"]:checked')).map(cb => cb.value);
-            const metasSelecionadas = Array.from(document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked')).map(cb => cb.value);
-
-            registos = registos.map(reg => {
-                if(reg.id === id) {
-                    reg.paa = document.getElementById('modalObjPaa').value;
-                    reg.pee = document.getElementById('modalObjPee').value;
-                    reg.objetivosCheckboxes = objSelecionados;
-                    reg.metasCheckboxes = metasSelecionadas;
-                    reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
-                }
-                return reg;
-            });
-            localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-            fecharModalObjetivo();
-            carregarObjetivos();
-        }
-
-        // Apagar genérico
-        function confirmarApagar(id, tipo) {
-            idParaApagar = id;
-            tipoApagar = tipo;
+            indexParaApagar = index;
             document.getElementById('confirmModal').style.display = 'flex';
         }
+
         function fecharConfirmarApagar() {
-            idParaApagar = null;
-            tipoApagar = null;
+            indexParaApagar = null;
             document.getElementById('confirmModal').style.display = 'none';
         }
 
         document.getElementById('btnConfirmDelete').onclick = function() {
-            if (idParaApagar !== null) {
-                if (tipoApagar === 'atividade') {
-                    let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                    atividades = atividades.filter(a => a.id != idParaApagar);
-                    localStorage.setItem('atividades', JSON.stringify(atividades));
-                    carregarAtividades();
-                    carregarAvaliacoes();
-                    carregarObjetivos();
-                } else if (tipoApagar === 'avaliacao') {
-                    let chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-                    let avs = JSON.parse(localStorage.getItem(chave)) || [];
-                    avs = avs.filter((a, idx) => a.id != idParaApagar && idx != idParaApagar);
-                    localStorage.setItem(chave, JSON.stringify(avs));
-                    carregarAvaliacoes();
-                } else if (tipoApagar === 'objetivo') {
-                    let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-                    registos = registos.filter(reg => reg.id !== idParaApagar);
-                    localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-                    carregarObjetivos();
-                }
+            if (indexParaApagar !== null) {
+                let registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+                registos.splice(indexParaApagar, 1);
+
+                registos.forEach((r, idx) => {
+                    r.numero_atividade = idx + 1;
+                });
+
+                localStorage.setItem('registosAtividades', JSON.stringify(registos));
+                carregarAtividades();
                 fecharConfirmarApagar();
             }
         };
 
-        // Inicializar dados ao carregar
         carregarAtividades();
-        carregarAvaliacoes();
-        carregarObjetivos();
     </script>
 </body>
 </html>
