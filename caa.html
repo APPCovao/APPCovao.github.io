@@ -142,9 +142,16 @@
 
         .checkbox-item {
             display: flex;
-            align-items: center;
+            align-items: center; /* Alinha perfeitamente a caixa com o texto na vertical */
             gap: 8px;
             font-size: 14px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
 
