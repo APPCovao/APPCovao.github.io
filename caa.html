@@ -464,6 +464,7 @@
 
             ajustarModoFormulario(false);
 
+            // Cálculo automático do próximo número de atividade
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             let proximoNumero = 1;
             if (registos.length > 0) {
@@ -473,18 +474,18 @@
             
             const campoNum = document.getElementById('numero_atividade');
             campoNum.value = proximoNumero;
-            campoNum.readOnly = false;
-            campoNum.style.backgroundColor = '#ffffff';
-            campoNum.style.color = '#323130';
-            campoNum.style.fontWeight = 'normal';
-
+            
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
             const campoResp = document.getElementById('responsaveis');
             campoResp.value = nomeResponsavel;
-            campoResp.readOnly = true;
-            campoResp.style.backgroundColor = '#e9ecef';
-            campoResp.style.fontWeight = 'bold';
-            campoResp.style.color = '#212529';
+
+            // Bloqueio rigoroso (cinzento e bold) para o Nº da Atividade e Responsável na criação
+            [campoNum, campoResp].forEach(el => {
+                el.readOnly = true;
+                el.style.backgroundColor = '#e9ecef';
+                el.style.fontWeight = 'bold';
+                el.style.color = '#212529';
+            });
 
             document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -548,7 +549,6 @@
 
             ajustarModoFormulario(true);
 
-            // Bloqueio visual e interativo para o modo "Ver" (Nº Atividade e Responsável a bold e cinzento)
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
@@ -649,7 +649,6 @@
 
             document.getElementById('observacoes').value = reg.observacoes;
 
-            // Bloqueio para o modo "Editar" (Nº Atividade e Responsável ficam bloqueados a bold e cinzentos)
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
