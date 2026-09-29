@@ -455,11 +455,11 @@
         </div>
     </div>
 
-    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL (COMPLETO E IDÊNTICO À IMAGEM DE CRIAÇÃO) -->
+    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL (IDÊNTICO AO FORMULÁRIO DE CRIAÇÃO) -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-bottom: 0.25rem;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações[cite: 7].</p>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             
             <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
@@ -504,83 +504,91 @@
                     </div>
                 </div>
 
-                <!-- Objetivos e Metas do PEE -->
+                <!-- OBJETIVOS E METAS DO PEE (ESTRUTURA COMPLETA IDÊNTICA À CRIAÇÃO) -->
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e respetivas Metas do PEE abrangidos:</label>
                     
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> 
-                            Objetivo 1: Melhorar a articulação pedagógica
+                            <input type="checkbox" name="objCheck" value="Objetivo 1: Promover o sucesso escolar e educativo"> 
+                            Objetivo 1: Promover o sucesso escolar e educativo
                         </label>
                         <div class="pee-meta-list">
                             <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma"> 
-                                Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma
+                                <input type="checkbox" name="metaCheck" value="Meta 1.1: Reduzir a taxa de retenção e desistência"> 
+                                Meta 1.1: Reduzir a taxa de retenção e desistência
+                            </label>
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 1.2: Melhorar as classificações globais nas avaliações internas e externas"> 
+                                Meta 1.2: Melhorar as classificações globais nas avaliações internas e externas
                             </label>
                         </div>
                     </div>
 
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> 
-                            Objetivo 2: Melhorar os resultados académicos dos alunos
+                            <input type="checkbox" name="objCheck" value="Objetivo 2: Desenvolver a cidadania, a inclusão e o bem-estar da comunidade escolar"> 
+                            Objetivo 2: Desenvolver a cidadania, a inclusão e o bem-estar da comunidade escolar
                         </label>
                         <div class="pee-meta-list">
                             <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 2: 75% alunos com menções de Bom e Muito Bom no português"> 
-                                Meta 2: 75% alunos com menções de Bom e Muito Bom no português
+                                <input type="checkbox" name="metaCheck" value="Meta 2.1: Dinamizar atividades de apoio à inclusão e integração"> 
+                                Meta 2.1: Dinamizar atividades de apoio à inclusão e integração
                             </label>
                             <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática"> 
-                                Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática
+                                <input type="checkbox" name="metaCheck" value="Meta 2.2: Fomentar o respeito mútuo, a sustentabilidade e os valores cívicos"> 
+                                Meta 2.2: Fomentar o respeito mútuo, a sustentabilidade e os valores cívicos
                             </label>
                         </div>
                     </div>
 
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> 
-                            Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
+                            <input type="checkbox" name="objCheck" value="Objetivo 3: Valorizar a articulação pedagógica e a inovação nas práticas letivas"> 
+                            Objetivo 3: Valorizar a articulação pedagógica e a inovação nas práticas letivas
                         </label>
                         <div class="pee-meta-list">
                             <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias"> 
-                                Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias
+                                <input type="checkbox" name="metaCheck" value="Meta 3.1: Estimular práticas pedagógicas inovadoras e o uso de recursos digitais"> 
+                                Meta 3.1: Estimular práticas pedagógicas inovadoras e o uso de recursos digitais
+                            </label>
+                            <label class="pee-meta-item">
+                                <input type="checkbox" name="metaCheck" value="Meta 3.2: Reforçar o trabalho colaborativo entre docentes de diferentes níveis e ciclos"> 
+                                Meta 3.2: Reforçar o trabalho colaborativo entre docentes de diferentes níveis e ciclos
                             </label>
                         </div>
                     </div>
 
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> 
-                            Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
+                            <input type="checkbox" name="objCheck" value="Objetivo 4: Reforçar a abertura à comunidade e a cooperação com os parceiros educativos"> 
+                            Objetivo 4: Reforçar a abertura à comunidade e a cooperação com os parceiros educativos
                         </label>
                         <div class="pee-meta-list">
                             <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 5: Anualmente realizar dois questionários para a comunidade escolar"> 
-                                Meta 5: Anualmente realizar dois questionários para a comunidade escolar
+                                <input type="checkbox" name="metaCheck" value="Meta 4.1: Intensificar a participação e envolvimento dos encarregados de educação"> 
+                                Meta 4.1: Intensificar a participação e envolvimento dos encarregados de educação
                             </label>
                             <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais"> 
-                                Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais
+                                <input type="checkbox" name="metaCheck" value="Meta 4.2: Estabelecer parcerias estratégicas com autarquias e entidades locais"> 
+                                Meta 4.2: Estabelecer parcerias estratégicas com autarquias e entidades locais
                             </label>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)[cite: 7]</label>
+                    <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
                     <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Sugestões / Observações Recolhidas[cite: 7]</label>
+                    <label>Sugestões / Observações Recolhidas</label>
                     <textarea id="modalObjSugestoes" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Resumo / Conclusões da Atividade[cite: 7]</label>
+                    <label>Resumo / Conclusões da Atividade</label>
                     <textarea id="modalObjResumo" rows="4" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
                 </div>
 
@@ -864,7 +872,7 @@
             carregarAvaliacoes();
         }
 
-        // --- MODAIS DE OBJETIVOS (COMPLETOS IDÊNTICOS À IMAGEM DE CRIAÇÃO) ---
+        // --- MODAIS DE OBJETIVOS (COM OS OBJETIVOS E METAS EXATOS) ---
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
