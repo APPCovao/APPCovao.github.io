@@ -101,6 +101,7 @@
 
         input[type="text"],
         input[type="date"],
+        input[type="number"],
         textarea {
             width: 100%;
             padding: 10px 12px;
@@ -142,7 +143,7 @@
 
         .checkbox-item {
             display: flex;
-            align-items: center; /* Alinha perfeitamente a caixa com o texto na vertical */
+            align-items: center;
             gap: 8px;
             font-size: 14px;
             cursor: pointer;
@@ -267,13 +268,12 @@
             <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white;">+ Novo Registo</button>
         </div>
 
-        <!-- Tabela da Lista de Registos (Visível por predefinição) -->
+        <!-- Tabela da Lista de Registos (Apenas Nº, Atividade e Responsável) -->
         <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="border-bottom: 2px solid #edebe9; text-align: left; font-size: 14px;">
-                        <th style="padding: 0.75rem;">Data</th>
-                        <th style="padding: 0.75rem;">Aluno</th>
+                        <th style="padding: 0.75rem; width: 80px;">Nº</th>
                         <th style="padding: 0.75rem;">Atividade</th>
                         <th style="padding: 0.75rem;">Responsável</th>
                         <th style="padding: 0.75rem; text-align: right;">Ações</th>
@@ -306,19 +306,25 @@
 
             <form id="caaForm">
                 <input type="hidden" id="editIndex" value="">
+
+                <!-- 1. Nº da Atividade (Automático / Sequencial) -->
+                <div class="form-group">
+                    <label for="numero_atividade">1. Nº da Atividade <span class="required">*</span></label>
+                    <input type="number" id="numero_atividade" name="numero_atividade" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
+                </div>
                 
                 <div class="form-group">
-                    <label for="data_atividade">1. Data da Atividade <span class="required">*</span></label>
+                    <label for="data_atividade">2. Data da Atividade <span class="required">*</span></label>
                     <input type="date" id="data_atividade" name="data_atividade" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="nome_aluno">2. Nome do Aluno <span class="required">*</span></label>
+                    <label for="nome_aluno">3. Nome do Aluno <span class="required">*</span></label>
                     <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" placeholder="Introduza a sua resposta" required>
                 </div>
 
                 <div class="form-group">
-                    <label>3. Turma(s) / Sala(s) (Pode selecionar várias)</label>
+                    <label>4. Turma(s) / Sala(s) (Pode selecionar várias)</label>
                     <div class="checkbox-grid">
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºA"> 1ºA</label>
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºB"> 1ºB</label>
@@ -335,48 +341,48 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="atividade">4. Atividade <span class="required">*</span></label>
+                    <label for="atividade">5. Atividade <span class="required">*</span></label>
                     <input type="text" id="atividade" name="atividade" maxlength="1000" placeholder="Introduza a sua resposta" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="objetivos">5. Objetivos <span class="required">*</span></label>
+                    <label for="objetivos">6. Objetivos <span class="required">*</span></label>
                     <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-obj')" required></textarea>
                     <div id="counter-obj" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="descricao_atividade">6. Descrição da Atividade <span class="required">*</span></label>
+                    <label for="descricao_atividade">7. Descrição da Atividade <span class="required">*</span></label>
                     <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-desc')" required></textarea>
                     <div id="counter-desc" class="char-counter">Máximo de 10000 carateres</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="formas_avaliacao">7. Formas de Avaliação <span class="required">*</span></label>
+                    <label for="formas_avaliacao">8. Formas de Avaliação <span class="required">*</span></label>
                     <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-av')" required></textarea>
                     <div id="counter-av" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="articulacao">8. Articulação <span class="required">*</span></label>
+                    <label for="articulacao">9. Articulação <span class="required">*</span></label>
                     <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-art')" required></textarea>
                     <div id="counter-art" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="responsaveis">9. Responsável(eis) <span class="required">*</span></label>
-                    <!-- Preenchimento automático, negrito, cinzento mais escuro e bloqueado -->
+                    <label for="responsaveis">10. Responsável(eis) <span class="required">*</span></label>
+                    <!-- Preenchimento automático com o nome de quem fez login, bloqueado, negrito e cinzento escuro -->
                     <input type="text" id="responsaveis" name="responsaveis" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
                 </div>
 
                 <div class="form-group">
-                    <label for="observacoes">10. Observações <span class="required">*</span></label>
+                    <label for="observacoes">11. Observações <span class="required">*</span></label>
                     <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-obs')" required></textarea>
                     <div id="counter-obs" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
-                    <label>11. Registo Fotográfico / Imagens da Atividade:</label>
+                    <label>12. Registo Fotográfico / Imagens da Atividade:</label>
                     <div class="image-upload-box" onclick="document.getElementById('fileInput').click()">
                         <p style="margin: 0; color: #605e5c;">📸 Clique aqui para adicionar fotografias</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
@@ -416,7 +422,7 @@
             window.location.href = 'index.html';
         });
 
-        // Carregar Registos na Tabela
+        // Carregar Registos na Tabela (Apenas Nº, Atividade, Responsável)
         function carregarRegistos() {
             const tbody = document.getElementById('caaTableBody');
             if (!tbody) return;
@@ -425,7 +431,7 @@
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1rem; text-align: center; color: #605e5c;">Sem registos do CAA guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #605e5c;">Sem registos do CAA guardados.</td></tr>`;
                 return;
             }
 
@@ -436,8 +442,7 @@
                 const temPermissao = currentUser.isAdmin || reg.userEmail === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="padding: 0.75rem;">${reg.data_atividade}</td>
-                    <td style="padding: 0.75rem;">${reg.nome_aluno}</td>
+                    <td style="padding: 0.75rem; font-weight: bold; color: #0078d4;">#${reg.numero_atividade || (index + 1)}</td>
                     <td style="padding: 0.75rem;">${reg.atividade}</td>
                     <td style="padding: 0.75rem;">${reg.responsaveis}</td>
                     <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
@@ -457,6 +462,16 @@
             document.getElementById('caaForm').reset();
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('data_atividade').valueAsDate = new Date();
+
+            // Atribuir automaticamente o próximo número de atividade sequencial
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            let proximoNumero = 1;
+            if (registos.length > 0) {
+                // Procura o maior número existente ou assume o tamanho + 1
+                const numeros = registos.map(r => parseInt(r.numero_atividade) || 0);
+                proximoNumero = Math.max(...numeros) + 1;
+            }
+            document.getElementById('numero_atividade').value = proximoNumero;
 
             // Preenchimento automático do responsável a partir da sessão ativa
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
@@ -493,6 +508,7 @@
             const imagensArray = Array.from(imageElements).map(img => img.src);
 
             const novoReg = {
+                numero_atividade: document.getElementById('numero_atividade').value,
                 data_atividade: document.getElementById('data_atividade').value,
                 nome_aluno: document.getElementById('nome_aluno').value.trim(),
                 turmas: turmasValues,
@@ -535,6 +551,7 @@
             }
 
             const conteudo = `
+                <p><strong>Nº da Atividade:</strong> #${reg.numero_atividade}</p>
                 <p><strong>Data da Atividade:</strong> ${reg.data_atividade}</p>
                 <p><strong>Nome do Aluno:</strong> ${reg.nome_aluno}</p>
                 <p><strong>Turmas:</strong> ${reg.turmas || 'Nenhuma'}</p>
@@ -566,6 +583,7 @@
             }
 
             document.getElementById('editIndex').value = index;
+            document.getElementById('numero_atividade').value = reg.numero_atividade || (index + 1);
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
