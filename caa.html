@@ -224,7 +224,7 @@
             background-color: #edebe9;
         }
 
-        /* Estilo limpo para impressão do formulário */
+        /* Estilo otimizado para impressão: mantém as caixas e limpa os elementos visuais de edição */
         @media print {
             body * {
                 visibility: hidden;
@@ -241,16 +241,19 @@
                 box-shadow: none !important;
                 padding: 0 !important;
             }
-            /* Ocultar elementos desnecessários na impressão */
+            /* Ocultar elementos interativos na impressão, mantendo os limites dos inputs e textareas */
             .btn-container, .navbar, .image-upload-box, .char-counter, .remove-img {
                 display: none !important;
             }
             input, textarea {
-                border: none !important;
-                background: transparent !important;
-                padding: 0 !important;
-                resize: none !important;
-                color: #000 !important;
+                border: 1px solid #b8b6b4 !important;
+                background-color: #ffffff !important;
+                color: #323130 !important;
+                box-shadow: none !important;
+            }
+            .checkbox-grid {
+                background: #ffffff !important;
+                border: 1px solid #b8b6b4 !important;
             }
         }
     </style>
@@ -467,16 +470,20 @@
                 const numeros = registos.map(r => parseInt(r.numero_atividade) || 0);
                 proximoNumero = Math.max(...numeros) + 1;
             }
-            document.getElementById('numero_atividade').value = proximoNumero;
-            document.getElementById('numero_atividade').readOnly = true;
-            document.getElementById('numero_atividade').style.backgroundColor = '#e2e8f0';
-            document.getElementById('numero_atividade').style.color = '#1e293b';
+            
+            // Atribuir e desbloquear esteticamente para criação
+            const campoNum = document.getElementById('numero_atividade');
+            campoNum.value = proximoNumero;
+            campoNum.readOnly = false;
+            campoNum.style.backgroundColor = '#ffffff';
+            campoNum.style.color = '#323130';
 
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
-            document.getElementById('responsaveis').value = nomeResponsavel;
-            document.getElementById('responsaveis').readOnly = true;
-            document.getElementById('responsaveis').style.backgroundColor = '#e2e8f0';
-            document.getElementById('responsaveis').style.color = '#1e293b';
+            const campoResp = document.getElementById('responsaveis');
+            campoResp.value = nomeResponsavel;
+            campoResp.readOnly = true;
+            campoResp.style.backgroundColor = '#e2e8f0';
+            campoResp.style.color = '#1e293b';
 
             document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -521,7 +528,7 @@
             if (!reg) return;
 
             document.getElementById('editIndex').value = index;
-            document.getElementById('numero_atividade').value = reg.numero_atividade;
+            document.getElementById('numero_atividade').value = reg.numero_atividade || (index + 1);
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -610,10 +617,12 @@
             ajustarModoFormulario(false);
 
             document.getElementById('editIndex').value = index;
-            document.getElementById('numero_atividade').value = reg.numero_atividade || (index + 1);
-            document.getElementById('numero_atividade').readOnly = true;
-            document.getElementById('numero_atividade').style.backgroundColor = '#e2e8f0';
-            document.getElementById('numero_atividade').style.color = '#1e293b';
+            
+            const campoNum = document.getElementById('numero_atividade');
+            campoNum.value = reg.numero_atividade || (index + 1);
+            campoNum.readOnly = false;
+            campoNum.style.backgroundColor = '#ffffff';
+            campoNum.style.color = '#323130';
 
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
@@ -623,10 +632,11 @@
             document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
             document.getElementById('articulacao').value = reg.articulacao;
 
-            document.getElementById('responsaveis').value = reg.responsaveis;
-            document.getElementById('responsaveis').readOnly = true;
-            document.getElementById('responsaveis').style.backgroundColor = '#e2e8f0';
-            document.getElementById('responsaveis').style.color = '#1e293b';
+            const campoResp = document.getElementById('responsaveis');
+            campoResp.value = reg.responsaveis;
+            campoResp.readOnly = true;
+            campoResp.style.backgroundColor = '#e2e8f0';
+            campoResp.style.color = '#1e293b';
 
             document.getElementById('observacoes').value = reg.observacoes;
 
