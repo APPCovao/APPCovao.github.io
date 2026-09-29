@@ -504,7 +504,7 @@
                     </div>
                 </div>
 
-                <!-- OBJETIVOS E METAS DO PEE (EXATAMENTE COMO NA IMAGEM)[cite: 7] -->
+                <!-- OBJETIVOS E METAS DO PEE (EXATAMENTE COM CAIXAS DE VERIFICAÇÃO ANTES DA FRASE)[cite: 7] -->
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e respetivas Metas do PEE abrangidos:</label>
                     
@@ -868,7 +868,7 @@
             carregarAvaliacoes();
         }
 
-        // --- MODAIS DE OBJETIVOS ( COM OS 4 OBJETIVOS E AS 6 METAS DA IMAGEM ) ---
+        // --- MODAIS DE OBJETIVOS ( COM OS CHECKBOXES ANTES DO TEXTO ) ---
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
