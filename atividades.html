@@ -6,7 +6,6 @@
     <title>Atividades - EB1/PE do Covão e Vargem</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Controlo de Visibilidade das Secções */
         .app-section {
             display: none;
         }
@@ -14,7 +13,6 @@
             display: block;
         }
 
-        /* Cabeçalho da Secção Interna com Botão Voltar */
         .section-header-nav {
             display: flex;
             justify-content: space-between;
@@ -39,21 +37,6 @@
             transition: background 0.2s;
         }
         .btn-voltar:hover { background-color: #475569; }
-
-        .btn-novo-registo {
-            background-color: #0f766e;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .btn-novo-registo:hover { opacity: 0.9; }
 
         .table-container {
             background: #ffffff;
@@ -108,7 +91,6 @@
             opacity: 0.6;
         }
 
-        /* Modais */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -149,7 +131,6 @@
 
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         
-        /* Campos com suporte a readonly/disabled no modal */
         .custom-modal input:disabled, 
         .custom-modal select:disabled, 
         .custom-modal textarea:disabled,
@@ -179,6 +160,7 @@
             align-items: flex-start;
             gap: 1rem;
             transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
 
         .menu-card:hover {
@@ -217,53 +199,53 @@
 
     <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
         
-        <!-- ================= VISTA 1: MENU PRINCIPAL (HUB DE 3 CARTÕES) ================= -->
+        <!-- ================= VISTA 1: HUB PRINCIPAL (3 CARTÕES) ================= -->
         <div id="secaoMenu" class="app-section active">
             <div class="dashboard-header" style="margin-bottom: 2rem;">
-                <h2>Gestão e Consulta de Atividades</h2>
-                <p style="color: #64748b; font-size: 0.9rem;">Selecione a opção desejada para consultar, criar ou gerir os registos de atividades</p>
+                <h2>Módulo de Atividades</h2>
+                <p style="color: #64748b; font-size: 0.9rem;">Selecione a opção pretendida</p>
             </div>
 
             <div class="menu-grid">
-                <!-- Cartão 1: Atividades Registadas -->
-                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: #0f766e; cursor: pointer;">
-                    <div class="icon">📋</div>
+                <!-- Cartão 1: Criar Atividade -->
+                <div onclick="abrirCriarAtividade()" class="menu-card" style="border-top-color: #0f766e;">
+                    <div class="icon">📝</div>
                     <div>
-                        <h3>Atividades Registadas</h3>
-                        <p>Criar, consultar e gerir todas as atividades pedagógicas criadas</p>
+                        <h3>Criar Atividade</h3>
+                        <p>Registar uma nova atividade pedagógica no sistema</p>
                     </div>
                 </div>
 
-                <!-- Cartão 2: Estatísticas / Resumo -->
-                <div onclick="mostrarSecao('secaoEstatisticas')" class="menu-card" style="border-top-color: #0284c7; cursor: pointer;">
-                    <div class="icon">📊</div>
+                <!-- Cartão 2: Avaliar Atividade -->
+                <div onclick="abrirAvaliarAtividade()" class="menu-card" style="border-top-color: #0284c7;">
+                    <div class="icon">⭐</div>
                     <div>
-                        <h3>Resumo Estatístico</h3>
-                        <p>Visualizar métricas e contadores globais das atividades</p>
+                        <h3>Avaliar Atividade</h3>
+                        <p>Proceder à avaliação e registo de resultados das atividades</p>
                     </div>
                 </div>
 
-                <!-- Cartão 3: Documentação / Ajuda -->
-                <div onclick="mostrarSecao('secaoAjuda')" class="menu-card" style="border-top-color: #16a34a; cursor: pointer;">
-                    <div class="icon">💡</div>
+                <!-- Cartão 3: Registar Objetivos -->
+                <div onclick="abrirRegistarObjetivos()" class="menu-card" style="border-top-color: #16a34a;">
+                    <div class="icon">🎯</div>
                     <div>
-                        <h3>Informações & Ajuda</h3>
-                        <p>Instruções de preenchimento e normas de registo</p>
+                        <h3>Registar Objetivos</h3>
+                        <p>Definir e gerir os objetivos pedagógicos associados</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VISTA 2: LISTA DE ATIVIDADES REGISTADAS ================= -->
-        <div id="secaoAtividades" class="app-section">
+        <!-- ================= VISTA 2: LISTA DE ATIVIDADES / GESTÃO (EXEMPLO) ================= -->
+        <div id="secaoListaAtividades" class="app-section">
             <div class="section-header-nav">
                 <div>
-                    <h2>Atividades Registadas</h2>
-                    <p style="color: #64748b; font-size: 0.85rem;">Consulta, edição e gestão de todas as atividades criadas no sistema.</p>
+                    <h2 id="tituloSecaoLista">Gestão de Atividades</h2>
+                    <p style="color: #64748b; font-size: 0.85rem;">Consulta e registos associados.</p>
                 </div>
                 <div style="display: flex; gap: 0.75rem;">
                     <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <button class="btn-novo-registo" onclick="abrirFormularioCriacao()">➕ Nova Atividade</button>
+                    <button id="btnAcaoExtraLista" class="btn-novo-registo" style="background-color: #0f766e; color: white; padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600; cursor: pointer;" onclick="abrirFormularioCriacao()">➕ Novo Registo</button>
                 </div>
             </div>
 
@@ -271,87 +253,40 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título da Atividade</th>
+                            <th style="width: 15%;">Nº</th>
+                            <th>Título / Descrição</th>
                             <th style="width: 25%;">Responsável</th>
                             <th style="width: 20%;">Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="atividadesTableBody"></tbody>
+                    <tbody id="tabelaRegistosBody"></tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- ================= VISTA 3: ESTATÍSTICAS ================= -->
-        <div id="secaoEstatisticas" class="app-section">
-            <div class="section-header-nav">
-                <div>
-                    <h2>Resumo Estatístico</h2>
-                    <p style="color: #64748b; font-size: 0.85rem;">Dados globais referentes às atividades registadas.</p>
-                </div>
-                <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-            </div>
-            <div class="table-container" style="text-align: center; padding: 3rem;">
-                <h3 id="statTotalAtividades" style="color: #0f766e; font-size: 2rem; margin-bottom: 0.5rem;">0</h3>
-                <p style="color: #64748b; font-size: 1rem;">Total de Atividades Registadas no Sistema</p>
-            </div>
-        </div>
-
-        <!-- ================= VISTA 4: AJUDA ================= -->
-        <div id="secaoAjuda" class="app-section">
-            <div class="section-header-nav">
-                <div>
-                    <h2>Informações & Ajuda</h2>
-                    <p style="color: #64748b; font-size: 0.85rem;">Orientações para o correto registo de atividades.</p>
-                </div>
-                <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-            </div>
-            <div class="table-container" style="line-height: 1.6; color: #334155;">
-                <h3>Instruções de Utilização</h3>
-                <p>1. Utilize o botão <strong>Nova Atividade</strong> para preencher o formulário de registo pedagógico.</p>
-                <p>2. Cada utilizador pode editar ou apagar os seus próprios registos. Os administradores possuem acesso global de gestão.</p>
-                <p>3. Certifique-se de preencher todos os campos obrigatórios assinalados com asterisco (*).</p>
             </div>
         </div>
 
     </div>
 
-    <!-- MODAL DE ATIVIDADE (VER / EDITAR) -->
+    <!-- MODAL GENÉRICO DE DETALHES -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalTitle" style="color: #0f766e; margin-bottom: 1rem;">Detalhes da Atividade</h2>
-            <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
-                <input type="hidden" id="editAtividadeIndex">
+            <h2 id="modalTitle" style="color: #0f766e; margin-bottom: 1rem;">Detalhes</h2>
+            <form id="atividadeFormModal" onsubmit="salvarEdicaoRegisto(event)">
+                <input type="hidden" id="editIndex">
+                <input type="hidden" id="tipoRegistoAtual">
                 
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <div class="form-group" style="flex: 1;">
-                        <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Nº da Atividade</label>
-                        <input type="text" id="modalNumero" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Data da Atividade</label>
-                        <input type="date" id="modalData" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
-                    </div>
-                </div>
-
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Título da Atividade</label>
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Título / Assunto</label>
                     <input type="text" id="modalTitulo" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Responsável(eis)</label>
-                    <input type="text" id="modalResponsaveis" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Responsável</label>
+                    <input type="text" id="modalResponsavel" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Descrição da Atividade</label>
-                    <textarea id="modalDescricao" rows="5" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Observações</label>
-                    <textarea id="modalObservacoes" rows="3" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+                    <label style="font-weight:600; font-size:0.9rem; margin-bottom:4px; display:block;">Detalhes / Observações</label>
+                    <textarea id="modalDetalhes" rows="4" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
                 </div>
 
                 <div class="modal-buttons">
@@ -362,7 +297,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE APAGAR GENÉRICO -->
+    <!-- MODAL DE APAGAR -->
     <div id="confirmModal" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 400px; text-align: center;">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
@@ -390,23 +325,43 @@
         }
 
         function mostrarSecao(secaoId) {
-            const secoes = document.querySelectorAll('.app-section');
-            secoes.forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
             document.getElementById(secaoId).classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        let tipoAtivoGlobal = '';
         let indexParaApagar = null;
 
-        function carregarAtividades() {
-            const tbody = document.getElementById('atividadesTableBody');
-            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+        function abrirCriarAtividade() {
+            window.location.href = 'nova-atividade.html';
+        }
+
+        function abrirAvaliarAtividade() {
+            tipoAtivoGlobal = 'avaliar';
+            document.getElementById('tituloSecaoLista').innerText = 'Avaliar Atividade';
+            document.getElementById('btnAcaoExtraLista').innerText = '➕ Nova Avaliação';
+            document.getElementById('btnAcaoExtraLista').onclick = () => window.location.href = 'avaliar-atividade.html';
+            carregarTabelaDados('registosAvaliacao');
+            mostrarSecao('secaoListaAtividades');
+        }
+
+        function abrirRegistarObjetivos() {
+            tipoAtivoGlobal = 'objetivos';
+            document.getElementById('tituloSecaoLista').innerText = 'Registar Objetivos';
+            document.getElementById('btnAcaoExtraLista').innerText = '➕ Novo Objetivo';
+            document.getElementById('btnAcaoExtraLista').onclick = () => window.location.href = 'registar-objetivos.html';
+            carregarTabelaDados('registosObjetivos');
+            mostrarSecao('secaoListaAtividades');
+        }
+
+        function carregarTabelaDados(storageKey) {
+            const tbody = document.getElementById('tabelaRegistosBody');
+            const registos = JSON.parse(localStorage.getItem(storageKey)) || [];
             tbody.innerHTML = '';
 
-            document.getElementById('statTotalAtividades').innerText = registos.length;
-
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">Ainda não existem atividades registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">Ainda não existem registos.</td></tr>`;
                 return;
             }
 
@@ -417,14 +372,14 @@
                 const tr = document.createElement('tr');
                 
                 tr.innerHTML = `
-                    <td><strong>${reg.numero_atividade || (indexReal + 1)}</strong></td>
-                    <td><strong>${reg.titulo_atividade}</strong></td>
-                    <td>${reg.responsaveis}</td>
+                    <td><strong>${indexReal + 1}</strong></td>
+                    <td><strong>${reg.titulo || reg.titulo_atividade || 'Sem título'}</strong></td>
+                    <td>${reg.responsavel || reg.responsaveis || 'N/D'}</td>
                     <td>
                         <div class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verAtividade(${indexReal})">Ver</button>
-                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${indexReal})">Editar</button>
-                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${indexReal})">Apagar</button>
+                            <button class="btn-action btn-view" onclick="verRegisto('${storageKey}', ${indexReal})">Ver</button>
+                            <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarRegisto('${storageKey}', ${indexReal})">Editar</button>
+                            <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${storageKey}', ${indexReal})">Apagar</button>
                         </div>
                     </td>
                 `;
@@ -432,20 +387,16 @@
             });
         }
 
-        function abrirFormularioCriacao() {
-            window.location.href = 'nova-atividade.html';
-        }
-
-        function verAtividade(index) {
-            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+        function verRegisto(storageKey, index) {
+            const registos = JSON.parse(localStorage.getItem(storageKey)) || [];
             const reg = registos[index];
             if(!reg) return;
-            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            preencherModalAtiv(reg, index, true);
+            document.getElementById('modalTitle').innerText = 'Consultar Registo';
+            preencherModal(storageKey, reg, index, true);
         }
 
-        function editarAtividade(index) {
-            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+        function editarRegisto(storageKey, index) {
+            const registos = JSON.parse(localStorage.getItem(storageKey)) || [];
             const reg = registos[index];
             if(!reg) return;
 
@@ -455,25 +406,20 @@
                 return;
             }
 
-            document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            preencherModalAtiv(reg, index, false);
+            document.getElementById('modalTitle').innerText = 'Editar Registo';
+            preencherModal(storageKey, reg, index, false);
         }
 
-        function preencherModalAtiv(reg, index, somenteLeitura) {
-            document.getElementById('editAtividadeIndex').value = index;
-            document.getElementById('modalNumero').value = reg.numero_atividade || (index + 1);
-            document.getElementById('modalData').value = reg.data_atividade || '';
-            document.getElementById('modalTitulo').value = reg.titulo_atividade || '';
-            document.getElementById('modalResponsaveis').value = reg.responsaveis || '';
-            document.getElementById('modalDescricao').value = reg.descricao || '';
-            document.getElementById('modalObservacoes').value = reg.observacoes || '';
+        function preencherModal(storageKey, reg, index, somenteLeitura) {
+            document.getElementById('tipoRegistoAtual').value = storageKey;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitulo').value = reg.titulo || reg.titulo_atividade || '';
+            document.getElementById('modalResponsavel').value = reg.responsavel || reg.responsaveis || '';
+            document.getElementById('modalDetalhes').value = reg.detalhes || reg.descricao || '';
 
-            document.getElementById('modalNumero').readOnly = true;
-            document.getElementById('modalData').readOnly = somenteLeitura;
             document.getElementById('modalTitulo').readOnly = somenteLeitura;
-            document.getElementById('modalResponsaveis').readOnly = somenteLeitura;
-            document.getElementById('modalDescricao').readOnly = somenteLeitura;
-            document.getElementById('modalObservacoes').readOnly = somenteLeitura;
+            document.getElementById('modalResponsavel').readOnly = somenteLeitura;
+            document.getElementById('modalDetalhes').readOnly = somenteLeitura;
 
             document.getElementById('modalSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('atividadeModal').style.display = 'flex';
@@ -483,26 +429,25 @@
             document.getElementById('atividadeModal').style.display = 'none';
         }
 
-        function salvarEdicaoAtividade(e) {
+        function salvarEdicaoRegisto(e) {
             e.preventDefault();
-            const index = parseInt(document.getElementById('editAtividadeIndex').value);
-            let registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+            const storageKey = document.getElementById('tipoRegistoAtual').value;
+            const index = parseInt(document.getElementById('editIndex').value);
+            let registos = JSON.parse(localStorage.getItem(storageKey)) || [];
             
             if(registos[index]) {
-                registos[index].data_atividade = document.getElementById('modalData').value;
-                registos[index].titulo_atividade = document.getElementById('modalTitulo').value.trim();
-                registos[index].responsaveis = document.getElementById('modalResponsaveis').value.trim();
-                registos[index].descricao = document.getElementById('modalDescricao').value.trim();
-                registos[index].observacoes = document.getElementById('modalObservacoes').value.trim();
-                
-                localStorage.setItem('registosAtividades', JSON.stringify(registos));
+                registos[index].titulo = document.getElementById('modalTitulo').value.trim();
+                registos[index].responsavel = document.getElementById('modalResponsavel').value.trim();
+                registos[index].detalhes = document.getElementById('modalDetalhes').value.trim();
+                localStorage.setItem(storageKey, JSON.stringify(registos));
             }
             fecharModal();
-            carregarAtividades();
+            carregarTabelaDados(storageKey);
         }
 
-        function confirmarApagar(index) {
-            const registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+        let storageKeyParaApagar = null;
+        function confirmarApagar(storageKey, index) {
+            const registos = JSON.parse(localStorage.getItem(storageKey)) || [];
             const reg = registos[index];
             const userIsAdmin = isAdminUser(currentUser);
             
@@ -511,31 +456,26 @@
                 return;
             }
 
+            storageKeyParaApagar = storageKey;
             indexParaApagar = index;
             document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function fecharConfirmarApagar() {
             indexParaApagar = null;
+            storageKeyParaApagar = null;
             document.getElementById('confirmModal').style.display = 'none';
         }
 
         document.getElementById('btnConfirmDelete').onclick = function() {
-            if (indexParaApagar !== null) {
-                let registos = JSON.parse(localStorage.getItem('registosAtividades')) || [];
+            if (indexParaApagar !== null && storageKeyParaApagar !== null) {
+                let registos = JSON.parse(localStorage.getItem(storageKeyParaApagar)) || [];
                 registos.splice(indexParaApagar, 1);
-
-                registos.forEach((r, idx) => {
-                    r.numero_atividade = idx + 1;
-                });
-
-                localStorage.setItem('registosAtividades', JSON.stringify(registos));
-                carregarAtividades();
+                localStorage.setItem(storageKeyParaApagar, JSON.stringify(registos));
+                carregarTabelaDados(storageKeyParaApagar);
                 fecharConfirmarApagar();
             }
         };
-
-        carregarAtividades();
     </script>
 </body>
 </html>
