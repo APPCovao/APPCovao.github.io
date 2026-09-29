@@ -37,7 +37,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
                         <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Responsável</label>
-                        <input type="text" id="respReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
+                        <input type="text" id="respReq" required readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px; background-color: #f8fafc; color: #475569; cursor: not-allowed;">
                     </div>
                     <div>
                         <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Ano Letivo</label>
@@ -198,6 +198,11 @@
         function abrirFormularioCriacao() {
             document.getElementById('editIndex').value = '';
             document.getElementById('requisicaoForm').reset();
+            
+            // Preencher automaticamente o campo responsável com o nome ou email do utilizador logado
+            const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
+            document.getElementById('respReq').value = nomeResponsavel;
+
             document.getElementById('formTitle').innerText = 'Registar Nova Requisição';
             document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo para requisitar equipamentos.';
             document.getElementById('btnSubmit').innerText = 'Guardar Requisição';
