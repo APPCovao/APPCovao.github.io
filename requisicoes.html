@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Requisições - Registos App</title>
+    <title>Lista de Requisições - Registos App</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -16,89 +16,14 @@
     </nav>
 
     <div class="container" style="margin-top: 2rem; max-width: 900px;">
-        <h2 id="formTitle">Registar Nova Requisição</h2>
-        <p style="color: #64748b; margin-bottom: 1.5rem;" id="formSubtitle">Preencha os dados abaixo para requisitar equipamentos.</p>
-
-        <!-- Formulário de Requisição -->
-        <form id="requisicaoForm" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 2rem;">
-            <input type="hidden" id="editIndex" value="">
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div>
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Responsável</label>
-                    <input type="text" id="respReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                </div>
-                <div>
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Ano Letivo</label>
-                    <select id="anoLetivoReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
-                </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+                <h2>Lista de Requisições</h2>
+                <p style="color: #64748b; margin: 0;">Consulte, edite ou crie novas requisições de equipamentos.</p>
             </div>
+            <a href="nova-requisicao.html" style="background-color: #0f766e; color: white; padding: 0.75rem 1.25rem; border-radius: 4px; text-decoration: none; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">+ Nova Requisição</a>
+        </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div>
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Data de Requisição</label>
-                    <input type="date" id="dataReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                </div>
-                <div>
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Turma</label>
-                    <select id="turmaReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                        <option value="Abelhinhas">Abelhinhas</option>
-                        <option value="Arco-Íris">Arco-Íris</option>
-                        <option value="Flores">Flores</option>
-                        <option value="1ºA">1ºA</option>
-                        <option value="1ºB">1ºB</option>
-                        <option value="2ºA">2ºA</option>
-                        <option value="2ºB">2ºB</option>
-                        <option value="3ºA">3ºA</option>
-                        <option value="3ºB">3ºB</option>
-                        <option value="4ºA">4ºA</option>
-                        <option value="4ºB">4ºB</option>
-                    </select>
-                </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div>
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Área</label>
-                    <select id="areaReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                        <option value="Português">Português</option>
-                        <option value="Matemática">Matemática</option>
-                        <option value="Estudo do Meio">Estudo do Meio</option>
-                        <option value="Estudo">Estudo</option>
-                        <option value="Clubes">Clubes</option>
-                        <option value="Expressões">Expressões</option>
-                        <option value="Inglês">Inglês</option>
-                        <option value="Educação Especial">Educação Especial</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Equipamento</label>
-                    <select id="equipamentoReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                        <option value="Tablets">Tablets</option>
-                        <option value="Surfaces">Surfaces</option>
-                        <option value="Painel">Painel</option>
-                        <option value="Tela">Tela</option>
-                        <option value="Projetor">Projetor</option>
-                        <option value="Robots">Robots</option>
-                    </select>
-                </div>
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Quantidade</label>
-                <input type="number" id="qtdReq" min="1" value="1" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-                <button type="submit" id="btnSubmit" style="background-color: #0f766e; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Guardar Requisição</button>
-                <button type="button" id="btnCancelarEdicao" style="display: none; background-color: #64748b; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;" onclick="cancelarEdicao()">Cancelar</button>
-            </div>
-        </form>
-
-        <h2>Lista de Requisições</h2>
         <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -173,7 +98,7 @@
                     <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
                         <button onclick="verRequisicao(${index})" style="background-color: #e0f2fe; color: #0284c7; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Ver</button>
                         ${temPermissao ? `
-                            <button onclick="editarRequisicao(${index})" style="background-color: #fef3c7; color: #d97706; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Editar</button>
+                            <button onclick="irParaEditar(${index})" style="background-color: #fef3c7; color: #d97706; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Editar</button>
                             <button onclick="eliminarRequisicao(${index})" style="background-color: #fee2e2; color: #ef4444; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Apagar</button>
                         ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
@@ -181,45 +106,6 @@
                 tbody.appendChild(tr);
             });
         }
-
-        // Submeter / Guardar Requisição (Criar ou Atualizar)
-        document.getElementById('requisicaoForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const editIndex = document.getElementById('editIndex').value;
-            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-
-            const novaReq = {
-                responsavel: document.getElementById('respReq').value.trim(),
-                anoLetivo: document.getElementById('anoLetivoReq').value,
-                data: document.getElementById('dataReq').value,
-                turma: document.getElementById('turmaReq').value,
-                area: document.getElementById('areaReq').value,
-                equipamento: document.getElementById('equipamentoReq').value,
-                quantidade: document.getElementById('qtdReq').value,
-                userEmail: editIndex !== "" ? requisicoes[editIndex].userEmail : currentUser.email
-            };
-
-            if (editIndex === "") {
-                // Criar nova
-                requisicoes.push(novaReq);
-                mostrarMensagemSucesso('Requisição guardada com sucesso!');
-            } else {
-                // Atualizar existente
-                const reqOriginal = requisicoes[editIndex];
-                if (!currentUser.isAdmin && reqOriginal.userEmail !== currentUser.email) {
-                    alert('Não tens permissão para editar esta requisição.');
-                    return;
-                }
-                requisicoes[editIndex] = novaReq;
-                mostrarMensagemSucesso('Requisição atualizada com sucesso!');
-                cancelarEdicao();
-            }
-
-            localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
-            document.getElementById('requisicaoForm').reset();
-            carregarRequisicoes();
-        });
 
         // Ver Requisição (Modal)
         function verRequisicao(index) {
@@ -245,8 +131,8 @@
             document.getElementById('modalVer').style.display = 'none';
         }
 
-        // Editar Requisição (Preencher formulário)
-        function editarRequisicao(index) {
+        // Redirecionar para o formulário em modo de edição
+        function irParaEditar(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
 
@@ -255,30 +141,7 @@
                 return;
             }
 
-            document.getElementById('editIndex').value = index;
-            document.getElementById('respReq').value = req.responsavel;
-            document.getElementById('anoLetivoReq').value = req.anoLetivo;
-            document.getElementById('dataReq').value = req.data;
-            document.getElementById('turmaReq').value = req.turma;
-            document.getElementById('areaReq').value = req.area;
-            document.getElementById('equipamentoReq').value = req.equipamento;
-            document.getElementById('qtdReq').value = req.quantidade;
-
-            document.getElementById('formTitle').innerText = 'Editar Requisição';
-            document.getElementById('formSubtitle').innerText = 'Modifique os dados da requisição abaixo.';
-            document.getElementById('btnSubmit').innerText = 'Atualizar Requisição';
-            document.getElementById('btnCancelarEdicao').style.display = 'inline-block';
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function cancelarEdicao() {
-            document.getElementById('editIndex').value = '';
-            document.getElementById('requisicaoForm').reset();
-            document.getElementById('formTitle').innerText = 'Registar Nova Requisição';
-            document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo para requisitar equipamentos.';
-            document.getElementById('btnSubmit').innerText = 'Guardar Requisição';
-            document.getElementById('btnCancelarEdicao').style.display = 'none';
+            window.location.href = `nova-requisicao.html?edit=${index}`;
         }
 
         // Apagar Requisição
@@ -295,21 +158,9 @@
                 requisicoes.splice(index, 1);
                 localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
                 carregarRequisicoes();
-                if (document.getElementById('editIndex').value == index) {
-                    cancelarEdicao();
-                }
             }
         }
 
-        function mostrarMensagemSucesso(msg) {
-            if (typeof mostrarPopup === 'function') {
-                mostrarPopup('Sucesso', msg, '📦');
-            } else {
-                alert(msg);
-            }
-        }
-
-        // Inicializar tabela ao carregar
         carregarRequisicoes();
     </script>
 </body>
