@@ -3,60 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Requisições - Registos App</title>
+    <title>Requisições - Gestão de Equipamentos</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-hover: #0d5e56;
+            --bg-color: #f3f2f1;
+            --card-bg: #ffffff;
+            --text-main: #323130;
+            --border-color: #8a8886;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .header-title {
+            flex-grow: 1;
+        }
+
+        .header-title h2 {
+            color: #605e5c;
+            font-size: 14px;
+            margin: 0 0 4px 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title h1 {
+            color: var(--primary);
+            font-size: 22px;
+            margin: 0 0 4px 0;
+            border: none;
+            padding: 0;
+        }
+
+        .header-title p {
+            margin: 0;
+            font-size: 13px;
+            color: #605e5c;
+        }
+
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .logo-container svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #a80000;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: inherit;
+            background-color: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-top: 30px;
+            border-top: 1px solid #edebe9;
+            padding-top: 20px;
+        }
+
+        .btn-container button {
+            background-color: var(--primary);
+            color: white;
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 41px;
+            margin: 0;
+        }
+
+        .btn-container button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-container button.btn-secondary {
+            background-color: #f3f2f1;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-container button.btn-secondary:hover {
+            background-color: #edebe9;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">📦 Gestão de Requisições</div>
-        <ul class="nav-links">
+
+    <nav class="navbar" style="background: #0f766e; padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-radius: 6px;">
+        <div class="logo" style="font-weight: bold; font-size: 1.1rem;">📦 Gestão de Requisições</div>
+        <ul class="nav-links" style="list-style: none; display: flex; gap: 1.5rem; margin: 0;">
             <li><a href="dashboard.html" style="color: white; text-decoration: none;">Dashboard</a></li>
             <li><a href="#" id="logoutBtn" style="color: white; text-decoration: none;">Sair</a></li>
         </ul>
     </nav>
 
-    <div class="container" style="margin-top: 2rem; max-width: 900px;">
+    <div class="container">
         
-        <!-- Cabeçalho com o botão para abrir o formulário -->
+        <!-- Secção do Cabeçalho e Tabela (Vista Principal) -->
         <div id="seccaoCabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <div>
                 <h2>Lista de Requisições</h2>
-                <p style="color: #64748b; margin: 0;">Consulte, edite ou crie novas requisições de equipamentos.</p>
+                <p style="color: #605e5c; margin: 0;">Consulte, edite ou crie novas requisições de equipamentos.</p>
             </div>
-            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white; padding: 0.75rem 1.25rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">+ Nova Requisição</button>
+            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white; height: 41px; padding: 0 20px; border-radius: 4px; border: none; font-weight: 600; cursor: pointer;">+ Nova Requisição</button>
         </div>
 
-        <!-- Formulário (inicialmente oculto, abre ao clicar no botão) -->
-        <div id="containerFormulario" style="display: none; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 2rem;">
-            <h2 id="formTitle" style="margin-top: 0;">Registar Nova Requisição</h2>
-            <p style="color: #64748b; margin-bottom: 1.5rem;" id="formSubtitle">Preencha os dados abaixo para requisitar equipamentos.</p>
+        <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #edebe9; text-align: left; font-size: 14px;">
+                        <th style="padding: 0.75rem; width: 70px;">Nº</th>
+                        <th style="padding: 0.75rem;">Data</th>
+                        <th style="padding: 0.75rem;">Responsável</th>
+                        <th style="padding: 0.75rem;">Turma</th>
+                        <th style="padding: 0.75rem;">Área</th>
+                        <th style="padding: 0.75rem;">Equipamento</th>
+                        <th style="padding: 0.75rem; width: 60px;">Qtd</th>
+                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="requisicoesTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Formulário (Oculto por defeito) -->
+        <div id="containerFormulario" style="display: none;">
+            <div class="header-section">
+                <div class="logo-container" title="Logótipo Institucional">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="#f3f9fd" stroke="#0f766e" stroke-width="3"/>
+                        <path d="M50 20 L75 38 L75 65 L50 82 L25 65 L25 38 Z" fill="none" stroke="#0f766e" stroke-width="2.5"/>
+                        <path d="M50 28 L68 41 L68 60 L50 73 L32 60 L32 41 Z" fill="#e1dfdd" opacity="0.5"/>
+                        <text x="50" y="52" font-family="Segoe UI, sans-serif" font-weight="bold" font-size="22" fill="#0f766e" text-anchor="middle">REQ</text>
+                        <text x="50" y="65" font-family="Segoe UI, sans-serif" font-size="9" fill="#605e5c" text-anchor="middle">ESCOLA</text>
+                    </svg>
+                </div>
+                <div class="header-title">
+                    <h2>EB1/PE do Covão e Vargem</h2>
+                    <h1 id="formTitle">Registar Nova Requisição</h1>
+                    <p id="formSubtitle">Preencha os dados abaixo para requisitar equipamentos.</p>
+                </div>
+            </div>
 
             <form id="requisicaoForm">
                 <input type="hidden" id="editIndex" value="">
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Responsável</label>
-                        <!-- Campo com preenchimento automático a negrito e cinzento mais escuro -->
-                        <input type="text" id="respReq" required readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px; background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
-                    </div>
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Ano Letivo</label>
-                        <select id="anoLetivoReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
+                <div class="form-group">
+                    <label for="numero_requisicao">1. Nº da Requisição <span class="required">*</span></label>
+                    <input type="number" id="numero_requisicao" name="numero_requisicao" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="respReq">2. Responsável <span class="required">*</span></label>
+                    <input type="text" id="respReq" name="respReq" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="anoLetivoReq">3. Ano Letivo <span class="required">*</span></label>
+                        <select id="anoLetivoReq" name="anoLetivoReq" required>
                             <option value="2025/2026">2025/2026</option>
                             <option value="2026/2027">2026/2027</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="dataReq">4. Data de Requisição <span class="required">*</span></label>
+                        <input type="date" id="dataReq" name="dataReq" required>
+                    </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Data de Requisição</label>
-                        <input type="date" id="dataReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                    </div>
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Turma</label>
-                        <select id="turmaReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="turmaReq">5. Turma <span class="required">*</span></label>
+                        <select id="turmaReq" name="turmaReq" required>
                             <option value="Abelhinhas">Abelhinhas</option>
                             <option value="Arco-Íris">Arco-Íris</option>
                             <option value="Flores">Flores</option>
@@ -70,12 +264,9 @@
                             <option value="4ºB">4ºB</option>
                         </select>
                     </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Área</label>
-                        <select id="areaReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
+                    <div class="form-group">
+                        <label for="areaReq">6. Área <span class="required">*</span></label>
+                        <select id="areaReq" name="areaReq" required>
                             <option value="Português">Português</option>
                             <option value="Matemática">Matemática</option>
                             <option value="Estudo do Meio">Estudo do Meio</option>
@@ -86,9 +277,12 @@
                             <option value="Educação Especial">Educação Especial</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Equipamento</label>
-                        <select id="equipamentoReq" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="equipamentoReq">7. Equipamento <span class="required">*</span></label>
+                        <select id="equipamentoReq" name="equipamentoReq" required>
                             <option value="Tablets">Tablets</option>
                             <option value="Surfaces">Surfaces</option>
                             <option value="Painel">Painel</option>
@@ -97,39 +291,19 @@
                             <option value="Robots">Robots</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="qtdReq">8. Quantidade <span class="required">*</span></label>
+                        <input type="number" id="qtdReq" name="qtdReq" min="1" value="1" required>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Quantidade</label>
-                    <input type="number" id="qtdReq" min="1" value="1" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
-                </div>
-
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" id="btnSubmit" style="background-color: #0f766e; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Guardar Requisição</button>
-                    <button type="button" onclick="fecharFormulario()" style="background-color: #64748b; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Cancelar</button>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="fecharFormulario()">Voltar / Fechar</button>
+                    <button type="submit" id="btnSubmit">Guardar Requisição</button>
                 </div>
             </form>
         </div>
 
-        <!-- Tabela da Lista de Requisições -->
-        <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #cbd5e1; text-align: left;">
-                        <th style="padding: 0.75rem;">Data</th>
-                        <th style="padding: 0.75rem;">Responsável</th>
-                        <th style="padding: 0.75rem;">Turma</th>
-                        <th style="padding: 0.75rem;">Área</th>
-                        <th style="padding: 0.75rem;">Equipamento</th>
-                        <th style="padding: 0.75rem;">Qtd</th>
-                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="requisicoesTableBody">
-                    <!-- Preenchido dinamicamente via JS -->
-                </tbody>
-            </table>
-        </div>
     </div>
 
     <!-- Modal de Visualização (Ver) -->
@@ -143,20 +317,17 @@
 
     <script src="js/auth.js"></script>
     <script>
-        // Verificar autenticação
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             window.location.href = 'index.html';
         }
 
-        // Logout
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
 
-        // Carregar Requisições na Tabela
         function carregarRequisicoes() {
             const tbody = document.getElementById('requisicoesTableBody');
             if (!tbody) return;
@@ -165,29 +336,34 @@
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
 
             if (requisicoes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="padding: 1rem; text-align: center; color: #64748b;">Sem requisições registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="padding: 1rem; text-align: center; color: #605e5c;">Sem requisições registadas.</td></tr>`;
                 return;
             }
 
-            requisicoes.forEach((req, index) => {
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #f1f5f9';
+            // Inverter para mostrar a última requisição feita em primeiro
+            const requisicoesInvertidas = [...requisicoes].reverse();
 
-                // Permissões: Admin pode tudo, utilizador normal só o que criou
+            requisicoesInvertidas.forEach((req, indexInvertido) => {
+                // Índice real no array original do localStorage
+                const indexReal = requisicoes.length - 1 - indexInvertido;
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #f3f2f1';
+
                 const temPermissao = currentUser.isAdmin || req.userEmail === currentUser.email;
 
                 tr.innerHTML = `
+                    <td style="padding: 0.75rem; font-weight: bold; color: #0f766e;">${req.numero_requisicao || (indexReal + 1)}</td>
                     <td style="padding: 0.75rem;">${req.data}</td>
                     <td style="padding: 0.75rem;">${req.responsavel}</td>
                     <td style="padding: 0.75rem;">${req.turma}</td>
                     <td style="padding: 0.75rem;">${req.area}</td>
-                    <td style="padding: 0.75rem;">${req.equipamento}</td>
+                    <td style="padding: 0.75rem; font-weight: 500;">${req.equipamento}</td>
                     <td style="padding: 0.75rem;">${req.quantidade}</td>
                     <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
-                        <button onclick="verRequisicao(${index})" style="background-color: #e0f2fe; color: #0284c7; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Ver</button>
+                        <button onclick="verRequisicao(${indexReal})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Ver</button>
                         ${temPermissao ? `
-                            <button onclick="editarRequisicao(${index})" style="background-color: #fef3c7; color: #d97706; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Editar</button>
-                            <button onclick="eliminarRequisicao(${index})" style="background-color: #fee2e2; color: #ef4444; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Apagar</button>
+                            <button onclick="editarRequisicao(${indexReal})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Editar</button>
+                            <button onclick="eliminarRequisicao(${indexReal})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem; border: none; border-radius: 4px; cursor: pointer;">Apagar</button>
                         ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
                 `;
@@ -195,29 +371,51 @@
             });
         }
 
-        // Funções para abrir/fechar o formulário na mesma página
         function abrirFormularioCriacao() {
             document.getElementById('editIndex').value = '';
             document.getElementById('requisicaoForm').reset();
+            document.getElementById('dataReq').valueAsDate = new Date();
+
+            // Cálculo automático do próximo número de requisição
+            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
+            let proximoNumero = 1;
+            if (requisicoes.length > 0) {
+                const numeros = requisicoes.map(r => parseInt(r.numero_requisicao) || 0);
+                proximoNumero = Math.max(...numeros) + 1;
+            }
             
-            // Preencher automaticamente o campo responsável com o nome ou email do utilizador logado
+            const campoNum = document.getElementById('numero_requisicao');
+            campoNum.value = proximoNumero;
+            
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
-            document.getElementById('respReq').value = nomeResponsavel;
+            const campoResp = document.getElementById('respReq');
+            campoResp.value = nomeResponsavel;
+
+            // Bloqueio rigoroso (cinzento e bold) para o Nº da Requisição e Responsável
+            [campoNum, campoResp].forEach(el => {
+                el.readOnly = true;
+                el.style.backgroundColor = '#e9ecef';
+                el.style.fontWeight = 'bold';
+                el.style.color = '#212529';
+            });
 
             document.getElementById('formTitle').innerText = 'Registar Nova Requisição';
             document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo para requisitar equipamentos.';
             document.getElementById('btnSubmit').innerText = 'Guardar Requisição';
-            
+
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
             document.getElementById('containerFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function fecharFormulario() {
             document.getElementById('containerFormulario').style.display = 'none';
+            document.getElementById('seccaoCabecalho').style.display = 'flex';
+            document.getElementById('containerTabela').style.display = 'block';
             document.getElementById('requisicaoForm').reset();
         }
 
-        // Submeter formulário (Criar ou Atualizar)
         document.getElementById('requisicaoForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -225,6 +423,7 @@
             const index = document.getElementById('editIndex').value;
 
             const novaReq = {
+                numero_requisicao: document.getElementById('numero_requisicao').value,
                 responsavel: document.getElementById('respReq').value.trim(),
                 anoLetivo: document.getElementById('anoLetivoReq').value,
                 data: document.getElementById('dataReq').value,
@@ -248,13 +447,13 @@
             carregarRequisicoes();
         });
 
-        // Ver Requisição (Modal)
         function verRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
             if (!req) return;
 
             const conteudo = `
+                <p><strong>Nº Requisição:</strong> ${req.numero_requisicao || (index + 1)}</p>
                 <p><strong>Responsável:</strong> ${req.responsavel}</p>
                 <p><strong>Ano Letivo:</strong> ${req.anoLetivo}</p>
                 <p><strong>Data:</strong> ${req.data}</p>
@@ -272,7 +471,6 @@
             document.getElementById('modalVer').style.display = 'none';
         }
 
-        // Editar Requisição (Abre o formulário preenchido)
         function editarRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
@@ -283,7 +481,20 @@
             }
 
             document.getElementById('editIndex').value = index;
-            document.getElementById('respReq').value = req.responsavel;
+            
+            const campoNum = document.getElementById('numero_requisicao');
+            campoNum.value = req.numero_requisicao || (index + 1);
+
+            const campoResp = document.getElementById('respReq');
+            campoResp.value = req.responsavel;
+
+            [campoNum, campoResp].forEach(el => {
+                el.readOnly = true;
+                el.style.backgroundColor = '#e9ecef';
+                el.style.fontWeight = 'bold';
+                el.style.color = '#212529';
+            });
+
             document.getElementById('anoLetivoReq').value = req.anoLetivo;
             document.getElementById('dataReq').value = req.data;
             document.getElementById('turmaReq').value = req.turma;
@@ -295,11 +506,12 @@
             document.getElementById('formSubtitle').innerText = 'Modifique os dados da requisição abaixo.';
             document.getElementById('btnSubmit').innerText = 'Atualizar Requisição';
 
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
             document.getElementById('containerFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Apagar Requisição
         function eliminarRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
@@ -313,9 +525,6 @@
                 requisicoes.splice(index, 1);
                 localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
                 carregarRequisicoes();
-                if (document.getElementById('editIndex').value == index) {
-                    fecharFormulario();
-                }
             }
         }
 
@@ -327,7 +536,6 @@
             }
         }
 
-        // Inicializar tabela ao carregar
         carregarRequisicoes();
     </script>
 </body>
