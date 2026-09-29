@@ -16,11 +16,13 @@
     </nav>
 
     <div class="container" style="margin-top: 2rem; max-width: 900px;">
-        <h2>Registar Nova Requisição</h2>
-        <p style="color: #64748b; margin-bottom: 1.5rem;">Preencha os dados abaixo para requisitar equipamentos.</p>
+        <h2 id="formTitle">Registar Nova Requisição</h2>
+        <p style="color: #64748b; margin-bottom: 1.5rem;" id="formSubtitle">Preencha os dados abaixo para requisitar equipamentos.</p>
 
         <!-- Formulário de Requisição -->
         <form id="requisicaoForm" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+            <input type="hidden" id="editIndex" value="">
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                 <div>
                     <label style="display:block; font-weight:600; margin-bottom:0.3rem;">Responsável</label>
@@ -90,7 +92,10 @@
                 <input type="number" id="qtdReq" min="1" value="1" required style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;">
             </div>
 
-            <button type="submit" style="background-color: #0f766e; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Guardar Requisição</button>
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" id="btnSubmit" style="background-color: #0f766e; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Guardar Requisição</button>
+                <button type="button" id="btnCancelarEdicao" style="display: none; background-color: #64748b; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;" onclick="cancelarEdicao()">Cancelar</button>
+            </div>
         </form>
 
         <h2>Lista de Requisições</h2>
@@ -111,6 +116,15 @@
                     <!-- Preenchido dinamicamente via JS -->
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização -->
+    <div id="modalVer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3>Detalhes da Requisição</h3>
+            <div id="modalVerConteudo" style="margin: 1rem 0; line-height: 1.6; color: #334155;"></div>
+            <button onclick="fecharModalVer()" style="background-color: #0f766e; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Fechar</button>
         </div>
     </div>
 
@@ -146,8 +160,8 @@
                 const tr = document.createElement('tr');
                 tr.style.borderBottom = '1px solid #f1f5f9';
 
-                // Regra de eliminação: Admin pode tudo, utilizador normal só o que criou (comparando pelo email ou id)
-                const podeEliminar = currentUser.isAdmin || req.userEmail === currentUser.email;
+                // Permissões: Admin pode tudo, utilizador normal só o que criou
+                const temPermissao = currentUser.isAdmin || req.userEmail === currentUser.email;
 
                 tr.innerHTML = `
                     <td style="padding: 0.75rem;">${req.data}</td>
@@ -156,17 +170,24 @@
                     <td style="padding: 0.75rem;">${req.area}</td>
                     <td style="padding: 0.75rem;">${req.equipamento}</td>
                     <td style="padding: 0.75rem;">${req.quantidade}</td>
-                    <td style="padding: 0.75rem; text-align: right;">
-                        ${podeEliminar ? `<button onclick="eliminarRequisicao(${index})" style="background-color: #fee2e2; color: #ef4444; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Eliminar</button>` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Sem permissão</span>'}
+                    <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
+                        <button onclick="verRequisicao(${index})" style="background-color: #e0f2fe; color: #0284c7; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Ver</button>
+                        ${temPermissao ? `
+                            <button onclick="editarRequisicao(${index})" style="background-color: #fef3c7; color: #d97706; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: 4px;">Editar</button>
+                            <button onclick="eliminarRequisicao(${index})" style="background-color: #fee2e2; color: #ef4444; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Apagar</button>
+                        ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Submeter Nova Requisição
+        // Submeter / Guardar Requisição (Criar ou Atualizar)
         document.getElementById('requisicaoForm').addEventListener('submit', (e) => {
             e.preventDefault();
+
+            const editIndex = document.getElementById('editIndex').value;
+            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
 
             const novaReq = {
                 responsavel: document.getElementById('respReq').value.trim(),
@@ -176,24 +197,91 @@
                 area: document.getElementById('areaReq').value,
                 equipamento: document.getElementById('equipamentoReq').value,
                 quantidade: document.getElementById('qtdReq').value,
-                userEmail: currentUser.email // Guarda o email de quem criou para validar permissões
+                userEmail: editIndex !== "" ? requisicoes[editIndex].userEmail : currentUser.email
             };
 
-            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            requisicoes.push(novaReq);
-            localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
+            if (editIndex === "") {
+                // Criar nova
+                requisicoes.push(novaReq);
+                mostrarMensagemSucesso('Requisição guardada com sucesso!');
+            } else {
+                // Atualizar existente
+                const reqOriginal = requisicoes[editIndex];
+                if (!currentUser.isAdmin && reqOriginal.userEmail !== currentUser.email) {
+                    alert('Não tens permissão para editar esta requisição.');
+                    return;
+                }
+                requisicoes[editIndex] = novaReq;
+                mostrarMensagemSucesso('Requisição atualizada com sucesso!');
+                cancelarEdicao();
+            }
 
+            localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
             document.getElementById('requisicaoForm').reset();
             carregarRequisicoes();
-            
-            if (typeof mostrarPopup === 'function') {
-                mostrarPopup('Sucesso', 'Requisição guardada com sucesso!', '📦');
-            } else {
-                alert('Requisição guardada com sucesso!');
-            }
         });
 
-        // Eliminar Requisição
+        // Ver Requisição (Modal)
+        function verRequisicao(index) {
+            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
+            const req = requisicoes[index];
+            if (!req) return;
+
+            const conteudo = `
+                <p><strong>Responsável:</strong> ${req.responsavel}</p>
+                <p><strong>Ano Letivo:</strong> ${req.anoLetivo}</p>
+                <p><strong>Data:</strong> ${req.data}</p>
+                <p><strong>Turma:</strong> ${req.turma}</p>
+                <p><strong>Área:</strong> ${req.area}</p>
+                <p><strong>Equipamento:</strong> ${req.equipamento}</p>
+                <p><strong>Quantidade:</strong> ${req.quantidade}</p>
+            `;
+
+            document.getElementById('modalVerConteudo').innerHTML = conteudo;
+            document.getElementById('modalVer').style.display = 'flex';
+        }
+
+        function fecharModalVer() {
+            document.getElementById('modalVer').style.display = 'none';
+        }
+
+        // Editar Requisição (Preencher formulário)
+        function editarRequisicao(index) {
+            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
+            const req = requisicoes[index];
+
+            if (!currentUser.isAdmin && req.userEmail !== currentUser.email) {
+                alert('Não tens permissão para editar esta requisição.');
+                return;
+            }
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('respReq').value = req.responsavel;
+            document.getElementById('anoLetivoReq').value = req.anoLetivo;
+            document.getElementById('dataReq').value = req.data;
+            document.getElementById('turmaReq').value = req.turma;
+            document.getElementById('areaReq').value = req.area;
+            document.getElementById('equipamentoReq').value = req.equipamento;
+            document.getElementById('qtdReq').value = req.quantidade;
+
+            document.getElementById('formTitle').innerText = 'Editar Requisição';
+            document.getElementById('formSubtitle').innerText = 'Modifique os dados da requisição abaixo.';
+            document.getElementById('btnSubmit').innerText = 'Atualizar Requisição';
+            document.getElementById('btnCancelarEdicao').style.display = 'inline-block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicao() {
+            document.getElementById('editIndex').value = '';
+            document.getElementById('requisicaoForm').reset();
+            document.getElementById('formTitle').innerText = 'Registar Nova Requisição';
+            document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo para requisitar equipamentos.';
+            document.getElementById('btnSubmit').innerText = 'Guardar Requisição';
+            document.getElementById('btnCancelarEdicao').style.display = 'none';
+        }
+
+        // Apagar Requisição
         function eliminarRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
@@ -207,6 +295,17 @@
                 requisicoes.splice(index, 1);
                 localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
                 carregarRequisicoes();
+                if (document.getElementById('editIndex').value == index) {
+                    cancelarEdicao();
+                }
+            }
+        }
+
+        function mostrarMensagemSucesso(msg) {
+            if (typeof mostrarPopup === 'function') {
+                mostrarPopup('Sucesso', msg, '📦');
+            } else {
+                alert(msg);
             }
         }
 
