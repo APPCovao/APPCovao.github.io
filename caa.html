@@ -27,7 +27,7 @@
             max-width: 900px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 30px;
+            padding: 40px;
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
@@ -58,6 +58,8 @@
             color: var(--primary);
             font-size: 22px;
             margin: 0 0 4px 0;
+            border: none;
+            padding: 0;
         }
 
         .header-title p {
@@ -73,6 +75,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .logo-container svg {
@@ -115,7 +118,7 @@
 
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 140px;
             line-height: 1.5;
         }
 
@@ -143,6 +146,60 @@
             gap: 8px;
             font-size: 14px;
             cursor: pointer;
+        }
+
+        .image-upload-box {
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            background: #faf9f8;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .image-upload-box:hover {
+            background: #f3f2f1;
+        }
+
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .image-preview-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-container {
@@ -194,7 +251,7 @@
 
     <div class="container">
         
-        <!-- Cabeçalho com o botão para alternar ou geristar -->
+        <!-- Cabeçalho Principal (Lista) -->
         <div id="seccaoCabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <div>
                 <h2>Registos do CAA</h2>
@@ -203,7 +260,7 @@
             <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white;">+ Novo Registo</button>
         </div>
 
-        <!-- Tabela da Lista de Registos (Inicialmente Visível) -->
+        <!-- Tabela da Lista de Registos (Visível por predefinição) -->
         <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -221,20 +278,22 @@
             </table>
         </div>
 
-        <!-- Formulário (Oculto por predefinição, abre ao clicar em Novo Registo) -->
-        <div id="containerFormulario" style="display: none; margin-top: 1rem;">
+        <!-- Formulário Completo (Oculto inicialmente, abre ao clicar em Novo Registo) -->
+        <div id="containerFormulario" style="display: none;">
             <div class="header-section">
-                <div class="logo-container">
+                <div class="logo-container" title="Logótipo Institucional">
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="50" cy="50" r="48" fill="#f3f9fd" stroke="#0078d4" stroke-width="3"/>
                         <path d="M50 20 L75 38 L75 65 L50 82 L25 65 L25 38 Z" fill="none" stroke="#0078d4" stroke-width="2.5"/>
+                        <path d="M50 28 L68 41 L68 60 L50 73 L32 60 L32 41 Z" fill="#e1dfdd" opacity="0.5"/>
                         <text x="50" y="52" font-family="Segoe UI, sans-serif" font-weight="bold" font-size="22" fill="#0078d4" text-anchor="middle">CAA</text>
+                        <text x="50" y="65" font-family="Segoe UI, sans-serif" font-size="9" fill="#605e5c" text-anchor="middle">ESCOLA</text>
                     </svg>
                 </div>
                 <div class="header-title">
                     <h2>EB1/PE do Covão e Vargem</h2>
-                    <h1 id="formTitle">Registo de Atividades Pedagógicas</h1>
-                    <p id="formSubtitle">Centro de Apoio à Aprendizagem</p>
+                    <h1 id="formTitle">CAA - Centro de Apoio à Aprendizagem</h1>
+                    <p>Registo de Atividades Pedagógicas</p>
                 </div>
             </div>
 
@@ -248,12 +307,12 @@
 
                 <div class="form-group">
                     <label for="nome_aluno">2. Nome do Aluno <span class="required">*</span></label>
-                    <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" placeholder="Introduza o nome do aluno" required>
+                    <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" placeholder="Introduza a sua resposta" required>
                 </div>
 
                 <div class="form-group">
                     <label>3. Turma(s) / Sala(s) (Pode selecionar várias)</label>
-                    <div class="checkbox-grid" id="turmasContainer">
+                    <div class="checkbox-grid">
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºA"> 1ºA</label>
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºB"> 1ºB</label>
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="2ºA"> 2ºA</label>
@@ -270,43 +329,52 @@
 
                 <div class="form-group">
                     <label for="atividade">4. Atividade <span class="required">*</span></label>
-                    <input type="text" id="atividade" name="atividade" maxlength="1000" placeholder="Introduza a atividade" required>
+                    <input type="text" id="atividade" name="atividade" maxlength="1000" placeholder="Introduza a sua resposta" required>
                 </div>
 
                 <div class="form-group">
                     <label for="objetivos">5. Objetivos <span class="required">*</span></label>
-                    <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza os objetivos" oninput="updateCounter(this, 'counter-obj')" required></textarea>
+                    <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-obj')" required></textarea>
                     <div id="counter-obj" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="descricao_atividade">6. Descrição da Atividade <span class="required">*</span></label>
-                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Descrição detalhada" oninput="updateCounter(this, 'counter-desc')" required></textarea>
+                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-desc')" required></textarea>
                     <div id="counter-desc" class="char-counter">Máximo de 10000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="formas_avaliacao">7. Formas de Avaliação <span class="required">*</span></label>
-                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Formas de avaliação" oninput="updateCounter(this, 'counter-av')" required></textarea>
+                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-av')" required></textarea>
                     <div id="counter-av" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="articulacao">8. Articulação <span class="required">*</span></label>
-                    <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Articulação curricular" oninput="updateCounter(this, 'counter-art')" required></textarea>
+                    <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-art')" required></textarea>
                     <div id="counter-art" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="responsaveis">9. Responsável(eis) <span class="required">*</span></label>
-                    <!-- Campo com preenchimento automático a negrito e cinzento escuro, readonly -->
+                    <!-- Preenchimento automático, negrito, cinzento mais escuro e bloqueado -->
                     <input type="text" id="responsaveis" name="responsaveis" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
                 </div>
 
                 <div class="form-group">
                     <label for="observacoes">10. Observações <span class="required">*</span></label>
-                    <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Observações adicionais" oninput="updateCounter(this, 'counter-obs')" required></textarea>
+                    <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-obs')" required></textarea>
                     <div id="counter-obs" class="char-counter">Máximo de 5000 carateres</div>
+                </div>
+
+                <div class="form-group">
+                    <label>11. Registo Fotográfico / Imagens da Atividade:</label>
+                    <div class="image-upload-box" onclick="document.getElementById('fileInput').click()">
+                        <p style="margin: 0; color: #605e5c;">📸 Clique aqui para adicionar fotografias</p>
+                        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
+                    </div>
+                    <div id="imagePreviewContainer" class="image-preview-container"></div>
                 </div>
 
                 <div class="btn-container">
@@ -380,22 +448,26 @@
         function abrirFormularioCriacao() {
             document.getElementById('editIndex').value = '';
             document.getElementById('caaForm').reset();
+            document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('data_atividade').valueAsDate = new Date();
 
             // Preenchimento automático do responsável a partir da sessão ativa
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
             document.getElementById('responsaveis').value = nomeResponsavel;
 
-            document.getElementById('formTitle').innerText = 'Registar Nova Atividade Pedagógica';
-            document.getElementById('containerTabela').parentElement.style.display = 'none';
+            document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
             document.getElementById('containerFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function fecharFormulario() {
             document.getElementById('containerFormulario').style.display = 'none';
-            document.getElementById('containerTabela').parentElement.style.display = 'block';
+            document.getElementById('seccaoCabecalho').style.display = 'flex';
+            document.getElementById('containerTabela').style.display = 'block';
             document.getElementById('caaForm').reset();
+            document.getElementById('imagePreviewContainer').innerHTML = '';
         }
 
         // Submeter formulário (Criar ou Atualizar)
@@ -409,6 +481,10 @@
             const turmasChecked = document.querySelectorAll('input[name="turma"]:checked');
             const turmasValues = Array.from(turmasChecked).map(cb => cb.value).join(', ');
 
+            // Recolher imagens em Base64 para armazenar no localStorage
+            const imageElements = document.querySelectorAll('.image-preview-item img');
+            const imagensArray = Array.from(imageElements).map(img => img.src);
+
             const novoReg = {
                 data_atividade: document.getElementById('data_atividade').value,
                 nome_aluno: document.getElementById('nome_aluno').value.trim(),
@@ -420,6 +496,7 @@
                 articulacao: document.getElementById('articulacao').value.trim(),
                 responsaveis: document.getElementById('responsaveis').value.trim(),
                 observacoes: document.getElementById('observacoes').value.trim(),
+                imagens: imagensArray,
                 userEmail: index !== "" ? registos[index].userEmail : currentUser.email
             };
 
@@ -441,6 +518,15 @@
             const reg = registos[index];
             if (!reg) return;
 
+            let imagensHtml = '';
+            if (reg.imagens && reg.imagens.length > 0) {
+                imagensHtml = '<div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">';
+                reg.imagens.forEach(src => {
+                    imagensHtml += `<img src="${src}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">`;
+                });
+                imagensHtml += '</div>';
+            }
+
             const conteudo = `
                 <p><strong>Data da Atividade:</strong> ${reg.data_atividade}</p>
                 <p><strong>Nome do Aluno:</strong> ${reg.nome_aluno}</p>
@@ -452,6 +538,7 @@
                 <p><strong>Articulação:</strong><br>${reg.articulacao}</p>
                 <p><strong>Responsável(eis):</strong> ${reg.responsaveis}</p>
                 <p><strong>Observações:</strong><br>${reg.observacoes}</p>
+                <p><strong>Imagens:</strong></p>${imagensHtml || 'Nenhuma imagem'}
             `;
 
             document.getElementById('modalVerConteudo').innerHTML = conteudo;
@@ -488,8 +575,21 @@
                 cb.checked = turmasArray.includes(cb.value);
             });
 
+            // Carregar imagens salvas para pré-visualização
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            previewContainer.innerHTML = '';
+            if (reg.imagens) {
+                reg.imagens.forEach(src => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+                    wrapper.innerHTML = `<img src="${src}"><button type="button" class="remove-img" onclick="this.parentElement.remove()">&times;</button>`;
+                    previewContainer.appendChild(wrapper);
+                });
+            }
+
             document.getElementById('formTitle').innerText = 'Editar Registo CAA';
-            document.getElementById('containerTabela').parentElement.style.display = 'none';
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
             document.getElementById('containerFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -514,6 +614,36 @@
             const currentLength = textarea.value.length;
             const maxLength = textarea.getAttribute('maxlength');
             document.getElementById(counterId).textContent = currentLength + ' / ' + maxLength + ' carateres';
+        }
+
+        function handleFiles(files) {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    wrapper.appendChild(img);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'remove-img';
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.onclick = function() {
+                        wrapper.remove();
+                    };
+                    wrapper.appendChild(removeBtn);
+
+                    previewContainer.appendChild(wrapper);
+                }
+                reader.readAsDataURL(file);
+            }
         }
 
         // Inicializar tabela ao carregar a página
