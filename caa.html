@@ -409,6 +409,18 @@
         </div>
     </div>
 
+    <!-- Popup Personalizado -->
+    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
+        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏫</div>
+            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: #0078d4;">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 20px 0; color: #323130; line-height: 1.5;"></p>
+            <div id="popupButtons" style="display: flex; justify-content: center; gap: 10px;">
+                <button onclick="fecharPopup()" style="background-color: #0078d4; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -421,6 +433,45 @@
             localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
+
+        // Popup personalizado genérico (suporta mensagens informativas e botões de confirmação)
+        function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫', onConfirm = null) {
+            document.getElementById('popupTitle').innerText = titulo;
+            document.getElementById('popupMessage').innerText = mensagem;
+            document.getElementById('popupIcon').innerText = icone;
+            
+            const btnContainer = document.getElementById('popupButtons');
+            
+            if (onConfirm) {
+                // Modo de Confirmação (Sim / Cancelar)
+                btnContainer.innerHTML = `
+                    <button id="popupCancelBtn" style="background-color: #f3f2f1; color: #323130; border: 1px solid #8a8886; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button id="popupConfirmBtn" style="background-color: #ef4444; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
+                `;
+                document.getElementById('customPopup').style.display = 'flex';
+
+                document.getElementById('popupCancelBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                };
+
+                document.getElementById('popupConfirmBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                    onConfirm();
+                };
+            } else {
+                // Modo de Informação (Apenas OK)
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #0078d4; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
+                document.getElementById('customPopup').style.display = 'flex';
+
+                document.getElementById('popupOkBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                };
+            }
+        }
+
+        function fecharPopup() {
+            document.getElementById('customPopup').style.display = 'none';
+        }
 
         function carregarRegistos() {
             const tbody = document.getElementById('caaTableBody');
@@ -464,7 +515,6 @@
 
             ajustarModoFormulario(false);
 
-            // Cálculo automático do próximo número de atividade
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             let proximoNumero = 1;
             if (registos.length > 0) {
@@ -479,7 +529,6 @@
             const campoResp = document.getElementById('responsaveis');
             campoResp.value = nomeResponsavel;
 
-            // Bloqueio rigoroso (cinzento e bold) para o Nº da Atividade e Responsável na criação
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
@@ -609,15 +658,19 @@
 
             if (index === "") {
                 registos.push(novoReg);
-                alert('Registo guardado com sucesso!');
+                mostrarPopupPersonalizado('Sucesso', 'Registo guardado com sucesso!', '✨', () => {
+                    fecharFormulario();
+                    carregarRegistos();
+                });
             } else {
                 registos[index] = novoReg;
-                alert('Registo atualizado com sucesso!');
+                mostrarPopupPersonalizado('Sucesso', 'Registo atualizado com sucesso!', '✨', () => {
+                    fecharFormulario();
+                    carregarRegistos();
+                });
             }
 
             localStorage.setItem('registosCAA', JSON.stringify(registos));
-            fecharFormulario();
-            carregarRegistos();
         });
 
         function editarRegisto(index) {
@@ -625,7 +678,7 @@
             const reg = registos[index];
 
             if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
-                alert('Não tens permissão para editar este registo.');
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar este registo.', '🔒');
                 return;
             }
 
@@ -679,20 +732,33 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ELIMINAR COM POPUP PERSONALIZADO DE CONFIRMAÇÃO E RENUMERAÇÃO AUTOMÁTICA
         function eliminarRegisto(index) {
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             const reg = registos[index];
 
             if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
-                alert('Não tens permissão para eliminar este registo.');
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para eliminar este registo.', '🔒');
                 return;
             }
 
-            if (confirm('Tens a certeza que pretendes eliminar este registo?')) {
-                registos.splice(index, 1);
-                localStorage.setItem('registosCAA', JSON.stringify(registos));
-                carregarRegistos();
-            }
+            mostrarPopupPersonalizado(
+                'Confirmar Eliminação',
+                `Tens a certeza que pretendes eliminar o registo nº ${reg.numero_atividade || (index + 1)}?`,
+                '⚠️',
+                () => {
+                    registos.splice(index, 1);
+
+                    // Reindexa / Renumera sequencialmente de 1 em diante
+                    registos.forEach((r, idx) => {
+                        r.numero_atividade = idx + 1;
+                    });
+
+                    localStorage.setItem('registosCAA', JSON.stringify(registos));
+                    carregarRegistos();
+                    mostrarPopupPersonalizado('Sucesso', 'Registo eliminado e numeração atualizada com sucesso!', '🗑️');
+                }
+            );
         }
 
         function updateCounter(textarea, counterId) {
