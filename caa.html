@@ -224,7 +224,7 @@
             background-color: #edebe9;
         }
 
-        /* Estilo para impressão limpa do formulário no modo Ver */
+        /* Estilo limpo para impressão do formulário */
         @media print {
             body * {
                 visibility: hidden;
@@ -241,8 +241,16 @@
                 box-shadow: none !important;
                 padding: 0 !important;
             }
-            .btn-container, .navbar, .image-upload-box {
+            /* Ocultar elementos desnecessários na impressão */
+            .btn-container, .navbar, .image-upload-box, .char-counter, .remove-img {
                 display: none !important;
+            }
+            input, textarea {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                resize: none !important;
+                color: #000 !important;
             }
         }
     </style>
@@ -451,7 +459,6 @@
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('data_atividade').valueAsDate = new Date();
 
-            // Desbloquear campos e restaurar aspeto normal para criar
             ajustarModoFormulario(false);
 
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
@@ -486,7 +493,6 @@
             document.getElementById('imagePreviewContainer').innerHTML = '';
         }
 
-        // Função para alternar o formulário entre modo de leitura (Ver) e edição/criação
         function ajustarModoFormulario(isSomenteLeitura) {
             const inputs = document.querySelectorAll('#caaForm input, #caaForm textarea');
             inputs.forEach(el => {
@@ -542,7 +548,6 @@
                 });
             }
 
-            // Aplicar bloqueio total de leitura
             ajustarModoFormulario(true);
 
             document.getElementById('formTitle').innerText = 'Visualizar Registo CAA';
@@ -602,7 +607,6 @@
                 return;
             }
 
-            // Desbloquear campos para edição
             ajustarModoFormulario(false);
 
             document.getElementById('editIndex').value = index;
