@@ -192,35 +192,43 @@
         .btn-container {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
             gap: 12px;
             margin-top: 30px;
             border-top: 1px solid #edebe9;
             padding-top: 20px;
         }
 
-        button {
+        /* Padronização exata de altura, margens e aspeto para todos os botões do formulário */
+        .btn-container button {
             background-color: var(--primary);
             color: white;
-            border: none;
+            border: 1px solid transparent;
             padding: 10px 20px;
             font-size: 14px;
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
             transition: background 0.2s;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 41px; 
+            margin: 0;
         }
 
-        button:hover {
+        .btn-container button:hover {
             background-color: var(--primary-hover);
         }
 
-        button.btn-secondary {
+        .btn-container button.btn-secondary {
             background-color: #f3f2f1;
             color: var(--text-main);
             border: 1px solid var(--border-color);
         }
 
-        button.btn-secondary:hover {
+        .btn-container button.btn-secondary:hover {
             background-color: #edebe9;
         }
 
@@ -241,7 +249,6 @@
                 box-shadow: none !important;
                 padding: 0 !important;
             }
-            /* Ocultar elementos interativos na impressão, mantendo os limites dos inputs e textareas */
             .btn-container, .navbar, .image-upload-box, .char-counter, .remove-img {
                 display: none !important;
             }
@@ -277,7 +284,7 @@
                 <h2>Registos do CAA</h2>
                 <p style="color: #605e5c; margin: 0;">Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
             </div>
-            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white;">+ Novo Registo</button>
+            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white; height: 41px; padding: 0 20px; border-radius: 4px; border: none; font-weight: 600; cursor: pointer;">+ Novo Registo</button>
         </div>
 
         <!-- Tabela da Lista de Registos -->
@@ -445,10 +452,10 @@
                     <td style="padding: 0.75rem;">${reg.atividade}</td>
                     <td style="padding: 0.75rem;">${reg.responsaveis}</td>
                     <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
-                        <button onclick="verRegisto(${index})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px;">Ver</button>
+                        <button onclick="verRegisto(${index})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Ver</button>
                         ${temPermissao ? `
-                            <button onclick="editarRegisto(${index})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px;">Editar</button>
-                            <button onclick="eliminarRegisto(${index})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem;">Apagar</button>
+                            <button onclick="editarRegisto(${index})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Editar</button>
+                            <button onclick="eliminarRegisto(${index})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem; border: none; border-radius: 4px; cursor: pointer;">Apagar</button>
                         ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
                 `;
@@ -471,12 +478,12 @@
                 proximoNumero = Math.max(...numeros) + 1;
             }
             
-            // Atribuir e desbloquear esteticamente para criação
             const campoNum = document.getElementById('numero_atividade');
             campoNum.value = proximoNumero;
             campoNum.readOnly = false;
             campoNum.style.backgroundColor = '#ffffff';
             campoNum.style.color = '#323130';
+            campoNum.style.fontWeight = 'normal';
 
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
             const campoResp = document.getElementById('responsaveis');
@@ -484,6 +491,7 @@
             campoResp.readOnly = true;
             campoResp.style.backgroundColor = '#e2e8f0';
             campoResp.style.color = '#1e293b';
+            campoResp.style.fontWeight = 'normal';
 
             document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -518,8 +526,8 @@
             });
 
             document.getElementById('boxUploadFicheiro').style.display = isSomenteLeitura ? 'none' : 'block';
-            document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('btnPrintForm').style.display = isSomenteLeitura ? 'inline-block' : 'none';
+            document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-flex';
+            document.getElementById('btnPrintForm').style.display = isSomenteLeitura ? 'inline-flex' : 'none';
         }
 
         function verRegisto(index) {
@@ -528,7 +536,11 @@
             if (!reg) return;
 
             document.getElementById('editIndex').value = index;
-            document.getElementById('numero_atividade').value = reg.numero_atividade || (index + 1);
+            
+            // Atribuir valores
+            const campoNum = document.getElementById('numero_atividade');
+            campoNum.value = reg.numero_atividade || (index + 1);
+            
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -536,8 +548,18 @@
             document.getElementById('descricao_atividade').value = reg.descricao_atividade;
             document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
             document.getElementById('articulacao').value = reg.articulacao;
-            document.getElementById('responsaveis').value = reg.responsaveis;
+            
+            const campoResp = document.getElementById('responsaveis');
+            campoResp.value = reg.responsaveis;
+            
             document.getElementById('observacoes').value = reg.observacoes;
+
+            // Aplicar estilo específico de bloqueio (fundo cinzento e bold) para os campos Nº da Atividade e Responsável no modo "Ver"
+            [campoNum, campoResp].forEach(el => {
+                el.style.backgroundColor = '#e9ecef';
+                el.style.fontWeight = 'bold';
+                el.style.color = '#212529';
+            });
 
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
@@ -623,6 +645,7 @@
             campoNum.readOnly = false;
             campoNum.style.backgroundColor = '#ffffff';
             campoNum.style.color = '#323130';
+            campoNum.style.fontWeight = 'normal';
 
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
@@ -637,6 +660,7 @@
             campoResp.readOnly = true;
             campoResp.style.backgroundColor = '#e2e8f0';
             campoResp.style.color = '#1e293b';
+            campoResp.style.fontWeight = 'normal';
 
             document.getElementById('observacoes').value = reg.observacoes;
 
