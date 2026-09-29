@@ -149,15 +149,17 @@
 
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         
-        /* Campos com suporte a readonly/disabled no modal */
+        /* Campos com suporte a readonly/disabled no modal (Cinzento mais escuro e texto a bold) */
         .custom-modal input:disabled, 
         .custom-modal select:disabled, 
         .custom-modal textarea:disabled,
         .custom-modal input[readonly],
         .custom-modal textarea[readonly] {
-            background-color: #f8fafc;
-            color: #475569;
+            background-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            font-weight: bold !important;
             cursor: not-allowed;
+            border-color: #94a3b8 !important;
         }
 
         /* Estrutura Exata de Objetivos e Metas PEE (Baseada na imagem) */
@@ -342,7 +344,7 @@
                 <input type="hidden" id="editAtividadeId">
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Nome da Atividade</label>
@@ -383,7 +385,7 @@
                 
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 1rem;">
@@ -455,7 +457,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL (ESTRUTURA EXATA DA IMAGEM) -->
+    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-bottom: 0.25rem;">Registo de Objetivos e Avaliação Global</h2>
@@ -466,7 +468,7 @@
                 
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalObjNumAtividade" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalObjNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
@@ -504,11 +506,11 @@
                     </div>
                 </div>
 
-                <!-- OBJETIVOS E METAS DO PEE (EXATAMENTE COM CAIXAS DE VERIFICAÇÃO ANTES DA FRASE)[cite: 7] -->
+                <!-- OBJETIVOS E METAS DO PEE (COM CAIXAS DE VERIFICAÇÃO) -->
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e respetivas Metas do PEE abrangidos:</label>
                     
-                    <!-- Objetivo 1[cite: 7] -->
+                    <!-- Objetivo 1 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> 
@@ -522,7 +524,7 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 2[cite: 7] -->
+                    <!-- Objetivo 2 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> 
@@ -540,7 +542,7 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 3[cite: 7] -->
+                    <!-- Objetivo 3 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> 
@@ -554,7 +556,7 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 4[cite: 7] -->
+                    <!-- Objetivo 4 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> 
@@ -575,7 +577,7 @@
 
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
-                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
@@ -768,6 +770,7 @@
             document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
             document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
 
+            document.getElementById('modalNumAtividade').readOnly = true;
             document.getElementById('modalNomeAtividade').readOnly = somenteLeitura;
             document.getElementById('modalAnoLetivo').disabled = somenteLeitura;
             document.getElementById('modalTipoAtividade').disabled = somenteLeitura;
@@ -833,6 +836,10 @@
             document.getElementById('modalAvInteresse').value = av.interesse || '';
             document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
 
+            document.getElementById('modalAvNumAtividade').readOnly = true;
+            document.getElementById('modalAvTituloAtividade').readOnly = true;
+            document.getElementById('modalAvAnoLetivo').readOnly = true;
+
             document.getElementById('modalAvDocenteAluno').disabled = somenteLeitura;
             document.getElementById('modalAvPertinencia').disabled = somenteLeitura;
             document.getElementById('modalAvDinamica').disabled = somenteLeitura;
@@ -868,7 +875,7 @@
             carregarAvaliacoes();
         }
 
-        // --- MODAIS DE OBJETIVOS ( COM OS CHECKBOXES ANTES DO TEXTO ) ---
+        // --- MODAIS DE OBJETIVOS ---
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
@@ -900,6 +907,13 @@
             document.getElementById('modalObjMedia').value = reg.mediaAvaliacao || reg.media || 'Pendente';
             document.getElementById('modalObjSugestoes').value = reg.sugestoes || reg.observacoes || '';
             document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
+
+            document.getElementById('modalObjNumAtividade').readOnly = true;
+            document.getElementById('modalObjNomeAtividade').readOnly = true;
+            document.getElementById('modalObjAnoLetivo').readOnly = true;
+            document.getElementById('modalObjTipo').readOnly = true;
+            document.getElementById('modalObjMedia').readOnly = true;
+            document.getElementById('modalObjSugestoes').readOnly = true;
 
             const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
             const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
