@@ -148,7 +148,17 @@
         }
 
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
-        .btn-modal-confirm { background-color: var(--color-primary); color: white; }
+        
+        /* Campos com suporte a readonly/disabled no modal */
+        .custom-modal input:disabled, 
+        .custom-modal select:disabled, 
+        .custom-modal textarea:disabled,
+        .custom-modal input[readonly],
+        .custom-modal textarea[readonly] {
+            background-color: #f8fafc;
+            color: #475569;
+            cursor: not-allowed;
+        }
 
         /* Estrutura de Objetivos e Metas PEE */
         .pee-objetivo-box {
@@ -332,7 +342,7 @@
                 <input type="hidden" id="editAtividadeId">
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalNumAtividade" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Nome da Atividade</label>
@@ -364,27 +374,82 @@
         </div>
     </div>
 
-    <!-- MODAL DE AVALIAÇÃO -->
+    <!-- MODAL DE AVALIAÇÃO (COMPLETO E IDÊNTICO AO FORMULÁRIO DE CRIAÇÃO) -->
     <div id="avaliacaoModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent);">Detalhes da Avaliação</h2>
+            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-bottom: 1rem;">Avaliar Atividade</h2>
             <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
                 <input type="hidden" id="editAvaliacaoId">
+                
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
+                
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Título / Descrição da Atividade</label>
-                    <input type="text" id="modalAvTituloAtividade" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
+                    <label>Nome da Atividade</label>
+                    <input type="text" id="modalAvTituloAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
+
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Comentário / Parecer de Avaliação</label>
-                    <textarea id="modalAvComentario" rows="4" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
+                    <label>Ano Letivo</label>
+                    <input type="text" id="modalAvAnoLetivo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Docente / Aluno</label>
+                    <select id="modalAvDocenteAluno" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <option value="">Selecione o tipo de avaliador</option>
+                        <option value="Docente">Docente</option>
+                        <option value="Aluno">Aluno</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Pertinência (1-5)</label>
+                        <select id="modalAvPertinencia" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                            <option value="">Selecione</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Dinâmica (1-5)</label>
+                        <select id="modalAvDinamica" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                            <option value="">Selecione</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Interesse (1-5)</label>
+                        <select id="modalAvInteresse" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                            <option value="">Selecione</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Sugestões / Observações</label>
+                    <textarea id="modalAvComentario" rows="4" placeholder="Insira comentários, sugestões ou pontos de melhoria..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+                </div>
+
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
-                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar</button>
+                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
                 </div>
             </form>
         </div>
@@ -402,22 +467,22 @@
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Número da Atividade</label>
-                        <input type="text" id="modalObjNumAtividade" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                        <input type="text" id="modalObjNumAtividade" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                     </div>
                     <div class="form-group" style="flex: 2;">
                         <label>Nome da Atividade</label>
-                        <input type="text" id="modalObjNomeAtividade" style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <input type="text" id="modalObjNomeAtividade" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
+                        <input type="text" id="modalObjAnoLetivo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
+                        <input type="text" id="modalObjTipo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
                     </div>
                 </div>
 
@@ -505,7 +570,7 @@
 
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Média das Avaliações[cite: 4]</label>
-                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
@@ -553,7 +618,6 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        // Função para alternar entre o menu principal e as secções de detalhes
         function mostrarSecao(secaoId) {
             const secoes = document.querySelectorAll('.app-section');
             secoes.forEach(s => s.classList.remove('active'));
@@ -726,7 +790,7 @@
             carregarObjetivos();
         }
 
-        // Modais de Avaliação
+        // --- MODAIS DE AVALIAÇÃO (COMPLETOS COM CAMPOS IGUAIS AO CRIAR) ---
         function verAvaliacao(id) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avs = JSON.parse(localStorage.getItem(chave)) || [];
@@ -735,6 +799,7 @@
             document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
             preencherModalAvaliacao(av, true);
         }
+
         function editarAvaliacao(id) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avs = JSON.parse(localStorage.getItem(chave)) || [];
@@ -743,6 +808,7 @@
             document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
             preencherModalAvaliacao(av, false);
         }
+
         function preencherModalAvaliacao(av, somenteLeitura) {
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const atividadeCorrespondente = atividades.find(a => 
@@ -754,12 +820,25 @@
             document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
             document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
             document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
+            document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
+            
+            document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.tipoAvaliador || av.avaliadorTipo || '';
+            document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
+            document.getElementById('modalAvDinamica').value = av.dinamica || '';
+            document.getElementById('modalAvInteresse').value = av.interesse || '';
             document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
 
+            // Aplicar restrições de leitura / edição
+            document.getElementById('modalAvDocenteAluno').disabled = somenteLeitura;
+            document.getElementById('modalAvPertinencia').disabled = somenteLeitura;
+            document.getElementById('modalAvDinamica').disabled = somenteLeitura;
+            document.getElementById('modalAvInteresse').disabled = somenteLeitura;
             document.getElementById('modalAvComentario').readOnly = somenteLeitura;
+
             document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('avaliacaoModal').style.display = 'flex';
         }
+
         function fecharModalAvaliacao() { document.getElementById('avaliacaoModal').style.display = 'none'; }
 
         function salvarEdicaoAvaliacao(e) {
@@ -772,9 +851,11 @@
                 const matchId = (idInput !== "" && a.id == idInput);
                 const matchIdx = (idInput === "" && idx == idInput);
                 if(matchId || matchIdx) {
+                    a.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
+                    a.pertinencia = document.getElementById('modalAvPertinencia').value;
+                    a.dinamica = document.getElementById('modalAvDinamica').value;
+                    a.interesse = document.getElementById('modalAvInteresse').value;
                     a.comentario = document.getElementById('modalAvComentario').value;
-                    if(a.parecer) a.parecer = a.comentario;
-                    if(a.texto) a.texto = a.comentario;
                 }
                 return a;
             });
