@@ -6,51 +6,62 @@
     <title>Atividades e Registos - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Estilos de Abas (Tabs) */
-        .tabs-nav {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 2rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0;
-        }
-
-        .tab-btn {
-            padding: 0.75rem 1.25rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background: var(--color-white);
-            color: var(--color-primary);
-            border-color: #cbd5e1;
-            border-bottom: 2px solid var(--color-white);
-            margin-bottom: -2px;
-        }
-
-        .tab-content {
+        /* Controlo de Visibilidade das Secções */
+        .app-section {
             display: none;
         }
-
-        .tab-content.active {
+        .app-section.active {
             display: block;
         }
+
+        /* Cabeçalho da Secção Interna com Botão Voltar */
+        .section-header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .btn-voltar {
+            background-color: #64748b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-voltar:hover { background-color: #475569; }
+
+        .btn-novo-registo {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-novo-registo:hover { opacity: 0.9; }
 
         .table-container {
             background: var(--color-white);
             padding: 1.5rem;
-            border-radius: 0 0 var(--radius) var(--radius);
+            border-radius: var(--radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             overflow-x: auto;
             border: 1px solid #e2e8f0;
-            border-top: none;
         }
 
         table {
@@ -138,17 +149,8 @@
 
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-modal-confirm { background-color: var(--color-primary); color: white; }
-        
-        .badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .badge-sim { background-color: #dcfce7; color: #166534; }
-        .badge-nao { background-color: #fee2e2; color: #991b1b; }
 
-        /* Estrutura fiel aos objetivos e metas */
+        /* Estrutura de Objetivos e Metas PEE */
         .pee-objetivo-box {
             background: #f8fafc;
             border: 1px solid #cbd5e1;
@@ -196,51 +198,60 @@
     </div>
 
     <div class="container">
-        <div class="dashboard-header">
-            <div>
-                <h2>Gestão e Consulta</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Consulte e gira todas as atividades, avaliações e objetivos registados</p>
+        
+        <!-- ================= VISTA 1: MENU PRINCIPAL (HUB DE 3 CARTÕES) ================= -->
+        <div id="secaoMenu" class="app-section active">
+            <div class="dashboard-header" style="margin-bottom: 2rem;">
+                <div>
+                    <h2>Gestão e Consulta de Atividades</h2>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Selecione a opção desejada para consultar, gerar ou gerir os registos</p>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <!-- Cartão 1: Atividades Registadas -->
+                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: var(--color-primary); cursor: pointer;">
+                    <div class="icon">➕</div>
+                    <div>
+                        <h3>Nova Atividade</h3>
+                        <p>Criar, consultar e gerir atividades registadas</p>
+                    </div>
+                </div>
+
+                <!-- Cartão 2: Avaliar Atividade -->
+                <div onclick="mostrarSecao('secaoAvaliadas')" class="menu-card" style="border-top-color: var(--color-accent); cursor: pointer;">
+                    <div class="icon">⭐</div>
+                    <div>
+                        <h3>Avaliar Atividade</h3>
+                        <p>Consultar e registar avaliações e feedback</p>
+                    </div>
+                </div>
+
+                <!-- Cartão 3: Registar Objetivos -->
+                <div onclick="mostrarSecao('secaoObjetivos')" class="menu-card" style="border-top-color: #16a34a; cursor: pointer;">
+                    <div class="icon">🎯</div>
+                    <div>
+                        <h3>Registar Objetivos</h3>
+                        <p>Definir metas associadas e avaliações globais</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="menu-grid">
-            <a href="nova-atividade.html" class="menu-card" style="border-top-color: var(--color-primary);">
-                <div class="icon">➕</div>
+        <!-- ================= VISTA 2: LISTA DE ATIVIDADES REGISTADAS ================= -->
+        <div id="secaoAtividades" class="app-section">
+            <div class="section-header-nav">
                 <div>
-                    <h3>Nova Atividade</h3>
-                    <p>Criar e registar uma nova atividade</p>
+                    <h2>Atividades Registadas</h2>
+                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta e gestão de todas as atividades criadas no sistema.</p>
                 </div>
-            </a>
-
-            <a href="avaliar-atividade.html" class="menu-card" style="border-top-color: var(--color-accent);">
-                <div class="icon">⭐</div>
-                <div>
-                    <h3>Avaliar Atividade</h3>
-                    <p>Registar avaliações e feedback</p>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
+                    <a href="nova-atividade.html" class="btn-novo-registo">➕ Criar Nova Atividade</a>
                 </div>
-            </a>
+            </div>
 
-            <a href="registar-objetivos.html" class="menu-card" style="border-top-color: #16a34a;">
-                <div class="icon">🎯</div>
-                <div>
-                    <h3>Registar Objetivos</h3>
-                    <p>Definir metas associadas</p>
-                </div>
-            </a>
-        </div>
-
-        <!-- SISTEMA DE ABAS (TABS) -->
-        <div class="tabs-nav">
-            <button class="tab-btn active" onclick="mudarTab(event, 'tabAtividades')">📝 Atividades Registadas</button>
-            <button class="tab-btn" onclick="mudarTab(event, 'tabAvaliadas')">⭐ Atividades Avaliadas</button>
-            <button class="tab-btn" onclick="mudarTab(event, 'tabObjetivos')">🎯 Objetivos Registados</button>
-        </div>
-
-        <!-- ABA 1: ATIVIDADES REGISTADAS -->
-        <div id="tabAtividades" class="tab-content active">
-            <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Lista de Atividades Registadas</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as atividades criadas no sistema.</p>
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -255,11 +266,20 @@
             </div>
         </div>
 
-        <!-- ABA 2: ATIVIDADES AVALIADAS -->
-        <div id="tabAvaliadas" class="tab-content">
-            <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: var(--color-accent); margin-bottom: 0.5rem;">Lista de Atividades Avaliadas</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as avaliações efetuadas.</p>
+        <!-- ================= VISTA 3: LISTA DE ATIVIDADES AVALIADAS ================= -->
+        <div id="secaoAvaliadas" class="app-section">
+            <div class="section-header-nav">
+                <div>
+                    <h2>Atividades Avaliadas</h2>
+                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta e gestão de todas as avaliações efetuadas.</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
+                    <a href="avaliar-atividade.html" class="btn-novo-registo" style="background-color: var(--color-accent);">⭐ Avaliar Atividade</a>
+                </div>
+            </div>
+
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -274,11 +294,20 @@
             </div>
         </div>
 
-        <!-- ABA 3: OBJETIVOS REGISTADOS -->
-        <div id="tabObjetivos" class="tab-content">
-            <div class="table-container" style="margin-top: 0;">
-                <h3 style="color: #16a34a; margin-bottom: 0.5rem;">Objetivos e Avaliações Globais Registados</h3>
-                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">Consulta de todas as associações a objetivos, metas PEE/PAA e avaliações globais efetuadas.</p>
+        <!-- ================= VISTA 4: OBJETIVOS REGISTADOS ================= -->
+        <div id="secaoObjetivos" class="app-section">
+            <div class="section-header-nav">
+                <div>
+                    <h2>Objetivos e Avaliações Globais</h2>
+                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
+                    <a href="registar-objetivos.html" class="btn-novo-registo" style="background-color: #16a34a;">🎯 Registar Objetivos</a>
+                </div>
+            </div>
+
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -292,6 +321,7 @@
                 </table>
             </div>
         </div>
+
     </div>
 
     <!-- MODAL DE ATIVIDADES -->
@@ -360,11 +390,11 @@
         </div>
     </div>
 
-    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL (COMPLETO) -->
+    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalObjetivoTitle" style="color: #16a34a;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações[cite: 4].</p>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Consulta e edição completa de objetivos e metas PEE associados[cite: 4].</p>
             
             <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
@@ -408,11 +438,10 @@
                     </div>
                 </div>
 
-                <!-- Árvore de Objetivos e Metas do PEE -->
+                <!-- Objetivos e Metas do PEE -->
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Selecione os Objetivos e respetivas Metas do PEE abrangidos[cite: 4]:</label>
+                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e respetivas Metas do PEE abrangidos[cite: 4]:</label>
                     
-                    <!-- Objetivo 1 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> 
@@ -426,7 +455,6 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 2 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> 
@@ -444,7 +472,6 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 3 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> 
@@ -458,7 +485,6 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 4 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> 
@@ -478,7 +504,7 @@
                 </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)[cite: 4]</label>
+                    <label>Média das Avaliações[cite: 4]</label>
                     <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; background-color: #f8fafc; font-weight: bold; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
@@ -494,7 +520,7 @@
 
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Registo de Objetivos</button>
+                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Alterações</button>
                 </div>
             </form>
         </div>
@@ -527,16 +553,12 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        // Sistema de troca de abas
-        function mudarTab(evt, tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(c => c.classList.remove('active'));
-
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(b => b.classList.remove('active'));
-
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
+        // Função para alternar entre o menu principal e as secções de detalhes
+        function mostrarSecao(secaoId) {
+            const secoes = document.querySelectorAll('.app-section');
+            secoes.forEach(s => s.classList.remove('active'));
+            document.getElementById(secaoId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         let idParaApagar = null;
@@ -657,7 +679,7 @@
             });
         }
 
-        // Modais de Atividades
+        // Modais de Atividade
         function verAtividade(id) {
             const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
             if(!ativ) return;
@@ -761,7 +783,7 @@
             carregarAvaliacoes();
         }
 
-        // Modais de Objetivos (Ver e Editar com todos os campos)
+        // Modais de Objetivos
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
@@ -769,7 +791,6 @@
             document.getElementById('modalObjetivoTitle').innerText = 'Consultar Registo de Objetivos';
             preencherModalObjetivo(reg, true);
         }
-
         function editarObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
@@ -777,7 +798,6 @@
             document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
             preencherModalObjetivo(reg, false);
         }
-
         function preencherModalObjetivo(reg, somenteLeitura) {
             document.getElementById('editObjetivoId').value = reg.id;
             document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || '-';
@@ -790,7 +810,6 @@
             document.getElementById('modalObjSugestoes').value = reg.sugestoes || reg.observacoes || '';
             document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
 
-            // Marcar ou desmarcar checkboxes
             const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
             const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
             
@@ -816,10 +835,7 @@
             document.getElementById('modalObjSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('objetivoModal').style.display = 'flex';
         }
-
-        function fecharModalObjetivo() {
-            document.getElementById('objetivoModal').style.display = 'none';
-        }
+        function fecharModalObjetivo() { document.getElementById('objetivoModal').style.display = 'none'; }
 
         function salvarEdicaoObjetivo(e) {
             e.preventDefault();
@@ -883,7 +899,7 @@
             }
         };
 
-        // Inicializar todas as tabelas ao carregar
+        // Inicializar dados ao carregar
         carregarAtividades();
         carregarAvaliacoes();
         carregarObjetivos();
