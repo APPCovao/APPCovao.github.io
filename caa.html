@@ -244,6 +244,27 @@
         button.btn-secondary:hover {
             background-color: #edebe9;
         }
+
+        /* Estilo para impressão limpa do modal */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #modalVer, #modalVer * {
+                visibility: visible;
+            }
+            #modalVer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                background: white !important;
+            }
+            #btnImprimirModal, #btnFecharModal {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -268,7 +289,7 @@
             <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white;">+ Novo Registo</button>
         </div>
 
-        <!-- Tabela da Lista de Registos (Apenas Nº, Atividade e Responsável) -->
+        <!-- Tabela da Lista de Registos -->
         <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -285,7 +306,7 @@
             </table>
         </div>
 
-        <!-- Formulário Completo (Oculto inicialmente, abre ao clicar em Novo Registo) -->
+        <!-- Formulário Completo (Oculto inicialmente) -->
         <div id="containerFormulario" style="display: none;">
             <div class="header-section">
                 <div class="logo-container" title="Logótipo Institucional">
@@ -307,7 +328,7 @@
             <form id="caaForm">
                 <input type="hidden" id="editIndex" value="">
 
-                <!-- 1. Nº da Atividade (Automático / Sequencial) -->
+                <!-- 1. Nº da Atividade (Sem #) -->
                 <div class="form-group">
                     <label for="numero_atividade">1. Nº da Atividade <span class="required">*</span></label>
                     <input type="number" id="numero_atividade" name="numero_atividade" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
@@ -347,37 +368,36 @@
 
                 <div class="form-group">
                     <label for="objetivos">6. Objetivos <span class="required">*</span></label>
-                    <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-obj')" required></textarea>
+                    <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-obj')" required></textarea>
                     <div id="counter-obj" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="descricao_atividade">7. Descrição da Atividade <span class="required">*</span></label>
-                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-desc')" required></textarea>
+                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-desc')" required></textarea>
                     <div id="counter-desc" class="char-counter">Máximo de 10000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="formas_avaliacao">8. Formas de Avaliação <span class="required">*</span></label>
-                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-av')" required></textarea>
+                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-av')" required></textarea>
                     <div id="counter-av" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="articulacao">9. Articulação <span class="required">*</span></label>
-                    <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-art')" required></textarea>
+                    <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-art')" required></textarea>
                     <div id="counter-art" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="responsaveis">10. Responsável(eis) <span class="required">*</span></label>
-                    <!-- Preenchimento automático com o nome de quem fez login, bloqueado, negrito e cinzento escuro -->
                     <input type="text" id="responsaveis" name="responsaveis" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
                 </div>
 
                 <div class="form-group">
                     <label for="observacoes">11. Observações <span class="required">*</span></label>
-                    <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Introduza a sua resposta (espaço alargado para texto extenso)" oninput="updateCounter(this, 'counter-obs')" required></textarea>
+                    <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-obs')" required></textarea>
                     <div id="counter-obs" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
@@ -398,12 +418,15 @@
         </div>
     </div>
 
-    <!-- Modal de Visualização (Ver) -->
+    <!-- Modal de Visualização (Ver e Imprimir) -->
     <div id="modalVer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <h3>Detalhes do Registo CAA</h3>
             <div id="modalVerConteudo" style="margin: 1rem 0; line-height: 1.6; color: #323130;"></div>
-            <button onclick="fecharModalVer()" style="background-color: #0078d4; color: white;">Fechar</button>
+            <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
+                <button id="btnImprimirModal" onclick="window.print()" style="background-color: #107c41; color: white;">🖨️ Imprimir</button>
+                <button id="btnFecharModal" onclick="fecharModalVer()" style="background-color: #0078d4; color: white;">Fechar</button>
+            </div>
         </div>
     </div>
 
@@ -422,7 +445,7 @@
             window.location.href = 'index.html';
         });
 
-        // Carregar Registos na Tabela (Apenas Nº, Atividade, Responsável)
+        // Carregar Registos na Tabela
         function carregarRegistos() {
             const tbody = document.getElementById('caaTableBody');
             if (!tbody) return;
@@ -442,7 +465,7 @@
                 const temPermissao = currentUser.isAdmin || reg.userEmail === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="padding: 0.75rem; font-weight: bold; color: #0078d4;">#${reg.numero_atividade || (index + 1)}</td>
+                    <td style="padding: 0.75rem; font-weight: bold; color: #0078d4;">${reg.numero_atividade || (index + 1)}</td>
                     <td style="padding: 0.75rem;">${reg.atividade}</td>
                     <td style="padding: 0.75rem;">${reg.responsaveis}</td>
                     <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
@@ -463,17 +486,14 @@
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('data_atividade').valueAsDate = new Date();
 
-            // Atribuir automaticamente o próximo número de atividade sequencial
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             let proximoNumero = 1;
             if (registos.length > 0) {
-                // Procura o maior número existente ou assume o tamanho + 1
                 const numeros = registos.map(r => parseInt(r.numero_atividade) || 0);
                 proximoNumero = Math.max(...numeros) + 1;
             }
             document.getElementById('numero_atividade').value = proximoNumero;
 
-            // Preenchimento automático do responsável a partir da sessão ativa
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
             document.getElementById('responsaveis').value = nomeResponsavel;
 
@@ -492,18 +512,15 @@
             document.getElementById('imagePreviewContainer').innerHTML = '';
         }
 
-        // Submeter formulário (Criar ou Atualizar)
         document.getElementById('caaForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             const index = document.getElementById('editIndex').value;
 
-            // Recolher turmas selecionadas
             const turmasChecked = document.querySelectorAll('input[name="turma"]:checked');
             const turmasValues = Array.from(turmasChecked).map(cb => cb.value).join(', ');
 
-            // Recolher imagens em Base64 para armazenar no localStorage
             const imageElements = document.querySelectorAll('.image-preview-item img');
             const imagensArray = Array.from(imageElements).map(img => img.src);
 
@@ -551,7 +568,7 @@
             }
 
             const conteudo = `
-                <p><strong>Nº da Atividade:</strong> #${reg.numero_atividade}</p>
+                <p><strong>Nº da Atividade:</strong> ${reg.numero_atividade}</p>
                 <p><strong>Data da Atividade:</strong> ${reg.data_atividade}</p>
                 <p><strong>Nome do Aluno:</strong> ${reg.nome_aluno}</p>
                 <p><strong>Turmas:</strong> ${reg.turmas || 'Nenhuma'}</p>
@@ -594,13 +611,11 @@
             document.getElementById('responsaveis').value = reg.responsaveis;
             document.getElementById('observacoes').value = reg.observacoes;
 
-            // Marcar checkboxes das turmas
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
                 cb.checked = turmasArray.includes(cb.value);
             });
 
-            // Carregar imagens salvas para pré-visualização
             const previewContainer = document.getElementById('imagePreviewContainer');
             previewContainer.innerHTML = '';
             if (reg.imagens) {
@@ -671,7 +686,6 @@
             }
         }
 
-        // Inicializar tabela ao carregar a página
         carregarRegistos();
     </script>
 </body>
