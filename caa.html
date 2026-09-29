@@ -166,10 +166,6 @@
             transition: background 0.2s;
         }
 
-        .image-upload-box:hover {
-            background: #f3f2f1;
-        }
-
         .image-preview-container {
             display: flex;
             flex-wrap: wrap;
@@ -191,23 +187,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .remove-img {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .btn-container {
@@ -245,23 +224,24 @@
             background-color: #edebe9;
         }
 
-        /* Estilo para impressão limpa do modal */
+        /* Estilo para impressão limpa do formulário no modo Ver */
         @media print {
             body * {
                 visibility: hidden;
             }
-            #modalVer, #modalVer * {
+            #containerFormulario, #containerFormulario * {
                 visibility: visible;
             }
-            #modalVer {
+            #containerFormulario {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
-                height: auto;
                 background: white !important;
+                box-shadow: none !important;
+                padding: 0 !important;
             }
-            #btnImprimirModal, #btnFecharModal {
+            .btn-container, .navbar, .image-upload-box {
                 display: none !important;
             }
         }
@@ -328,10 +308,9 @@
             <form id="caaForm">
                 <input type="hidden" id="editIndex" value="">
 
-                <!-- 1. Nº da Atividade (Sem #) -->
                 <div class="form-group">
                     <label for="numero_atividade">1. Nº da Atividade <span class="required">*</span></label>
-                    <input type="number" id="numero_atividade" name="numero_atividade" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
+                    <input type="number" id="numero_atividade" name="numero_atividade" required>
                 </div>
                 
                 <div class="form-group">
@@ -341,7 +320,7 @@
 
                 <div class="form-group">
                     <label for="nome_aluno">3. Nome do Aluno <span class="required">*</span></label>
-                    <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" placeholder="Introduza a sua resposta" required>
+                    <input type="text" id="nome_aluno" name="nome_aluno" maxlength="500" required>
                 </div>
 
                 <div class="form-group">
@@ -363,47 +342,47 @@
 
                 <div class="form-group">
                     <label for="atividade">5. Atividade <span class="required">*</span></label>
-                    <input type="text" id="atividade" name="atividade" maxlength="1000" placeholder="Introduza a sua resposta" required>
+                    <input type="text" id="atividade" name="atividade" maxlength="1000" required>
                 </div>
 
                 <div class="form-group">
                     <label for="objetivos">6. Objetivos <span class="required">*</span></label>
-                    <textarea id="objetivos" name="objetivos" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-obj')" required></textarea>
+                    <textarea id="objetivos" name="objetivos" maxlength="5000" oninput="updateCounter(this, 'counter-obj')" required></textarea>
                     <div id="counter-obj" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="descricao_atividade">7. Descrição da Atividade <span class="required">*</span></label>
-                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-desc')" required></textarea>
+                    <textarea id="descricao_atividade" name="descricao_atividade" maxlength="10000" oninput="updateCounter(this, 'counter-desc')" required></textarea>
                     <div id="counter-desc" class="char-counter">Máximo de 10000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="formas_avaliacao">8. Formas de Avaliação <span class="required">*</span></label>
-                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-av')" required></textarea>
+                    <textarea id="formas_avaliacao" name="formas_avaliacao" maxlength="5000" oninput="updateCounter(this, 'counter-av')" required></textarea>
                     <div id="counter-av" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="articulacao">9. Articulação <span class="required">*</span></label>
-                    <textarea id="articulacao" name="articulacao" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-art')" required></textarea>
+                    <textarea id="articulacao" name="articulacao" maxlength="5000" oninput="updateCounter(this, 'counter-art')" required></textarea>
                     <div id="counter-art" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
                 <div class="form-group">
                     <label for="responsaveis">10. Responsável(eis) <span class="required">*</span></label>
-                    <input type="text" id="responsaveis" name="responsaveis" required readonly style="background-color: #e2e8f0; color: #1e293b; font-weight: bold; cursor: not-allowed;">
+                    <input type="text" id="responsaveis" name="responsaveis" required>
                 </div>
 
                 <div class="form-group">
                     <label for="observacoes">11. Observações <span class="required">*</span></label>
-                    <textarea id="observacoes" name="observacoes" maxlength="5000" placeholder="Introduza a sua resposta" oninput="updateCounter(this, 'counter-obs')" required></textarea>
+                    <textarea id="observacoes" name="observacoes" maxlength="5000" oninput="updateCounter(this, 'counter-obs')" required></textarea>
                     <div id="counter-obs" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="seccaoImagensUpload">
                     <label>12. Registo Fotográfico / Imagens da Atividade:</label>
-                    <div class="image-upload-box" onclick="document.getElementById('fileInput').click()">
+                    <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
                         <p style="margin: 0; color: #605e5c;">📸 Clique aqui para adicionar fotografias</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
@@ -411,41 +390,27 @@
                 </div>
 
                 <div class="btn-container">
-                    <button type="button" class="btn-secondary" onclick="fecharFormulario()">Cancelar</button>
+                    <button type="button" id="btnPrintForm" class="btn-secondary" onclick="window.print()" style="background-color: #107c41; color: white; display: none;">🖨️ Imprimir</button>
+                    <button type="button" class="btn-secondary" onclick="fecharFormulario()">Voltar / Fechar</button>
                     <button type="submit" id="btnSubmit">Guardar Registo</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal de Visualização (Ver e Imprimir) -->
-    <div id="modalVer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3>Detalhes do Registo CAA</h3>
-            <div id="modalVerConteudo" style="margin: 1rem 0; line-height: 1.6; color: #323130;"></div>
-            <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
-                <button id="btnImprimirModal" onclick="window.print()" style="background-color: #107c41; color: white;">🖨️ Imprimir</button>
-                <button id="btnFecharModal" onclick="fecharModalVer()" style="background-color: #0078d4; color: white;">Fechar</button>
-            </div>
-        </div>
-    </div>
-
     <script src="js/auth.js"></script>
     <script>
-        // Verificar autenticação
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             window.location.href = 'index.html';
         }
 
-        // Logout
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
 
-        // Carregar Registos na Tabela
         function carregarRegistos() {
             const tbody = document.getElementById('caaTableBody');
             if (!tbody) return;
@@ -486,6 +451,9 @@
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('data_atividade').valueAsDate = new Date();
 
+            // Desbloquear campos e restaurar aspeto normal para criar
+            ajustarModoFormulario(false);
+
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             let proximoNumero = 1;
             if (registos.length > 0) {
@@ -493,9 +461,15 @@
                 proximoNumero = Math.max(...numeros) + 1;
             }
             document.getElementById('numero_atividade').value = proximoNumero;
+            document.getElementById('numero_atividade').readOnly = true;
+            document.getElementById('numero_atividade').style.backgroundColor = '#e2e8f0';
+            document.getElementById('numero_atividade').style.color = '#1e293b';
 
             const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
             document.getElementById('responsaveis').value = nomeResponsavel;
+            document.getElementById('responsaveis').readOnly = true;
+            document.getElementById('responsaveis').style.backgroundColor = '#e2e8f0';
+            document.getElementById('responsaveis').style.color = '#1e293b';
 
             document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
             document.getElementById('seccaoCabecalho').style.display = 'none';
@@ -510,6 +484,72 @@
             document.getElementById('containerTabela').style.display = 'block';
             document.getElementById('caaForm').reset();
             document.getElementById('imagePreviewContainer').innerHTML = '';
+        }
+
+        // Função para alternar o formulário entre modo de leitura (Ver) e edição/criação
+        function ajustarModoFormulario(isSomenteLeitura) {
+            const inputs = document.querySelectorAll('#caaForm input, #caaForm textarea');
+            inputs.forEach(el => {
+                if (el.id !== 'editIndex') {
+                    el.readOnly = isSomenteLeitura;
+                    if (isSomenteLeitura) {
+                        el.style.backgroundColor = '#f3f2f1';
+                        el.style.color = '#323130';
+                    }
+                }
+            });
+
+            const checkboxes = document.querySelectorAll('#caaForm input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.disabled = isSomenteLeitura;
+            });
+
+            document.getElementById('boxUploadFicheiro').style.display = isSomenteLeitura ? 'none' : 'block';
+            document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-block';
+            document.getElementById('btnPrintForm').style.display = isSomenteLeitura ? 'inline-block' : 'none';
+        }
+
+        function verRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+            if (!reg) return;
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('numero_atividade').value = reg.numero_atividade;
+            document.getElementById('data_atividade').value = reg.data_atividade;
+            document.getElementById('nome_aluno').value = reg.nome_aluno;
+            document.getElementById('atividade').value = reg.atividade;
+            document.getElementById('objetivos').value = reg.objetivos;
+            document.getElementById('descricao_atividade').value = reg.descricao_atividade;
+            document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
+            document.getElementById('articulacao').value = reg.articulacao;
+            document.getElementById('responsaveis').value = reg.responsaveis;
+            document.getElementById('observacoes').value = reg.observacoes;
+
+            const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
+            document.querySelectorAll('input[name="turma"]').forEach(cb => {
+                cb.checked = turmasArray.includes(cb.value);
+            });
+
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            previewContainer.innerHTML = '';
+            if (reg.imagens) {
+                reg.imagens.forEach(src => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+                    wrapper.innerHTML = `<img src="${src}">`;
+                    previewContainer.appendChild(wrapper);
+                });
+            }
+
+            // Aplicar bloqueio total de leitura
+            ajustarModoFormulario(true);
+
+            document.getElementById('formTitle').innerText = 'Visualizar Registo CAA';
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
+            document.getElementById('containerFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.getElementById('caaForm').addEventListener('submit', (e) => {
@@ -553,43 +593,6 @@
             carregarRegistos();
         });
 
-        function verRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
-            if (!reg) return;
-
-            let imagensHtml = '';
-            if (reg.imagens && reg.imagens.length > 0) {
-                imagensHtml = '<div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">';
-                reg.imagens.forEach(src => {
-                    imagensHtml += `<img src="${src}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">`;
-                });
-                imagensHtml += '</div>';
-            }
-
-            const conteudo = `
-                <p><strong>Nº da Atividade:</strong> ${reg.numero_atividade}</p>
-                <p><strong>Data da Atividade:</strong> ${reg.data_atividade}</p>
-                <p><strong>Nome do Aluno:</strong> ${reg.nome_aluno}</p>
-                <p><strong>Turmas:</strong> ${reg.turmas || 'Nenhuma'}</p>
-                <p><strong>Atividade:</strong> ${reg.atividade}</p>
-                <p><strong>Objetivos:</strong><br>${reg.objetivos}</p>
-                <p><strong>Descrição da Atividade:</strong><br>${reg.descricao_atividade}</p>
-                <p><strong>Formas de Avaliação:</strong><br>${reg.formas_avaliacao}</p>
-                <p><strong>Articulação:</strong><br>${reg.articulacao}</p>
-                <p><strong>Responsável(eis):</strong> ${reg.responsaveis}</p>
-                <p><strong>Observações:</strong><br>${reg.observacoes}</p>
-                <p><strong>Imagens:</strong></p>${imagensHtml || 'Nenhuma imagem'}
-            `;
-
-            document.getElementById('modalVerConteudo').innerHTML = conteudo;
-            document.getElementById('modalVer').style.display = 'flex';
-        }
-
-        function fecharModalVer() {
-            document.getElementById('modalVer').style.display = 'none';
-        }
-
         function editarRegisto(index) {
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             const reg = registos[index];
@@ -599,8 +602,15 @@
                 return;
             }
 
+            // Desbloquear campos para edição
+            ajustarModoFormulario(false);
+
             document.getElementById('editIndex').value = index;
             document.getElementById('numero_atividade').value = reg.numero_atividade || (index + 1);
+            document.getElementById('numero_atividade').readOnly = true;
+            document.getElementById('numero_atividade').style.backgroundColor = '#e2e8f0';
+            document.getElementById('numero_atividade').style.color = '#1e293b';
+
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -608,7 +618,12 @@
             document.getElementById('descricao_atividade').value = reg.descricao_atividade;
             document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
             document.getElementById('articulacao').value = reg.articulacao;
+
             document.getElementById('responsaveis').value = reg.responsaveis;
+            document.getElementById('responsaveis').readOnly = true;
+            document.getElementById('responsaveis').style.backgroundColor = '#e2e8f0';
+            document.getElementById('responsaveis').style.color = '#1e293b';
+
             document.getElementById('observacoes').value = reg.observacoes;
 
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
@@ -622,7 +637,7 @@
                 reg.imagens.forEach(src => {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${src}"><button type="button" class="remove-img" onclick="this.parentElement.remove()">&times;</button>`;
+                    wrapper.innerHTML = `<img src="${src}"><button type="button" class="remove-img" onclick="this.parentElement.remove()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;">&times;</button>`;
                     previewContainer.appendChild(wrapper);
                 });
             }
@@ -653,7 +668,9 @@
         function updateCounter(textarea, counterId) {
             const currentLength = textarea.value.length;
             const maxLength = textarea.getAttribute('maxlength');
-            document.getElementById(counterId).textContent = currentLength + ' / ' + maxLength + ' carateres';
+            if(maxLength) {
+                document.getElementById(counterId).textContent = currentLength + ' / ' + maxLength + ' carateres';
+            }
         }
 
         function handleFiles(files) {
@@ -675,6 +692,7 @@
                     removeBtn.type = 'button';
                     removeBtn.className = 'remove-img';
                     removeBtn.innerHTML = '&times;';
+                    removeBtn.style.cssText = 'position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;';
                     removeBtn.onclick = function() {
                         wrapper.remove();
                     };
