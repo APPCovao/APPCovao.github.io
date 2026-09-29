@@ -328,21 +328,39 @@
             window.location.href = 'index.html';
         });
 
-        // Função universal para Popup Personalizado
-        function mostrarPopupPersonalizado(titulo, mensagem, icone = '📦', callback = null) {
+        // Popup personalizado genérico (com suporte a botões de confirmação/ação)
+        function mostrarPopupPersonalizado(titulo, mensagem, icone = '📦', onConfirm = null) {
             document.getElementById('popupTitle').innerText = titulo;
             document.getElementById('popupMessage').innerText = mensagem;
             document.getElementById('popupIcon').innerText = icone;
             
             const btnContainer = document.getElementById('popupButtons');
-            btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #0f766e; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
             
-            document.getElementById('customPopup').style.display = 'flex';
+            if (onConfirm) {
+                // Modo de Confirmação (Sim / Cancelar)
+                btnContainer.innerHTML = `
+                    <button id="popupCancelBtn" style="background-color: #f3f2f1; color: #323130; border: 1px solid #8a8886; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button id="popupConfirmBtn" style="background-color: #ef4444; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
+                `;
+                document.getElementById('customPopup').style.display = 'flex';
 
-            document.getElementById('popupOkBtn').onclick = () => {
-                document.getElementById('customPopup').style.display = 'none';
-                if (callback) callback();
-            };
+                document.getElementById('popupCancelBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                };
+
+                document.getElementById('popupConfirmBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                    onConfirm();
+                };
+            } else {
+                // Modo de Informação (Apenas OK)
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #0f766e; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
+                document.getElementById('customPopup').style.display = 'flex';
+
+                document.getElementById('popupOkBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                };
+            }
         }
 
         function fecharPopup() {
@@ -410,7 +428,6 @@
             const campoResp = document.getElementById('respReq');
             campoResp.value = nomeResponsavel;
 
-            // Desbloquear todos os campos do formulário para inserção
             const todosCampos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
             todosCampos.forEach(el => {
                 if(el.type !== 'hidden') {
@@ -422,7 +439,6 @@
                 }
             });
 
-            // Bloquear especificamente Nº e Responsável por regra de segurança
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
@@ -483,7 +499,6 @@
             localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
         });
 
-        // VER: Abre o formulário com TODOS os campos bloqueados
         function verRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
@@ -500,7 +515,6 @@
             document.getElementById('equipamentoReq').value = req.equipamento;
             document.getElementById('qtdReq').value = req.quantidade;
 
-            // Bloquear TODOS os campos do formulário (modo visualização)
             const todosCampos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
             todosCampos.forEach(el => {
                 if(el.type !== 'hidden') {
@@ -512,7 +526,7 @@
 
             document.getElementById('formTitle').innerText = 'Detalhes da Requisição';
             document.getElementById('formSubtitle').innerText = 'Modo de visualização (campos bloqueados).';
-            document.getElementById('btnSubmit').style.display = 'none'; // Esconde o botão de guardar
+            document.getElementById('btnSubmit').style.display = 'none';
 
             document.getElementById('seccaoCabecalho').style.display = 'none';
             document.getElementById('containerTabela').style.display = 'none';
@@ -537,7 +551,6 @@
             const campoResp = document.getElementById('respReq');
             campoResp.value = req.responsavel;
 
-            // Libertar campos para edição
             const todosCampos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
             todosCampos.forEach(el => {
                 if(el.type !== 'hidden') {
@@ -549,7 +562,6 @@
                 }
             });
 
-            // Manter Nº e Responsável bloqueados por segurança
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
@@ -575,7 +587,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // APAGAR E RENUMERAR SEQUENCIALMENTE
+        // APAGAR COM POPUP PERSONALIZADO DE CONFIRMAÇÃO E RENUMERAÇÃO AUTOMÁTICA
         function eliminarRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
@@ -585,20 +597,25 @@
                 return;
             }
 
-            // Confirmação personalizada ou nativa antes de apagar
-            if (confirm('Tens a certeza que pretendes eliminar esta requisição?')) {
-                // Remove o item selecionado
-                requisicoes.splice(index, 1);
+            // Chamada do Popup Personalizado com botão de confirmação
+            mostrarPopupPersonalizado(
+                'Confirmar Eliminação', 
+                `Tens a certeza que pretendes eliminar a requisição nº ${req.numero_requisicao}?`, 
+                '⚠️', 
+                () => {
+                    // Remove o item selecionado
+                    requisicoes.splice(index, 1);
 
-                // REINDEXAR / RENUMERAR todos os números sequencialmente de 1 em diante
-                requisicoes.forEach((r, idx) => {
-                    r.numero_requisicao = idx + 1;
-                });
+                    // Reindexa / Renumera sequencialmente de 1 em diante
+                    requisicoes.forEach((r, idx) => {
+                        r.numero_requisicao = idx + 1;
+                    });
 
-                localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
-                carregarRequisicoes();
-                mostrarPopupPersonalizado('Sucesso', 'Requisição eliminada e numeração atualizada com sucesso!', '🗑️');
-            }
+                    localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
+                    carregarRequisicoes();
+                    mostrarPopupPersonalizado('Sucesso', 'Requisição eliminada e numeração atualizada com sucesso!', '🗑️');
+                }
+            );
         }
 
         carregarRequisicoes();
