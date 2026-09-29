@@ -348,7 +348,7 @@
                 const temPermissao = currentUser.isAdmin || req.userEmail === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="padding: 0.75rem; font-weight: bold; color: #0f766e;">${req.numero_requisicao || (indexReal + 1)}</td>
+                    <td style="padding: 0.75rem; font-weight: bold; color: #0f766e;">${req.numero_requisicao}</td>
                     <td style="padding: 0.75rem;">${req.responsavel}</td>
                     <td style="padding: 0.75rem; font-weight: 500;">${req.equipamento}</td>
                     <td style="padding: 0.75rem;">${req.quantidade}</td>
@@ -369,12 +369,14 @@
             document.getElementById('requisicaoForm').reset();
             document.getElementById('dataReq').valueAsDate = new Date();
 
-            // Cálculo rigoroso do próximo número com base no array existente
+            // CORREÇÃO: Descobre o maior número existente no array de requisições e soma 1
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             let proximoNumero = 1;
+            
             if (requisicoes.length > 0) {
                 const numeros = requisicoes.map(r => parseInt(r.numero_requisicao) || 0);
-                proximoNumero = Math.max(...numeros) + 1;
+                const maiorNumero = Math.max(...numeros);
+                proximoNumero = maiorNumero + 1;
             }
             
             const campoNum = document.getElementById('numero_requisicao');
@@ -446,7 +448,7 @@
             if (!req) return;
 
             const conteudo = `
-                <p><strong>Nº Requisição:</strong> ${req.numero_requisicao || (index + 1)}</p>
+                <p><strong>Nº Requisição:</strong> ${req.numero_requisicao}</p>
                 <p><strong>Responsável:</strong> ${req.responsavel}</p>
                 <p><strong>Ano Letivo:</strong> ${req.anoLetivo}</p>
                 <p><strong>Data:</strong> ${req.data}</p>
@@ -476,7 +478,7 @@
             document.getElementById('editIndex').value = index;
             
             const campoNum = document.getElementById('numero_requisicao');
-            campoNum.value = req.numero_requisicao || (index + 1);
+            campoNum.value = req.numero_requisicao;
 
             const campoResp = document.getElementById('respReq');
             campoResp.value = req.responsavel;
