@@ -187,12 +187,9 @@
                 <thead>
                     <tr style="border-bottom: 2px solid #edebe9; text-align: left; font-size: 14px;">
                         <th style="padding: 0.75rem; width: 70px;">Nº</th>
-                        <th style="padding: 0.75rem;">Data</th>
                         <th style="padding: 0.75rem;">Responsável</th>
-                        <th style="padding: 0.75rem;">Turma</th>
-                        <th style="padding: 0.75rem;">Área</th>
                         <th style="padding: 0.75rem;">Equipamento</th>
-                        <th style="padding: 0.75rem; width: 60px;">Qtd</th>
+                        <th style="padding: 0.75rem; width: 80px;">Quantidade</th>
                         <th style="padding: 0.75rem; text-align: right;">Ações</th>
                     </tr>
                 </thead>
@@ -336,7 +333,7 @@
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
 
             if (requisicoes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="padding: 1rem; text-align: center; color: #605e5c;">Sem requisições registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1rem; text-align: center; color: #605e5c;">Sem requisições registadas.</td></tr>`;
                 return;
             }
 
@@ -344,7 +341,6 @@
             const requisicoesInvertidas = [...requisicoes].reverse();
 
             requisicoesInvertidas.forEach((req, indexInvertido) => {
-                // Índice real no array original do localStorage
                 const indexReal = requisicoes.length - 1 - indexInvertido;
                 const tr = document.createElement('tr');
                 tr.style.borderBottom = '1px solid #f3f2f1';
@@ -353,10 +349,7 @@
 
                 tr.innerHTML = `
                     <td style="padding: 0.75rem; font-weight: bold; color: #0f766e;">${req.numero_requisicao || (indexReal + 1)}</td>
-                    <td style="padding: 0.75rem;">${req.data}</td>
                     <td style="padding: 0.75rem;">${req.responsavel}</td>
-                    <td style="padding: 0.75rem;">${req.turma}</td>
-                    <td style="padding: 0.75rem;">${req.area}</td>
                     <td style="padding: 0.75rem; font-weight: 500;">${req.equipamento}</td>
                     <td style="padding: 0.75rem;">${req.quantidade}</td>
                     <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
@@ -376,7 +369,7 @@
             document.getElementById('requisicaoForm').reset();
             document.getElementById('dataReq').valueAsDate = new Date();
 
-            // Cálculo automático do próximo número de requisição
+            // Cálculo rigoroso do próximo número com base no array existente
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             let proximoNumero = 1;
             if (requisicoes.length > 0) {
@@ -391,7 +384,7 @@
             const campoResp = document.getElementById('respReq');
             campoResp.value = nomeResponsavel;
 
-            // Bloqueio rigoroso (cinzento e bold) para o Nº da Requisição e Responsável
+            // Bloqueio rigoroso (cinzento e bold)
             [campoNum, campoResp].forEach(el => {
                 el.readOnly = true;
                 el.style.backgroundColor = '#e9ecef';
