@@ -3,15 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades e Registos - Registos Covão</title>
+    <title>Atividades e Registos - Registos Covão (Design CAA)</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* ==========================================================
+           ESTILOS DO DESIGN CAA (Comunicação Aumentativa e Alternativa)
+           Alto contraste, clareza visual, cartões destacados e acessibilidade
+           ========================================================== */
+        :root {
+            --caa-bg: #f0f4f8;
+            --caa-card-bg: #ffffff;
+            --caa-primary: #0056b3;
+            --caa-primary-hover: #003d82;
+            --caa-accent: #d97706;
+            --caa-success: #15803d;
+            --caa-danger: #b91c1c;
+            --caa-text: #1e293b;
+            --caa-text-light: #64748b;
+            --caa-border: #cbd5e1;
+            --caa-radius: 12px;
+        }
+
+        body {
+            background-color: var(--caa-bg) !important;
+            color: var(--caa-text) !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* Navbar estilo CAA */
+        .navbar {
+            background-color: var(--caa-primary) !important;
+            border-bottom: 4px solid #003d82;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
         /* Controlo de Visibilidade das Secções */
         .app-section {
             display: none;
         }
         .app-section.active {
             display: block;
+            animation: fadeInCAA 0.3s ease-in-out;
+        }
+
+        @keyframes fadeInCAA {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hub / Cartões do Menu Principal com Pictogramas/Símbolos CAA */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .menu-card {
+            background: var(--caa-card-bg);
+            border: 3px solid var(--caa-border);
+            border-radius: var(--caa-radius);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--caa-primary);
+            box-shadow: 0 8px 16px rgba(0,86,179,0.15);
+        }
+
+        .menu-card .icon {
+            font-size: 3rem;
+            background: #e2e8f0;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid var(--caa-border);
+        }
+
+        .menu-card h3 {
+            font-size: 1.25rem;
+            color: var(--caa-text);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .menu-card p {
+            color: var(--caa-text-light);
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.4;
         }
 
         /* Cabeçalho da Secção Interna com Botão Voltar */
@@ -22,65 +114,81 @@
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
             gap: 1rem;
+            background: #ffffff;
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--caa-radius);
+            border: 2px solid var(--caa-border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .btn-voltar {
-            background-color: #64748b;
+            background-color: #475569;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
             text-decoration: none;
             transition: background 0.2s;
+            font-size: 0.95rem;
         }
-        .btn-voltar:hover { background-color: #475569; }
+        .btn-voltar:hover { background-color: #334155; }
 
         .btn-novo-registo {
-            background-color: var(--color-primary);
+            background-color: var(--caa-primary);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #003d82;
+            font-weight: 700;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .btn-novo-registo:hover { opacity: 0.9; }
+        .btn-novo-registo:hover { background-color: var(--caa-primary-hover); }
 
+        /* Tabelas com Estética CAA */
         .table-container {
-            background: var(--color-white);
+            background: var(--caa-card-bg);
             padding: 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border-radius: var(--caa-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
             overflow-x: auto;
-            border: 1px solid #e2e8f0;
+            border: 2px solid var(--caa-border);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
 
         th, td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 0.9rem;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.95rem;
         }
 
         th {
+            background-color: #e2e8f0;
+            color: #0f172a;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover td {
             background-color: #f8fafc;
-            color: var(--text-light);
-            font-weight: 600;
         }
 
         .actions-cell {
@@ -89,31 +197,35 @@
         }
 
         .btn-action {
-            padding: 0.35rem 0.65rem;
-            font-size: 0.8rem;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.85rem;
             border-radius: 6px;
-            border: none;
+            border: 2px solid rgba(0,0,0,0.1);
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        .btn-view { background-color: #0284c7; color: white; }
-        .btn-edit { background-color: #eab308; color: white; }
-        .btn-delete { background-color: #ef4444; color: white; }
+        .btn-view { background-color: #0284c7; color: white; border-color: #0369a1; }
+        .btn-edit { background-color: #ca8a04; color: white; border-color: #a16207; }
+        .btn-delete { background-color: #dc2626; color: white; border-color: #b91c1c; }
         
         .btn-action:disabled {
             background-color: #cbd5e1;
+            border-color: #94a3b8;
             cursor: not-allowed;
             opacity: 0.6;
+            color: #64748b;
         }
 
-        /* Modais */
+        /* Modais com Padrão CAA */
         .custom-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -123,77 +235,113 @@
 
         .custom-modal {
             background: white;
-            padding: 2rem;
-            border-radius: 12px;
+            padding: 2.5rem;
+            border-radius: 16px;
             width: 100%;
             max-width: 750px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             max-height: 90vh;
             overflow-y: auto;
+            border: 3px solid var(--caa-border);
         }
 
         .modal-buttons {
             display: flex;
             justify-content: flex-end;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 2px solid #f1f5f9;
+            padding-top: 1.25rem;
         }
 
         .btn-modal {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            font-weight: 700;
             cursor: pointer;
+            font-size: 1rem;
         }
 
-        .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
+        .btn-modal-cancel { background-color: #e2e8f0; color: #334155; border-color: #cbd5e1; }
+        .btn-modal-cancel:hover { background-color: #cbd5e1; }
         
-        /* Campos com suporte a readonly/disabled no modal (Cinzento mais escuro e texto a bold) */
+        .btn-modal-confirm {
+            background-color: var(--caa-primary);
+            color: white;
+            border-color: #003d82;
+        }
+
+        /* Campos de formulário com suporte a readonly/disabled (Cinzento escuro bem destacado e bold) */
         .custom-modal input:disabled, 
         .custom-modal select:disabled, 
         .custom-modal textarea:disabled,
         .custom-modal input[readonly],
         .custom-modal textarea[readonly] {
-            background-color: #cbd5e1 !important;
+            background-color: #94a3b8 !important;
             color: #0f172a !important;
             font-weight: bold !important;
             cursor: not-allowed;
-            border-color: #94a3b8 !important;
+            border-color: #475569 !important;
         }
 
-        /* Estrutura Exata de Objetivos e Metas PEE (Baseada na imagem) */
+        .custom-modal input, 
+        .custom-modal select, 
+        .custom-modal textarea {
+            border: 2px solid var(--caa-border) !important;
+            border-radius: 8px !important;
+            padding: 0.75rem !important;
+            font-size: 1rem !important;
+        }
+
+        .custom-modal label {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.35rem;
+            display: inline-block;
+        }
+
+        /* Estrutura Exata de Objetivos e Metas PEE (Estilo CAA adaptado) */
         .pee-objetivo-box {
             background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.75rem;
+            border: 2px solid var(--caa-border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
 
         .pee-obj-title {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: #1e293b;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0f172a;
+        }
+
+        .pee-obj-title input[type="checkbox"],
+        .pee-meta-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--caa-primary);
+            cursor: pointer;
         }
 
         .pee-meta-list {
-            margin-top: 0.5rem;
-            margin-left: 1.5rem;
+            margin-top: 0.75rem;
+            margin-left: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 0.5rem;
         }
 
         .pee-meta-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: #475569;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: #334155;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -205,24 +353,24 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan"></strong></span>
-            <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar ao Menu</a>
+            <a href="dashboard.html" style="color: white; text-decoration: none; font-weight: 700;">⬅️ Voltar ao Menu</a>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="padding-top: 2rem; padding-bottom: 2rem;">
         
         <!-- ================= VISTA 1: MENU PRINCIPAL (HUB DE 3 CARTÕES) ================= -->
         <div id="secaoMenu" class="app-section active">
             <div class="dashboard-header" style="margin-bottom: 2rem;">
                 <div>
                     <h2>Gestão e Consulta de Atividades</h2>
-                    <p style="color: var(--text-light); font-size: 0.9rem;">Selecione a opção desejada para consultar, gerar ou gerir os registos</p>
+                    <p style="color: var(--caa-text-light); font-size: 1rem; font-weight: 500;">Selecione a opção desejada para consultar, gerar ou gerir os registos</p>
                 </div>
             </div>
 
             <div class="menu-grid">
                 <!-- Cartão 1: Atividades Registadas -->
-                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: var(--color-primary); cursor: pointer;">
+                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top: 6px solid var(--caa-primary);">
                     <div class="icon">➕</div>
                     <div>
                         <h3>Nova Atividade</h3>
@@ -231,7 +379,7 @@
                 </div>
 
                 <!-- Cartão 2: Avaliar Atividade -->
-                <div onclick="mostrarSecao('secaoAvaliadas')" class="menu-card" style="border-top-color: var(--color-accent); cursor: pointer;">
+                <div onclick="mostrarSecao('secaoAvaliadas')" class="menu-card" style="border-top: 6px solid var(--caa-accent);">
                     <div class="icon">⭐</div>
                     <div>
                         <h3>Avaliar Atividade</h3>
@@ -240,7 +388,7 @@
                 </div>
 
                 <!-- Cartão 3: Registar Objetivos -->
-                <div onclick="mostrarSecao('secaoObjetivos')" class="menu-card" style="border-top-color: #16a34a; cursor: pointer;">
+                <div onclick="mostrarSecao('secaoObjetivos')" class="menu-card" style="border-top: 6px solid var(--caa-success);">
                     <div class="icon">🎯</div>
                     <div>
                         <h3>Registar Objetivos</h3>
@@ -255,7 +403,7 @@
             <div class="section-header-nav">
                 <div>
                     <h2>Atividades Registadas</h2>
-                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta e gestão de todas as atividades criadas no sistema.</p>
+                    <p style="color: var(--caa-text-light); font-size: 0.9rem;">Consulta e gestão de todas as atividades criadas no sistema.</p>
                 </div>
                 <div style="display: flex; gap: 0.75rem;">
                     <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
@@ -283,11 +431,11 @@
             <div class="section-header-nav">
                 <div>
                     <h2>Atividades Avaliadas</h2>
-                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta e gestão de todas as avaliações efetuadas.</p>
+                    <p style="color: var(--caa-text-light); font-size: 0.9rem;">Consulta e gestão de todas as avaliações efetuadas.</p>
                 </div>
                 <div style="display: flex; gap: 0.75rem;">
                     <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="avaliar-atividade.html" class="btn-novo-registo" style="background-color: var(--color-accent);">⭐ Avaliar Atividade</a>
+                    <a href="avaliar-atividade.html" class="btn-novo-registo" style="background-color: var(--caa-accent); border-color: #b45309;">⭐ Avaliar Atividade</a>
                 </div>
             </div>
 
@@ -311,11 +459,11 @@
             <div class="section-header-nav">
                 <div>
                     <h2>Objetivos e Avaliações Globais</h2>
-                    <p style="color: var(--text-light); font-size: 0.85rem;">Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
+                    <p style="color: var(--caa-text-light); font-size: 0.9rem;">Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
                 </div>
                 <div style="display: flex; gap: 0.75rem;">
                     <button class="btn-voltar" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="registar-objetivos.html" class="btn-novo-registo" style="background-color: #16a34a;">🎯 Registar Objetivos</a>
+                    <a href="registar-objetivos.html" class="btn-novo-registo" style="background-color: var(--caa-success); border-color: #166534;">🎯 Registar Objetivos</a>
                 </div>
             </div>
 
@@ -339,29 +487,29 @@
     <!-- MODAL DE ATIVIDADES -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalTitle" style="color: var(--color-primary);">Detalhes da Atividade</h2>
+            <h2 id="modalTitle" style="color: var(--caa-primary); margin-bottom: 1.5rem;">Detalhes da Atividade</h2>
             <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
                 <input type="hidden" id="editAtividadeId">
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalNumAtividade" readonly style="width:100%;">
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Nome da Atividade</label>
-                    <input type="text" id="modalNomeAtividade" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <input type="text" id="modalNomeAtividade" style="width:100%;" required>
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Ano Letivo</label>
-                    <select id="modalAnoLetivo" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <select id="modalAnoLetivo" style="width:100%;" required>
                         <option value="2023/2024">2023/2024</option>
                         <option value="2024/2025">2024/2025</option>
                         <option value="2025/2026">2025/2026</option>
                         <option value="2026/2027">2026/2027</option>
                     </select>
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Tipo de Atividade</label>
-                    <select id="modalTipoAtividade" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <select id="modalTipoAtividade" style="width:100%;" required>
                         <option value="Atividade">Atividade</option>
                         <option value="Projeto">Projeto</option>
                         <option value="Formação/acção">Formação/acção</option>
@@ -379,28 +527,28 @@
     <!-- MODAL DE AVALIAÇÃO -->
     <div id="avaliacaoModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-bottom: 1rem;">Avaliar Atividade</h2>
+            <h2 id="modalAvaliacaoTitle" style="color: var(--caa-accent); margin-bottom: 1.5rem;">Avaliar Atividade</h2>
             <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
                 <input type="hidden" id="editAvaliacaoId">
                 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalAvNumAtividade" readonly style="width:100%;">
                 </div>
                 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Nome da Atividade</label>
-                    <input type="text" id="modalAvTituloAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalAvTituloAtividade" readonly style="width:100%;">
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Ano Letivo</label>
-                    <input type="text" id="modalAvAnoLetivo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalAvAnoLetivo" readonly style="width:100%;">
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Docente / Aluno</label>
-                    <select id="modalAvDocenteAluno" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <select id="modalAvDocenteAluno" style="width:100%;" required>
                         <option value="">Selecione o tipo de avaliador</option>
                         <option value="Docente">Docente</option>
                         <option value="Aluno">Aluno</option>
@@ -408,10 +556,10 @@
                     </select>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Pertinência (1-5)</label>
-                        <select id="modalAvPertinencia" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <select id="modalAvPertinencia" style="width:100%;" required>
                             <option value="">Selecione</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -422,7 +570,7 @@
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label>Dinâmica (1-5)</label>
-                        <select id="modalAvDinamica" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <select id="modalAvDinamica" style="width:100%;" required>
                             <option value="">Selecione</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -433,7 +581,7 @@
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label>Interesse (1-5)</label>
-                        <select id="modalAvInteresse" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <select id="modalAvInteresse" style="width:100%;" required>
                             <option value="">Selecione</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -444,14 +592,14 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Sugestões / Observações</label>
-                    <textarea id="modalAvComentario" rows="4" placeholder="Insira comentários, sugestões ou pontos de melhoria..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+                    <textarea id="modalAvComentario" rows="4" placeholder="Insira comentários, sugestões ou pontos de melhoria..." style="width:100%;"></textarea>
                 </div>
 
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
-                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
+                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--caa-accent); color: white; border-color: #b45309;">Guardar Alterações</button>
                 </div>
             </form>
         </div>
@@ -460,37 +608,37 @@
     <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-bottom: 0.25rem;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.25rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+            <h2 id="modalObjetivoTitle" style="color: var(--caa-success); margin-bottom: 0.35rem;">Registo de Objetivos e Avaliação Global</h2>
+            <p style="color: var(--caa-text-light); font-size: 0.9rem; margin-bottom: 1.5rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             
             <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
                 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalObjNumAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalObjNumAtividade" readonly style="width:100%;">
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Nome da Atividade</label>
-                    <input type="text" id="modalObjNomeAtividade" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalObjNomeAtividade" readonly style="width:100%;">
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                        <input type="text" id="modalObjAnoLetivo" readonly style="width:100%;">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                        <input type="text" id="modalObjTipo" readonly style="width:100%;">
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem;">
                     <div class="form-group" style="flex: 1;">
                         <label>Integra o PAA?</label>
-                        <select id="modalObjPaa" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <select id="modalObjPaa" style="width:100%;" required>
                             <option value="">Selecione</option>
                             <option value="Sim">Sim</option>
                             <option value="Não">Não</option>
@@ -498,7 +646,7 @@
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label>Integra o PEE?</label>
-                        <select id="modalObjPee" style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required>
+                        <select id="modalObjPee" style="width:100%;" required>
                             <option value="">Selecione</option>
                             <option value="Sim">Sim</option>
                             <option value="Não">Não</option>
@@ -507,8 +655,8 @@
                 </div>
 
                 <!-- OBJETIVOS E METAS DO PEE (COM CAIXAS DE VERIFICAÇÃO) -->
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label style="margin-bottom: 0.5rem; display: block; font-weight: bold;">Objetivos e respetivas Metas do PEE abrangidos:</label>
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label style="margin-bottom: 0.75rem; display: block; font-weight: 700;">Objetivos e respetivas Metas do PEE abrangidos:</label>
                     
                     <!-- Objetivo 1 -->
                     <div class="pee-objetivo-box">
@@ -575,24 +723,24 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
-                    <input type="text" id="modalObjMedia" readonly style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" id="modalObjMedia" readonly style="width:100%;">
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Sugestões / Observações Recolhidas</label>
-                    <textarea id="modalObjSugestoes" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+                    <textarea id="modalObjSugestoes" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..." style="width:100%;"></textarea>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label>Resumo / Conclusões da Atividade</label>
-                    <textarea id="modalObjResumo" rows="4" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:6px;" required></textarea>
+                    <textarea id="modalObjResumo" rows="4" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." style="width:100%;" required></textarea>
                 </div>
 
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Registo de Objetivos</button>
+                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: var(--caa-success); color: white; border-color: #166534;">Guardar Registo de Objetivos</button>
                 </div>
             </form>
         </div>
@@ -600,13 +748,13 @@
 
     <!-- MODAL DE APAGAR GENÉRICO -->
     <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
-            <h3 style="color: #ef4444; margin-bottom: 0.5rem;">Confirmar Remoção</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">Tens a certeza que pretendes apagar este registo?</p>
-            <div class="modal-buttons" style="justify-content: center;">
+        <div class="custom-modal" style="max-width: 420px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚠️</div>
+            <h3 style="color: var(--caa-danger); margin-bottom: 0.5rem; font-size: 1.4rem;">Confirmar Remoção</h3>
+            <p style="color: var(--caa-text-light); margin-bottom: 1.75rem; font-size: 1rem;">Tens a certeza que pretendes apagar este registo?</p>
+            <div class="modal-buttons" style="justify-content: center; border-top: none; padding-top: 0; margin-top: 0;">
                 <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
-                <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
+                <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: var(--caa-danger); color: white; border-color: #991b1b;">Sim, Apagar</button>
             </div>
         </div>
     </div>
@@ -642,7 +790,7 @@
             tbody.innerHTML = '';
 
             if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--caa-text-light); padding: 2rem;">Ainda não existem atividades registadas.</td></tr>`;
                 return;
             }
 
@@ -675,7 +823,7 @@
             tbody.innerHTML = '';
 
             if (avaliadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem atividades avaliadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--caa-text-light); padding: 2rem;">Ainda não existem atividades avaliadas.</td></tr>`;
                 return;
             }
 
@@ -719,7 +867,7 @@
             tbody.innerHTML = '';
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light);">Ainda não existem registos de objetivos.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--caa-text-light); padding: 2rem;">Ainda não existem registos de objetivos.</td></tr>`;
                 return;
             }
 
