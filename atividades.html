@@ -79,329 +79,82 @@
         }
 
         .main-container {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1000px;
+            margin: 50px auto;
             padding: 0 20px;
-        }
-
-        .app-section {
-            display: none;
-        }
-        .app-section.active {
-            display: block;
         }
 
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 24px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
-        .section-header-card h1, .section-header-card h2 {
+        .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 28px;
+            margin: 0 0 10px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: #4b5563;
-            font-size: 14px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-top-action {
-            background-color: #1e293b;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-top-action:hover {
-            background-color: #0f172a;
-        }
-
-        .btn-top-primary {
-            background-color: var(--primary-green);
-        }
-
-        .btn-top-primary:hover {
-            background-color: var(--primary-green-hover);
+            font-size: 15px;
         }
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
         }
 
         .menu-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
-            border-top: 5px solid var(--primary-green);
+            border-top: 6px solid var(--primary-green);
             border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 30px 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
-            align-items: flex-start;
-            gap: 15px;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
         }
 
         .menu-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
         }
 
         .menu-card .icon {
-            font-size: 2.2rem;
+            font-size: 2.8rem;
             background: #f0fdf4;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: 50%;
             border: 1px solid var(--border-color);
+            margin-bottom: 15px;
         }
 
         .menu-card h3 {
-            margin: 0 0 6px 0;
+            margin: 0 0 8px 0;
             color: var(--primary-green);
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .menu-card p {
             margin: 0;
             color: #4b5563;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-        .table-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            overflow-x: auto;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f0fdf4;
-            color: var(--primary-green);
-            padding: 16px 20px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--border-color);
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 18px 20px;
             font-size: 14px;
-            border-bottom: 1px solid #f3f4f6;
-            color: var(--text-main);
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background-color: #fafaf9;
-        }
-
-        .btn-action {
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin-right: 4px;
-            transition: opacity 0.2s;
-        }
-
-        .btn-action:hover {
-            opacity: 0.85;
-        }
-
-        .btn-view { background-color: #0d9488; color: white; }
-        .btn-edit { background-color: #047857; color: white; }
-        .btn-delete { background-color: #dc2626; color: white; }
-
-        .btn-action:disabled {
-            background-color: #cbd5e1;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .form-card, .custom-modal {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        .custom-modal {
-            width: 100%;
-            max-width: 750px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #374151;
-        }
-
-        .required {
-            color: #dc2626;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-            font-family: inherit;
-            background-color: #fff;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
             line-height: 1.5;
         }
-
-        .custom-modal input:disabled, 
-        .custom-modal select:disabled, 
-        .custom-modal textarea:disabled,
-        .custom-modal input[readonly],
-        .custom-modal textarea[readonly] {
-            background-color: #e5e7eb !important;
-            color: #1f2937 !important;
-            font-weight: 600 !important;
-            cursor: not-allowed;
-            border-color: #d1d5db !important;
-        }
-
-        .pee-objetivo-box {
-            background: #fafaf9;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-
-        .pee-obj-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--primary-green);
-            cursor: pointer;
-        }
-
-        .pee-meta-list {
-            margin-top: 10px;
-            margin-left: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .pee-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #4b5563;
-            cursor: pointer;
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 25px;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 20px;
-        }
-
-        .btn-modal {
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
-        .btn-modal-cancel:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -419,388 +172,34 @@
 
     <div class="main-container">
         
-        <div id="secaoMenu" class="app-section active">
-            <div class="section-header-card">
-                <div>
-                    <h1>Gestão e Consulta de Atividades</h1>
-                    <p>Selecione a opção desejada para consultar, gerar ou gerir os registos.</p>
-                </div>
-            </div>
-
-            <div class="menu-grid">
-                <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: var(--primary-green);">
-                    <div class="icon">➕</div>
-                    <div>
-                        <h3>Nova Atividade</h3>
-                        <p>Criar, consultar e gerir atividades registadas</p>
-                    </div>
-                </div>
-
-                <div onclick="mostrarSecao('secaoAvaliadas')" class="menu-card" style="border-top-color: var(--color-accent);">
-                    <div class="icon">⭐</div>
-                    <div>
-                        <h3>Avaliar Atividade</h3>
-                        <p>Consultar e registar avaliações e feedback</p>
-                    </div>
-                </div>
-
-                <div onclick="mostrarSecao('secaoObjetivos')" class="menu-card" style="border-top-color: #16a34a;">
-                    <div class="icon">🎯</div>
-                    <div>
-                        <h3>Registar Objetivos</h3>
-                        <p>Definir metas associadas e avaliações globais</p>
-                    </div>
-                </div>
-            </div>
+        <div class="section-header-card">
+            <h1>Gestão e Consulta de Atividades</h1>
+            <p>Selecione a opção desejada para criar, avaliar ou registar os objetivos das atividades.</p>
         </div>
 
-        <div id="secaoAtividades" class="app-section">
-            <div class="section-header-card">
-                <div>
-                    <h1>Atividades Registadas</h1>
-                    <p>Consulta e gestão de todas as atividades criadas no sistema.</p>
-                </div>
-                <div class="header-actions">
-                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="nova-atividade.html" class="btn-top-action btn-top-primary">➕ Criar Nova Atividade</a>
-                </div>
-            </div>
+        <div class="menu-grid">
+            <!-- Botão 1: Nova Atividade -->
+            <a href="nova-atividade.html" class="menu-card" style="border-top-color: var(--primary-green);">
+                <div class="icon">➕</div>
+                <h3>Nova Atividade</h3>
+                <p>Criar, consultar e gerir o registo principal de novas atividades</p>
+            </a>
 
-            <div class="table-card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%; text-align: right;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="atividadesTableBody"></tbody>
-                </table>
-            </div>
+            <!-- Botão 2: Avaliar Atividade -->
+            <a href="avaliar-atividade.html" class="menu-card" style="border-top-color: var(--color-accent);">
+                <div class="icon">⭐</div>
+                <h3>Avaliar Atividade</h3>
+                <p>Submeter e consultar avaliações, pontuações e feedback detalhado</p>
+            </a>
+
+            <!-- Botão 3: Registar Objetivos -->
+            <a href="registar-objetivos.html" class="menu-card" style="border-top-color: #16a34a;">
+                <div class="icon">🎯</div>
+                <h3>Registar Objetivos</h3>
+                <p>Definir metas associadas do PEE, PAA e consolidar as conclusões</p>
+            </a>
         </div>
 
-        <div id="secaoAvaliadas" class="app-section">
-            <div class="section-header-card">
-                <div>
-                    <h1>Atividades Avaliadas</h1>
-                    <p>Consulta e gestão de todas as avaliações efetuadas.</p>
-                </div>
-                <div class="header-actions">
-                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
-                    <a href="avaliar-atividade.html" class="btn-top-action" style="background-color: var(--color-accent);">⭐ Avaliar Atividade</a>
-                </div>
-            </div>
-
-            <div class="table-card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%; text-align: right;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="avaliadasTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="secaoObjetivos" class="app-section">
-            <div class="section-header-card">
-                <div>
-                    <h1>Objetivos e Avaliações Globais</h1>
-                    <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
-                </div>
-                <div class="header-actions">
-                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅ Voltar</button>
-                    <a href="registar-objetivos.html" class="btn-top-action" style="background-color: #16a34a;">🎯 Registar Objetivos</a>
-                </div>
-            </div>
-
-            <div class="table-card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Nº Atividade</th>
-                            <th>Atividade / Metas Associadas</th>
-                            <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%; text-align: right;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="objetivosTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="atividadeModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0;">Detalhes da Atividade</h2>
-            <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
-                <input type="hidden" id="editAtividadeId">
-                <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Nome da Atividade <span class="required">*</span></label>
-                    <input type="text" id="modalNomeAtividade" required>
-                </div>
-                <div class="form-group">
-                    <label>Ano Letivo <span class="required">*</span></label>
-                    <select id="modalAnoLetivo" required>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Atividade <span class="required">*</span></label>
-                    <select id="modalTipoAtividade" required>
-                        <option value="Atividade">Atividade</option>
-                        <option value="Projeto">Projeto</option>
-                        <option value="Formação/acção">Formação/acção</option>
-                        <option value="Visita de Estudo">Visita de Estudo</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModal()">Fechar</button>
-                    <button type="submit" id="modalSaveBtn" class="btn-modal btn-top-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="avaliacaoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0;">Avaliar Atividade</h2>
-            <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
-                <input type="hidden" id="editAvaliacaoId">
-                
-                <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalAvTituloAtividade" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label>Ano Letivo</label>
-                    <input type="text" id="modalAvAnoLetivo" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label>Docente / Aluno <span class="required">*</span></label>
-                    <select id="modalAvDocenteAluno" required>
-                        <option value="">Selecione o tipo de avaliador</option>
-                        <option value="Docente">Docente</option>
-                        <option value="Aluno">Aluno</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;">
-                    <div class="form-group">
-                        <label>Pertinência (1-5) <span class="required">*</span></label>
-                        <select id="modalAvPertinencia" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Dinâmica (1-5) <span class="required">*</span></label>
-                        <select id="modalAvDinamica" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Interesse (1-5) <span class="required">*</span></label>
-                        <select id="modalAvInteresse" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Sugestões / Observações</label>
-                    <textarea id="modalAvComentario" placeholder="Insira comentários, sugestões ou pontos de melhoria..."></textarea>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
-                    <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="objetivoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
-            
-            <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
-                <input type="hidden" id="editObjetivoId">
-                
-                <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalObjNumAtividade" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalObjNomeAtividade" readonly>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" readonly>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label>Integra o PAA? <span class="required">*</span></label>
-                        <select id="modalObjPaa" required>
-                            <option value="">Selecione</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Integra o PEE? <span class="required">*</span></label>
-                        <select id="modalObjPee" required>
-                            <option value="">Selecione</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label style="margin-bottom: 10px; display: block; font-weight: 600;">Objetivos e respetivas Metas do PEE abrangidos:</label>
-                    
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> 
-                            Objetivo 1: Melhorar a articulação pedagógica
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma"> 
-                                Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> 
-                            Objetivo 2: Melhorar os resultados académicos dos alunos
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 2: 75% alunos com menções de Bom e Muito Bom no português"> 
-                                Meta 2: 75% alunos com menções de Bom e Muito Bom no português
-                            </label>
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática"> 
-                                Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> 
-                            Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias"> 
-                                Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title">
-                            <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> 
-                            Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
-                        </label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 5: Anualmente realizar dois questionários para a comunidade escolar"> 
-                                Meta 5: Anualmente realizar dois questionários para a comunidade escolar
-                            </label>
-                            <label class="pee-meta-item">
-                                <input type="checkbox" name="metaCheck" value="Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais"> 
-                                Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Média Geral das Avaliações</label>
-                    <input type="text" id="modalObjMedia" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label>Sugestões Recolhidas</label>
-                    <textarea id="modalObjSugestoes" readonly placeholder="Compilação automática das sugestões dos avaliadores..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Resumo / Conclusões da Atividade <span class="required">*</span></label>
-                    <textarea id="modalObjResumo" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." required></textarea>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Registo de Objetivos</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
-            <h3 style="color: #ef4444; margin-bottom: 0.5rem; margin-top: 0;">Confirmar Remoção</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Tens a certeza que pretendes apagar este registo?</p>
-            <div class="modal-buttons" style="justify-content: center; border-top: none; padding-top: 0;">
-                <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
-                <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
-            </div>
-        </div>
     </div>
 
     <script src="js/auth.js"></script>
@@ -811,435 +210,6 @@
         } else {
             document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
         }
-
-        function isAdminUser(user) {
-            if (!user) return false;
-            return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
-        }
-
-        function mostrarSecao(secaoId) {
-            const secoes = document.querySelectorAll('.app-section');
-            secoes.forEach(s => s.classList.remove('active'));
-            document.getElementById(secaoId).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        let idParaApagar = null;
-        let tipoApagar = null;
-
-        function carregarAtividades() {
-            const tbody = document.getElementById('atividadesTableBody');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades registadas.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...atividades].reverse().forEach(ativ => {
-                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary-green);">${ativ.numero || ativ.id || '-'}</td>
-                    <td style="font-weight: 600;">${ativ.titulo}</td>
-                    <td>${ativ.criadorNome || 'Desconhecido'}</td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
-                        <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id}, 'atividade')">Apagar</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function carregarAvaliacoes() {
-            const tbody = document.getElementById('avaliadasTableBody');
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (avaliadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades avaliadas.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...avaliadas].reverse().forEach((av, index) => {
-                const idReal = av.id !== undefined ? av.id : index;
-                const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => 
-                    (av.atividadeId && a.id == av.atividadeId) || 
-                    (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                    (av.id && a.id == av.id)
-                );
-
-                const numAtividade = av.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : '-');
-                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada');
-                const criador = av.avaliadorNome || av.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary-green);">${numAtividade}</td>
-                    <td style="font-weight: 600;">${tituloAtividade}</td>
-                    <td>${criador}</td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verAvaliacao('${idReal}')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao('${idReal}')">Editar</button>
-                        <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'avaliacao')">Apagar</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function carregarObjetivos() {
-            const tbody = document.getElementById('objetivosTableBody');
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem registos de objetivos.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...registos].reverse().forEach(reg => {
-                const idReal = reg.id;
-                const podeModificar = userIsAdmin || (reg.criadorId === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-                const numAtividade = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-                const tituloAtividade = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade');
-                const criadorNome = reg.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary-green);">${numAtividade}</td>
-                    <td style="font-weight: 600;">${tituloAtividade}</td>
-                    <td>${criadorNome}</td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verObjetivo(${idReal})">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarObjetivo(${idReal})">Editar</button>
-                        <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'objetivo')">Apagar</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function verAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            preencherModalAtiv(ativ, true);
-        }
-        function editarAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            preencherModalAtiv(ativ, false);
-        }
-        function preencherModalAtiv(ativ, somenteLeitura) {
-            document.getElementById('editAtividadeId').value = ativ.id;
-            document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
-            document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
-            document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
-
-            document.getElementById('modalNumAtividade').readOnly = true;
-            document.getElementById('modalNomeAtividade').readOnly = somenteLeitura;
-            document.getElementById('modalAnoLetivo').disabled = somenteLeitura;
-            document.getElementById('modalTipoAtividade').disabled = somenteLeitura;
-            document.getElementById('modalSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('atividadeModal').style.display = 'flex';
-        }
-        function fecharModal() { document.getElementById('atividadeModal').style.display = 'none'; }
-        
-        function salvarEdicaoAtividade(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editAtividadeId').value);
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            atividades = atividades.map(a => {
-                if(a.id === id) {
-                    a.titulo = document.getElementById('modalNomeAtividade').value;
-                    a.anoLetivo = document.getElementById('modalAnoLetivo').value;
-                    a.tipo = document.getElementById('modalTipoAtividade').value;
-                }
-                return a;
-            });
-            localStorage.setItem('atividades', JSON.stringify(atividades));
-            fecharModal();
-            carregarAtividades();
-            carregarAvaliacoes();
-            carregarObjetivos();
-        }
-
-        function verAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
-            preencherModalAvaliacao(av, true);
-        }
-
-        function editarAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
-            preencherModalAvaliacao(av, false);
-        }
-
-        function preencherModalAvaliacao(av, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => 
-                (av.atividadeId && a.id == av.atividadeId) || 
-                (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                (av.id && a.id == av.id)
-            );
-
-            document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
-            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-            document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
-            document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
-            
-            document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.tipoAvaliador || av.avaliadorTipo || '';
-            document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
-            document.getElementById('modalAvDinamica').value = av.dinamica || '';
-            document.getElementById('modalAvInteresse').value = av.interesse || '';
-            
-            // Captação robusta de sugestões/comentários
-            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes || '';
-
-            document.getElementById('modalAvNumAtividade').readOnly = true;
-            document.getElementById('modalAvTituloAtividade').readOnly = true;
-            document.getElementById('modalAvAnoLetivo').readOnly = true;
-
-            document.getElementById('modalAvDocenteAluno').disabled = somenteLeitura;
-            document.getElementById('modalAvPertinencia').disabled = somenteLeitura;
-            document.getElementById('modalAvDinamica').disabled = somenteLeitura;
-            document.getElementById('modalAvInteresse').disabled = somenteLeitura;
-            document.getElementById('modalAvComentario').readOnly = somenteLeitura;
-
-            document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('avaliacaoModal').style.display = 'flex';
-        }
-
-        function fecharModalAvaliacao() { document.getElementById('avaliacaoModal').style.display = 'none'; }
-
-        function salvarEdicaoAvaliacao(e) {
-            e.preventDefault();
-            const idInput = document.getElementById('editAvaliacaoId').value;
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            let avs = JSON.parse(localStorage.getItem(chave)) || [];
-            
-            const textoSugestao = document.getElementById('modalAvComentario').value;
-
-            avs = avs.map((a, idx) => {
-                const matchId = (idInput !== "" && a.id == idInput);
-                const matchIdx = (idInput === "" && idx == idInput);
-                if(matchId || matchIdx) {
-                    a.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
-                    a.pertinencia = document.getElementById('modalAvPertinencia').value;
-                    a.dinamica = document.getElementById('modalAvDinamica').value;
-                    a.interesse = document.getElementById('modalAvInteresse').value;
-                    
-                    // Atualiza em todas as propriedades para garantir compatibilidade
-                    a.comentario = textoSugestao;
-                    a.parecer = textoSugestao;
-                    a.sugestao = textoSugestao;
-                    a.observacoes = textoSugestao;
-                }
-                return a;
-            });
-            localStorage.setItem(chave, JSON.stringify(avs));
-            fecharModalAvaliacao();
-            carregarAvaliacoes();
-            carregarObjetivos();
-        }
-
-        function verObjetivo(id) {
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const reg = registos.find(r => r.id === id);
-            if(!reg) return;
-            document.getElementById('modalObjetivoTitle').innerText = 'Consultar Registo de Objetivos';
-            preencherModalObjetivo(reg, true);
-        }
-
-        function editarObjetivo(id) {
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const reg = registos.find(r => r.id === id);
-            if(!reg) return;
-            document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
-            preencherModalObjetivo(reg, false);
-        }
-
-        function preencherModalObjetivo(reg, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-
-            const ativIdReal = reg.atividadeId || (atividadeCorrespondente ? atividadeCorrespondente.id : null);
-            const ativNumReal = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : null);
-
-            const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const todasAvs = JSON.parse(localStorage.getItem(chaveAv)) || [];
-            const avsDaAtividade = todasAvs.filter(av => 
-                (ativIdReal && (av.atividadeId == ativIdReal || av.id == ativIdReal)) ||
-                (ativNumReal && (av.numeroAtividade == ativNumReal))
-            );
-
-            let mediaGeralTexto = 'Pendente';
-            let sugestoesFormatadas = '';
-
-            if (avsDaAtividade.length > 0) {
-                let somaP = 0, somaD = 0, somaI = 0;
-                let countP = 0, countD = 0, countI = 0;
-                let listaSugestoes = [];
-
-                avsDaAtividade.forEach(av => {
-                    const p = parseFloat(av.pertinencia);
-                    const d = parseFloat(av.dinamica);
-                    const i = parseFloat(av.interesse);
-
-                    if (!isNaN(p)) { somaP += p; countP++; }
-                    if (!isNaN(d)) { somaD += d; countD++; }
-                    if (!isNaN(i)) { somaI += i; countI++; }
-
-                    let comentario = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes;
-                    if (comentario && typeof comentario === 'string' && comentario.trim() !== '') {
-                        listaSugestoes.push(comentario.trim());
-                    }
-                });
-
-                const mediaP = countP > 0 ? (somaP / countP).toFixed(1) : '0.0';
-                const mediaD = countD > 0 ? (somaD / countD).toFixed(1) : '0.0';
-                const mediaI = countI > 0 ? (somaI / countI).toFixed(1) : '0.0';
-                const totalGeralNum = ((parseFloat(mediaP) + parseFloat(mediaD) + parseFloat(mediaI)) / 3).toFixed(1);
-
-                mediaGeralTexto = `Pertinência: ${mediaP} | Dinâmica: ${mediaD} | Interesse: ${mediaI} (Média Global: ${totalGeralNum})`;
-
-                if (listaSugestoes.length > 0) {
-                    sugestoesFormatadas = listaSugestoes.join('; ');
-                }
-            } else {
-                mediaGeralTexto = reg.mediaAvaliacao || reg.media || 'Pertinência: 0.0 | Dinâmica: 0.0 | Interesse: 0.0 (Média Global: 0.0)';
-                sugestoesFormatadas = reg.sugestoes || reg.observacoes || '';
-            }
-
-            document.getElementById('editObjetivoId').value = reg.id;
-            document.getElementById('modalObjNumAtividade').value = ativNumReal || '-';
-            document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : '');
-            document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
-            document.getElementById('modalObjTipo').value = reg.tipoAtividade || reg.tipo || (atividadeCorrespondente ? atividadeCorrespondente.tipo : '-');
-            
-            document.getElementById('modalObjPaa').value = reg.paa || '';
-            document.getElementById('modalObjPee').value = reg.pee || '';
-            document.getElementById('modalObjMedia').value = mediaGeralTexto;
-            document.getElementById('modalObjSugestoes').value = sugestoesFormatadas;
-            document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
-
-            document.getElementById('modalObjNumAtividade').readOnly = true;
-            document.getElementById('modalObjNomeAtividade').readOnly = true;
-            document.getElementById('modalObjAnoLetivo').readOnly = true;
-            document.getElementById('modalObjTipo').readOnly = true;
-            document.getElementById('modalObjMedia').readOnly = true;
-            document.getElementById('modalObjSugestoes').readOnly = true;
-
-            const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
-            const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
-            
-            const guardadosObj = reg.objetivosCheckboxes || reg.objetivos || reg.objCheckboxes || [];
-            const guardadasMeta = reg.metasCheckboxes || reg.metas || reg.metaCheckboxes || [];
-
-            objCheckboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadosObj) && guardadosObj.some(val => val.trim() === cb.value.trim());
-                cb.disabled = somenteLeitura;
-            });
-
-            metaCheckboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadasMeta) && guardadasMeta.some(val => val.trim() === cb.value.trim());
-                cb.disabled = somenteLeitura;
-            });
-
-            document.getElementById('modalObjPaa').disabled = somenteLeitura;
-            document.getElementById('modalObjPee').disabled = somenteLeitura;
-            document.getElementById('modalObjResumo').readOnly = somenteLeitura;
-            document.getElementById('modalObjSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
-            document.getElementById('objetivoModal').style.display = 'flex';
-        }
-
-        function fecharModalObjetivo() { document.getElementById('objetivoModal').style.display = 'none'; }
-
-        function salvarEdicaoObjetivo(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editObjetivoId').value);
-            let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            
-            const objSelecionados = Array.from(document.querySelectorAll('#objetivoFormModal input[name="objCheck"]:checked')).map(cb => cb.value);
-            const metasSelecionadas = Array.from(document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked')).map(cb => cb.value);
-
-            registos = registos.map(reg => {
-                if(reg.id === id) {
-                    reg.paa = document.getElementById('modalObjPaa').value;
-                    reg.pee = document.getElementById('modalObjPee').value;
-                    reg.objetivosCheckboxes = objSelecionados;
-                    reg.metasCheckboxes = metasSelecionadas;
-                    reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
-                }
-                return reg;
-            });
-            localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-            fecharModalObjetivo();
-            carregarObjetivos();
-        }
-
-        function confirmarApagar(id, tipo) {
-            idParaApagar = id;
-            tipoApagar = tipo;
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-        function fecharConfirmarApagar() {
-            idParaApagar = null;
-            tipoApagar = null;
-            document.getElementById('confirmModal').style.display = 'none';
-        }
-
-        document.getElementById('btnConfirmDelete').onclick = function() {
-            if (idParaApagar !== null) {
-                if (tipoApagar === 'atividade') {
-                    let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                    atividades = atividades.filter(a => a.id != idParaApagar);
-                    localStorage.setItem('atividades', JSON.stringify(atividades));
-                    carregarAtividades();
-                    carregarAvaliacoes();
-                    carregarObjetivos();
-                } else if (tipoApagar === 'avaliacao') {
-                    let chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-                    let avs = JSON.parse(localStorage.getItem(chave)) || [];
-                    avs = avs.filter((a, idx) => a.id != idParaApagar && idx != idParaApagar);
-                    localStorage.setItem(chave, JSON.stringify(avs));
-                    carregarAvaliacoes();
-                } else if (tipoApagar === 'objetivo') {
-                    let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-                    registos = registos.filter(reg => reg.id !== idParaApagar);
-                    localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-                    carregarObjetivos();
-                }
-                fecharConfirmarApagar();
-            }
-        };
-
-        carregarAtividades();
-        carregarAvaliacoes();
-        carregarObjetivos();
     </script>
 </body>
 </html>
