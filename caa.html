@@ -32,6 +32,45 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
+        .navbar {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid var(--primary);
+        }
+
+        .navbar .logo {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
         .header-section {
             display: flex;
             align-items: center;
@@ -199,7 +238,7 @@
             padding-top: 20px;
         }
 
-        .btn-container button {
+        .btn-container button, .btn-primary-custom {
             background-color: var(--primary);
             color: white;
             border: 1px solid transparent;
@@ -217,7 +256,7 @@
             margin: 0;
         }
 
-        .btn-container button:hover {
+        .btn-container button:hover, .btn-primary-custom:hover {
             background-color: var(--primary-hover);
         }
 
@@ -229,6 +268,27 @@
 
         .btn-container button.btn-secondary:hover {
             background-color: #edebe9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            padding: 0.75rem;
+            font-size: 14px;
+            color: #605e5c;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+            background-color: #faf9f8;
+            text-align: left;
+        }
+
+        table td {
+            padding: 0.75rem;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f2f1;
         }
 
         @media print {
@@ -265,11 +325,11 @@
 </head>
 <body>
 
-    <nav class="navbar" style="background: #0f766e; padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-radius: 6px;">
-        <div class="logo" style="font-weight: bold; font-size: 1.1rem;">🏫 Gestão CAA</div>
-        <ul class="nav-links" style="list-style: none; display: flex; gap: 1.5rem; margin: 0;">
-            <li><a href="dashboard.html" style="color: white; text-decoration: none;">Dashboard</a></li>
-            <li><a href="#" id="logoutBtn" style="color: white; text-decoration: none;">Sair</a></li>
+    <nav class="navbar">
+        <div class="logo">🏫 Gestão CAA</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#" id="logoutBtn">Sair</a></li>
         </ul>
     </nav>
 
@@ -280,17 +340,17 @@
                 <h2>Registos do CAA</h2>
                 <p style="color: #605e5c; margin: 0;">Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
             </div>
-            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white; height: 41px; padding: 0 20px; border-radius: 4px; border: none; font-weight: 600; cursor: pointer;">+ Novo Registo</button>
+            <button onclick="abrirFormularioCriacao()" class="btn-primary-custom">+ Novo Registo</button>
         </div>
 
         <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
+            <table>
                 <thead>
-                    <tr style="border-bottom: 2px solid #edebe9; text-align: left; font-size: 14px;">
-                        <th style="padding: 0.75rem; width: 80px;">Nº</th>
-                        <th style="padding: 0.75rem;">Atividade</th>
-                        <th style="padding: 0.75rem;">Responsável</th>
-                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
+                    <tr>
+                        <th style="width: 80px;">Nº</th>
+                        <th>Atividade</th>
+                        <th>Responsável</th>
+                        <th style="text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="caaTableBody">
@@ -434,7 +494,6 @@
             window.location.href = 'index.html';
         });
 
-        // Popup personalizado genérico (suporta mensagens informativas e botões de confirmação)
         function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫', onConfirm = null) {
             document.getElementById('popupTitle').innerText = titulo;
             document.getElementById('popupMessage').innerText = mensagem;
@@ -443,7 +502,6 @@
             const btnContainer = document.getElementById('popupButtons');
             
             if (onConfirm) {
-                // Modo de Confirmação (Sim / Cancelar)
                 btnContainer.innerHTML = `
                     <button id="popupCancelBtn" style="background-color: #f3f2f1; color: #323130; border: 1px solid #8a8886; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Cancelar</button>
                     <button id="popupConfirmBtn" style="background-color: #ef4444; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
@@ -459,7 +517,6 @@
                     onConfirm();
                 };
             } else {
-                // Modo de Informação (Apenas OK)
                 btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #0078d4; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
 
@@ -487,15 +544,13 @@
 
             registos.forEach((reg, index) => {
                 const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #f3f2f1';
-
                 const temPermissao = currentUser.isAdmin || reg.userEmail === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="padding: 0.75rem; font-weight: bold; color: #0078d4;">${reg.numero_atividade || (index + 1)}</td>
-                    <td style="padding: 0.75rem;">${reg.atividade}</td>
-                    <td style="padding: 0.75rem;">${reg.responsaveis}</td>
-                    <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
+                    <td style="font-weight: bold; color: var(--primary);">${reg.numero_atividade || (index + 1)}</td>
+                    <td>${reg.atividade}</td>
+                    <td>${reg.responsaveis}</td>
+                    <td style="text-align: right; white-space: nowrap;">
                         <button onclick="verRegisto(${index})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Ver</button>
                         ${temPermissao ? `
                             <button onclick="editarRegisto(${index})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Editar</button>
@@ -628,6 +683,100 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function editarRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+
+            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar este registo.', '🔒');
+                return;
+            }
+
+            ajustarModoFormulario(false);
+            document.getElementById('editIndex').value = index;
+            
+            const campoNum = document.getElementById('numero_atividade');
+            campoNum.value = reg.numero_atividade || (index + 1);
+            
+            document.getElementById('data_atividade').value = reg.data_atividade;
+            document.getElementById('nome_aluno').value = reg.nome_aluno;
+            document.getElementById('atividade').value = reg.atividade;
+            document.getElementById('objetivos').value = reg.objetivos;
+            document.getElementById('descricao_atividade').value = reg.descricao_atividade;
+            document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
+            document.getElementById('articulacao').value = reg.articulacao;
+
+            const campoResp = document.getElementById('responsaveis');
+            campoResp.value = reg.responsaveis;
+            document.getElementById('observacoes').value = reg.observacoes;
+
+            [campoNum, campoResp].forEach(el => {
+                el.readOnly = true;
+                el.style.backgroundColor = '#e9ecef';
+                el.style.fontWeight = 'bold';
+                el.style.color = '#212529';
+            });
+
+            const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
+            document.querySelectorAll('input[name="turma"]').forEach(cb => {
+                cb.checked = turmasArray.includes(cb.value);
+            });
+
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            previewContainer.innerHTML = '';
+            if (reg.imagens) {
+                reg.imagens.forEach(src => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+                    wrapper.innerHTML = `<img src="${src}">`;
+                    previewContainer.appendChild(wrapper);
+                });
+            }
+
+            document.getElementById('formTitle').innerText = 'Editar Registo CAA';
+            document.getElementById('seccaoCabecalho').style.display = 'none';
+            document.getElementById('containerTabela').style.display = 'none';
+            document.getElementById('containerFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function eliminarRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+
+            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para apagar este registo.', '🔒');
+                return;
+            }
+
+            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza de que pretende apagar este registo permanentemente?', '⚠️', () => {
+                registos.splice(index, 1);
+                localStorage.setItem('registosCAA', JSON.stringify(registos));
+                carregarRegistos();
+                mostrarPopupPersonalizado('Sucesso', 'Registo apagado com sucesso.', '🗑️');
+            });
+        }
+
+        function handleFiles(files) {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+                    wrapper.innerHTML = `<img src="${e.target.result}"><button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer;">✕</button>`;
+                    previewContainer.appendChild(wrapper);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateCounter(textarea, counterId) {
+            const maxLength = textarea.getAttribute('maxlength');
+            const currentLength = textarea.value.length;
+            document.getElementById(counterId).innerText = `${currentLength} / ${maxLength} carateres`;
+        }
+
         document.getElementById('caaForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -673,134 +822,10 @@
             localStorage.setItem('registosCAA', JSON.stringify(registos));
         });
 
-        function editarRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
-
-            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
-                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar este registo.', '🔒');
-                return;
-            }
-
-            ajustarModoFormulario(false);
-
-            document.getElementById('editIndex').value = index;
-            
-            const campoNum = document.getElementById('numero_atividade');
-            campoNum.value = reg.numero_atividade || (index + 1);
-            
-            document.getElementById('data_atividade').value = reg.data_atividade;
-            document.getElementById('nome_aluno').value = reg.nome_aluno;
-            document.getElementById('atividade').value = reg.atividade;
-            document.getElementById('objetivos').value = reg.objetivos;
-            document.getElementById('descricao_atividade').value = reg.descricao_atividade;
-            document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
-            document.getElementById('articulacao').value = reg.articulacao;
-
-            const campoResp = document.getElementById('responsaveis');
-            campoResp.value = reg.responsaveis;
-
-            document.getElementById('observacoes').value = reg.observacoes;
-
-            [campoNum, campoResp].forEach(el => {
-                el.readOnly = true;
-                el.style.backgroundColor = '#e9ecef';
-                el.style.fontWeight = 'bold';
-                el.style.color = '#212529';
-            });
-
-            const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
-            document.querySelectorAll('input[name="turma"]').forEach(cb => {
-                cb.checked = turmasArray.includes(cb.value);
-            });
-
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            previewContainer.innerHTML = '';
-            if (reg.imagens) {
-                reg.imagens.forEach(src => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${src}"><button type="button" class="remove-img" onclick="this.parentElement.remove()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;">&times;</button>`;
-                    previewContainer.appendChild(wrapper);
-                });
-            }
-
-            document.getElementById('formTitle').innerText = 'Editar Registo CAA';
-            document.getElementById('seccaoCabecalho').style.display = 'none';
-            document.getElementById('containerTabela').style.display = 'none';
-            document.getElementById('containerFormulario').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ELIMINAR COM POPUP PERSONALIZADO DE CONFIRMAÇÃO E RENUMERAÇÃO AUTOMÁTICA
-        function eliminarRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
-
-            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
-                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para eliminar este registo.', '🔒');
-                return;
-            }
-
-            mostrarPopupPersonalizado(
-                'Confirmar Eliminação',
-                `Tens a certeza que pretendes eliminar o registo nº ${reg.numero_atividade || (index + 1)}?`,
-                '⚠️',
-                () => {
-                    registos.splice(index, 1);
-
-                    // Reindexa / Renumera sequencialmente de 1 em diante
-                    registos.forEach((r, idx) => {
-                        r.numero_atividade = idx + 1;
-                    });
-
-                    localStorage.setItem('registosCAA', JSON.stringify(registos));
-                    carregarRegistos();
-                    mostrarPopupPersonalizado('Sucesso', 'Registo eliminado e numeração atualizada com sucesso!', '🗑️');
-                }
-            );
-        }
-
-        function updateCounter(textarea, counterId) {
-            const currentLength = textarea.value.length;
-            const maxLength = textarea.getAttribute('maxlength');
-            if(maxLength) {
-                document.getElementById(counterId).textContent = currentLength + ' / ' + maxLength + ' carateres';
-            }
-        }
-
-        function handleFiles(files) {
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (!file.type.startsWith('image/')) continue;
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    wrapper.appendChild(img);
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.className = 'remove-img';
-                    removeBtn.innerHTML = '&times;';
-                    removeBtn.style.cssText = 'position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;';
-                    removeBtn.onclick = function() {
-                        wrapper.remove();
-                    };
-                    wrapper.appendChild(removeBtn);
-
-                    previewContainer.appendChild(wrapper);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        carregarRegistos();
+        // Inicializar tabela ao carregar a página
+        window.onload = function() {
+            carregarRegistos();
+        };
     </script>
 </body>
 </html>
