@@ -359,13 +359,19 @@
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // 2. Número de Atividades
+            // 2. Número de Atividades (Sem duplicados usando Set com base num identificador único)
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            document.getElementById('statAtividades').innerText = atividadesLista.length;
+            const atividadesUnicas = new Set(
+                atividadesLista.map(item => item.numero_requisicao || item.numero || item.id || item.titulo || JSON.stringify(item))
+            );
+            document.getElementById('statAtividades').innerText = atividadesUnicas.size;
 
-            // 3. Atividades Avaliadas
+            // 3. Atividades Avaliadas (Sem duplicados usando Set com base num identificador único)
             const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            document.getElementById('statAvaliadas').innerText = avaliadasLista.length;
+            const avaliadasUnicas = new Set(
+                avaliadasLista.map(item => item.numero_requisicao || item.numero || item.id || item.titulo || JSON.stringify(item))
+            );
+            document.getElementById('statAvaliadas').innerText = avaliadasUnicas.size;
 
             // 4. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
