@@ -157,7 +157,7 @@
             });
         }
 
-        // Função para obter o número mais alto de uma lista com base em propriedades numéricas comuns
+        // Função para encontrar o número mais alto gerado nas listas do localStorage
         function obterNumeroMaisAlto(lista, propriedades) {
             if (!lista || lista.length === 0) return 0;
             let maxVal = 0;
@@ -173,32 +173,31 @@
         }
 
         function carregarRelatorios() {
-            // 1. Nº de Atividades (proveniente de nova-atividade.html / chaves possíveis)
+            // 1. Nº de Atividades (nova-atividade.html)
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
             const maxAtividades = obterNumeroMaisAlto(atividadesLista, ['numero_atividade', 'numero', 'id']);
             document.getElementById('statAtividades').innerText = maxAtividades;
 
-            // 2. Atividades Avaliadas (proveniente de avaliar-atividade.html / chaves possíveis)
+            // 2. Atividades Avaliadas (avaliar-atividade.html)
             const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
             const maxAvaliadas = obterNumeroMaisAlto(avaliadasLista, ['numero_atividade', 'numero', 'id', 'numero_avaliacao']);
             document.getElementById('statAvaliadas').innerText = maxAvaliadas;
 
-            // 3. Registo de Objetivos (proveniente de registar-objetivos.html)
+            // 3. Registo de Objetivos (registar-objetivos.html)
             const objetivosLista = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
             const maxObjetivos = obterNumeroMaisAlto(objetivosLista, ['numero', 'id', 'numero_objetivo']);
             document.getElementById('statObjetivos').innerText = maxObjetivos;
 
-            // 4. Nº de Requisições
+            // 4. Nº de Requisições (requisicoes.html)
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const maxRequisicoes = obterNumeroMaisAlto(requisicoesLista, ['numero', 'id', 'requisicao_id']);
             document.getElementById('statRequisicoes').innerText = maxRequisicoes;
 
-            // 5. Contagem de PAA e PEE (lendo dentro de cada registo de objetivos quantas vezes foi selecionado "Sim")
+            // 5. Atividades PAA e PEE (lendo dentro de cada registo de objetivos quantas vezes foi selecionado "Sim")
             let contadorPAA = 0;
             let contadorPEE = 0;
 
             objetivosLista.forEach(item => {
-                // Verifica propriedades diretas ou texto que indique "Sim" para PAA ou PEE
                 const paaVal = String(item.paa || item.inclui_paa || item.ambito_paa || '').trim().toLowerCase();
                 const peeVal = String(item.pee || item.inclui_pee || item.ambito_pee || '').trim().toLowerCase();
                 const textoCompleto = JSON.stringify(item).toLowerCase();
