@@ -33,6 +33,8 @@
             border-radius: 6px;
             font-size: 0.95rem;
             background-color: #fff;
+            box-sizing: border-box;
+            font-family: inherit;
         }
 
         input[readonly], textarea[readonly] {
@@ -96,72 +98,121 @@
             cursor: pointer;
         }
 
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .btn-cancel {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        .btn-cancel:hover { background-color: #cbd5e1; }
+
         .btn-submit {
             background-color: var(--color-accent);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-weight: 600;
+            border: none;
             cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            margin-top: 1rem;
+            font-size: 14px;
         }
+        .btn-submit:hover { opacity: 0.9; }
 
-        .btn-submit:hover {
-            opacity: 0.9;
-        }
-
-        /* Modais Personalizados */
-        .custom-modal-overlay {
-            display: none;
+        /* Estilos para Popups Personalizados (Modais) */
+        .modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
         }
 
-        .custom-modal {
-            background: white;
-            padding: 2rem;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background-color: white;
+            padding: 24px;
             border-radius: 12px;
-            width: 100%;
+            width: 90%;
             max-width: 400px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             text-align: center;
-            animation: modalFadeIn 0.3s ease;
+            transform: translateY(-20px);
+            transition: transform 0.2s ease;
         }
 
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
         }
 
-        .custom-modal h3 {
-            color: var(--color-primary);
-            margin-bottom: 0.5rem;
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
         }
 
-        .custom-modal p {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+        .modal-message {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
-        .btn-modal {
-            padding: 0.5rem 1.25rem;
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            padding: 8px 18px;
             border-radius: 6px;
-            border: none;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
-            background-color: var(--color-primary);
-            color: white;
-            width: 100%;
+            border: none;
         }
+
+        .modal-btn-primary {
+            background-color: var(--color-accent);
+            color: white;
+        }
+        .modal-btn-primary:hover { opacity: 0.9; }
+
+        .modal-btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        .modal-btn-secondary:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -188,8 +239,8 @@
             <form id="registarObjetivosForm" onsubmit="guardarRegistoObjetivos(event)">
                 
                 <div class="form-group">
-                    <label for="numeroAtividade">Número da Atividade</label>
-                    <input type="number" id="numeroAtividade" min="1" required placeholder="Ex: 1, 2, 3..." oninput="carregarDadosAtividade()">
+                    <label for="numeroAtividade">Número da Atividade <span style="color: #dc2626;">*</span></label>
+                    <input type="number" id="numeroAtividade" min="1" required placeholder="Digite o número da atividade..." oninput="carregarDadosAtividade()">
                     <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem;">Atividade não encontrada.</small>
                 </div>
 
@@ -211,7 +262,7 @@
 
                 <div class="row-grid">
                     <div class="form-group">
-                        <label for="paaSelect">Integra o PAA?</label>
+                        <label for="paaSelect">Integra o PAA? <span style="color: #dc2626;">*</span></label>
                         <select id="paaSelect" required>
                             <option value="" disabled selected>Selecione</option>
                             <option value="Sim">Sim</option>
@@ -220,7 +271,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="peeSelect">Integra o PEE?</label>
+                        <label for="peeSelect">Integra o PEE? <span style="color: #dc2626;">*</span></label>
                         <select id="peeSelect" required onchange="controlarCamposPEE()">
                             <option value="" disabled selected>Selecione</option>
                             <option value="Sim">Sim</option>
@@ -239,7 +290,7 @@
                             <input type="checkbox" id="obj1Check" onchange="toggleObj(1)"> Objetivo 1: Melhorar a articulação pedagógica
                         </div>
                         <div class="meta-checkbox-list" id="listObj1" style="display: none;">
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 1 - Meta 1: Realizar 6 Reuniões de Conselho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma</label>
+                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 1 - Meta 1: Realizar 6 Reuniões de Conselho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Conselho de Turma</label>
                         </div>
                     </div>
 
@@ -257,7 +308,7 @@
                     <!-- Objetivo 3 -->
                     <div class="pee-objective-box">
                         <div class="pee-objective-title">
-                            <input type="checkbox" id="obj3Check" onchange="toggleObj(3)"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</label>
+                            <input type="checkbox" id="obj3Check" onchange="toggleObj(3)"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
                         </div>
                         <div class="meta-checkbox-list" id="listObj3" style="display: none;">
                             <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 3 - Meta 4: Realizar pelo menos 6 atividades com tecnologias"> Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias</label>
@@ -287,22 +338,26 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="resumoConclusoes">Resumo / Conclusões da Atividade</label>
+                    <label for="resumoConclusoes">Resumo / Conclusões da Atividade <span style="color: #dc2626;">*</span></label>
                     <textarea id="resumoConclusoes" rows="4" required placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-submit">Guardar Registo de Objetivos</button>
+                <div class="form-buttons">
+                    <a href="atividades.html" class="btn btn-cancel">Cancelar</a>
+                    <button type="submit" class="btn btn-submit">Guardar Registo de Objetivos</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL DE SUCESSO -->
-    <div id="successModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎯</div>
-            <h3>Registo Guardado!</h3>
-            <p id="successMessage">Os objetivos e conclusões foram registados com sucesso.</p>
-            <button type="button" class="btn-modal" onclick="fecharModalSucesso()">OK</button>
+    <!-- Popup Personalizado (Modal) -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modalTitle" class="modal-title">Aviso</div>
+            <div id="modalMessage" class="modal-message">Mensagem aqui...</div>
+            <div id="modalButtons" class="modal-buttons">
+                <!-- Botões gerados via JS -->
+            </div>
         </div>
     </div>
 
@@ -315,6 +370,33 @@
             document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
         }
 
+        // Função para mostrar Popup Personalizado
+        function mostrarPopup(titulo, mensagem, tipo = 'alerta', callbackOk = null) {
+            const modal = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+            const buttonsEl = document.getElementById('modalButtons');
+
+            titleEl.textContent = titulo;
+            msgEl.textContent = mensagem;
+            buttonsEl.innerHTML = '';
+
+            const btnOk = document.createElement('button');
+            btnOk.className = 'modal-btn modal-btn-primary';
+            btnOk.textContent = 'OK';
+            btnOk.onclick = () => {
+                fecharPopup();
+                if (callbackOk) callbackOk();
+            };
+            buttonsEl.appendChild(btnOk);
+
+            modal.classList.add('active');
+        }
+
+        function fecharPopup() {
+            document.getElementById('customModal').classList.remove('active');
+        }
+
         // Controlar visibilidade global das caixas do PEE
         function controlarCamposPEE() {
             const val = document.getElementById('peeSelect').value;
@@ -323,7 +405,6 @@
                 container.style.display = 'block';
             } else {
                 container.style.display = 'none';
-                // Desmarcar todas as checkboxes se selecionar 'Não'
                 for(let i=1; i<=4; i++) {
                     document.getElementById(`obj${i}Check`).checked = false;
                     toggleObj(i);
@@ -337,16 +418,15 @@
             const list = document.getElementById(`listObj${num}`);
             list.style.display = isChecked ? 'flex' : 'none';
 
-            // Se desmarcar o objetivo principal, limpa as metas filhas
             if (!isChecked) {
                 const checkboxes = list.querySelectorAll('input[type="checkbox"]');
                 checkboxes.forEach(cb => cb.checked = false);
             }
         }
 
-        // Preencher dados automaticamente com base no número da atividade
-        function carregarDadosAtividade() {
-            const numInput = document.getElementById('numeroAtividade').value;
+        // Preencher dados automaticamente com base no número da atividade digitado
+        function carregarDadosAtividade(numParam = null) {
+            const numInput = numParam || document.getElementById('numeroAtividade').value;
             const nomeInput = document.getElementById('nomeAtividade');
             const anoInput = document.getElementById('anoLetivoAtividade');
             const tipoInput = document.getElementById('tipoAtividade');
@@ -383,12 +463,13 @@
                     let somaInteresse = 0;
                     let listaSugestoes = [];
 
-                    avsDaAtividade.dates = avsDaAtividade.forEach(av => {
+                    avsDaAtividade.forEach(av => {
                         somaPertinencia += Number(av.pertinencia) || 0;
                         somaDinamica += Number(av.dinamica) || 0;
                         somaInteresse += Number(av.interesse) || 0;
-                        if (av.sugestoes && av.sugestoes.trim() !== '') {
-                            listaSugestoes.push(`- ${av.avaliadorNome} (${av.tipoAvaliador}): ${av.sugestoes}`);
+                        const comentarioTexto = av.comentario || av.sugestao || av.observacoes || av.parecer || '';
+                        if (comentarioTexto.trim() !== '') {
+                            listaSugestoes.push(`- ${av.criadorNome || 'Utilizador'} (${av.docenteAluno || 'Avaliador'}): ${comentarioTexto}`);
                         }
                     });
 
@@ -404,7 +485,6 @@
                     mediaInput.value = 'Ainda sem avaliações registadas para esta atividade.';
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
-
             } else {
                 nomeInput.value = '';
                 anoInput.value = '';
@@ -415,6 +495,48 @@
             }
         }
 
+        // Verificar se foi aberto via URL com um número de atividade para visualizar/editar
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
+
+            if (numeroAtivUrl) {
+                document.getElementById('numeroAtividade').value = numeroAtivUrl;
+                carregarDadosAtividade(numeroAtivUrl);
+
+                // Carregar registo existente de objetivos se houver
+                const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+                const regExistente = registos.find(r => String(r.numeroAtividade) === String(numeroAtivUrl));
+
+                if (regExistente) {
+                    document.getElementById('paaSelect').value = regExistente.paa || '';
+                    document.getElementById('peeSelect').value = regExistente.pee || '';
+                    controlarCamposPEE();
+
+                    if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
+                        const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]');
+                        checkboxesMetas.forEach(cb => {
+                            if (regExistente.metasPee.includes(cb.value)) {
+                                cb.checked = true;
+                                // Descobrir a que objetivo pertence para abrir a respetiva caixa
+                                const box = cb.closest('.meta-checkbox-list');
+                                if (box) {
+                                    const objNum = box.id.replace('listObj', '');
+                                    const objCheck = document.getElementById(`obj${objNum}Check`);
+                                    if (objCheck) {
+                                        objCheck.checked = true;
+                                        toggleObj(objNum);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    document.getElementById('resumoConclusoes').value = regExistente.resumoConclusoes || '';
+                }
+            }
+        });
+
         function guardarRegistoObjetivos(event) {
             event.preventDefault();
 
@@ -422,28 +544,32 @@
             const nomeAtividade = document.getElementById('nomeAtividade').value;
 
             if (!nomeAtividade) {
-                alert('Por favor, introduza um número de atividade válido.');
+                mostrarPopup('Atenção', 'Por favor, introduza um número de atividade válido.');
                 return;
             }
 
             const peeVal = document.getElementById('peeSelect').value;
             
-            // Recolher todas as metas selecionadas via checkbox
             let metasSelecionadas = [];
             if (peeVal === 'Sim') {
                 const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]:checked');
                 checkboxesMetas.forEach(cb => metasSelecionadas.push(cb.value));
             }
 
-            const novoRegisto = {
-                id: Date.now(),
+            let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            
+            // Verificar se já existe registo para atualizar ou criar novo
+            const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
+
+            const dadosRegisto = {
+                id: indexExistente !== -1 ? registos[indexExistente].id : Date.now(),
                 numeroAtividade: numAtividade,
                 nomeAtividade: nomeAtividade,
                 anoLetivo: document.getElementById('anoLetivoAtividade').value,
                 tipoAtividade: document.getElementById('tipoAtividade').value,
                 paa: document.getElementById('paaSelect').value,
                 pee: peeVal,
-                metasPee: metasSelecionadas, // Guarda a lista com todas as metas escolhidas (mesmo que sejam todas)
+                metasPee: metasSelecionadas,
                 mediasAvaliacao: document.getElementById('mediaAvaliacoes').value,
                 sugestoes: document.getElementById('sugestoesRecolhidas').value,
                 resumoConclusoes: document.getElementById('resumoConclusoes').value.trim(),
@@ -451,17 +577,17 @@
                 dataRegisto: new Date().toISOString().split('T')[0]
             };
 
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            registos.push(novoRegisto);
+            if (indexExistente !== -1) {
+                registos[indexExistente] = dadosRegisto;
+            } else {
+                registos.push(dadosRegisto);
+            }
+
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
 
-            document.getElementById('successMessage').innerText = `Objetivos e conclusões da Atividade #${numAtividade} guardados com sucesso!`;
-            document.getElementById('successModal').style.display = 'flex';
-        }
-
-        function fecharModalSucesso() {
-            document.getElementById('successModal').style.display = 'none';
-            window.location.href = 'atividades.html';
+            mostrarPopup('Sucesso', `Objetivos e conclusões da Atividade #${numAtividade} guardados com sucesso!`, 'alerta', () => {
+                window.location.href = 'atividades.html';
+            });
         }
     </script>
 </body>
