@@ -207,12 +207,6 @@
             color: white;
         }
         .modal-btn-primary:hover { opacity: 0.9; }
-
-        .modal-btn-secondary {
-            background-color: #e2e8f0;
-            color: #334155;
-        }
-        .modal-btn-secondary:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -355,9 +349,7 @@
         <div class="modal-box">
             <div id="modalTitle" class="modal-title">Aviso</div>
             <div id="modalMessage" class="modal-message">Mensagem aqui...</div>
-            <div id="modalButtons" class="modal-buttons">
-                <!-- Botões gerados via JS -->
-            </div>
+            <div id="modalButtons" class="modal-buttons"></div>
         </div>
     </div>
 
@@ -370,7 +362,6 @@
             document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
         }
 
-        // Função para mostrar Popup Personalizado
         function mostrarPopup(titulo, mensagem, tipo = 'alerta', callbackOk = null) {
             const modal = document.getElementById('customModal');
             const titleEl = document.getElementById('modalTitle');
@@ -397,7 +388,6 @@
             document.getElementById('customModal').classList.remove('active');
         }
 
-        // Controlar visibilidade global das caixas do PEE
         function controlarCamposPEE() {
             const val = document.getElementById('peeSelect').value;
             const container = document.getElementById('peeContainer');
@@ -412,7 +402,6 @@
             }
         }
 
-        // Mostrar/ocultar as metas de cada objetivo consoante o objetivo principal esteja selecionado
         function toggleObj(num) {
             const isChecked = document.getElementById(`obj${num}Check`).checked;
             const list = document.getElementById(`listObj${num}`);
@@ -424,7 +413,6 @@
             }
         }
 
-        // Preencher dados automaticamente com base no número da atividade digitado
         function carregarDadosAtividade(numParam = null) {
             const numInput = numParam || document.getElementById('numeroAtividade').value;
             const nomeInput = document.getElementById('nomeAtividade');
@@ -453,7 +441,6 @@
                 tipoInput.value = ativEncontrada.tipo || '';
                 aviso.style.display = 'none';
 
-                // Buscar avaliações associadas a esta atividade
                 const avaliacoes = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
                 const avsDaAtividade = avaliacoes.filter(av => String(av.numeroAtividade) === String(numInput));
 
@@ -495,7 +482,7 @@
             }
         }
 
-        // Verificar se foi aberto via URL com um número de atividade para visualizar/editar
+        // Carregar dados existentes ao abrir a página via URL
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
@@ -504,7 +491,6 @@
                 document.getElementById('numeroAtividade').value = numeroAtivUrl;
                 carregarDadosAtividade(numeroAtivUrl);
 
-                // Carregar registo existente de objetivos se houver
                 const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
                 const regExistente = registos.find(r => String(r.numeroAtividade) === String(numeroAtivUrl));
 
@@ -517,15 +503,17 @@
                         const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]');
                         checkboxesMetas.forEach(cb => {
                             if (regExistente.metasPee.includes(cb.value)) {
+                                // 1. Marca a meta
                                 cb.checked = true;
-                                // Descobrir a que objetivo pertence para abrir a respetiva caixa
+                                
+                                // 2. Encontra a caixa do objetivo pai e abre-a corretamente
                                 const box = cb.closest('.meta-checkbox-list');
                                 if (box) {
                                     const objNum = box.id.replace('listObj', '');
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
-                                        objCheck.checked = true;
-                                        toggleObj(objNum);
+                                        objCheck.checked = true; // Marca o objetivo principal
+                                        box.style.display = 'flex'; // Força a exibição da lista de metas
                                     }
                                 }
                             }
@@ -557,8 +545,6 @@
             }
 
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            
-            // Verificar se já existe registo para atualizar ou criar novo
             const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
 
             const dadosRegisto = {
