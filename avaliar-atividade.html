@@ -104,7 +104,7 @@
             color: #dc2626;
         }
 
-        select, input[type="text"], textarea {
+        select, input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 10px 14px;
             border: 1px solid #d1d5db;
@@ -163,6 +163,85 @@
             color: white;
         }
         .btn-submit:hover { background-color: #0f766e; }
+
+        /* Estilos para Popups Personalizados */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--color-accent);
+            color: white;
+        }
+        .modal-btn-primary:hover { background-color: #0f766e; }
+
+        .modal-btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        .modal-btn-secondary:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -179,22 +258,20 @@
     <div class="main-container">
         <div class="form-card">
             <h1>Avaliar Atividade</h1>
-            <p class="subtitle">Selecione o número da atividade para preencher automaticamente o nome, e submeta a avaliação e sugestões.</p>
+            <p class="subtitle">Escreva o número da atividade para preencher automaticamente o nome, e submeta a avaliação.</p>
 
             <form id="formAvaliacao" onsubmit="guardarAvaliacao(event)">
                 
-                <!-- Seleção do Número da Atividade -->
+                <!-- Escrita do Número da Atividade -->
                 <div class="form-group">
                     <label>Número da Atividade <span class="required">*</span></label>
-                    <select id="selectNumeroAtividade" required onchange="atualizarNomeAtividade()">
-                        <option value="">Selecione o número da atividade</option>
-                    </select>
+                    <input type="number" id="inputNumeroAtividade" required placeholder="Digite o número da atividade..." oninput="atualizarNomeAtividade()">
                 </div>
 
                 <!-- Nome da Atividade (Preenchimento Automático) -->
                 <div class="form-group">
                     <label>Nome / Título da Atividade (Preenchimento Automático)</label>
-                    <input type="text" id="inputNomeAtividade" readonly placeholder="Será preenchido automaticamente ao escolher o número...">
+                    <input type="text" id="inputNomeAtividade" readonly placeholder="Será preenchido automaticamente...">
                 </div>
 
                 <div class="form-group">
@@ -256,6 +333,17 @@
         </div>
     </div>
 
+    <!-- Popup Personalizado (Modal) -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modalTitle" class="modal-title">Aviso</div>
+            <div id="modalMessage" class="modal-message">Mensagem aqui...</div>
+            <div id="modalButtons" class="modal-buttons">
+                <!-- Os botões são gerados dinamicamente via JS -->
+            </div>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -263,57 +351,83 @@
             window.location.href = 'index.html';
         }
 
-        // Carregar lista de números de atividades disponíveis no Select
-        function carregarSelectAtividades() {
-            const select = document.getElementById('selectNumeroAtividade');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            
-            select.innerHTML = '<option value="">Selecione o número da atividade</option>';
-            
-            if (atividades.length === 0) {
-                select.innerHTML = '<option value="">Não existem atividades criadas</option>';
-                return;
+        // Função para mostrar Popup Personalizado
+        function mostrarPopup(titulo, mensagem, tipo = 'alerta', callbackOk = null) {
+            const modal = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+            const buttonsEl = document.getElementById('modalButtons');
+
+            titleEl.textContent = titulo;
+            msgEl.textContent = mensagem;
+            buttonsEl.innerHTML = '';
+
+            if (tipo === 'confirmar') {
+                const btnCancelar = document.createElement('button');
+                btnCancelar.className = 'modal-btn modal-btn-secondary';
+                btnCancelar.textContent = 'Cancelar';
+                btnCancelar.onclick = () => fecharPopup();
+                buttonsEl.appendChild(btnCancelar);
+
+                const btnOk = document.createElement('button');
+                btnOk.className = 'modal-btn modal-btn-primary';
+                btnOk.textContent = 'Confirmar';
+                btnOk.onclick = () => {
+                    fecharPopup();
+                    if (callbackOk) callbackOk();
+                };
+                buttonsEl.appendChild(btnOk);
+            } else {
+                const btnOk = document.createElement('button');
+                btnOk.className = 'modal-btn modal-btn-primary';
+                btnOk.textContent = 'OK';
+                btnOk.onclick = () => {
+                    fecharPopup();
+                    if (callbackOk) callbackOk();
+                };
+                buttonsEl.appendChild(btnOk);
             }
 
-            atividades.forEach(ativ => {
-                const numAtv = ativ.numero || ativ.id;
-                const opt = document.createElement('option');
-                opt.value = ativ.id; // Guarda o ID interno para referência
-                opt.textContent = `Nº ${numAtv} - ${ativ.titulo}`;
-                select.appendChild(opt);
-            });
+            modal.classList.add('active');
         }
 
-        // Preenche o campo de nome automaticamente com base na seleção do número
+        function fecharPopup() {
+            const modal = document.getElementById('customModal');
+            modal.classList.remove('active');
+        }
+
+        // Preenche o campo de nome automaticamente com base no número escrito
         function atualizarNomeAtividade() {
-            const select = document.getElementById('selectNumeroAtividade');
-            const idSelecionado = select.value;
+            const inputNum = document.getElementById('inputNumeroAtividade').value.trim();
             const inputNome = document.getElementById('inputNomeAtividade');
 
-            if (!idSelecionado) {
+            if (!inputNum) {
                 inputNome.value = '';
                 return;
             }
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const ativSelecionada = atividades.find(a => a.id == idSelecionado);
+            
+            // Procura a atividade cujo número coincida com o valor digitado
+            const ativEncontrada = atividades.find(a => String(a.numero) === inputNum || String(a.id) === inputNum);
 
-            if (ativSelecionada) {
-                inputNome.value = ativSelecionada.titulo || '';
+            if (ativEncontrada) {
+                inputNome.value = ativEncontrada.titulo || '';
             } else {
-                inputNome.value = '';
+                inputNome.value = 'Atividade não encontrada';
             }
         }
 
         function guardarAvaliacao(e) {
             e.preventDefault();
             
-            const atividadeId = document.getElementById('selectNumeroAtividade').value;
+            const inputNum = document.getElementById('inputNumeroAtividade').value.trim();
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const ativSelecionada = atividades.find(a => a.id == atividadeId);
+            
+            const ativSelecionada = atividades.find(a => String(a.numero) === inputNum || String(a.id) === inputNum);
 
             if (!ativSelecionada) {
-                alert('Por favor, selecione uma atividade válida.');
+                mostrarPopup('Atenção', 'O número de atividade introduzido não existe. Verifique o número e tente novamente.');
                 return;
             }
 
@@ -330,7 +444,6 @@
                 dinamica: document.getElementById('dinamica').value,
                 interesse: document.getElementById('interesse').value,
                 
-                // Grava a sugestão em todas as propriedades para garantir total compatibilidade
                 comentario: textoSugestao,
                 sugestao: textoSugestao,
                 observacoes: textoSugestao,
@@ -344,11 +457,10 @@
             avaliacoes.push(novaAvaliacao);
             localStorage.setItem('avaliacoesAtividades', JSON.stringify(avaliacoes));
 
-            alert('Avaliação e sugestões guardadas com sucesso!');
-            window.location.href = 'atividades.html';
+            mostrarPopup('Sucesso', 'Avaliação e sugestões guardadas com sucesso!', 'alerta', () => {
+                window.location.href = 'atividades.html';
+            });
         }
-
-        carregarSelectAtividades();
     </script>
 </body>
 </html>
