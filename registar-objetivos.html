@@ -4,50 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registar Objetivos da Atividade - Registos Covão</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        .form-container {
-            background: var(--color-white);
-            padding: 2rem;
-            border-radius: var(--radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            margin-top: 2rem;
+        :root {
+            --color-primary: #15803d;
+            --color-primary-hover: #166534;
+            --bg-page: #f0fdf4;
+            --card-bg: #ffffff;
+            --border-color: #bbf7d0;
+            --text-main: #1f2937;
+            --text-light: #4b5563;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #14532d;
+            padding: 0.8rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .navbar .brand img {
+            height: 32px;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #dcfce7;
+        }
+
+        /* Estilo idêntico ao CAA */
+        .caa-container {
+            max-width: 850px;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .caa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .caa-title h2 {
+            color: var(--color-primary);
+            font-size: 1.4rem;
+            margin: 0 0 4px 0;
+        }
+
+        .caa-title p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .btn-top-voltar {
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-top-voltar:hover {
+            background-color: #0f172a;
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 20px;
         }
 
-        label {
+        .form-group label {
             display: block;
-            font-size: 0.85rem;
             font-weight: 600;
-            margin-bottom: 0.4rem;
-            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #374151;
         }
 
-        input[type="text"], input[type="number"], select, textarea {
+        .required {
+            color: #dc2626;
+        }
+
+        select, input[type="text"], input[type="number"], textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 10px 14px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
-            font-size: 0.95rem;
-            background-color: #fff;
+            font-size: 14px;
             box-sizing: border-box;
             font-family: inherit;
+            background-color: #fff;
         }
 
         input[readonly], textarea[readonly] {
-            background-color: #f8fafc;
+            background-color: #f8fafc !important;
+            color: var(--color-primary) !important;
+            font-weight: 600 !important;
             cursor: not-allowed;
-            color: var(--color-primary);
-            font-weight: bold;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
         }
 
         .row-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: 15px;
         }
 
         @media (max-width: 768px) {
@@ -96,44 +202,45 @@
             width: 1.1rem;
             height: 1.1rem;
             cursor: pointer;
+            accent-color: var(--color-primary);
         }
 
-        .form-buttons {
+        .form-actions {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
             margin-top: 30px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid var(--border-color);
             padding-top: 20px;
         }
 
-        .btn {
-            padding: 10px 20px;
+        .btn-acao {
+            padding: 10px 18px;
             border-radius: 8px;
             font-weight: 600;
             border: none;
             cursor: pointer;
             font-size: 14px;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
 
-        .btn-cancel {
-            background-color: #e2e8f0;
-            color: #334155;
-        }
-        .btn-cancel:hover { background-color: #cbd5e1; }
-
-        .btn-submit {
-            background-color: var(--color-accent);
+        .btn-cancelar {
+            background-color: #64748b;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
         }
-        .btn-submit:hover { opacity: 0.9; }
+        .btn-cancelar:hover {
+            background-color: #475569;
+        }
+
+        .btn-guardar {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        .btn-guardar:hover {
+            background-color: var(--color-primary-hover);
+        }
 
         /* Estilos para Popups Personalizados (Modais) */
         .modal-overlay {
@@ -203,145 +310,150 @@
         }
 
         .modal-btn-primary {
-            background-color: var(--color-accent);
+            background-color: var(--color-primary);
             color: white;
         }
-        .modal-btn-primary:hover { opacity: 0.9; }
+        .modal-btn-primary:hover { background-color: var(--color-primary-hover); }
+
+        .modal-btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        .modal-btn-secondary:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
-    <div class="navbar">
+
+    <nav class="navbar">
         <div class="brand">
             <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan"></strong></span>
-            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
         </div>
-    </div>
+    </nav>
 
-    <div class="container" style="max-width: 750px;">
-        <div class="dashboard-header" style="margin-top: 2rem;">
-            <div>
+    <div class="caa-container">
+        <div class="caa-header">
+            <div class="caa-title">
                 <h2>Registo de Objetivos e Avaliação Global</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+                <p>Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             </div>
+            <a href="atividades.html" class="btn-top-voltar">⬅️ Voltar</a>
         </div>
 
-        <div class="form-container">
-            <form id="registarObjetivosForm" onsubmit="guardarRegistoObjetivos(event)">
-                
+        <form id="registarObjetivosForm" onsubmit="guardarRegistoObjetivos(event)">
+            
+            <div class="form-group">
+                <label for="numeroAtividade">Número da Atividade <span class="required">*</span></label>
+                <input type="number" id="numeroAtividade" min="1" required placeholder="Digite o número da atividade..." oninput="carregarDadosAtividade()">
+                <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem;">Atividade não encontrada.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="nomeAtividade">Nome da Atividade</label>
+                <input type="text" id="nomeAtividade" readonly placeholder="Preenchido automaticamente">
+            </div>
+
+            <div class="row-grid">
                 <div class="form-group">
-                    <label for="numeroAtividade">Número da Atividade <span style="color: #dc2626;">*</span></label>
-                    <input type="number" id="numeroAtividade" min="1" required placeholder="Digite o número da atividade..." oninput="carregarDadosAtividade()">
-                    <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem;">Atividade não encontrada.</small>
+                    <label for="anoLetivoAtividade">Ano Letivo</label>
+                    <input type="text" id="anoLetivoAtividade" readonly placeholder="Preenchido automaticamente">
                 </div>
-
                 <div class="form-group">
-                    <label for="nomeAtividade">Nome da Atividade</label>
-                    <input type="text" id="nomeAtividade" readonly placeholder="Preenchido automaticamente">
+                    <label for="tipoAtividade">Tipo de Atividade</label>
+                    <input type="text" id="tipoAtividade" readonly placeholder="Preenchido automaticamente">
                 </div>
+            </div>
 
-                <div class="row-grid">
-                    <div class="form-group">
-                        <label for="anoLetivoAtividade">Ano Letivo</label>
-                        <input type="text" id="anoLetivoAtividade" readonly placeholder="Preenchido automaticamente">
-                    </div>
-                    <div class="form-group">
-                        <label for="tipoAtividade">Tipo de Atividade</label>
-                        <input type="text" id="tipoAtividade" readonly placeholder="Preenchido automaticamente">
-                    </div>
-                </div>
-
-                <div class="row-grid">
-                    <div class="form-group">
-                        <label for="paaSelect">Integra o PAA? <span style="color: #dc2626;">*</span></label>
-                        <select id="paaSelect" required>
-                            <option value="" disabled selected>Selecione</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="peeSelect">Integra o PEE? <span style="color: #dc2626;">*</span></label>
-                        <select id="peeSelect" required onchange="controlarCamposPEE()">
-                            <option value="" disabled selected>Selecione</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Recinto Múltiplo para Seleção de Objetivos e Metas do PEE -->
-                <div id="peeContainer" style="display: none; margin-bottom: 1.25rem;">
-                    <label style="margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--color-primary);">Selecione os Objetivos e respetivas Metas do PEE abrangidos:</label>
-
-                    <!-- Objetivo 1 -->
-                    <div class="pee-objective-box">
-                        <div class="pee-objective-title">
-                            <input type="checkbox" id="obj1Check" onchange="toggleObj(1)"> Objetivo 1: Melhorar a articulação pedagógica
-                        </div>
-                        <div class="meta-checkbox-list" id="listObj1" style="display: none;">
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 1 - Meta 1: Realizar 6 Reuniões de Conselho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Conselho de Turma</label>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo 2 -->
-                    <div class="pee-objective-box">
-                        <div class="pee-objective-title">
-                            <input type="checkbox" id="obj2Check" onchange="toggleObj(2)"> Objetivo 2: Melhorar os resultados académicos dos alunos
-                        </div>
-                        <div class="meta-checkbox-list" id="listObj2" style="display: none;">
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 2: 75% alunos com Bom/Muito Bom em Português"> Meta 2: 75% alunos com menções de Bom e Muito Bom no português</label>
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 3: 75% alunos com Bom/Muito Bom em Matemática"> Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática</label>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo 3 -->
-                    <div class="pee-objective-box">
-                        <div class="pee-objective-title">
-                            <input type="checkbox" id="obj3Check" onchange="toggleObj(3)"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
-                        </div>
-                        <div class="meta-checkbox-list" id="listObj3" style="display: none;">
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 3 - Meta 4: Realizar pelo menos 6 atividades com tecnologias"> Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias</label>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo 4 -->
-                    <div class="pee-objective-box">
-                        <div class="pee-objective-title">
-                            <input type="checkbox" id="obj4Check" onchange="toggleObj(4)"> Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
-                        </div>
-                        <div class="meta-checkbox-list" id="listObj4" style="display: none;">
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 5: Realizar dois questionários à comunidade escolar"> Meta 5: Anualmente realizar dois questionários para a comunidade escolar</label>
-                            <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 6: Envolver os Encarregados de Educação em 6 atividades"> Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais</label>
-                        </div>
-                    </div>
+            <div class="row-grid">
+                <div class="form-group">
+                    <label for="paaSelect">Integra o PAA? <span class="required">*</span></label>
+                    <select id="paaSelect" required>
+                        <option value="" disabled selected>Selecione</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="mediaAvaliacoes">Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
-                    <input type="text" id="mediaAvaliacoes" readonly placeholder="Calculado automaticamente a partir das avaliações guardadas">
+                    <label for="peeSelect">Integra o PEE? <span class="required">*</span></label>
+                    <select id="peeSelect" required onchange="controlarCamposPEE()">
+                        <option value="" disabled selected>Selecione</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Recinto Múltiplo para Seleção de Objetivos e Metas do PEE -->
+            <div id="peeContainer" style="display: none; margin-bottom: 20px;">
+                <label style="margin-bottom: 10px; font-size: 0.9rem; color: var(--color-primary); font-weight: 600;">Selecione os Objetivos e respetivas Metas do PEE abrangidos:</label>
+
+                <!-- Objetivo 1 -->
+                <div class="pee-objective-box">
+                    <div class="pee-objective-title">
+                        <input type="checkbox" id="obj1Check" onchange="toggleObj(1)"> Objetivo 1: Melhorar a articulação pedagógica
+                    </div>
+                    <div class="meta-checkbox-list" id="listObj1" style="display: none;">
+                        <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 1 - Meta 1: Realizar 6 Reuniões de Conselho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Conselho de Turma</label>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="sugestoesRecolhidas">Sugestões / Observações Recolhidas</label>
-                    <textarea id="sugestoesRecolhidas" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..."></textarea>
+                <!-- Objetivo 2 -->
+                <div class="pee-objective-box">
+                    <div class="pee-objective-title">
+                        <input type="checkbox" id="obj2Check" onchange="toggleObj(2)"> Objetivo 2: Melhorar os resultados académicos dos alunos
+                    </div>
+                    <div class="meta-checkbox-list" id="listObj2" style="display: none;">
+                        <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 2: 75% alunos com Bom/Muito Bom em Português"> Meta 2: 75% alunos com menções de Bom e Muito Bom no português</label>
+                        <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 3: 75% alunos com Bom/Muito Bom em Matemática"> Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática</label>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="resumoConclusoes">Resumo / Conclusões da Atividade <span style="color: #dc2626;">*</span></label>
-                    <textarea id="resumoConclusoes" rows="4" required placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..."></textarea>
+                <!-- Objetivo 3 -->
+                <div class="pee-objective-box">
+                    <div class="pee-objective-title">
+                        <input type="checkbox" id="obj3Check" onchange="toggleObj(3)"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
+                    </div>
+                    <div class="meta-checkbox-list" id="listObj3" style="display: none;">
+                        <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 3 - Meta 4: Realizar pelo menos 6 atividades com tecnologias"> Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias</label>
+                    </div>
                 </div>
 
-                <div class="form-buttons">
-                    <a href="atividades.html" class="btn btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn btn-submit">Guardar Registo de Objetivos</button>
+                <!-- Objetivo 4 -->
+                <div class="pee-objective-box">
+                    <div class="pee-objective-title">
+                        <input type="checkbox" id="obj4Check" onchange="toggleObj(4)"> Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
+                    </div>
+                    <div class="meta-checkbox-list" id="listObj4" style="display: none;">
+                        <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 5: Realizar dois questionários à comunidade escolar"> Meta 5: Anualmente realizar dois questionários para a comunidade escolar</label>
+                        <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 6: Envolver os Encarregados de Educação em 6 atividades"> Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais</label>
+                    </div>
                 </div>
-            </form>
-        </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mediaAvaliacoes">Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
+                <input type="text" id="mediaAvaliacoes" readonly placeholder="Calculado automaticamente a partir das avaliações guardadas">
+            </div>
+
+            <div class="form-group">
+                <label for="sugestoesRecolhidas">Sugestões / Observações Recolhidas</label>
+                <textarea id="sugestoesRecolhidas" rows="3" readonly placeholder="Compilação automática das sugestões dos avaliadores..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="resumoConclusoes">Resumo / Conclusões da Atividade <span class="required">*</span></label>
+                <textarea id="resumoConclusoes" rows="4" required placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="atividades.html" class="btn-acao btn-cancelar">Voltar / Fechar</a>
+                <button type="submit" class="btn-acao btn-guardar">Guardar Registo de Objetivos</button>
+            </div>
+        </form>
     </div>
 
     <!-- Popup Personalizado (Modal) -->
@@ -503,17 +615,14 @@
                         const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]');
                         checkboxesMetas.forEach(cb => {
                             if (regExistente.metasPee.includes(cb.value)) {
-                                // 1. Marca a meta
                                 cb.checked = true;
-                                
-                                // 2. Encontra a caixa do objetivo pai e abre-a corretamente
                                 const box = cb.closest('.meta-checkbox-list');
                                 if (box) {
                                     const objNum = box.id.replace('listObj', '');
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
-                                        objCheck.checked = true; // Marca o objetivo principal
-                                        box.style.display = 'flex'; // Força a exibição da lista de metas
+                                        objCheck.checked = true;
+                                        box.style.display = 'flex';
                                     }
                                 }
                             }
