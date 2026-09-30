@@ -4,168 +4,258 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAA - Centro de Apoio à Aprendizagem</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
         :root {
-            --primary: #107c41;       /* Verde institucional principal */
-            --primary-hover: #0e6b37; /* Verde escuro para hover */
-            --primary-light: #dff6dd; /* Verde claro para fundos e detalhes */
-            --bg-color: #f3f2f1;
+            --primary-green: #15803d;
+            --primary-green-hover: #166534;
+            --bg-page: #f0fdf4;
             --card-bg: #ffffff;
-            --text-main: #323130;
-            --border-color: #8a8886;
+            --text-main: #1f2937;
+            --border-color: #bbf7d0;
         }
 
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--bg-page);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-
+        /* Barra de Navegação Superior */
         .navbar {
-            background: var(--card-bg);
-            padding: 1rem 2rem;
-            color: var(--text-main);
+            background-color: #14532d;
+            padding: 0.8rem 2rem;
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border-top: 3px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .navbar .logo {
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-weight: 600;
             font-size: 1.1rem;
-            color: var(--primary);
         }
 
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .header-section {
+        .navbar .nav-right {
             display: flex;
             align-items: center;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
             gap: 20px;
-        }
-
-        .header-title {
-            flex-grow: 1;
-        }
-
-        .header-title h2 {
-            color: #605e5c;
             font-size: 14px;
-            margin: 0 0 4px 0;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .header-title h1 {
-            color: var(--primary);
-            font-size: 22px;
-            margin: 0 0 4px 0;
+        .navbar .nav-right span {
+            color: #dcfce7;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
             border: none;
-            padding: 0;
-        }
-
-        .header-title p {
-            margin: 0;
+            padding: 6px 14px;
+            border-radius: 6px;
             font-size: 13px;
-            color: #605e5c;
-        }
-
-        .logo-container {
-            width: 80px;
-            height: 80px;
-            display: flex;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            overflow: hidden;
+            gap: 6px;
+            transition: background 0.2s;
         }
 
-        .logo-container svg {
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Contentor Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Cartão de Cabeçalho da Secção */
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-header-card h1 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin: 0 0 6px 0;
+        }
+
+        .section-header-card p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Botões do Topo */
+        .btn-top-action {
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-top-action:hover {
+            background-color: #0f172a;
+        }
+
+        .btn-top-primary {
+            background-color: var(--primary-green);
+        }
+
+        .btn-top-primary:hover {
+            background-color: var(--primary-green-hover);
+        }
+
+        /* Cartão da Tabela */
+        .table-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0fdf4;
+            color: var(--primary-green);
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 18px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #fafaf9;
+        }
+
+        /* Botões de Ação na Tabela */
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 4px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-action:hover {
+            opacity: 0.85;
+        }
+
+        .btn-ver { background-color: #0d9488; color: white; }
+        .btn-editar { background-color: #047857; color: white; }
+        .btn-apagar { background-color: #dc2626; color: white; }
+
+        /* Formulário Estilizado */
+        .form-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
-        label {
+        .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-size: 14px;
+            color: #374151;
         }
 
         .required {
-            color: #a80000;
+            color: #dc2626;
         }
 
         input[type="text"],
         input[type="date"],
         input[type="number"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
             font-size: 14px;
             box-sizing: border-box;
             font-family: inherit;
+            background-color: #fff;
         }
 
-        input:focus, textarea:focus {
-            outline: 2px solid var(--primary);
-            border-color: transparent;
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
         textarea {
             resize: vertical;
-            min-height: 140px;
+            min-height: 120px;
             line-height: 1.5;
         }
 
         .char-counter {
             font-size: 11px;
-            color: #605e5c;
+            color: #6b7280;
             text-align: right;
             margin-top: 4px;
         }
@@ -174,11 +264,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 10px;
-            margin-top: 6px;
-            background: #faf9f8;
-            padding: 12px;
-            border-radius: 4px;
-            border: 1px solid #edebe9;
+            background: #fafaf9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
         }
 
         .checkbox-item {
@@ -187,29 +276,30 @@
             gap: 8px;
             font-size: 14px;
             cursor: pointer;
+            font-weight: normal;
+            margin-bottom: 0;
         }
 
         .checkbox-item input[type="checkbox"] {
-            margin: 0;
             width: 16px;
             height: 16px;
             cursor: pointer;
-            accent-color: var(--primary);
+            accent-color: var(--primary-green);
         }
 
         .image-upload-box {
             border: 2px dashed var(--border-color);
             padding: 20px;
             text-align: center;
-            border-radius: 4px;
-            background: #faf9f8;
+            border-radius: 8px;
+            background: #fafaf9;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .image-upload-box:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
+            background: #f0fdf4;
+            border-color: var(--primary-green);
         }
 
         .image-preview-container {
@@ -221,12 +311,11 @@
 
         .image-preview-item {
             position: relative;
-            width: 120px;
-            height: 120px;
-            border-radius: 4px;
+            width: 100px;
+            height: 100px;
+            border-radius: 6px;
             overflow: hidden;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #d1d5db;
         }
 
         .image-preview-item img {
@@ -235,152 +324,90 @@
             object-fit: cover;
         }
 
-        .btn-container {
+        .form-footer {
             display: flex;
             justify-content: flex-end;
-            align-items: center;
             gap: 12px;
             margin-top: 30px;
-            border-top: 1px solid #edebe9;
+            border-top: 1px solid #e5e7eb;
             padding-top: 20px;
-        }
-
-        .btn-container button, .btn-primary-custom {
-            background-color: var(--primary);
-            color: white;
-            border: 1px solid transparent;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-            box-sizing: border-box;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 41px; 
-            margin: 0;
-        }
-
-        .btn-container button:hover, .btn-primary-custom:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-container button.btn-secondary {
-            background-color: #f3f2f1;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-container button.btn-secondary:hover {
-            background-color: #edebe9;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th {
-            padding: 0.75rem;
-            font-size: 14px;
-            color: #605e5c;
-            font-weight: 600;
-            border-bottom: 2px solid var(--primary);
-            background-color: #faf9f8;
-            text-align: left;
-        }
-
-        table td {
-            padding: 0.75rem;
-            font-size: 14px;
-            border-bottom: 1px solid #f3f2f1;
         }
 
         @media print {
             body * {
                 visibility: hidden;
             }
-            #containerFormulario, #containerFormulario * {
+            #vistaFormulario, #vistaFormulario * {
                 visibility: visible;
             }
-            #containerFormulario {
+            #vistaFormulario {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
-                background: white !important;
+                border: none !important;
                 box-shadow: none !important;
                 padding: 0 !important;
             }
-            .btn-container, .navbar, .image-upload-box, .char-counter, .remove-img {
+            .btn-container, .navbar, .image-upload-box, .char-counter, .form-footer {
                 display: none !important;
-            }
-            input, textarea {
-                border: 1px solid #b8b6b4 !important;
-                background-color: #ffffff !important;
-                color: #323130 !important;
-                box-shadow: none !important;
-            }
-            .checkbox-grid {
-                background: #ffffff !important;
-                border: 1px solid #b8b6b4 !important;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- Barra Superior -->
     <nav class="navbar">
-        <div class="logo">🏫 Gestão CAA</div>
-        <ul class="nav-links">
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="#" id="logoutBtn">Sair</a></li>
-        </ul>
+        <div class="brand">
+            <span>🏫 Gestão CAA</span>
+        </div>
+        <div class="nav-right">
+            <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Voltar ao Menu</a>
+        </div>
     </nav>
 
-    <div class="container">
+    <div class="main-container">
         
-        <div id="seccaoCabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <div>
-                <h2>Registos do CAA</h2>
-                <p style="color: #605e5c; margin: 0;">Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
+        <!-- Vista Principal: Tabela e Cabeçalho -->
+        <div id="vistaTabela">
+            <div class="section-header-card">
+                <div>
+                    <h1>Registos do CAA</h1>
+                    <p>Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
+                    <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Novo Registo</button>
+                </div>
             </div>
-            <button onclick="abrirFormularioCriacao()" class="btn-primary-custom">+ Novo Registo</button>
+
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Nº</th>
+                            <th>Atividade</th>
+                            <th>Responsável</th>
+                            <th style="width: 240px; text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="caaTableBody">
+                        <!-- Dados injetados por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 80px;">Nº</th>
-                        <th>Atividade</th>
-                        <th>Responsável</th>
-                        <th style="text-align: right;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="caaTableBody">
-                </tbody>
-            </table>
-        </div>
-
-        <div id="containerFormulario" style="display: none;">
-            <div class="header-section">
-                <div class="logo-container" title="Logótipo Institucional">
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="48" fill="#f4fbf7" stroke="#107c41" stroke-width="3"/>
-                        <path d="M50 20 L75 38 L75 65 L50 82 L25 65 L25 38 Z" fill="none" stroke="#107c41" stroke-width="2.5"/>
-                        <path d="M50 28 L68 41 L68 60 L50 73 L32 60 L32 41 Z" fill="#dff6dd" opacity="0.6"/>
-                        <text x="50" y="52" font-family="Segoe UI, sans-serif" font-weight="bold" font-size="22" fill="#107c41" text-anchor="middle">CAA</text>
-                        <text x="50" y="65" font-family="Segoe UI, sans-serif" font-size="9" fill="#605e5c" text-anchor="middle">ESCOLA</text>
-                    </svg>
+        <!-- Vista de Formulário (Oculto por defeito) -->
+        <div id="vistaFormulario" style="display: none;" class="form-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+                <div>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">CAA - Centro de Apoio à Aprendizagem</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 14px;">EB1/PE do Covão e Vargem - Registo de Atividades Pedagógicas</p>
                 </div>
-                <div class="header-title">
-                    <h2>EB1/PE do Covão e Vargem</h2>
-                    <h1 id="formTitle">CAA - Centro de Apoio à Aprendizagem</h1>
-                    <p>Registo de Atividades Pedagógicas</p>
-                </div>
+                <button class="btn-top-action" onclick="fecharFormulario()">← Voltar</button>
             </div>
 
             <form id="caaForm">
@@ -461,16 +488,16 @@
                 <div class="form-group" id="seccaoImagensUpload">
                     <label>12. Registo Fotográfico / Imagens da Atividade:</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #605e5c;">📸 Clique aqui para adicionar fotografias</p>
+                        <p style="margin: 0; color: #4b5563;">📸 Clique aqui para adicionar fotografias</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
                 </div>
 
-                <div class="btn-container">
-                    <button type="button" id="btnPrintForm" class="btn-secondary" onclick="window.print()" style="background-color: var(--primary); color: white; display: none;">🖨️ Imprimir</button>
-                    <button type="button" class="btn-secondary" onclick="fecharFormulario()">Voltar / Fechar</button>
-                    <button type="submit" id="btnSubmit">Guardar Registo</button>
+                <div class="form-footer">
+                    <button type="button" id="btnPrintForm" class="btn-top-action" style="background-color: #0d9488; display: none;" onclick="window.print()">🖨️ Imprimir</button>
+                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Voltar / Fechar</button>
+                    <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar Registo</button>
                 </div>
             </form>
         </div>
@@ -478,28 +505,27 @@
 
     <!-- Popup Personalizado -->
     <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
-        <div style="background: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+        <div style="background: white; padding: 2rem; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
             <div id="popupIcon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏫</div>
-            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: var(--primary);">Aviso</h3>
-            <p id="popupMessage" style="margin: 0 0 20px 0; color: #323130; line-height: 1.5;"></p>
+            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: var(--primary-green);">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 20px 0; color: #1f2937; line-height: 1.5;"></p>
             <div id="popupButtons" style="display: flex; justify-content: center; gap: 10px;">
-                <button onclick="fecharPopup()" style="background-color: var(--primary); color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>
+                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>
             </div>
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) {
-            window.location.href = 'index.html';
-        }
+        let imagensGuardadas = [];
 
-        document.getElementById('logoutBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('currentUser');
-            window.location.href = 'index.html';
-        });
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
+        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
+
+        function updateCounter(element, counterId) {
+            const currentLength = element.value.length;
+            const maxLength = element.getAttribute('maxlength');
+            document.getElementById(counterId).innerText = `${currentLength} / ${maxLength} carateres`;
+        }
 
         function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫', onConfirm = null) {
             document.getElementById('popupTitle').innerText = titulo;
@@ -510,8 +536,8 @@
             
             if (onConfirm) {
                 btnContainer.innerHTML = `
-                    <button id="popupCancelBtn" style="background-color: #f3f2f1; color: #323130; border: 1px solid #8a8886; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Cancelar</button>
-                    <button id="popupConfirmBtn" style="background-color: #ef4444; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
+                    <button id="popupCancelBtn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
                 `;
                 document.getElementById('customPopup').style.display = 'flex';
 
@@ -524,7 +550,7 @@
                     onConfirm();
                 };
             } else {
-                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #107c41; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
 
                 document.getElementById('popupOkBtn').onclick = () => {
@@ -537,6 +563,21 @@
             document.getElementById('customPopup').style.display = 'none';
         }
 
+        function handleFiles(files) {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagensGuardadas.push(e.target.result);
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+                    wrapper.innerHTML = `<img src="${e.target.result}">`;
+                    previewContainer.appendChild(wrapper);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
         function carregarRegistos() {
             const tbody = document.getElementById('caaTableBody');
             if (!tbody) return;
@@ -545,24 +586,27 @@
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #605e5c;">Sem registos do CAA guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">Sem registos do CAA guardados.</td></tr>`;
                 return;
             }
 
-            registos.forEach((reg, index) => {
+            const registosInvertidos = [...registos].reverse();
+
+            registosInvertidos.forEach((reg) => {
+                const indexReal = registos.findIndex(r => r.numero_atividade === reg.numero_atividade);
                 const tr = document.createElement('tr');
                 const temPermissao = currentUser.isAdmin || reg.userEmail === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="font-weight: bold; color: var(--primary);">${reg.numero_atividade || (index + 1)}</td>
-                    <td>${reg.atividade}</td>
+                    <td style="font-weight: 700; color: var(--primary-green);">${reg.numero_atividade || (indexReal + 1)}</td>
+                    <td style="font-weight: 600;">${reg.atividade}</td>
                     <td>${reg.responsaveis}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button onclick="verRegisto(${index})" style="background-color: #e6f4ea; color: #137333; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Ver</button>
+                        <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})">Ver</button>
                         ${temPermissao ? `
-                            <button onclick="editarRegisto(${index})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Editar</button>
-                            <button onclick="eliminarRegisto(${index})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem; border: none; border-radius: 4px; cursor: pointer;">Apagar</button>
-                        ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
+                            <button class="btn-action btn-editar" onclick="editarRegisto(${indexReal})">Editar</button>
+                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})">Apagar</button>
+                        ` : '<span style="color: #9ca3af; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -573,6 +617,7 @@
             document.getElementById('editIndex').value = '';
             document.getElementById('caaForm').reset();
             document.getElementById('imagePreviewContainer').innerHTML = '';
+            imagensGuardadas = [];
             document.getElementById('data_atividade').valueAsDate = new Date();
 
             ajustarModoFormulario(false);
@@ -587,30 +632,22 @@
             const campoNum = document.getElementById('numero_atividade');
             campoNum.value = proximoNumero;
             
-            const nomeResponsavel = currentUser.nome || currentUser.name || currentUser.email;
+            const nomeResponsavel = currentUser.name || currentUser.nome || currentUser.email;
             const campoResp = document.getElementById('responsaveis');
             campoResp.value = nomeResponsavel;
 
-            [campoNum, campoResp].forEach(el => {
-                el.readOnly = true;
-                el.style.backgroundColor = '#e9ecef';
-                el.style.fontWeight = 'bold';
-                el.style.color = '#212529';
-            });
-
-            document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem';
-            document.getElementById('seccaoCabecalho').style.display = 'none';
-            document.getElementById('containerTabela').style.display = 'none';
-            document.getElementById('containerFormulario').style.display = 'block';
+            document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem (Novo Registo)';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function fecharFormulario() {
-            document.getElementById('containerFormulario').style.display = 'none';
-            document.getElementById('seccaoCabecalho').style.display = 'flex';
-            document.getElementById('containerTabela').style.display = 'block';
+            document.getElementById('vistaFormulario').style.display = 'none';
+            document.getElementById('vistaTabela').style.display = 'block';
             document.getElementById('caaForm').reset();
             document.getElementById('imagePreviewContainer').innerHTML = '';
+            imagensGuardadas = [];
         }
 
         function ajustarModoFormulario(isSomenteLeitura) {
@@ -618,10 +655,6 @@
             inputs.forEach(el => {
                 if (el.id !== 'editIndex') {
                     el.readOnly = isSomenteLeitura;
-                    if (isSomenteLeitura) {
-                        el.style.backgroundColor = '#f3f2f1';
-                        el.style.color = '#323130';
-                    }
                 }
             });
 
@@ -641,10 +674,7 @@
             if (!reg) return;
 
             document.getElementById('editIndex').value = index;
-            
-            const campoNum = document.getElementById('numero_atividade');
-            campoNum.value = reg.numero_atividade || (index + 1);
-            
+            document.getElementById('numero_atividade').value = reg.numero_atividade;
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -652,41 +682,29 @@
             document.getElementById('descricao_atividade').value = reg.descricao_atividade;
             document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
             document.getElementById('articulacao').value = reg.articulacao;
-            
-            const campoResp = document.getElementById('responsaveis');
-            campoResp.value = reg.responsaveis;
-            
+            document.getElementById('responsaveis').value = reg.responsaveis;
             document.getElementById('observacoes').value = reg.observacoes;
 
             ajustarModoFormulario(true);
-
-            [campoNum, campoResp].forEach(el => {
-                el.readOnly = true;
-                el.style.backgroundColor = '#e9ecef';
-                el.style.fontWeight = 'bold';
-                el.style.color = '#212529';
-            });
 
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
                 cb.checked = turmasArray.includes(cb.value);
             });
 
+            imagensGuardadas = reg.imagens || [];
             const previewContainer = document.getElementById('imagePreviewContainer');
             previewContainer.innerHTML = '';
-            if (reg.imagens) {
-                reg.imagens.forEach(src => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${src}">`;
-                    previewContainer.appendChild(wrapper);
-                });
-            }
+            imagensGuardadas.forEach(src => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-preview-item';
+                wrapper.innerHTML = `<img src="${src}">`;
+                previewContainer.appendChild(wrapper);
+            });
 
             document.getElementById('formTitle').innerText = 'Visualizar Registo CAA';
-            document.getElementById('seccaoCabecalho').style.display = 'none';
-            document.getElementById('containerTabela').style.display = 'none';
-            document.getElementById('containerFormulario').style.display = 'block';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -701,10 +719,7 @@
 
             ajustarModoFormulario(false);
             document.getElementById('editIndex').value = index;
-            
-            const campoNum = document.getElementById('numero_atividade');
-            campoNum.value = reg.numero_atividade || (index + 1);
-            
+            document.getElementById('numero_atividade').value = reg.numero_atividade;
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -712,38 +727,27 @@
             document.getElementById('descricao_atividade').value = reg.descricao_atividade;
             document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
             document.getElementById('articulacao').value = reg.articulacao;
-
-            const campoResp = document.getElementById('responsaveis');
-            campoResp.value = reg.responsaveis;
+            document.getElementById('responsaveis').value = reg.responsaveis;
             document.getElementById('observacoes').value = reg.observacoes;
-
-            [campoNum, campoResp].forEach(el => {
-                el.readOnly = true;
-                el.style.backgroundColor = '#e9ecef';
-                el.style.fontWeight = 'bold';
-                el.style.color = '#212529';
-            });
 
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
                 cb.checked = turmasArray.includes(cb.value);
             });
 
+            imagensGuardadas = reg.imagens || [];
             const previewContainer = document.getElementById('imagePreviewContainer');
             previewContainer.innerHTML = '';
-            if (reg.imagens) {
-                reg.imagens.forEach(src => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${src}">`;
-                    previewContainer.appendChild(wrapper);
-                });
-            }
+            imagensGuardadas.forEach(src => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-preview-item';
+                wrapper.innerHTML = `<img src="${src}">`;
+                previewContainer.appendChild(wrapper);
+            });
 
             document.getElementById('formTitle').innerText = 'Editar Registo CAA';
-            document.getElementById('seccaoCabecalho').style.display = 'none';
-            document.getElementById('containerTabela').style.display = 'none';
-            document.getElementById('containerFormulario').style.display = 'block';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -756,51 +760,25 @@
                 return;
             }
 
-            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza de que pretende apagar este registo permanentemente?', '⚠️', () => {
+            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo?', '⚠️', () => {
                 registos.splice(index, 1);
                 localStorage.setItem('registosCAA', JSON.stringify(registos));
                 carregarRegistos();
-                mostrarPopupPersonalizado('Sucesso', 'Registo apagado com sucesso.', '🗑️');
             });
-        }
-
-        function handleFiles(files) {
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${e.target.result}"><button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer;">✕</button>`;
-                    previewContainer.appendChild(wrapper);
-                }
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function updateCounter(textarea, counterId) {
-            const maxLength = textarea.getAttribute('maxlength');
-            const currentLength = textarea.value.length;
-            document.getElementById(counterId).innerText = `${currentLength} / ${maxLength} carateres`;
         }
 
         document.getElementById('caaForm').addEventListener('submit', (e) => {
             e.preventDefault();
-
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
             const index = document.getElementById('editIndex').value;
 
-            const turmasChecked = document.querySelectorAll('input[name="turma"]:checked');
-            const turmasValues = Array.from(turmasChecked).map(cb => cb.value).join(', ');
+            const turmasSelecionadas = Array.from(document.querySelectorAll('input[name="turma"]:checked')).map(cb => cb.value).join(', ');
 
-            const imageElements = document.querySelectorAll('.image-preview-item img');
-            const imagensArray = Array.from(imageElements).map(img => img.src);
-
-            const novoReg = {
-                numero_atividade: document.getElementById('numero_atividade').value,
+            const novoRegisto = {
+                numero_atividade: parseInt(document.getElementById('numero_atividade').value),
                 data_atividade: document.getElementById('data_atividade').value,
                 nome_aluno: document.getElementById('nome_aluno').value.trim(),
-                turmas: turmasValues,
+                turmas: turmasSelecionadas,
                 atividade: document.getElementById('atividade').value.trim(),
                 objetivos: document.getElementById('objetivos').value.trim(),
                 descricao_atividade: document.getElementById('descricao_atividade').value.trim(),
@@ -808,30 +786,22 @@
                 articulacao: document.getElementById('articulacao').value.trim(),
                 responsaveis: document.getElementById('responsaveis').value.trim(),
                 observacoes: document.getElementById('observacoes').value.trim(),
-                imagens: imagensArray,
-                userEmail: index !== "" ? registos[index].userEmail : currentUser.email
+                imagens: imagensGuardadas,
+                userEmail: currentUser.email
             };
 
             if (index === "") {
-                registos.push(novoReg);
-                mostrarPopupPersonalizado('Sucesso', 'Registo guardado com sucesso!', '✨', () => {
-                    fecharFormulario();
-                    carregarRegistos();
-                });
+                registos.push(novoRegisto);
             } else {
-                registos[index] = novoReg;
-                mostrarPopupPersonalizado('Sucesso', 'Registo atualizado com sucesso!', '✨', () => {
-                    fecharFormulario();
-                    carregarRegistos();
-                });
+                registos[index] = novoRegisto;
             }
 
             localStorage.setItem('registosCAA', JSON.stringify(registos));
+            fecharFormulario();
+            carregarRegistos();
         });
 
-        window.onload = function() {
-            carregarRegistos();
-        };
+        carregarRegistos();
     </script>
 </body>
 </html>
