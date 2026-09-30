@@ -534,7 +534,7 @@
                     <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅️ Voltar</button>
+                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅️️ Voltar</button>
                     <a href="registar-objetivos.html" class="btn-top-action" style="background-color: #16a34a;">🎯 Registar Objetivos</a>
                 </div>
             </div>
@@ -821,7 +821,7 @@
     <!-- MODAL DE APAGAR GENÉRICO -->
     <div id="confirmModal" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 400px; text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️️</div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
             <h3 style="color: #ef4444; margin-bottom: 0.5rem; margin-top: 0;">Confirmar Remoção</h3>
             <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Tens a certeza que pretendes apagar este registo?</p>
             <div class="modal-buttons" style="justify-content: center; border-top: none; padding-top: 0;">
@@ -1048,7 +1048,7 @@
             document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
             document.getElementById('modalAvDinamica').value = av.dinamica || '';
             document.getElementById('modalAvInteresse').value = av.interesse || '';
-            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || '';
+            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || av.sugestao || '';
 
             document.getElementById('modalAvNumAtividade').readOnly = true;
             document.getElementById('modalAvTituloAtividade').readOnly = true;
@@ -1138,12 +1138,10 @@
                     if (!isNaN(d)) { somaD += d; countD++; }
                     if (!isNaN(i)) { somaI += i; countI++; }
 
-                    // Limpar autor/prefixos se houver e recolher apenas o texto da sugestão
-                    let comentario = av.comentario || av.parecer || av.texto;
+                    // Procura em todas as propriedades possíveis onde o comentário/sugestão possa estar guardado
+                    let comentario = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes;
                     if (comentario && typeof comentario === 'string' && comentario.trim() !== '') {
-                        // Se o formato incluir algo como "Nome: Sugestão", removemos a parte inicial se necessário, ou pegamos tudo
                         let textoLimpo = comentario.trim();
-                        // Se vier com formato pré-definido com ":" tentamos isolar a mensagem se for o caso
                         if (textoLimpo.includes(':') && !textoLimpo.startsWith('http')) {
                             const partes = textoLimpo.split(':');
                             if (partes.length > 1 && partes[0].length < 25) {
@@ -1189,7 +1187,7 @@
             document.getElementById('modalObjMedia').readOnly = true;
             document.getElementById('modalObjSugestoes').readOnly = true;
 
-            // Tratamento robusto das caixas de seleção (verifica várias propriedades possíveis onde podem estar guardadas)
+            // Tratamento robusto das caixas de seleção
             const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
             const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
             
