@@ -335,7 +335,7 @@
                 <h2 id="tituloPaginaHeader">Registo de Objetivos e Avaliação Global</h2>
                 <p>Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             </div>
-            <a href="atividades.html" class="btn-top-voltar">⬅️️ Voltar</a>
+            <a href="atividades.html" class="btn-top-voltar">⬅ Voltar</a>
         </div>
 
         <form id="registarObjetivosForm" onsubmit="guardarRegistoObjetivos(event)">
@@ -553,14 +553,16 @@
                 return;
             }
 
-            // Verificar se já existe um registo guardado para esta atividade
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
-
             const urlParams = new URLSearchParams(window.location.search);
             const modoConsulta = urlParams.get('mode') === 'view';
+            const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
 
-            if (regExistente && !modoConsulta) {
+            // Verificar se já existe registo guardado para esta atividade
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            // Se estivermos a editar o próprio registo atual, ignoramos a verificação de duplicado dele mesmo
+            const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
+
+            if (regExistente && !modoConsulta && String(numInput) !== String(idEditandoUrl)) {
                 aviso.textContent = `Atenção: A Atividade #${numInput} já tem objetivos registados. Não é permitido criar duplicados.`;
                 aviso.style.display = 'block';
                 if(btnGuardar) btnGuardar.disabled = true;
@@ -609,12 +611,12 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
-                // Se houver registo pré-existente, preencher os dados guardados (PAA, PEE, Metas e Resumo)
+                // Preencher com os dados do registo existente (Consulta ou Edição)
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
                     
-                    // FORÇAR a exibição correta do contentor se o PEE for "Sim"
+                    // FORÇAR a chamada da função para exibir o contentor visual imediatamente
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -657,14 +659,12 @@
                 document.getElementById('peeSelect').disabled = true;
                 document.getElementById('resumoConclusoes').readOnly = true;
                 
-                // Desativar todos os checkboxes de objetivos e metas
                 for(let i=1; i<=4; i++) {
                     const objChk = document.getElementById(`obj${i}Check`);
                     if(objChk) objChk.disabled = true;
                 }
                 document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.disabled = true);
                 
-                // Ocultar o botão de guardar
                 const btnGrd = document.getElementById('btnGuardar');
                 if(btnGrd) btnGrd.style.display = 'none';
             }
@@ -696,10 +696,13 @@
             }
 
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            const urlParams = new URLSearchParams(window.location.search);
+            const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
+
             const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
 
-            // Bloqueio rigoroso contra duplicados na submissão
-            if (indexExistente !== -1) {
+            // Bloquear duplicados se já existir e não estivermos a editar o mesmo registo
+            if (indexExistente !== -1 && String(numAtividade) !== String(idEditandoUrl)) {
                 mostrarPopup('Atenção', `A Atividade #${numAtividade} já possui objetivos registados e não pode ser duplicada.`);
                 document.getElementById('btnGuardar').disabled = true;
                 return;
@@ -713,7 +716,7 @@
             }
 
             const dadosRegisto = {
-                id: Date.now(),
+                id: indexExistente !== -1 ? registos[indexExistente].id : Date.now(),
                 numeroAtividade: numAtividade,
                 nomeAtividade: nomeAtividade,
                 anoLetivo: document.getElementById('anoLetivoAtividade').value,
@@ -728,7 +731,13 @@
                 dataRegisto: new Date().toISOString().split('T')[0]
             };
 
-            registos.push(dadosRegisto);
+            // Se já existia, substitui (atualiza). Se não, adiciona novo.
+            if (indexExistente !== -1) {
+                registos[indexExistente] = dadosRegisto;
+            } else {
+                registos.push(dadosRegisto);
+            }
+
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
 
             mostrarPopup('Sucesso', `Objetivos e conclusões da Atividade #${numAtividade} guardados com sucesso!`, () => {
