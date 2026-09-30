@@ -53,7 +53,6 @@
             color: #dcfce7;
         }
 
-        /* Estilo idêntico ao CAA */
         .caa-container {
             max-width: 850px;
             margin: 30px auto;
@@ -162,7 +161,6 @@
             }
         }
 
-        /* Estilos para o seletor múltiplo de PEE */
         .pee-objective-box {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -242,7 +240,6 @@
             background-color: var(--color-primary-hover);
         }
 
-        /* Estilos para Popups Personalizados (Modais) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -314,12 +311,6 @@
             color: white;
         }
         .modal-btn-primary:hover { background-color: var(--color-primary-hover); }
-
-        .modal-btn-secondary {
-            background-color: #e2e8f0;
-            color: #334155;
-        }
-        .modal-btn-secondary:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -584,27 +575,10 @@
                     mediaInput.value = 'Ainda sem avaliações registadas para esta atividade.';
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
-            } else {
-                nomeInput.value = '';
-                anoInput.value = '';
-                tipoInput.value = '';
-                mediaInput.value = '';
-                sugestoesInput.value = '';
-                aviso.style.display = 'block';
-            }
-        }
 
-        // Carregar dados existentes ao abrir a página via URL
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
-
-            if (numeroAtivUrl) {
-                document.getElementById('numeroAtividade').value = numeroAtivUrl;
-                carregarDadosAtividade(numeroAtivUrl);
-
+                // Preencher dados do registo existente (se houver) e marcar os checkboxes corretamente
                 const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-                const regExistente = registos.find(r => String(r.numeroAtividade) === String(numeroAtivUrl));
+                const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
 
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
@@ -630,7 +604,31 @@
                     }
 
                     document.getElementById('resumoConclusoes').value = regExistente.resumoConclusoes || '';
+                } else {
+                    // Limpar campos de edição caso altere para uma atividade que não tem registo
+                    document.getElementById('paaSelect').value = '';
+                    document.getElementById('peeSelect').value = '';
+                    controlarCamposPEE();
+                    document.getElementById('resumoConclusoes').value = '';
                 }
+            } else {
+                nomeInput.value = '';
+                anoInput.value = '';
+                tipoInput.value = '';
+                mediaInput.value = '';
+                sugestoesInput.value = '';
+                aviso.style.display = 'block';
+            }
+        }
+
+        // Carregar dados existentes ao abrir a página via URL
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
+
+            if (numeroAtivUrl) {
+                document.getElementById('numeroAtividade').value = numeroAtivUrl;
+                carregarDadosAtividade(numeroAtivUrl);
             }
         });
 
@@ -673,8 +671,10 @@
             };
 
             if (indexExistente !== -1) {
+                // Atualiza o registo existente sem criar duplicado
                 registos[indexExistente] = dadosRegisto;
             } else {
+                // Cria um novo registo
                 registos.push(dadosRegisto);
             }
 
