@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios e Estatísticas - Registos Covão</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .report-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-top: 1.5rem;
+        }
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+        .chart-bar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .chart-bar-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main, #1f2937);
+        }
+        .chart-bar-bg {
+            background: #f3f4f6;
+            border-radius: 6px;
+            height: 16px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .chart-bar-fill {
+            background: var(--color-primary, #15803d);
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -30,10 +70,10 @@
 
         <h3 style="margin-bottom: 1rem; color: var(--color-primary); margin-top: 1.5rem;">Resumo Geral do Sistema</h3>
 
-        <!-- Grelha de Estatísticas -->
+        <!-- Grelha de Estatísticas Principais -->
         <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
             <div class="stat-box" style="border-top: 4px solid var(--color-primary);">
-                <h4>Número de Atividades</h4>
+                <h4>Nº de Atividades</h4>
                 <p id="statAtividades" style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">0</p>
             </div>
             <div class="stat-box" style="border-top: 4px solid #16a34a;">
@@ -50,10 +90,34 @@
             </div>
         </div>
 
-        <!-- Área para futuras adições -->
-        <div style="margin-top: 2rem; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Informações Adicionais</h4>
-            <p style="color: var(--text-light); font-size: 0.95rem;">Esta página está preparada para receber novas tabelas, gráficos ou filtros de relatórios conforme precisares mais à frente.</p>
+        <!-- Estatísticas PAA e PEE -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+            <div class="stat-box" style="border-top: 4px solid #0284c7; background: white;">
+                <h4>Atividades do PAA</h4>
+                <p id="statPAA" style="font-size: 1.8rem; font-weight: bold; color: #0284c7;">0</p>
+            </div>
+            <div class="stat-box" style="border-top: 4px solid #d97706; background: white;">
+                <h4>Atividades do PEE</h4>
+                <p id="statPEE" style="font-size: 1.8rem; font-weight: bold; color: #d97706;">0</p>
+            </div>
+        </div>
+
+        <!-- Gráfico / Distribuição por Objetivos -->
+        <div class="report-section">
+            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Distribuição por Objetivos</h4>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Contagem de registos associados a cada objetivo estratégico ou pedagógico.</p>
+            <div id="chartObjetivos" class="chart-container">
+                <!-- Preenchido dinamicamente por JS -->
+            </div>
+        </div>
+
+        <!-- Gráfico / Distribuição por Metas -->
+        <div class="report-section">
+            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Distribuição por Metas</h4>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Contagem de registos associados a cada meta definida.</p>
+            <div id="chartMetas" class="chart-container">
+                <!-- Preenchido dinamicamente por JS -->
+            </div>
         </div>
     </div>
 
@@ -63,26 +127,122 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('welcomeName').innerText = currentUser.name;
+            document.getElementById('welcomeName').innerText = currentUser.name || currentUser.nome || 'Utilizador';
         }
 
-        // Carregar contagens dinâmicas do localStorage
+        // Função auxiliar para criar barras de gráficos dinâmicos
+        function renderizarGraficoBarras(containerId, dadosObjeto) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const chaves = Object.keys(dadosObjeto);
+            if (chaves.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-light); font-size: 0.9rem;">Sem dados registados para este gráfico.</p>`;
+                return;
+            }
+
+            // Encontrar o valor máximo para calcular a percentagem da barra
+            const maxValor = Math.max(...Object.values(dadosObjeto), 1);
+
+            chaves.forEach(chave => {
+                const quantidade = dadosObjeto[chave];
+                const percentagem = Math.round((quantidade / maxValor) * 100);
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'chart-bar-item';
+                itemDiv.innerHTML = `
+                    <div class="chart-bar-info">
+                        <span>${chave}</span>
+                        <span>${quantidade}</span>
+                    </div>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // Carregar relatórios e contagens dinâmicas do localStorage
         function carregarRelatorios() {
-            // 1. Atividades
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            // Verificar as chaves comuns onde os dados costumam ser guardados (incluindo o CAA ou atividades gerais)
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
             document.getElementById('statAtividades').innerText = atividades.length;
 
-            // 2. Atividades Avaliadas
+            // Atividades Avaliadas
             const avaliadas = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            document.getElementById('statAvaliadas').innerText = avaliadas.length || atividades.filter(a => a.avaliada || a.estado === 'Avaliada').length;
+            const totalAvaliadas = avaliadas.length > 0 ? avaliadas.length : atividades.filter(a => a.avaliada || a.estado === 'Avaliada' || (a.formas_avaliacao && a.formas_avaliacao.trim() !== '')).length;
+            document.getElementById('statAvaliadas').innerText = totalAvaliadas;
 
-            // 3. Objetivos
+            // Objetivos (Total de registos na tabela de objetivos)
             const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
             document.getElementById('statObjetivos').innerText = objetivos.length;
 
-            // 4. Requisições
+            // Requisições
             const requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoes.length;
+
+            // Contagem PAA e PEE (procura propriedades 'tipo', 'ambito' ou campo de texto nos registos)
+            let contadorPAA = 0;
+            let contadorPEE = 0;
+
+            atividades.forEach(item => {
+                const textoItem = JSON.stringify(item).toLowerCase();
+                if (item.paa || item.ambito === 'PAA' || textoItem.includes('paa')) {
+                    contadorPAA++;
+                }
+                if (item.pee || item.ambito === 'PEE' || textoItem.includes('pee')) {
+                    contadorPEE++;
+                }
+            });
+
+            document.getElementById('statPAA').innerText = contadorPAA;
+            document.getElementById('statPEE').innerText = contadorPEE;
+
+            // Recolher dados para os Gráficos por Objetivo e por Meta
+            let contagemObjetivos = {};
+            let contagemMetas = {};
+
+            // Analisar se existem objetivos detalhados guardados separadamente ou dentro das atividades
+            if (objetivos.length > 0) {
+                objetivos.forEach(obj => {
+                    const nomeObj = obj.nome || obj.descricao || obj.objetivo || 'Outros';
+                    contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
+                });
+            } else {
+                // Se não houver tabela dedicada, extrai do campo 'objetivos' das atividades
+                atividades.forEach(a => {
+                    if (a.objetivos) {
+                        const objs = a.objetivos.split('\n'); // divide por linhas se houver vários
+                        objs.forEach(o => {
+                            if (o.trim().length > 3) {
+                                const chaveCurta = o.trim().substring(0, 40) + (o.trim().length > 40 ? '...' : '');
+                                contagemObjetivos[chaveCurta] = (contagemObjetivos[chaveCurta] || 0) + 1;
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Recolher metas (procura propriedades de metas nos registos ou localStorage dedicado)
+            const metasGuardadas = JSON.parse(localStorage.getItem('metas')) || [];
+            if (metasGuardadas.length > 0) {
+                metasGuardadas.forEach(m => {
+                    const nomeMeta = m.nome || m.meta || 'Meta Geral';
+                    contagemMetas[nomeMeta] = (contagemMetas[nomeMeta] || 0) + 1;
+                });
+            } else {
+                atividades.forEach(a => {
+                    if (a.meta || a.metas) {
+                        const mStr = a.meta || a.metas;
+                        contagemMetas[mStr] = (contagemMetas[mStr] || 0) + 1;
+                    }
+                });
+            }
+
+            // Renderizar gráficos na página
+            renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
+            renderizarGraficoBarras('chartMetas', contagemMetas);
         }
 
         carregarRelatorios();
