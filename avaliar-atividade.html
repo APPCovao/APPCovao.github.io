@@ -6,13 +6,13 @@
     <title>Avaliar Atividade - Registos Covão</title>
     <style>
         :root {
-            --primary-green: #15803d;
-            --primary-green-hover: #166534;
+            --color-primary: #15803d;
+            --color-primary-hover: #166534;
             --bg-page: #f0fdf4;
             --card-bg: #ffffff;
-            --text-main: #1f2937;
             --border-color: #bbf7d0;
-            --color-accent: #0d9488;
+            --text-main: #1f2937;
+            --text-light: #4b5563;
         }
 
         body {
@@ -41,8 +41,52 @@
             font-size: 1.1rem;
         }
 
-        .btn-voltar-menu {
-            background-color: #2563eb;
+        .navbar .brand img {
+            height: 32px;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #dcfce7;
+        }
+
+        /* Estilo idêntico à imagem de referência */
+        .caa-container {
+            max-width: 850px;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .caa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .caa-title h2 {
+            color: var(--color-primary);
+            font-size: 1.4rem;
+            margin: 0 0 4px 0;
+        }
+
+        .caa-title p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .btn-top-voltar {
+            background-color: #1e293b;
             color: white;
             border: none;
             padding: 6px 14px;
@@ -57,35 +101,8 @@
             transition: background 0.2s;
         }
 
-        .btn-voltar-menu:hover {
-            background-color: #1d4ed8;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .form-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-        }
-
-        h1 {
-            color: var(--color-accent);
-            font-size: 24px;
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-
-        p.subtitle {
-            color: #4b5563;
-            font-size: 14px;
-            margin-bottom: 25px;
+        .btn-top-voltar:hover {
+            background-color: #0f172a;
         }
 
         .form-group {
@@ -107,7 +124,7 @@
         select, input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid #d1d5db;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-size: 14px;
             box-sizing: border-box;
@@ -116,16 +133,16 @@
         }
 
         input[readonly] {
-            background-color: #e5e7eb !important;
-            color: #1f2937 !important;
+            background-color: #f8fafc !important;
+            color: var(--color-primary) !important;
             font-weight: 600 !important;
             cursor: not-allowed;
         }
 
         select:focus, input:focus, textarea:focus {
             outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
         textarea {
@@ -133,38 +150,44 @@
             min-height: 100px;
         }
 
-        .form-buttons {
+        .form-actions {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
             margin-top: 30px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid var(--border-color);
             padding-top: 20px;
         }
 
-        .btn {
-            padding: 10px 20px;
+        .btn-acao {
+            padding: 10px 18px;
             border-radius: 8px;
             font-weight: 600;
             border: none;
             cursor: pointer;
             font-size: 14px;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
 
-        .btn-cancel {
-            background-color: #e2e8f0;
-            color: #334155;
-        }
-        .btn-cancel:hover { background-color: #cbd5e1; }
-
-        .btn-submit {
-            background-color: var(--color-accent);
+        .btn-cancelar {
+            background-color: #64748b;
             color: white;
         }
-        .btn-submit:hover { background-color: #0f766e; }
+        .btn-cancelar:hover {
+            background-color: #475569;
+        }
 
-        /* Estilos para Popups Personalizados */
+        .btn-guardar {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        .btn-guardar:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Estilos para Popups Personalizados (Modais) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -232,10 +255,10 @@
         }
 
         .modal-btn-primary {
-            background-color: var(--color-accent);
+            background-color: var(--color-primary);
             color: white;
         }
-        .modal-btn-primary:hover { background-color: #0f766e; }
+        .modal-btn-primary:hover { background-color: var(--color-primary-hover); }
 
         .modal-btn-secondary {
             background-color: #e2e8f0;
@@ -248,89 +271,93 @@
 
     <nav class="navbar">
         <div class="brand">
-            <span>Registos Covão - Avaliação</span>
+            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
+            <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <a href="atividades.html" class="btn-voltar-menu">⬅️ Voltar às Atividades</a>
+            <span>Olá, <strong id="userNameSpan"></strong></span>
         </div>
     </nav>
 
-    <div class="main-container">
-        <div class="form-card">
-            <h1>Avaliar Atividade</h1>
-            <p class="subtitle">Escreva o número da atividade para preencher automaticamente o nome, e submeta a avaliação.</p>
+    <div class="caa-container">
+        <div class="caa-header">
+            <div class="caa-title">
+                <h2>Avaliar Atividade</h2>
+                <p>EB1/PE do Covão e Vargens – Registo de Atividades Pedagógicas</p>
+            </div>
+            <a href="atividades.html" class="btn-top-voltar">⬅️ Voltar</a>
+        </div>
 
-            <form id="formAvaliacao" onsubmit="guardarAvaliacao(event)">
-                
-                <!-- Escrita do Número da Atividade -->
-                <div class="form-group">
-                    <label>Número da Atividade <span class="required">*</span></label>
-                    <input type="number" id="inputNumeroAtividade" required placeholder="Digite o número da atividade..." oninput="atualizarNomeAtividade()">
-                </div>
+        <form id="formAvaliacao" onsubmit="guardarAvaliacao(event)">
+            
+            <!-- Escrita do Número da Atividade -->
+            <div class="form-group">
+                <label>Número da Atividade <span class="required">*</span></label>
+                <input type="number" id="inputNumeroAtividade" required placeholder="Digite o número da atividade..." oninput="atualizarNomeAtividade()">
+            </div>
 
-                <!-- Nome da Atividade (Preenchimento Automático) -->
-                <div class="form-group">
-                    <label>Nome / Título da Atividade (Preenchimento Automático)</label>
-                    <input type="text" id="inputNomeAtividade" readonly placeholder="Será preenchido automaticamente...">
-                </div>
+            <!-- Nome da Atividade (Preenchimento Automático) -->
+            <div class="form-group">
+                <label>Nome / Título da Atividade (Preenchimento Automático)</label>
+                <input type="text" id="inputNomeAtividade" readonly placeholder="Será preenchido automaticamente...">
+            </div>
 
+            <div class="form-group">
+                <label>Docente / Aluno <span class="required">*</span></label>
+                <select id="tipoAvaliador" required>
+                    <option value="">Selecione o tipo de avaliador</option>
+                    <option value="Docente">Docente</option>
+                    <option value="Aluno">Aluno</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;">
                 <div class="form-group">
-                    <label>Docente / Aluno <span class="required">*</span></label>
-                    <select id="tipoAvaliador" required>
-                        <option value="">Selecione o tipo de avaliador</option>
-                        <option value="Docente">Docente</option>
-                        <option value="Aluno">Aluno</option>
-                        <option value="Outro">Outro</option>
+                    <label>Pertinência (1-5) <span class="required">*</span></label>
+                    <select id="pertinencia" required>
+                        <option value="">Selecione</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
                     </select>
                 </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;">
-                    <div class="form-group">
-                        <label>Pertinência (1-5) <span class="required">*</span></label>
-                        <select id="pertinencia" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Dinâmica (1-5) <span class="required">*</span></label>
-                        <select id="dinamica" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Interesse (1-5) <span class="required">*</span></label>
-                        <select id="interesse" required>
-                            <option value="">Selecione</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="form-group">
-                    <label>Sugestões / Observações</label>
-                    <textarea id="sugestoes" placeholder="Insira comentários, sugestões ou pontos de melhoria..."></textarea>
+                    <label>Dinâmica (1-5) <span class="required">*</span></label>
+                    <select id="dinamica" required>
+                        <option value="">Selecione</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label>Interesse (1-5) <span class="required">*</span></label>
+                    <select id="interesse" required>
+                        <option value="">Selecione</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
 
-                <div class="form-buttons">
-                    <a href="atividades.html" class="btn btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn btn-submit">Guardar Avaliação</button>
-                </div>
-            </form>
-        </div>
+            <div class="form-group">
+                <label>Sugestões / Observações</label>
+                <textarea id="sugestoes" placeholder="Insira comentários, sugestões ou pontos de melhoria..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="atividades.html" class="btn-acao btn-cancelar">Voltar / Fechar</a>
+                <button type="submit" class="btn-acao btn-guardar">Guardar Avaliação</button>
+            </div>
+        </form>
     </div>
 
     <!-- Popup Personalizado (Modal) -->
@@ -349,6 +376,8 @@
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser) {
             window.location.href = 'index.html';
+        } else {
+            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
         }
 
         // Função para mostrar Popup Personalizado
