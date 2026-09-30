@@ -4,127 +4,283 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios e Estatísticas - Registos Covão</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        .report-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-top: 1.5rem;
+        :root {
+            --primary-green: #15803d;
+            --primary-green-hover: #166534;
+            --bg-page: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border-color: #bbf7d0;
         }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #14532d;
+            padding: 0.8rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .navbar .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .navbar .nav-right span {
+            color: #dcfce7;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-header-card h1 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin: 0 0 6px 0;
+        }
+
+        .section-header-card p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .btn-top-action {
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-top-action:hover {
+            background-color: #0f172a;
+        }
+
+        /* Cartão de Destaque Único */
+        .stat-main-card {
+            background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-main-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: #dcfce7;
+            font-weight: 500;
+        }
+
+        .stat-main-card .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .stat-main-card .stat-icon {
+            font-size: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        /* Grelha de Relatórios (Gráficos) */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .report-section {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .report-section h4 {
+            color: var(--primary-green);
+            font-size: 18px;
+            margin: 0 0 6px 0;
+        }
+
+        .report-section p {
+            color: #4b5563;
+            font-size: 13px;
+            margin: 0 0 20px 0;
+        }
+
         .chart-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 1rem;
+            gap: 14px;
         }
+
         .chart-bar-item {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
+
         .chart-bar-info {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 13px;
             font-weight: 600;
-            color: var(--text-main, #1f2937);
+            color: var(--text-main);
         }
+
         .chart-bar-bg {
             background: #f3f4f6;
             border-radius: 6px;
-            height: 16px;
+            height: 14px;
             width: 100%;
             overflow: hidden;
         }
+
         .chart-bar-fill {
-            background: var(--color-primary, #15803d);
+            background: var(--primary-green);
             height: 100%;
             border-radius: 6px;
-            transition: width 0.5s ease;
+            transition: width 0.6s ease;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
+
+    <nav class="navbar">
         <div class="brand">
-            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span>Registos Covão</span>
+            <span>📦 Registos Covão</span>
         </div>
-        <div class="user-info">
-            <span>Olá, <strong id="welcomeName">Utilizador</strong></span>
-            <a href="dashboard.html" class="btn" style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; margin-right: 0.5rem; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem;">Painel</a>
-            <a href="index.html" class="logout-btn" onclick="localStorage.removeItem('currentUser')">Sair</a>
+        <div class="nav-right">
+            <span>Olá, <strong id="userNameDisplay">Administrador Covão</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Voltar ao Menu</a>
         </div>
-    </div>
+    </nav>
 
-    <div class="container">
-        <div class="dashboard-header">
+    <div class="main-container">
+        
+        <!-- Cabeçalho -->
+        <div class="section-header-card">
             <div>
-                <h2>Relatórios e Estatísticas</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Visão global dos registos e dados do sistema</p>
+                <h1>Relatórios e Estatísticas</h1>
+                <p>Análise detalhada das requisições de equipamentos por área e tipo.</p>
             </div>
-            <a href="dashboard.html" class="btn btn-secondary" style="width: auto; padding: 0.5rem 1rem;">← Voltar ao Painel</a>
-        </div>
-
-        <h3 style="margin-bottom: 1rem; color: var(--color-primary); margin-top: 1.5rem;">Resumo Geral do Sistema</h3>
-
-        <!-- Grelha de Estatísticas Principais -->
-        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-            <div class="stat-box" style="border-top: 4px solid var(--color-primary);">
-                <h4>Nº de Atividades</h4>
-                <p id="statAtividades" style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">0</p>
-            </div>
-            <div class="stat-box" style="border-top: 4px solid #16a34a;">
-                <h4>Atividades Avaliadas</h4>
-                <p id="statAvaliadas" style="font-size: 2rem; font-weight: bold; color: #16a34a;">0</p>
-            </div>
-            <div class="stat-box" style="border-top: 4px solid #9333ea;">
-                <h4>Registo de Objetivos</h4>
-                <p id="statObjetivos" style="font-size: 2rem; font-weight: bold; color: #9333ea;">0</p>
-            </div>
-            <div class="stat-box" style="border-top: 4px solid var(--color-accent);">
-                <h4>Nº de Requisições</h4>
-                <p id="statRequisicoes" style="font-size: 2rem; font-weight: bold; color: var(--color-accent);">0</p>
+            <div>
+                <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
             </div>
         </div>
 
-        <!-- Estatísticas PAA e PEE -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
-            <div class="stat-box" style="border-top: 4px solid #0284c7; background: white;">
-                <h4>Atividades do PAA</h4>
-                <p id="statPAA" style="font-size: 1.8rem; font-weight: bold; color: #0284c7;">0</p>
+        <!-- Cartão de Destaque: Total de Requisições -->
+        <div class="stat-main-card">
+            <div>
+                <h3>Total de Requisições Registadas</h3>
+                <p id="statRequisicoes" class="stat-value">0</p>
             </div>
-            <div class="stat-box" style="border-top: 4px solid #d97706; background: white;">
-                <h4>Atividades do PEE</h4>
-                <p id="statPEE" style="font-size: 1.8rem; font-weight: bold; color: #d97706;">0</p>
-            </div>
+            <div class="stat-icon">📊</div>
         </div>
 
-        <!-- Gráfico / Distribuição por Objetivos -->
-        <div class="report-section">
-            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Distribuição por Objetivos</h4>
-            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Contagem de registos associados a cada objetivo estratégico ou pedagógico.</p>
-            <div id="chartObjetivos" class="chart-container"></div>
+        <!-- Grelha de Gráficos (Áreas e Equipamentos) -->
+        <div class="reports-grid">
+            
+            <!-- Gráfico / Distribuição por Área -->
+            <div class="report-section">
+                <h4>Requisições por Área</h4>
+                <p>Volume de pedidos divididos pelas áreas letivas.</p>
+                <div id="chartAreas" class="chart-container"></div>
+            </div>
+
+            <!-- Gráfico / Distribuição por Equipamento -->
+            <div class="report-section">
+                <h4>Requisições por Equipamento</h4>
+                <p>Materiais e dispositivos mais requisitados.</p>
+                <div id="chartEquipamentos" class="chart-container"></div>
+            </div>
+
         </div>
 
-        <!-- Gráfico / Distribuição por Metas -->
-        <div class="report-section">
-            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Distribuição por Metas</h4>
-            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Contagem de registos associados a cada meta definida.</p>
-            <div id="chartMetas" class="chart-container"></div>
-        </div>
     </div>
 
-    <script src="js/auth.js"></script>
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(!currentUser) {
-            window.location.href = 'index.html';
-        } else {
-            document.getElementById('welcomeName').innerText = currentUser.name || currentUser.nome || 'Utilizador';
-        }
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
+        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador Covão';
 
         function renderizarGraficoBarras(containerId, dadosObjeto) {
             const container = document.getElementById(containerId);
@@ -132,7 +288,7 @@
 
             const chaves = Object.keys(dadosObjeto);
             if (chaves.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-light); font-size: 0.9rem;">Sem dados registados para este gráfico.</p>`;
+                container.innerHTML = `<p style="color: #6b7280; font-size: 13px; text-align: center; padding: 20px;">Sem dados registados para este relatório.</p>`;
                 return;
             }
 
@@ -147,7 +303,7 @@
                 itemDiv.innerHTML = `
                     <div class="chart-bar-info">
                         <span>${chave}</span>
-                        <span>${quantidade}</span>
+                        <span style="color: var(--primary-green);">${quantidade}</span>
                     </div>
                     <div class="chart-bar-bg">
                         <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
@@ -157,91 +313,28 @@
             });
         }
 
-        // Função rigorosa para encontrar o número mais alto (máximo) numa lista, testando várias propriedades possíveis
-        function obterNumeroMaisAlto(lista) {
-            if (!lista || lista.length === 0) return 0;
-            let maxVal = 0;
-            lista.forEach(item => {
-                // Procura por campos comuns de numeração gerados nos formulários
-                const possiveisValores = [
-                    item.numero, item.id, item.num, item.numeroAtividade, 
-                    item.numero_atividade, item.registo, item.codigo
-                ];
-                
-                possiveisValores.forEach(val => {
-                    const num = parseInt(val);
-                    if (!isNaN(num) && num > maxVal) {
-                        maxVal = num;
-                    }
-                });
-            });
-            // Se encontrar algum número válido nas propriedades, retorna-o; caso contrário, retorna o comprimento total da lista
-            return maxVal > 0 ? maxVal : lista.length;
-        }
-
         function carregarRelatorios() {
-            // 1. Nº de Atividades (Lê do localStorage de atividades)
-            const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            document.getElementById('statAtividades').innerText = obterNumeroMaisAlto(atividadesLista);
-
-            // 2. Atividades Avaliadas (Lê do localStorage de avaliação de atividades)
-            const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            document.getElementById('statAvaliadas').innerText = obterNumeroMaisAlto(avaliadasLista);
-
-            // 3. Registo de Objetivos (Lê do localStorage de registar objetivos)
-            const objetivosLista = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
-            document.getElementById('statObjetivos').innerText = obterNumeroMaisAlto(objetivosLista);
-
-            // 4. Nº de Requisições (Mantém a lógica que já confirmaste estar correta)
+            // Obter requisições do localStorage
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            document.getElementById('statRequisicoes').innerText = obterNumeroMaisAlto(requisicoesLista);
+            
+            // 1. Total de Requisições
+            document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // 5. Atividades PAA e PEE (Conta quantas vezes foi selecionado "Sim" dentro dos registos de objetivos)
-            let contadorPAA = 0;
-            let contadorPEE = 0;
+            // 2. Contagens para os Gráficos
+            let contagemAreas = {};
+            let contagemEquipamentos = {};
 
-            objetivosLista.forEach(item => {
-                // Verifica todas as variações possíveis para os campos de PAA e PEE (seja boolean, string "sim", etc.)
-                const paa = String(item.paa || item.inclui_paa || item.ambito_paa || item.selectPAA || '').trim().toLowerCase();
-                const pee = String(item.pee || item.inclui_pee || item.ambito_pee || item.selectPEE || '').trim().toLowerCase();
+            requisicoesLista.forEach(req => {
+                const area = req.area || 'Outras';
+                const equipamento = req.equipamento || 'Outro';
 
-                if (paa === 'sim' || paa === 'true' || paa === '1' || paa === 's') {
-                    contadorPAA++;
-                }
-                if (pee === 'sim' || pee === 'true' || pee === '1' || pee === 's') {
-                    contadorPEE++;
-                }
+                contagemAreas[area] = (contagemAreas[area] || 0) + 1;
+                contagemEquipamentos[equipamento] = (contagemEquipamentos[equipamento] || 0) + 1;
             });
 
-            document.getElementById('statPAA').innerText = contadorPAA;
-            document.getElementById('statPEE').innerText = contadorPEE;
-
-            // Gráficos por Objetivos e Metas
-            let contagemObjetivos = {};
-            let contagemMetas = {};
-
-            objetivosLista.forEach(obj => {
-                const nomeObj = obj.nome || obj.descricao || obj.objetivo || obj.titulo || 'Outros';
-                contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
-            });
-
-            const metasGuardadas = JSON.parse(localStorage.getItem('metas')) || [];
-            if (metasGuardadas.length > 0) {
-                metasGuardadas.forEach(m => {
-                    const nomeMeta = m.nome || m.meta || m.descricao || 'Meta Geral';
-                    contagemMetas[nomeMeta] = (contagemMetas[nomeMeta] || 0) + 1;
-                });
-            } else {
-                objetivosLista.forEach(a => {
-                    const mStr = a.meta || a.metas;
-                    if (mStr) {
-                        contagemMetas[mStr] = (contagemMetas[mStr] || 0) + 1;
-                    }
-                });
-            }
-
-            renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
-            renderizarGraficoBarras('chartMetas', contagemMetas);
+            // Renderizar gráficos de barras limpos
+            renderizarGraficoBarras('chartAreas', contagemAreas);
+            renderizarGraficoBarras('chartEquipamentos', contagemEquipamentos);
         }
 
         carregarRelatorios();
