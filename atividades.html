@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAA - Centro de Apoio à Aprendizagem</title>
+    <title>Atividades - CAA</title>
     <style>
         :root {
             --primary-green: #15803d;
@@ -22,7 +22,6 @@
             padding: 0;
         }
 
-        /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
             padding: 0.8rem 2rem;
@@ -72,14 +71,12 @@
             background-color: #1d4ed8;
         }
 
-        /* Contentor Principal */
         .main-container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
-        /* Cartão de Cabeçalho da Secção */
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -109,7 +106,6 @@
             gap: 12px;
         }
 
-        /* Botões do Topo */
         .btn-top-action {
             background-color: #1e293b;
             color: white;
@@ -138,7 +134,6 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Cartão da Tabela */
         .table-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -179,7 +174,6 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela */
         .btn-action {
             padding: 6px 14px;
             border-radius: 6px;
@@ -201,7 +195,6 @@
         .btn-editar { background-color: #047857; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
-        /* Formulário Estilizado */
         .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -357,10 +350,9 @@
 </head>
 <body>
 
-    <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
-            <span>🏫 Gestão CAA</span>
+            <span>🏫 Gestão CAA - Atividades</span>
         </div>
         <div class="nav-right">
             <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
@@ -370,16 +362,16 @@
 
     <div class="main-container">
         
-        <!-- Vista Principal: Tabela e Cabeçalho -->
+        <!-- Vista da Lista de Atividades -->
         <div id="vistaTabela">
             <div class="section-header-card">
                 <div>
-                    <h1>Registos do CAA</h1>
-                    <p>Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
+                    <h1>Atividades e Avaliações (CAA)</h1>
+                    <p>Consulte, crie, avalie ou edite as atividades e objetivos pedagógicos.</p>
                 </div>
                 <div class="header-actions">
                     <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
-                    <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Novo Registo</button>
+                    <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Nova Atividade</button>
                 </div>
             </div>
 
@@ -394,18 +386,18 @@
                         </tr>
                     </thead>
                     <tbody id="caaTableBody">
-                        <!-- Dados injetados por JavaScript -->
+                        <!-- Preenchido via JS -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Vista de Formulário (Oculto por defeito) -->
+        <!-- Formulário Unificado (Criar / Editar / Ver / Avaliar) -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">CAA - Centro de Apoio à Aprendizagem</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 14px;">EB1/PE do Covão e Vargem - Registo de Atividades Pedagógicas</p>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">Gestão de Atividade CAA</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 14px;">EB1/PE do Covão e Vargem</p>
                 </div>
                 <button class="btn-top-action" onclick="fecharFormulario()">← Voltar</button>
             </div>
@@ -467,8 +459,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="formas_avaliacao">8. Média Geral de Avaliação (Pertinência, Dinâmica e Interesse global) <span class="required">*</span></label>
-                    <input type="number" step="0.1" min="1" max="5" id="formas_avaliacao" name="formas_avaliacao" placeholder="Ex: 4.5" required>
+                    <label for="formas_avaliacao">8. Média da Avaliação <span class="required">*</span></label>
+                    <input type="number" step="0.1" min="1" max="5" id="formas_avaliacao" name="formas_avaliacao" placeholder="Média global única (pertinência, dinâmica e interesse de todos os avaliadores)" required>
                 </div>
 
                 <div class="form-group">
@@ -484,7 +476,7 @@
 
                 <div class="form-group">
                     <label for="observacoes">11. Sugestões (Apenas o conteúdo sugerido)</label>
-                    <textarea id="observacoes" name="observacoes" maxlength="5000" oninput="updateCounter(this, 'counter-obs')" placeholder="Insira aqui as sugestões recolhidas..."></textarea>
+                    <textarea id="observacoes" name="observacoes" maxlength="5000" oninput="updateCounter(this, 'counter-obs')" placeholder="Insira apenas o que foi sugerido..."></textarea>
                     <div id="counter-obs" class="char-counter">Máximo de 5000 carateres</div>
                 </div>
 
@@ -589,7 +581,7 @@
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">Sem registos do CAA guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">Sem registos de atividades guardados.</td></tr>`;
                 return;
             }
 
@@ -632,14 +624,10 @@
                 proximoNumero = Math.max(...numeros) + 1;
             }
             
-            const campoNum = document.getElementById('numero_atividade');
-            campoNum.value = proximoNumero;
-            
-            const nomeResponsavel = currentUser.name || currentUser.nome || currentUser.email;
-            const campoResp = document.getElementById('responsaveis');
-            campoResp.value = nomeResponsavel;
+            document.getElementById('numero_atividade').value = proximoNumero;
+            document.getElementById('responsaveis').value = currentUser.name || currentUser.nome || currentUser.email;
 
-            document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem (Novo Registo)';
+            document.getElementById('formTitle').innerText = 'Criar Nova Atividade CAA';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -671,12 +659,7 @@
             document.getElementById('btnPrintForm').style.display = isSomenteLeitura ? 'inline-flex' : 'none';
         }
 
-        function verRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
-            if (!reg) return;
-
-            document.getElementById('editIndex').value = index;
+        function preencherDadosFormulario(reg) {
             document.getElementById('numero_atividade').value = reg.numero_atividade;
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
@@ -686,18 +669,19 @@
             document.getElementById('responsaveis').value = reg.responsaveis;
             document.getElementById('observacoes').value = reg.observacoes;
 
-            ajustarModoFormulario(true);
-
+            // Turmas selecionadas
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
                 cb.checked = turmasArray.includes(cb.value);
             });
 
+            // Objetivos / Metas selecionados corretamente ao carregar
             const objetivosArray = reg.objetivos ? reg.objetivos.split(' | ') : [];
             document.querySelectorAll('input[name="objetivo"]').forEach(cb => {
                 cb.checked = objetivosArray.includes(cb.value);
             });
 
+            // Imagens
             imagensGuardadas = reg.imagens || [];
             const previewContainer = document.getElementById('imagePreviewContainer');
             previewContainer.innerHTML = '';
@@ -707,8 +691,18 @@
                 wrapper.innerHTML = `<img src="${src}">`;
                 previewContainer.appendChild(wrapper);
             });
+        }
 
-            document.getElementById('formTitle').innerText = 'Visualizar Registo CAA';
+        function verRegisto(index) {
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const reg = registos[index];
+            if (!reg) return;
+
+            document.getElementById('editIndex').value = index;
+            preencherDadosFormulario(reg);
+            ajustarModoFormulario(true);
+
+            document.getElementById('formTitle').innerText = 'Visualizar Atividade CAA';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -725,36 +719,9 @@
 
             ajustarModoFormulario(false);
             document.getElementById('editIndex').value = index;
-            document.getElementById('numero_atividade').value = reg.numero_atividade;
-            document.getElementById('data_atividade').value = reg.data_atividade;
-            document.getElementById('nome_aluno').value = reg.nome_aluno;
-            document.getElementById('atividade').value = reg.atividade;
-            document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
-            document.getElementById('articulacao').value = reg.articulacao;
-            document.getElementById('responsaveis').value = reg.responsaveis;
-            document.getElementById('observacoes').value = reg.observacoes;
+            preencherDadosFormulario(reg);
 
-            const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
-            document.querySelectorAll('input[name="turma"]').forEach(cb => {
-                cb.checked = turmasArray.includes(cb.value);
-            });
-
-            const objetivosArray = reg.objetivos ? reg.objetivos.split(' | ') : [];
-            document.querySelectorAll('input[name="objetivo"]').forEach(cb => {
-                cb.checked = objetivosArray.includes(cb.value);
-            });
-
-            imagensGuardadas = reg.imagens || [];
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            previewContainer.innerHTML = '';
-            imagensGuardadas.forEach(src => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'image-preview-item';
-                wrapper.innerHTML = `<img src="${src}">`;
-                previewContainer.appendChild(wrapper);
-            });
-
-            document.getElementById('formTitle').innerText = 'Editar Registo CAA';
+            document.getElementById('formTitle').innerText = 'Editar Atividade CAA';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
