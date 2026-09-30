@@ -121,15 +121,15 @@
             background-color: #0f172a;
         }
 
-        /* Grelha para os Cartões de Destaque */
+        /* Grelha para os Cartões de Destaque (3 colunas) */
         .stats-grid-top {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
             margin-bottom: 25px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .stats-grid-top {
                 grid-template-columns: 1fr;
             }
@@ -139,39 +139,42 @@
             background: linear-gradient(135deg, #14532d 0%, #166534 100%);
             color: white;
             border-radius: 12px;
-            padding: 30px;
+            padding: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .stat-main-card.alt {
+        .stat-main-card.alt1 {
             background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+        }
+
+        .stat-main-card.alt2 {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         }
 
         .stat-main-card h3 {
             margin: 0 0 8px 0;
-            font-size: 18px;
+            font-size: 16px;
             color: #dcfce7;
             font-weight: 500;
         }
 
-        .stat-main-card.alt h3 {
-            color: #ccfbf1;
-        }
+        .stat-main-card.alt1 h3 { color: #ccfbf1; }
+        .stat-main-card.alt2 h3 { color: #e0f2fe; }
 
         .stat-main-card .stat-value {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 800;
             margin: 0;
         }
 
         .stat-main-card .stat-icon {
-            font-size: 48px;
+            font-size: 40px;
             background: rgba(255, 255, 255, 0.15);
-            padding: 15px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
         }
 
         /* Grelha de Relatórios (Gráficos) */
@@ -261,14 +264,14 @@
         <div class="section-header-card">
             <div>
                 <h1>Relatórios e Estatísticas</h1>
-                <p>Análise detalhada das requisições e atividades do sistema.</p>
+                <p>Análise detalhada das requisições, atividades e avaliações do sistema.</p>
             </div>
             <div>
                 <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
             </div>
         </div>
 
-        <!-- Cartões de Destaque: Total de Requisições e Número de Atividades -->
+        <!-- Cartões de Destaque -->
         <div class="stats-grid-top">
             <div class="stat-main-card">
                 <div>
@@ -278,12 +281,20 @@
                 <div class="stat-icon">📦</div>
             </div>
 
-            <div class="stat-main-card alt">
+            <div class="stat-main-card alt1">
                 <div>
                     <h3>Número de Atividades</h3>
                     <p id="statAtividades" class="stat-value">0</p>
                 </div>
                 <div class="stat-icon">📋</div>
+            </div>
+
+            <div class="stat-main-card alt2">
+                <div>
+                    <h3>Atividades Avaliadas</h3>
+                    <p id="statAvaliadas" class="stat-value">0</p>
+                </div>
+                <div class="stat-icon">⭐</div>
             </div>
         </div>
 
@@ -348,11 +359,15 @@
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // 2. Número de Atividades (Lê do localStorage comum de atividades)
+            // 2. Número de Atividades
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
             document.getElementById('statAtividades').innerText = atividadesLista.length;
 
-            // 3. Contagens para os Gráficos de Requisições
+            // 3. Atividades Avaliadas
+            const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            document.getElementById('statAvaliadas').innerText = avaliadasLista.length;
+
+            // 4. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
