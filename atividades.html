@@ -823,12 +823,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Média das Avaliações (Pertinência, Dinâmica e Interesse)</label>
+                    <label>Média Geral das Avaliações (Pertinência, Dinâmica e Interesse)</label>
                     <input type="text" id="modalObjMedia" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label>Sugestões / Observações Recolhidas</label>
+                    <label>Sugestões Recolhidas</label>
                     <textarea id="modalObjSugestoes" readonly placeholder="Compilação automática das sugestões dos avaliadores..."></textarea>
                 </div>
 
@@ -1137,16 +1137,63 @@
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
 
+            const ativIdReal = reg.atividadeId || (atividadeCorrespondente ? atividadeCorrespondente.id : null);
+            const ativNumReal = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : null);
+
+            // Obter avaliações correspondentes a esta atividade para calcular a média geral e extrair sugestões limpas
+            const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
+            const todasAvs = JSON.parse(localStorage.getItem(chaveAv)) || [];
+            const avsDaAtividade = todasAvs.filter(av => 
+                (ativIdReal && (av.atividadeId == ativIdReal || av.id == ativIdReal)) ||
+                (ativNumReal && (av.numeroAtividade == ativNumReal))
+            );
+
+            let mediaGeralTexto = 'Pendente';
+            let sugestoesFormatadas = '';
+
+            if (avsDaAtividade.length > 0) {
+                let somaTotal = 0;
+                let contagemNotas = 0;
+                let listaSugestoes = [];
+
+                avsDaAtividade.forEach(av => {
+                    const p = parseFloat(av.pertinencia);
+                    const d = parseFloat(av.dinamica);
+                    const i = parseFloat(av.interesse);
+
+                    if (!isNaN(p)) { somaTotal += p; contagemNotas++; }
+                    if (!isNaN(d)) { somaTotal += d; contagemNotas++; }
+                    if (!isNaN(i)) { somaTotal += i; contagemNotas++; }
+
+                    const comentario = av.comentario || av.parecer || av.texto;
+                    if (comentario && typeof comentario === 'string' && comentario.trim() !== '') {
+                        listaSugestoes.push(comentario.trim());
+                    }
+                });
+
+                if (contagemNotas > 0) {
+                    const mediaCalculada = (somaTotal / contagemNotas).toFixed(1);
+                    mediaGeralTexto = `${mediaCalculada} / 5`;
+                }
+
+                if (listaSugestoes.length > 0) {
+                    sugestoesFormatadas = listaSugestoes.join('; - ');
+                }
+            } else {
+                mediaGeralTexto = reg.mediaAvaliacao || reg.media || 'Pendente';
+                sugestoesFormatadas = reg.sugestoes || reg.observacoes || '';
+            }
+
             document.getElementById('editObjetivoId').value = reg.id;
-            document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
+            document.getElementById('modalObjNumAtividade').value = ativNumReal || '-';
             document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : '');
             document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
             document.getElementById('modalObjTipo').value = reg.tipoAtividade || reg.tipo || (atividadeCorrespondente ? atividadeCorrespondente.tipo : '-');
             
             document.getElementById('modalObjPaa').value = reg.paa || '';
             document.getElementById('modalObjPee').value = reg.pee || '';
-            document.getElementById('modalObjMedia').value = reg.mediaAvaliacao || reg.media || 'Pendente';
-            document.getElementById('modalObjSugestoes').value = reg.sugestoes || reg.observacoes || '';
+            document.getElementById('modalObjMedia').value = mediaGeralTexto;
+            document.getElementById('modalObjSugestoes').value = sugestoesFormatadas;
             document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
 
             document.getElementById('modalObjNumAtividade').readOnly = true;
