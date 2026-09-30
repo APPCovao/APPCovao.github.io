@@ -3,9 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Atividade - Registos Covão</title>
+    <title>CAA - Centro de Apoio à Aprendizagem (Novo Registo)</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Estilos específicos para o formulário CAA */
+        .caa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+
+        .caa-title h2 {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .caa-title p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 0.75rem;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #334155;
+        }
+
+        .file-upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--color-primary);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+        }
+
         /* Estilos para Modais Personalizados */
         .custom-modal-overlay {
             display: none;
@@ -69,53 +132,118 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan"></strong></span>
-            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
         </div>
     </div>
 
     <div class="container auth-wrapper" style="min-height: auto; padding: 2rem 1rem;">
-        <div class="auth-card" style="max-width: 600px;">
-            <h2 style="color: var(--color-primary); margin-bottom: 1.5rem; text-align: center;">Registar Nova Atividade</h2>
+        <div class="auth-card" style="max-width: 800px; width: 100%;">
+            
+            <div class="caa-header">
+                <div class="caa-title">
+                    <h2>CAA - Centro de Apoio à Aprendizagem (Novo Registo)</h2>
+                    <p>EB1/PE do Covão e Vargens – Registo de Atividades Pedagógicas</p>
+                </div>
+                <a href="atividades.html" class="btn btn-secondary" style="background-color: #1e293b; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">Voltar</a>
+            </div>
             
             <form id="novaAtividadeForm">
+                <!-- 1. Nº da Atividade -->
                 <div class="form-group">
-                    <label for="numAtividade">Número da Atividade</label>
+                    <label for="numAtividade">1. Nº da Atividade *</label>
                     <input type="text" id="numAtividade" readonly style="background-color: #f8fafc; cursor: not-allowed; font-weight: bold; color: var(--color-primary);">
                 </div>
 
+                <!-- 2. Data da Atividade -->
                 <div class="form-group">
-                    <label for="nomeAtividade">Nome da Atividade</label>
-                    <input type="text" id="nomeAtividade" required placeholder="Insira o nome da atividade">
+                    <label for="dataAtividade">2. Data da Atividade *</label>
+                    <input type="date" id="dataAtividade" required>
                 </div>
 
+                <!-- 3. Nome do Aluno -->
                 <div class="form-group">
-                    <label for="anoLetivo">Ano Letivo</label>
-                    <select id="anoLetivo" required>
-                        <option value="" disabled selected>Selecione o ano letivo</option>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
+                    <label for="nomeAluno">3. Nome do Aluno *</label>
+                    <input type="text" id="nomeAluno" required placeholder="Insira o nome do aluno">
                 </div>
 
+                <!-- 4. Turma(s) / Sala(s) -->
                 <div class="form-group">
-                    <label for="tipoAtividade">Tipo de Atividade</label>
-                    <select id="tipoAtividade" required>
-                        <option value="" disabled selected>Selecione o tipo de atividade</option>
-                        <option value="Atividade">Atividade</option>
-                        <option value="Projeto">Projeto</option>
-                        <option value="Formação/acção">Formação/acção</option>
-                        <option value="Visita de Estudo">Visita de Estudo</option>
-                    </select>
+                    <label>4. Turma(s) / Sala(s) (Pode selecionar várias)</label>
+                    <div class="checkbox-group-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="1ºA"> 1ºA</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="1ºB"> 1ºB</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="2ºA"> 2ºA</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="2ºB"> 2ºB</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="3ºA"> 3ºA</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="3ºB"> 3ºB</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="4ºA"> 4ºA</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="4ºB"> 4ºB</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="Abelhinhas"> Abelhinhas</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="Arco-íris"> Arco-íris</label>
+                        <label class="checkbox-label"><input type="checkbox" name="turmas" value="Flores"> Flores</label>
+                    </div>
                 </div>
 
+                <!-- 5. Atividade -->
                 <div class="form-group">
-                    <label for="criadoPor">Criado por</label>
-                    <input type="text" id="criadoPor" readonly style="background-color: #f8fafc; cursor: not-allowed;">
+                    <label for="nomeAtividade">5. Atividade *</label>
+                    <input type="text" id="nomeAtividade" required placeholder="Insira o nome ou designação da atividade">
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Guardar Atividade</button>
+                <!-- 6. Objetivos -->
+                <div class="form-group">
+                    <label for="objetivos">6. Objetivos *</label>
+                    <textarea id="objetivos" rows="4" required placeholder="Descreva os objetivos..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+                    <small style="color: #64748b; display: block; text-align: right; margin-top: 0.25rem;">Máximo de 10000 caracteres.</small>
+                </div>
+
+                <!-- 7. Descrição da Atividade -->
+                <div class="form-group">
+                    <label for="descricaoAtividade">7. Descrição da Atividade *</label>
+                    <textarea id="descricaoAtividade" rows="5" required placeholder="Descreva detalhadamente a atividade..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+                    <small style="color: #64748b; display: block; text-align: right; margin-top: 0.25rem;">Máximo de 10000 caracteres.</small>
+                </div>
+
+                <!-- 8. Formas de Avaliação -->
+                <div class="form-group">
+                    <label for="formasAvaliacao">8. Formas de Avaliação *</label>
+                    <textarea id="formasAvaliacao" rows="3" required placeholder="Indique as formas de avaliação..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+                    <small style="color: #64748b; display: block; text-align: right; margin-top: 0.25rem;">Máximo de 10000 caracteres.</small>
+                </div>
+
+                <!-- 9. Articulação -->
+                <div class="form-group">
+                    <label for="articulacao">9. Articulação *</label>
+                    <textarea id="articulacao" rows="3" required placeholder="Indique a articulação..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+                    <small style="color: #64748b; display: block; text-align: right; margin-top: 0.25rem;">Máximo de 10000 caracteres.</small>
+                </div>
+
+                <!-- 10. Responsável(eis) -->
+                <div class="form-group">
+                    <label for="responsaveis">10. Responsável(eis) *</label>
+                    <input type="text" id="responsaveis" required style="background-color: #f8fafc;">
+                </div>
+
+                <!-- 11. Observações -->
+                <div class="form-group">
+                    <label for="observacoes">11. Observações *</label>
+                    <textarea id="observacoes" rows="3" placeholder="Observações adicionais..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+                    <small style="color: #64748b; display: block; text-align: right; margin-top: 0.25rem;">Máximo de 10000 caracteres.</small>
+                </div>
+
+                <!-- 12. Registo Fotográfico / Imagens da Atividade -->
+                <div class="form-group">
+                    <label>12. Registo Fotográfico / Imagens da Atividade:</label>
+                    <div class="file-upload-box" onclick="document.getElementById('fileInput').click()">
+                        <span>📁 Clique aqui para adicionar fotografias</span>
+                        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Botões Finais -->
+                <div class="form-actions">
+                    <a href="atividades.html" class="btn" style="background-color: #64748b; color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 6px; font-weight: 600;">Voltar / Fechar</a>
+                    <button type="submit" class="btn btn-primary" style="background-color: #166534; color: white; padding: 0.75rem 1.5rem; border-radius: 6px; border: none; font-weight: 600; cursor: pointer;">Guardar Registo</button>
+                </div>
             </form>
         </div>
     </div>
@@ -124,8 +252,8 @@
     <div id="successModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
-            <h3>Atividade Criada!</h3>
-            <p id="successMessage">A atividade foi registada com sucesso.</p>
+            <h3>Registo Guardado!</h3>
+            <p id="successMessage">O registo do CAA foi guardado com sucesso.</p>
             <button type="button" class="btn-modal" onclick="fecharModalSucesso()">OK</button>
         </div>
     </div>
@@ -138,13 +266,18 @@
             window.location.href = 'index.html';
         } else {
             document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
-            document.getElementById('criadoPor').value = currentUser.name || 'Utilizador';
+            document.getElementById('responsaveis').value = currentUser.name || 'Administrador Covão';
         }
 
-        // Atribuir automaticamente o Número da Atividade seguinte com segurança
+        // Preencher data atual por defeito
+        const hoje = new Date().toISOString().split('T')[0];
+        // Formatar para DD/MM/AAAA se necessário ou manter o input type="date" padrão (AAAA-MM-DD)
+        document.getElementById('dataAtividade').value = hoje;
+
+        // Atribuir automaticamente o Número da Atividade seguinte
         function definirNumeroAutomatico() {
             try {
-                const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                const atividades = JSON.parse(localStorage.getItem('atividadesCAA')) || [];
                 const proximoNumero = atividades.length + 1;
                 const inputNum = document.getElementById('numAtividade');
                 if (inputNum) {
@@ -156,44 +289,54 @@
             }
         }
 
-        // Executar imediatamente ao carregar o script
         definirNumeroAutomatico();
 
         // Lógica de submissão do formulário
         const form = document.getElementById('novaAtividadeForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Impede o recarregamento imediato
+                e.preventDefault();
 
                 let atividades = [];
                 try {
-                    atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                    atividades = JSON.parse(localStorage.getItem('atividadesCAA')) || [];
                 } catch (err) {
                     atividades = [];
                 }
 
                 const proximoNumero = atividades.length + 1;
 
-                const novaAtividade = {
+                // Recolher turmas selecionadas
+                const turmasSelecionadas = [];
+                document.querySelectorAll('input[name="turmas"]:checked').forEach(cb => {
+                    turmasSelecionadas.push(cb.value);
+                });
+
+                const novoRegisto = {
                     id: Date.now(),
                     numero: proximoNumero,
-                    titulo: document.getElementById('nomeAtividade').value.trim(),
-                    anoLetivo: document.getElementById('anoLetivo').value,
-                    tipo: document.getElementById('tipoAtividade').value,
+                    dataAtividade: document.getElementById('dataAtividade').value,
+                    nomeAluno: document.getElementById('nomeAluno').value.trim(),
+                    turmas: turmasSelecionadas,
+                    atividade: document.getElementById('nomeAtividade').value.trim(),
+                    objetivos: document.getElementById('objetivos').value.trim(),
+                    descricao: document.getElementById('descricaoAtividade').value.trim(),
+                    formasAvaliacao: document.getElementById('formasAvaliacao').value.trim(),
+                    articulacao: document.getElementById('articulacao').value.trim(),
+                    responsaveis: document.getElementById('responsaveis').value.trim(),
+                    observacoes: document.getElementById('observacoes').value.trim(),
                     criadorId: currentUser.id || '',
-                    criadorNome: currentUser.name || '',
-                    data: new Date().toISOString().split('T')[0]
+                    criadorNome: currentUser.name || ''
                 };
                 
-                atividades.push(novaAtividade);
-                localStorage.setItem('atividades', JSON.stringify(atividades));
+                atividades.push(novoRegisto);
+                localStorage.setItem('atividadesCAA', JSON.stringify(atividades));
 
-                // Atualizar o texto do modal e exibi-lo corretamente via flex
                 const msgElement = document.getElementById('successMessage');
                 const modalElement = document.getElementById('successModal');
                 
                 if (msgElement) {
-                    msgElement.innerText = `Atividade #${proximoNumero} criada com sucesso!`;
+                    msgElement.innerText = `Registo do CAA #${proximoNumero} guardado com sucesso!`;
                 }
                 if (modalElement) {
                     modalElement.style.display = 'flex';
