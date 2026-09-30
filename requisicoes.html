@@ -23,6 +23,43 @@
             padding: 20px;
         }
 
+        .navbar {
+            background-color: var(--primary);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -20px -20px 25px -20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .navbar .nav-links a:hover {
+            opacity: 0.8;
+        }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -128,7 +165,8 @@
             padding-top: 20px;
         }
 
-        .btn-container button {
+        .btn-container button, 
+        .action-main-btn {
             background-color: var(--primary);
             color: white;
             border: 1px solid transparent;
@@ -146,7 +184,8 @@
             margin: 0;
         }
 
-        .btn-container button:hover {
+        .btn-container button:hover, 
+        .action-main-btn:hover {
             background-color: var(--primary-hover);
         }
 
@@ -159,38 +198,88 @@
         .btn-container button.btn-secondary:hover {
             background-color: #edebe9;
         }
+
+        /* Estilos da Tabela e Vistas */
+        .table-header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+        }
+
+        .table-header-section div h2 {
+            color: var(--primary);
+            font-size: 22px;
+            margin: 0 0 4px 0;
+        }
+
+        .table-header-section div p {
+            margin: 0;
+            font-size: 13px;
+            color: #605e5c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 12px 10px;
+            background-color: #faf9f8;
+            color: #605e5c;
+            font-weight: 600;
+            border-bottom: 2px solid #edebe9;
+            text-align: left;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f2f1;
+            color: var(--text-main);
+        }
+
+        tr:hover td {
+            background-color: #faf9f8;
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar" style="background: #0f766e; padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-radius: 6px;">
-        <div class="logo" style="font-weight: bold; font-size: 1.1rem;">📦 Gestão de Requisições</div>
-        <ul class="nav-links" style="list-style: none; display: flex; gap: 1.5rem; margin: 0;">
-            <li><a href="dashboard.html" style="color: white; text-decoration: none;">Dashboard</a></li>
-            <li><a href="#" id="logoutBtn" style="color: white; text-decoration: none;">Sair</a></li>
+    <nav class="navbar">
+        <div class="logo">📦 Gestão de Requisições</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#" id="logoutBtn">Sair</a></li>
         </ul>
     </nav>
 
     <div class="container">
         
         <!-- Secção do Cabeçalho e Tabela (Vista Principal) -->
-        <div id="seccaoCabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div id="seccaoCabecalho" class="table-header-section">
             <div>
                 <h2>Lista de Requisições</h2>
-                <p style="color: #605e5c; margin: 0;">Consulte, edite ou crie novas requisições de equipamentos.</p>
+                <p>Consulte, edite ou crie novas requisições de equipamentos.</p>
             </div>
-            <button onclick="abrirFormularioCriacao()" style="background-color: #0f766e; color: white; height: 41px; padding: 0 20px; border-radius: 4px; border: none; font-weight: 600; cursor: pointer;">+ Nova Requisição</button>
+            <button class="action-main-btn" onclick="abrirFormularioCriacao()">+ Nova Requisição</button>
         </div>
 
         <div id="containerTabela" style="background: white; border-radius: 8px; overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
+            <table>
                 <thead>
-                    <tr style="border-bottom: 2px solid #edebe9; text-align: left; font-size: 14px;">
-                        <th style="padding: 0.75rem; width: 70px;">Nº</th>
-                        <th style="padding: 0.75rem;">Responsável</th>
-                        <th style="padding: 0.75rem;">Equipamento</th>
-                        <th style="padding: 0.75rem; width: 80px;">Quantidade</th>
-                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
+                    <tr>
+                        <th style="width: 70px;">Nº</th>
+                        <th>Responsável</th>
+                        <th>Equipamento</th>
+                        <th style="width: 80px;">Quantidade</th>
+                        <th style="text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="requisicoesTableBody">
@@ -328,7 +417,6 @@
             window.location.href = 'index.html';
         });
 
-        // Popup personalizado genérico (com suporte a botões de confirmação/ação)
         function mostrarPopupPersonalizado(titulo, mensagem, icone = '📦', onConfirm = null) {
             document.getElementById('popupTitle').innerText = titulo;
             document.getElementById('popupMessage').innerText = mensagem;
@@ -337,7 +425,6 @@
             const btnContainer = document.getElementById('popupButtons');
             
             if (onConfirm) {
-                // Modo de Confirmação (Sim / Cancelar)
                 btnContainer.innerHTML = `
                     <button id="popupCancelBtn" style="background-color: #f3f2f1; color: #323130; border: 1px solid #8a8886; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Cancelar</button>
                     <button id="popupConfirmBtn" style="background-color: #ef4444; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
@@ -353,7 +440,6 @@
                     onConfirm();
                 };
             } else {
-                // Modo de Informação (Apenas OK)
                 btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #0f766e; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
 
@@ -375,31 +461,29 @@
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
 
             if (requisicoes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1rem; text-align: center; color: #605e5c;">Sem requisições registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #605e5c;">Sem requisições registadas.</td></tr>`;
                 return;
             }
 
-            // Inverter para mostrar a última requisição feita em primeiro
             const requisicoesInvertidas = [...requisicoes].reverse();
 
             requisicoesInvertidas.forEach((req, indexInvertido) => {
                 const indexReal = requisicoes.length - 1 - indexInvertido;
                 const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #f3f2f1';
 
                 const temPermissao = currentUser.isAdmin || req.userEmail === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="padding: 0.75rem; font-weight: bold; color: #0f766e;">${req.numero_requisicao}</td>
-                    <td style="padding: 0.75rem;">${req.responsavel}</td>
-                    <td style="padding: 0.75rem; font-weight: 500;">${req.equipamento}</td>
-                    <td style="padding: 0.75rem;">${req.quantidade}</td>
-                    <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
-                        <button onclick="verRequisicao(${indexReal})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Ver</button>
+                    <td style="font-weight: 600; color: #0f766e;">${req.numero_requisicao}</td>
+                    <td>${req.responsavel}</td>
+                    <td style="font-weight: 500;">${req.equipamento}</td>
+                    <td>${req.quantidade}</td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button onclick="verRequisicao(${indexReal})" style="background-color: #e0f2fe; color: #0284c7; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Ver</button>
                         ${temPermissao ? `
-                            <button onclick="editarRequisicao(${indexReal})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer;">Editar</button>
-                            <button onclick="eliminarRequisicao(${indexReal})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem; border: none; border-radius: 4px; cursor: pointer;">Apagar</button>
-                        ` : '<span style="color: #cbd5e1; font-size: 0.85rem;">🔒 Bloqueado</span>'}
+                            <button onclick="editarRequisicao(${indexReal})" style="background-color: #fef3c7; color: #d97706; padding: 0.3rem 0.6rem; margin-right: 4px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Editar</button>
+                            <button onclick="eliminarRequisicao(${indexReal})" style="background-color: #fee2e2; color: #ef4444; padding: 0.3rem 0.6rem; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Apagar</button>
+                        ` : '<span style="color: #8a8886; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -587,7 +671,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // APAGAR COM POPUP PERSONALIZADO DE CONFIRMAÇÃO E RENUMERAÇÃO AUTOMÁTICA
         function eliminarRequisicao(index) {
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const req = requisicoes[index];
@@ -597,16 +680,13 @@
                 return;
             }
 
-            // Chamada do Popup Personalizado com botão de confirmação
             mostrarPopupPersonalizado(
                 'Confirmar Eliminação', 
                 `Tens a certeza que pretendes eliminar a requisição nº ${req.numero_requisicao}?`, 
                 '⚠️', 
                 () => {
-                    // Remove o item selecionado
                     requisicoes.splice(index, 1);
 
-                    // Reindexa / Renumera sequencialmente de 1 em diante
                     requisicoes.forEach((r, idx) => {
                         r.numero_requisicao = idx + 1;
                     });
