@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Requisições - Gestão de Equipamentos</title>
+    <title>Requisições e Equipamentos - Registos Covão</title>
     <style>
         :root {
             --primary-green: #15803d;
@@ -22,7 +22,6 @@
             padding: 0;
         }
 
-        /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
             padding: 0.8rem 2rem;
@@ -39,12 +38,6 @@
             gap: 12px;
             font-weight: 600;
             font-size: 1.1rem;
-        }
-
-        .navbar .brand img, .navbar .brand svg {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
         }
 
         .navbar .nav-right {
@@ -78,14 +71,12 @@
             background-color: #1d4ed8;
         }
 
-        /* Contentor Principal */
         .main-container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
-        /* Cartão de Cabeçalho da Secção */
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -115,7 +106,6 @@
             gap: 12px;
         }
 
-        /* Botões do Topo */
         .btn-top-action {
             background-color: #1e293b;
             color: white;
@@ -144,7 +134,6 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Cartão da Tabela */
         .table-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -185,7 +174,6 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela */
         .btn-action {
             padding: 6px 14px;
             border-radius: 6px;
@@ -207,7 +195,6 @@
         .btn-editar { background-color: #047857; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
-        /* Formulário Estilizado */
         .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -264,7 +251,6 @@
 </head>
 <body>
 
-    <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
             <span>📦 Registos Covão</span>
@@ -277,16 +263,16 @@
 
     <div class="main-container">
         
-        <!-- Vista Principal: Tabela e Cabeçalho -->
+        <!-- Vista Principal: Tabela -->
         <div id="vistaTabela">
             <div class="section-header-card">
                 <div>
-                    <h1>Atividades Registadas</h1>
-                    <p>Consulta e gestão de todas as atividades criadas no sistema.</p>
+                    <h1>Requisições e Equipamentos</h1>
+                    <p>Consulta e gestão de requisições por área e equipamento.</p>
                 </div>
                 <div class="header-actions">
                     <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
-                    <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Criar Nova Atividade</button>
+                    <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Nova Requisição</button>
                 </div>
             </div>
 
@@ -294,24 +280,25 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 140px;">Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th>Criado Por</th>
+                            <th style="width: 100px;">Nº</th>
+                            <th>Área</th>
+                            <th>Equipamento / Material</th>
+                            <th>Responsável</th>
                             <th style="width: 240px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="requisicoesTableBody">
-                        <!-- Dados injetados por JavaScript -->
+                        <!-- Injetado por JS -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Vista de Formulário (Oculto por defeito) -->
+        <!-- Vista de Formulário -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">Registar Nova Atividade</h1>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">Registar Nova Requisição</h1>
                     <p id="formSubtitle" style="margin: 0; color: #4b5563; font-size: 14px;">Preencha os dados abaixo.</p>
                 </div>
                 <button class="btn-top-action" onclick="fecharFormulario()">← Voltar</button>
@@ -321,13 +308,37 @@
                 <input type="hidden" id="editIndex" value="">
 
                 <div class="form-group">
-                    <label for="numero_requisicao">Nº da Atividade <span class="required">*</span></label>
+                    <label for="numero_requisicao">Nº da Requisição <span class="required">*</span></label>
                     <input type="number" id="numero_requisicao" name="numero_requisicao" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="respReq">Criado Por / Responsável <span class="required">*</span></label>
-                    <input type="text" id="respReq" name="respReq" required>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="areaReq">Área <span class="required">*</span></label>
+                        <select id="areaReq" name="areaReq" required>
+                            <option value="">Selecionar Área...</option>
+                            <option value="Português">Português</option>
+                            <option value="Matemática">Matemática</option>
+                            <option value="Estudo do Meio">Estudo do Meio</option>
+                            <option value="Expressões">Expressões</option>
+                            <option value="Inglês">Inglês</option>
+                            <option value="Estudo">Estudo</option>
+                            <option value="Pré-Escolar">Pré-Escolar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equipamentoReq">Equipamento <span class="required">*</span></label>
+                        <select id="equipamentoReq" name="equipamentoReq" required>
+                            <option value="">Selecionar Equipamento...</option>
+                            <option value="Surface">Surface</option>
+                            <option value="Tablets portáteis">Tablets portáteis</option>
+                            <option value="Painel">Painel</option>
+                            <option value="Robôs">Robôs</option>
+                            <option value="Projetor">Projetor</option>
+                            <option value="Tela">Tela</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -345,8 +356,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="equipamentoReq">Título / Descrição do Equipamento ou Atividade <span class="required">*</span></label>
-                    <input type="text" id="equipamentoReq" name="equipamentoReq" placeholder="Ex: Corrida de Sacos" required>
+                    <label for="respReq">Responsável <span class="required">*</span></label>
+                    <input type="text" id="respReq" name="respReq" required>
                 </div>
 
                 <div class="form-group">
@@ -356,7 +367,7 @@
 
                 <div class="form-footer">
                     <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Cancelar</button>
-                    <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar Atividade</button>
+                    <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar Requisição</button>
                 </div>
             </form>
         </div>
@@ -364,19 +375,15 @@
     </div>
 
     <script>
-        // Dados de exemplo simulados caso o localStorage esteja vazio
         if (!localStorage.getItem('requisicoes')) {
             const dadosIniciais = [
-                { numero_requisicao: 1, responsavel: 'Administrador Covão', equipamento: 'Matemática ativa', quantidade: 1, userEmail: 'admin@covao.pt' },
-                { numero_requisicao: 2, responsavel: 'Administrador Covão', equipamento: 'Corrida de Sacos', quantidade: 1, userEmail: 'admin@covao.pt' },
-                { numero_requisicao: 3, responsavel: 'Administrador Covão', equipamento: 'Matemática interativa', quantidade: 1, userEmail: 'admin@covao.pt' },
-                { numero_requisicao: 4, responsavel: 'Administrador Covão', equipamento: 'Corrida de Sacos', quantidade: 1, userEmail: 'admin@covao.pt' },
-                { numero_requisicao: 5, responsavel: 'Administrador Covão', equipamento: 'Corrida de Sacos', quantidade: 1, userEmail: 'admin@covao.pt' }
+                { numero_requisicao: 1, area: 'Matemática', equipamento: 'Surface', responsavel: 'Administrador Covão', quantidade: 1 },
+                { numero_requisicao: 2, area: 'Português', equipamento: 'Tablets portáteis', responsavel: 'Administrador Covão', quantidade: 5 }
             ];
             localStorage.setItem('requisicoes', JSON.stringify(dadosIniciais));
         }
 
-        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão', email: 'admin@covao.pt', isAdmin: true };
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão', email: 'admin@covao.pt' };
         document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador Covão';
 
         function carregarRequisicoes() {
@@ -386,11 +393,10 @@
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
 
             if (requisicoes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 2rem;">Sem registos encontrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #6b7280; padding: 2rem;">Sem registos encontrados.</td></tr>`;
                 return;
             }
 
-            // Mostrar do mais recente para o mais antigo (por ordem decrescente de ID/Nº)
             const requisicoesInvertidas = [...requisicoes].reverse();
 
             requisicoesInvertidas.forEach((req) => {
@@ -399,6 +405,7 @@
 
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary-green);">${req.numero_requisicao}</td>
+                    <td>${req.area || 'N/A'}</td>
                     <td style="font-weight: 600;">${req.equipamento}</td>
                     <td>${req.responsavel}</td>
                     <td style="text-align: right; white-space: nowrap;">
@@ -417,13 +424,13 @@
             document.getElementById('dataReq').valueAsDate = new Date();
 
             let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            let proximoNumero = requisicoes.length > 0 ? Math.max(...requisicoes.map(r => r.numero_requisicao)) + 1 : 1;
+            let proximoNumero = requisicoes.length > 0 ? Math.max(...requisicoes.map(r => r.numero_requisicao || 0)) + 1 : 1;
             
             document.getElementById('numero_requisicao').value = proximoNumero;
             document.getElementById('respReq').value = currentUser.name || currentUser.nome || 'Administrador Covão';
 
-            document.getElementById('formTitle').innerText = 'Registar Nova Atividade';
-            document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo para criar um novo registo.';
+            document.getElementById('formTitle').innerText = 'Registar Nova Requisição';
+            document.getElementById('formSubtitle').innerText = 'Preencha os dados abaixo.';
             document.getElementById('btnSubmit').style.display = 'inline-flex';
 
             document.getElementById('vistaTabela').style.display = 'none';
@@ -443,12 +450,13 @@
 
             const novaReq = {
                 numero_requisicao: parseInt(document.getElementById('numero_requisicao').value),
+                area: document.getElementById('areaReq').value,
+                equipamento: document.getElementById('equipamentoReq').value,
                 responsavel: document.getElementById('respReq').value.trim(),
                 anoLetivo: document.getElementById('anoLetivoReq').value,
                 data: document.getElementById('dataReq').value,
-                equipamento: document.getElementById('equipamentoReq').value,
                 quantidade: parseInt(document.getElementById('qtdReq').value),
-                userEmail: currentUser.email
+                userEmail: currentUser.email || ''
             };
 
             if (index === "") {
@@ -473,16 +481,17 @@
 
             document.getElementById('editIndex').value = index;
             document.getElementById('numero_requisicao').value = req.numero_requisicao;
+            document.getElementById('areaReq').value = req.area || '';
+            document.getElementById('equipamentoReq').value = req.equipamento || '';
             document.getElementById('respReq').value = req.responsavel;
             document.getElementById('anoLetivoReq').value = req.anoLetivo || '2025/2026';
             document.getElementById('dataReq').value = req.data || new Date().toISOString().split('T')[0];
-            document.getElementById('equipamentoReq').value = req.equipamento;
             document.getElementById('qtdReq').value = req.quantidade;
 
             const campos = document.querySelectorAll('#requisicaoForm input, #requisicaoForm select');
             campos.forEach(el => el.disabled = apenasVer);
 
-            document.getElementById('formTitle').innerText = apenasVer ? 'Detalhes da Atividade' : 'Editar Atividade';
+            document.getElementById('formTitle').innerText = apenasVer ? 'Detalhes da Requisição' : 'Editar Requisição';
             document.getElementById('formSubtitle').innerText = apenasVer ? 'Modo de visualização.' : 'Modifique os dados abaixo.';
             document.getElementById('btnSubmit').style.display = apenasVer ? 'none' : 'inline-flex';
 
