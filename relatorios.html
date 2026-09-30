@@ -157,55 +157,58 @@
             });
         }
 
-        // Função para encontrar o número mais alto gerado nas listas do localStorage
-        function obterNumeroMaisAlto(lista, propriedades) {
+        // Função rigorosa para encontrar o número mais alto (máximo) numa lista, testando várias propriedades possíveis
+        function obterNumeroMaisAlto(lista) {
             if (!lista || lista.length === 0) return 0;
             let maxVal = 0;
             lista.forEach(item => {
-                propriedades.forEach(prop => {
-                    let val = parseInt(item[prop]);
-                    if (!isNaN(val) && val > maxVal) {
-                        maxVal = val;
+                // Procura por campos comuns de numeração gerados nos formulários
+                const possiveisValores = [
+                    item.numero, item.id, item.num, item.numeroAtividade, 
+                    item.numero_atividade, item.registo, item.codigo
+                ];
+                
+                possiveisValores.forEach(val => {
+                    const num = parseInt(val);
+                    if (!isNaN(num) && num > maxVal) {
+                        maxVal = num;
                     }
                 });
             });
+            // Se encontrar algum número válido nas propriedades, retorna-o; caso contrário, retorna o comprimento total da lista
             return maxVal > 0 ? maxVal : lista.length;
         }
 
         function carregarRelatorios() {
-            // 1. Nº de Atividades (nova-atividade.html)
+            // 1. Nº de Atividades (Lê do localStorage de atividades)
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const maxAtividades = obterNumeroMaisAlto(atividadesLista, ['numero_atividade', 'numero', 'id']);
-            document.getElementById('statAtividades').innerText = maxAtividades;
+            document.getElementById('statAtividades').innerText = obterNumeroMaisAlto(atividadesLista);
 
-            // 2. Atividades Avaliadas (avaliar-atividade.html)
+            // 2. Atividades Avaliadas (Lê do localStorage de avaliação de atividades)
             const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            const maxAvaliadas = obterNumeroMaisAlto(avaliadasLista, ['numero_atividade', 'numero', 'id', 'numero_avaliacao']);
-            document.getElementById('statAvaliadas').innerText = maxAvaliadas;
+            document.getElementById('statAvaliadas').innerText = obterNumeroMaisAlto(avaliadasLista);
 
-            // 3. Registo de Objetivos (registar-objetivos.html)
+            // 3. Registo de Objetivos (Lê do localStorage de registar objetivos)
             const objetivosLista = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
-            const maxObjetivos = obterNumeroMaisAlto(objetivosLista, ['numero', 'id', 'numero_objetivo']);
-            document.getElementById('statObjetivos').innerText = maxObjetivos;
+            document.getElementById('statObjetivos').innerText = obterNumeroMaisAlto(objetivosLista);
 
-            // 4. Nº de Requisições (requisicoes.html)
+            // 4. Nº de Requisições (Mantém a lógica que já confirmaste estar correta)
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            const maxRequisicoes = obterNumeroMaisAlto(requisicoesLista, ['numero', 'id', 'requisicao_id']);
-            document.getElementById('statRequisicoes').innerText = maxRequisicoes;
+            document.getElementById('statRequisicoes').innerText = obterNumeroMaisAlto(requisicoesLista);
 
-            // 5. Atividades PAA e PEE (lendo dentro de cada registo de objetivos quantas vezes foi selecionado "Sim")
+            // 5. Atividades PAA e PEE (Conta quantas vezes foi selecionado "Sim" dentro dos registos de objetivos)
             let contadorPAA = 0;
             let contadorPEE = 0;
 
             objetivosLista.forEach(item => {
-                const paaVal = String(item.paa || item.inclui_paa || item.ambito_paa || '').trim().toLowerCase();
-                const peeVal = String(item.pee || item.inclui_pee || item.ambito_pee || '').trim().toLowerCase();
-                const textoCompleto = JSON.stringify(item).toLowerCase();
+                // Verifica todas as variações possíveis para os campos de PAA e PEE (seja boolean, string "sim", etc.)
+                const paa = String(item.paa || item.inclui_paa || item.ambito_paa || item.selectPAA || '').trim().toLowerCase();
+                const pee = String(item.pee || item.inclui_pee || item.ambito_pee || item.selectPEE || '').trim().toLowerCase();
 
-                if (paaVal === 'sim' || paaVal === 'true' || textoCompleto.includes('"paa":"sim"') || textoCompleto.includes('paa: "sim"') || textoCompleto.includes('paa":true')) {
+                if (paa === 'sim' || paa === 'true' || paa === '1' || paa === 's') {
                     contadorPAA++;
                 }
-                if (peeVal === 'sim' || peeVal === 'true' || textoCompleto.includes('"pee":"sim"') || textoCompleto.includes('pee: "sim"') || textoCompleto.includes('pee":true')) {
+                if (pee === 'sim' || pee === 'true' || pee === '1' || pee === 's') {
                     contadorPEE++;
                 }
             });
@@ -218,20 +221,20 @@
             let contagemMetas = {};
 
             objetivosLista.forEach(obj => {
-                const nomeObj = obj.nome || obj.descricao || obj.objetivo || 'Outros';
+                const nomeObj = obj.nome || obj.descricao || obj.objetivo || obj.titulo || 'Outros';
                 contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
             });
 
             const metasGuardadas = JSON.parse(localStorage.getItem('metas')) || [];
             if (metasGuardadas.length > 0) {
                 metasGuardadas.forEach(m => {
-                    const nomeMeta = m.nome || m.meta || 'Meta Geral';
+                    const nomeMeta = m.nome || m.meta || m.descricao || 'Meta Geral';
                     contagemMetas[nomeMeta] = (contagemMetas[nomeMeta] || 0) + 1;
                 });
             } else {
                 objetivosLista.forEach(a => {
-                    if (a.meta || a.metas) {
-                        const mStr = a.meta || a.metas;
+                    const mStr = a.meta || a.metas;
+                    if (mStr) {
                         contagemMetas[mStr] = (contagemMetas[mStr] || 0) + 1;
                     }
                 });
