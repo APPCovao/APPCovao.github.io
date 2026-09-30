@@ -106,18 +106,14 @@
         <div class="report-section">
             <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Distribuição por Objetivos</h4>
             <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Contagem de registos associados a cada objetivo estratégico ou pedagógico.</p>
-            <div id="chartObjetivos" class="chart-container">
-                <!-- Preenchido dinamicamente por JS -->
-            </div>
+            <div id="chartObjetivos" class="chart-container"></div>
         </div>
 
         <!-- Gráfico / Distribuição por Metas -->
         <div class="report-section">
             <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">Distribuição por Metas</h4>
             <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Contagem de registos associados a cada meta definida.</p>
-            <div id="chartMetas" class="chart-container">
-                <!-- Preenchido dinamicamente por JS -->
-            </div>
+            <div id="chartMetas" class="chart-container"></div>
         </div>
     </div>
 
@@ -130,7 +126,6 @@
             document.getElementById('welcomeName').innerText = currentUser.name || currentUser.nome || 'Utilizador';
         }
 
-        // Função auxiliar para criar barras de gráficos dinâmicos
         function renderizarGraficoBarras(containerId, dadosObjeto) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -141,7 +136,6 @@
                 return;
             }
 
-            // Encontrar o valor máximo para calcular a percentagem da barra
             const maxValor = Math.max(...Object.values(dadosObjeto), 1);
 
             chaves.forEach(chave => {
@@ -163,35 +157,60 @@
             });
         }
 
-        // Carregar relatórios e contagens dinâmicas do localStorage
+        // Função auxiliar para encontrar o número mais alto (máximo) de uma propriedade numérica numa lista
+        function obterNumeroMaisAlto(lista, propriedades) {
+            if (!lista || lista.length === 0) return 0;
+            let maxVal = 0;
+            lista.forEach(item => {
+                propriedades.forEach(prop => {
+                    let val = parseInt(item[prop]);
+                    if (!isNaN(val) && val > maxVal) {
+                        maxVal = val;
+                    }
+                });
+            });
+            // Se encontrar valores numéricos nas propriedades, devolve o maior; caso contrário, devolve o comprimento da lista
+            return maxVal > 0 ? maxVal : lista.length;
+        }
+
         function carregarRelatorios() {
-            // Verificar as chaves comuns onde os dados costumam ser guardados (incluindo o CAA ou atividades gerais)
+            // 1. Atividades (procura número de atividade mais alto)
             const atividades = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            document.getElementById('statAtividades').innerText = atividades.length;
+            const maxAtividade = obterNumeroMaisAlto(atividades, ['numero_atividade', 'numero', 'id']);
+            document.getElementById('statAtividades').innerText = maxAtividade > 0 ? maxAtividade : atividades.length;
 
-            // Atividades Avaliadas
-            const avaliadas = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            const totalAvaliadas = avaliadas.length > 0 ? avaliadas.length : atividades.filter(a => a.avaliada || a.estado === 'Avaliada' || (a.formas_avaliacao && a.formas_avaliacao.trim() !== '')).length;
-            document.getElementById('statAvaliadas').innerText = totalAvaliadas;
+            // 2. Atividades Avaliadas (procura número mais alto ou conta as avaliadas na lista)
+            const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            let maxAvaliadas = obterNumeroMaisAlto(avaliadasLista, ['numero_atividade', 'numero', 'id']);
+            if (maxAvaliadas === 0) {
+                // Se não houver lista separada, filtra nas atividades gerais as que têm avaliação preenchida e descobre o número mais alto
+                const filtradas = atividades.filter(a => a.avaliada || a.estado === 'Avaliada' || (a.formas_avaliacao && a.formas_avaliacao.trim() !== ''));
+                maxAvaliadas = obterNumeroMaisAlto(filtradas, ['numero_atividade', 'numero', 'id']) || filtradas.length;
+            }
+            document.getElementById('statAvaliadas').innerText = maxAvaliadas;
 
-            // Objetivos (Total de registos na tabela de objetivos)
+            // 3. Registo de Objetivos (procura o número mais alto na lista de objetivos)
             const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
-            document.getElementById('statObjetivos').innerText = objetivos.length;
+            const maxObjetivos = obterNumeroMaisAlto(objetivos, ['numero', 'id', 'numero_objetivo']);
+            document.getElementById('statObjetivos').innerText = maxObjetivos > 0 ? maxObjetivos : objetivos.length;
 
-            // Requisições
+            // 4. Requisições (procura o número mais alto ou total)
             const requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            document.getElementById('statRequisicoes').innerText = requisicoes.length;
+            const maxRequisicoes = obterNumeroMaisAlto(requisicoes, ['numero', 'id', 'requisicao_id']);
+            document.getElementById('statRequisicoes').innerText = maxRequisicoes > 0 ? maxRequisicoes : requisicoes.length;
 
-            // Contagem PAA e PEE (procura propriedades 'tipo', 'ambito' ou campo de texto nos registos)
+            // Leitura profunda em todos os registos para PAA e PEE
             let contadorPAA = 0;
             let contadorPEE = 0;
 
             atividades.forEach(item => {
-                const textoItem = JSON.stringify(item).toLowerCase();
-                if (item.paa || item.ambito === 'PAA' || textoItem.includes('paa')) {
+                // Converte todo o objeto para string para garantir que lê qualquer menção interna a PAA ou PEE
+                const textoCompleto = JSON.stringify(item).toLowerCase();
+                
+                if (item.paa === true || item.ambito === 'PAA' || item.tipo === 'PAA' || textoCompleto.includes('"paa"') || textoCompleto.includes('p.a.a.')) {
                     contadorPAA++;
                 }
-                if (item.pee || item.ambito === 'PEE' || textoItem.includes('pee')) {
+                if (item.pee === true || item.ambito === 'PEE' || item.tipo === 'PEE' || textoCompleto.includes('"pee"') || textoCompleto.includes('p.e.e.')) {
                     contadorPEE++;
                 }
             });
@@ -199,21 +218,19 @@
             document.getElementById('statPAA').innerText = contadorPAA;
             document.getElementById('statPEE').innerText = contadorPEE;
 
-            // Recolher dados para os Gráficos por Objetivo e por Meta
+            // Gráficos por Objetivos e Metas lidos a partir de todos os registos
             let contagemObjetivos = {};
             let contagemMetas = {};
 
-            // Analisar se existem objetivos detalhados guardados separadamente ou dentro das atividades
             if (objetivos.length > 0) {
                 objetivos.forEach(obj => {
                     const nomeObj = obj.nome || obj.descricao || obj.objetivo || 'Outros';
                     contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
                 });
             } else {
-                // Se não houver tabela dedicada, extrai do campo 'objetivos' das atividades
                 atividades.forEach(a => {
                     if (a.objetivos) {
-                        const objs = a.objetivos.split('\n'); // divide por linhas se houver vários
+                        const objs = a.objetivos.split('\n');
                         objs.forEach(o => {
                             if (o.trim().length > 3) {
                                 const chaveCurta = o.trim().substring(0, 40) + (o.trim().length > 40 ? '...' : '');
@@ -224,7 +241,6 @@
                 });
             }
 
-            // Recolher metas (procura propriedades de metas nos registos ou localStorage dedicado)
             const metasGuardadas = JSON.parse(localStorage.getItem('metas')) || [];
             if (metasGuardadas.length > 0) {
                 metasGuardadas.forEach(m => {
@@ -240,7 +256,6 @@
                 });
             }
 
-            // Renderizar gráficos na página
             renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
             renderizarGraficoBarras('chartMetas', contagemMetas);
         }
