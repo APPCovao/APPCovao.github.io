@@ -534,7 +534,7 @@
                     <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅️️ Voltar</button>
+                    <button class="btn-top-action" onclick="mostrarSecao('secaoMenu')">⬅ Voltar</button>
                     <a href="registar-objetivos.html" class="btn-top-action" style="background-color: #16a34a;">🎯 Registar Objetivos</a>
                 </div>
             </div>
@@ -1048,7 +1048,9 @@
             document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
             document.getElementById('modalAvDinamica').value = av.dinamica || '';
             document.getElementById('modalAvInteresse').value = av.interesse || '';
-            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || av.sugestao || '';
+            
+            // CAPTAÇÃO ROBUSTA DA SUGESTÃO DE TODAS AS PROPRIEDADES POSSÍVEIS
+            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes || '';
 
             document.getElementById('modalAvNumAtividade').readOnly = true;
             document.getElementById('modalAvTituloAtividade').readOnly = true;
@@ -1072,6 +1074,8 @@
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             let avs = JSON.parse(localStorage.getItem(chave)) || [];
             
+            const textoSugestao = document.getElementById('modalAvComentario').value;
+
             avs = avs.map((a, idx) => {
                 const matchId = (idInput !== "" && a.id == idInput);
                 const matchIdx = (idInput === "" && idx == idInput);
@@ -1080,7 +1084,10 @@
                     a.pertinencia = document.getElementById('modalAvPertinencia').value;
                     a.dinamica = document.getElementById('modalAvDinamica').value;
                     a.interesse = document.getElementById('modalAvInteresse').value;
-                    a.comentario = document.getElementById('modalAvComentario').value;
+                    // Guarda em todas as propriedades para manter compatibilidade total
+                    a.comentario = textoSugestao;
+                    a.parecer = textoSugestao;
+                    a.sugestao = textoSugestao;
                 }
                 return a;
             });
@@ -1113,7 +1120,6 @@
             const ativIdReal = reg.atividadeId || (atividadeCorrespondente ? atividadeCorrespondente.id : null);
             const ativNumReal = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : null);
 
-            // Obter avaliações correspondentes a esta atividade para calcular a média e extrair sugestões limpas
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const todasAvs = JSON.parse(localStorage.getItem(chaveAv)) || [];
             const avsDaAtividade = todasAvs.filter(av => 
@@ -1138,7 +1144,7 @@
                     if (!isNaN(d)) { somaD += d; countD++; }
                     if (!isNaN(i)) { somaI += i; countI++; }
 
-                    // Procura em todas as propriedades possíveis onde o comentário/sugestão possa estar guardado
+                    // Verifica todas as propriedades onde o comentário/sugestão pode estar guardado
                     let comentario = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes;
                     if (comentario && typeof comentario === 'string' && comentario.trim() !== '') {
                         let textoLimpo = comentario.trim();
@@ -1187,7 +1193,6 @@
             document.getElementById('modalObjMedia').readOnly = true;
             document.getElementById('modalObjSugestoes').readOnly = true;
 
-            // Tratamento robusto das caixas de seleção
             const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
             const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
             
