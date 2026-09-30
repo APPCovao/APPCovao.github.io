@@ -157,7 +157,7 @@
             });
         }
 
-        // Função auxiliar para encontrar o número mais alto (máximo) de uma propriedade numérica numa lista
+        // Função para obter o número mais alto de uma lista com base em propriedades numéricas comuns
         function obterNumeroMaisAlto(lista, propriedades) {
             if (!lista || lista.length === 0) return 0;
             let maxVal = 0;
@@ -169,48 +169,44 @@
                     }
                 });
             });
-            // Se encontrar valores numéricos nas propriedades, devolve o maior; caso contrário, devolve o comprimento da lista
             return maxVal > 0 ? maxVal : lista.length;
         }
 
         function carregarRelatorios() {
-            // 1. Atividades (procura número de atividade mais alto)
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const maxAtividade = obterNumeroMaisAlto(atividades, ['numero_atividade', 'numero', 'id']);
-            document.getElementById('statAtividades').innerText = maxAtividade > 0 ? maxAtividade : atividades.length;
+            // 1. Nº de Atividades (proveniente de nova-atividade.html / chaves possíveis)
+            const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const maxAtividades = obterNumeroMaisAlto(atividadesLista, ['numero_atividade', 'numero', 'id']);
+            document.getElementById('statAtividades').innerText = maxAtividades;
 
-            // 2. Atividades Avaliadas (procura número mais alto ou conta as avaliadas na lista)
+            // 2. Atividades Avaliadas (proveniente de avaliar-atividade.html / chaves possíveis)
             const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            let maxAvaliadas = obterNumeroMaisAlto(avaliadasLista, ['numero_atividade', 'numero', 'id']);
-            if (maxAvaliadas === 0) {
-                // Se não houver lista separada, filtra nas atividades gerais as que têm avaliação preenchida e descobre o número mais alto
-                const filtradas = atividades.filter(a => a.avaliada || a.estado === 'Avaliada' || (a.formas_avaliacao && a.formas_avaliacao.trim() !== ''));
-                maxAvaliadas = obterNumeroMaisAlto(filtradas, ['numero_atividade', 'numero', 'id']) || filtradas.length;
-            }
+            const maxAvaliadas = obterNumeroMaisAlto(avaliadasLista, ['numero_atividade', 'numero', 'id', 'numero_avaliacao']);
             document.getElementById('statAvaliadas').innerText = maxAvaliadas;
 
-            // 3. Registo de Objetivos (procura o número mais alto na lista de objetivos)
-            const objetivos = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
-            const maxObjetivos = obterNumeroMaisAlto(objetivos, ['numero', 'id', 'numero_objetivo']);
-            document.getElementById('statObjetivos').innerText = maxObjetivos > 0 ? maxObjetivos : objetivos.length;
+            // 3. Registo de Objetivos (proveniente de registar-objetivos.html)
+            const objetivosLista = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registarObjetivos')) || [];
+            const maxObjetivos = obterNumeroMaisAlto(objetivosLista, ['numero', 'id', 'numero_objetivo']);
+            document.getElementById('statObjetivos').innerText = maxObjetivos;
 
-            // 4. Requisições (procura o número mais alto ou total)
-            const requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            const maxRequisicoes = obterNumeroMaisAlto(requisicoes, ['numero', 'id', 'requisicao_id']);
-            document.getElementById('statRequisicoes').innerText = maxRequisicoes > 0 ? maxRequisicoes : requisicoes.length;
+            // 4. Nº de Requisições
+            const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
+            const maxRequisicoes = obterNumeroMaisAlto(requisicoesLista, ['numero', 'id', 'requisicao_id']);
+            document.getElementById('statRequisicoes').innerText = maxRequisicoes;
 
-            // Leitura profunda em todos os registos para PAA e PEE
+            // 5. Contagem de PAA e PEE (lendo dentro de cada registo de objetivos quantas vezes foi selecionado "Sim")
             let contadorPAA = 0;
             let contadorPEE = 0;
 
-            atividades.forEach(item => {
-                // Converte todo o objeto para string para garantir que lê qualquer menção interna a PAA ou PEE
+            objetivosLista.forEach(item => {
+                // Verifica propriedades diretas ou texto que indique "Sim" para PAA ou PEE
+                const paaVal = String(item.paa || item.inclui_paa || item.ambito_paa || '').trim().toLowerCase();
+                const peeVal = String(item.pee || item.inclui_pee || item.ambito_pee || '').trim().toLowerCase();
                 const textoCompleto = JSON.stringify(item).toLowerCase();
-                
-                if (item.paa === true || item.ambito === 'PAA' || item.tipo === 'PAA' || textoCompleto.includes('"paa"') || textoCompleto.includes('p.a.a.')) {
+
+                if (paaVal === 'sim' || paaVal === 'true' || textoCompleto.includes('"paa":"sim"') || textoCompleto.includes('paa: "sim"') || textoCompleto.includes('paa":true')) {
                     contadorPAA++;
                 }
-                if (item.pee === true || item.ambito === 'PEE' || item.tipo === 'PEE' || textoCompleto.includes('"pee"') || textoCompleto.includes('p.e.e.')) {
+                if (peeVal === 'sim' || peeVal === 'true' || textoCompleto.includes('"pee":"sim"') || textoCompleto.includes('pee: "sim"') || textoCompleto.includes('pee":true')) {
                     contadorPEE++;
                 }
             });
@@ -218,28 +214,14 @@
             document.getElementById('statPAA').innerText = contadorPAA;
             document.getElementById('statPEE').innerText = contadorPEE;
 
-            // Gráficos por Objetivos e Metas lidos a partir de todos os registos
+            // Gráficos por Objetivos e Metas
             let contagemObjetivos = {};
             let contagemMetas = {};
 
-            if (objetivos.length > 0) {
-                objetivos.forEach(obj => {
-                    const nomeObj = obj.nome || obj.descricao || obj.objetivo || 'Outros';
-                    contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
-                });
-            } else {
-                atividades.forEach(a => {
-                    if (a.objetivos) {
-                        const objs = a.objetivos.split('\n');
-                        objs.forEach(o => {
-                            if (o.trim().length > 3) {
-                                const chaveCurta = o.trim().substring(0, 40) + (o.trim().length > 40 ? '...' : '');
-                                contagemObjetivos[chaveCurta] = (contagemObjetivos[chaveCurta] || 0) + 1;
-                            }
-                        });
-                    }
-                });
-            }
+            objetivosLista.forEach(obj => {
+                const nomeObj = obj.nome || obj.descricao || obj.objetivo || 'Outros';
+                contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
+            });
 
             const metasGuardadas = JSON.parse(localStorage.getItem('metas')) || [];
             if (metasGuardadas.length > 0) {
@@ -248,7 +230,7 @@
                     contagemMetas[nomeMeta] = (contagemMetas[nomeMeta] || 0) + 1;
                 });
             } else {
-                atividades.forEach(a => {
+                objetivosLista.forEach(a => {
                     if (a.meta || a.metas) {
                         const mStr = a.meta || a.metas;
                         contagemMetas[mStr] = (contagemMetas[mStr] || 0) + 1;
