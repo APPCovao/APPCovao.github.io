@@ -239,6 +239,10 @@
         .btn-guardar:hover {
             background-color: var(--color-primary-hover);
         }
+        .btn-guardar:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
 
         .modal-overlay {
             position: fixed;
@@ -339,7 +343,7 @@
             <div class="form-group">
                 <label for="numeroAtividade">Número da Atividade <span class="required">*</span></label>
                 <input type="number" id="numeroAtividade" min="1" required placeholder="Digite o número da atividade..." oninput="carregarDadosAtividade()">
-                <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem;">Atividade não encontrada.</small>
+                <small id="avisoAtividade" style="color: #ef4444; font-size: 0.8rem; display: none; margin-top: 0.25rem; font-weight: 600;"></small>
             </div>
 
             <div class="form-group">
@@ -442,7 +446,7 @@
 
             <div class="form-actions">
                 <a href="atividades.html" class="btn-acao btn-cancelar">Voltar / Fechar</a>
-                <button type="submit" class="btn-acao btn-guardar">Guardar Registo de Objetivos</button>
+                <button type="submit" id="btnGuardar" class="btn-acao btn-guardar">Guardar Registo de Objetivos</button>
             </div>
         </form>
     </div>
@@ -465,7 +469,7 @@
             document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
         }
 
-        function mostrarPopup(titulo, mensagem, tipo = 'alerta', callbackOk = null) {
+        function mostrarPopup(titulo, mensagem, callbackOk = null) {
             const modal = document.getElementById('customModal');
             const titleEl = document.getElementById('modalTitle');
             const msgEl = document.getElementById('modalMessage');
@@ -516,6 +520,18 @@
             }
         }
 
+        function limparFormularioExcetoNumero() {
+            document.getElementById('nomeAtividade').value = '';
+            document.getElementById('anoLetivoAtividade').value = '';
+            document.getElementById('tipoAtividade').value = '';
+            document.getElementById('paaSelect').value = '';
+            document.getElementById('peeSelect').value = '';
+            controlarCamposPEE();
+            document.getElementById('mediaAvaliacoes').value = '';
+            document.getElementById('sugestoesRecolhidas').value = '';
+            document.getElementById('resumoConclusoes').value = '';
+        }
+
         function carregarDadosAtividade(numParam = null) {
             const numInput = numParam || document.getElementById('numeroAtividade').value;
             const nomeInput = document.getElementById('nomeAtividade');
@@ -524,15 +540,26 @@
             const mediaInput = document.getElementById('mediaAvaliacoes');
             const sugestoesInput = document.getElementById('sugestoesRecolhidas');
             const aviso = document.getElementById('avisoAtividade');
+            const btnGuardar = document.getElementById('btnGuardar');
 
             if (!numInput) {
-                nomeInput.value = '';
-                anoInput.value = '';
-                tipoInput.value = '';
-                mediaInput.value = '';
-                sugestoesInput.value = '';
+                limparFormularioExcetoNumero();
                 aviso.style.display = 'none';
+                btnGuardar.disabled = false;
                 return;
+            }
+
+            // Verificar se já existe um registo de objetivos para esta atividade
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
+
+            if (regExistente) {
+                aviso.textContent = `Atenção: A Atividade #${numInput} já tem objetivos registados. Não é permitido criar duplicados.`;
+                aviso.style.display = 'block';
+                btnGuardar.disabled = true;
+            } else {
+                aviso.style.display = 'none';
+                btnGuardar.disabled = false;
             }
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
@@ -542,7 +569,6 @@
                 nomeInput.value = ativEncontrada.titulo || '';
                 anoInput.value = ativEncontrada.anoLetivo || '';
                 tipoInput.value = ativEncontrada.tipo || '';
-                aviso.style.display = 'none';
 
                 const avaliacoes = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
                 const avsDaAtividade = avaliacoes.filter(av => String(av.numeroAtividade) === String(numInput));
@@ -576,10 +602,7 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
-                // Preencher dados do registo existente (se houver) e marcar os checkboxes corretamente
-                const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-                const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
-
+                // Se houver registo pré-existente e viermos pela URL para consulta/edição, carregar os dados guardados
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
@@ -604,12 +627,6 @@
                     }
 
                     document.getElementById('resumoConclusoes').value = regExistente.resumoConclusoes || '';
-                } else {
-                    // Limpar campos de edição caso altere para uma atividade que não tem registo
-                    document.getElementById('paaSelect').value = '';
-                    document.getElementById('peeSelect').value = '';
-                    controlarCamposPEE();
-                    document.getElementById('resumoConclusoes').value = '';
                 }
             } else {
                 nomeInput.value = '';
@@ -617,7 +634,10 @@
                 tipoInput.value = '';
                 mediaInput.value = '';
                 sugestoesInput.value = '';
-                aviso.style.display = 'block';
+                if (!regExistente) {
+                    aviso.textContent = 'Atividade não encontrada.';
+                    aviso.style.display = 'block';
+                }
             }
         }
 
@@ -643,19 +663,25 @@
                 return;
             }
 
+            let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
+
+            // Bloquear estritamente duplicados se já existir registo
+            if (indexExistente !== -1) {
+                mostrarPopup('Atenção', `A Atividade #${numAtividade} já possui objetivos registados e não pode ser duplicada.`);
+                document.getElementById('btnGuardar').disabled = true;
+                return;
+            }
+
             const peeVal = document.getElementById('peeSelect').value;
-            
             let metasSelecionadas = [];
             if (peeVal === 'Sim') {
                 const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]:checked');
                 checkboxesMetas.forEach(cb => metasSelecionadas.push(cb.value));
             }
 
-            let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
-
             const dadosRegisto = {
-                id: indexExistente !== -1 ? registos[indexExistente].id : Date.now(),
+                id: Date.now(),
                 numeroAtividade: numAtividade,
                 nomeAtividade: nomeAtividade,
                 anoLetivo: document.getElementById('anoLetivoAtividade').value,
@@ -670,17 +696,10 @@
                 dataRegisto: new Date().toISOString().split('T')[0]
             };
 
-            if (indexExistente !== -1) {
-                // Atualiza o registo existente sem criar duplicado
-                registos[indexExistente] = dadosRegisto;
-            } else {
-                // Cria um novo registo
-                registos.push(dadosRegisto);
-            }
-
+            registos.push(dadosRegisto);
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
 
-            mostrarPopup('Sucesso', `Objetivos e conclusões da Atividade #${numAtividade} guardados com sucesso!`, 'alerta', () => {
+            mostrarPopup('Sucesso', `Objetivos e conclusões da Atividade #${numAtividade} guardados com sucesso!`, () => {
                 window.location.href = 'atividades.html';
             });
         }
