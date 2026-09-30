@@ -121,17 +121,33 @@
             background-color: #0f172a;
         }
 
-        /* Cartão de Destaque Único */
+        /* Grelha para os Cartões de Destaque */
+        .stats-grid-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid-top {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .stat-main-card {
             background: linear-gradient(135deg, #14532d 0%, #166534 100%);
             color: white;
             border-radius: 12px;
             padding: 30px;
-            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-main-card.alt {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
         }
 
         .stat-main-card h3 {
@@ -139,6 +155,10 @@
             font-size: 18px;
             color: #dcfce7;
             font-weight: 500;
+        }
+
+        .stat-main-card.alt h3 {
+            color: #ccfbf1;
         }
 
         .stat-main-card .stat-value {
@@ -241,20 +261,30 @@
         <div class="section-header-card">
             <div>
                 <h1>Relatórios e Estatísticas</h1>
-                <p>Análise detalhada das requisições de equipamentos por área e tipo.</p>
+                <p>Análise detalhada das requisições e atividades do sistema.</p>
             </div>
             <div>
                 <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
             </div>
         </div>
 
-        <!-- Cartão de Destaque: Total de Requisições -->
-        <div class="stat-main-card">
-            <div>
-                <h3>Total de Requisições Registadas</h3>
-                <p id="statRequisicoes" class="stat-value">0</p>
+        <!-- Cartões de Destaque: Total de Requisições e Número de Atividades -->
+        <div class="stats-grid-top">
+            <div class="stat-main-card">
+                <div>
+                    <h3>Total de Requisições</h3>
+                    <p id="statRequisicoes" class="stat-value">0</p>
+                </div>
+                <div class="stat-icon">📦</div>
             </div>
-            <div class="stat-icon">📊</div>
+
+            <div class="stat-main-card alt">
+                <div>
+                    <h3>Número de Atividades</h3>
+                    <p id="statAtividades" class="stat-value">0</p>
+                </div>
+                <div class="stat-icon">📋</div>
+            </div>
         </div>
 
         <!-- Grelha de Gráficos (Áreas e Equipamentos) -->
@@ -314,13 +344,15 @@
         }
 
         function carregarRelatorios() {
-            // Obter requisições do localStorage
-            const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            
             // 1. Total de Requisições
+            const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // 2. Contagens para os Gráficos
+            // 2. Número de Atividades (Lê do localStorage comum de atividades)
+            const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
+            document.getElementById('statAtividades').innerText = atividadesLista.length;
+
+            // 3. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
