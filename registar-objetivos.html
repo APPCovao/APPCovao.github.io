@@ -131,7 +131,7 @@
             background-color: #fff;
         }
 
-        input[readonly], textarea[readonly] {
+        input[readonly], textarea[readonly], select:disabled {
             background-color: #f8fafc !important;
             color: var(--color-primary) !important;
             font-weight: 600 !important;
@@ -332,10 +332,10 @@
     <div class="caa-container">
         <div class="caa-header">
             <div class="caa-title">
-                <h2>Registo de Objetivos e Avaliação Global</h2>
+                <h2 id="tituloPaginaHeader">Registo de Objetivos e Avaliação Global</h2>
                 <p>Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             </div>
-            <a href="atividades.html" class="btn-top-voltar">⬅️ Voltar</a>
+            <a href="atividades.html" class="btn-top-voltar">⬅️️ Voltar</a>
         </div>
 
         <form id="registarObjetivosForm" onsubmit="guardarRegistoObjetivos(event)">
@@ -444,7 +444,7 @@
                 <textarea id="resumoConclusoes" rows="4" required placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..."></textarea>
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" id="formActionsContainer">
                 <a href="atividades.html" class="btn-acao btn-cancelar">Voltar / Fechar</a>
                 <button type="submit" id="btnGuardar" class="btn-acao btn-guardar">Guardar Registo de Objetivos</button>
             </div>
@@ -549,7 +549,7 @@
             if (!numInput) {
                 limparFormularioExcetoNumero();
                 aviso.style.display = 'none';
-                btnGuardar.disabled = false;
+                if(btnGuardar) btnGuardar.disabled = false;
                 return;
             }
 
@@ -557,13 +557,16 @@
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
 
-            if (regExistente) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const modoConsulta = urlParams.get('mode') === 'view';
+
+            if (regExistente && !modoConsulta) {
                 aviso.textContent = `Atenção: A Atividade #${numInput} já tem objetivos registados. Não é permitido criar duplicados.`;
                 aviso.style.display = 'block';
-                btnGuardar.disabled = true;
-            } else {
+                if(btnGuardar) btnGuardar.disabled = true;
+            } else if (!modoConsulta) {
                 aviso.style.display = 'none';
-                btnGuardar.disabled = false;
+                if(btnGuardar) btnGuardar.disabled = false;
             }
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
@@ -606,10 +609,12 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
-                // Preencher com os dados do registo existente (caso venha por URL para consulta)
+                // Se houver registo pré-existente, preencher os dados guardados (PAA, PEE, Metas e Resumo)
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
+                    
+                    // FORÇAR a exibição correta do contentor se o PEE for "Sim"
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -623,7 +628,7 @@
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
                                         objCheck.checked = true;
-                                        box.style.display = 'flex';
+                                        box.style.display = 'flex'; // Exibe a lista do objetivo correspondente
                                     }
                                 }
                             }
@@ -643,9 +648,29 @@
                     aviso.style.display = 'block';
                 }
             }
+
+            // Se for modo de consulta, bloquear todos os campos interativos
+            if (modoConsulta) {
+                document.getElementById('tituloPaginaHeader').textContent = 'Consulta de Objetivos da Atividade';
+                document.getElementById('numeroAtividade').readOnly = true;
+                document.getElementById('paaSelect').disabled = true;
+                document.getElementById('peeSelect').disabled = true;
+                document.getElementById('resumoConclusoes').readOnly = true;
+                
+                // Desativar todos os checkboxes de objetivos e metas
+                for(let i=1; i<=4; i++) {
+                    const objChk = document.getElementById(`obj${i}Check`);
+                    if(objChk) objChk.disabled = true;
+                }
+                document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.disabled = true);
+                
+                // Ocultar o botão de guardar
+                const btnGrd = document.getElementById('btnGuardar');
+                if(btnGrd) btnGrd.style.display = 'none';
+            }
         }
 
-        // Carregar dados existentes ao abrir a página via URL com segurança (garante que o DOM está pronto)
+        // Carregar dados existentes ao abrir a página via URL com segurança
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
@@ -653,7 +678,6 @@
             if (numeroAtivUrl) {
                 const inputNum = document.getElementById('numeroAtividade');
                 inputNum.value = numeroAtivUrl;
-                // Pequeno atraso para garantir o carregamento completo do DOM
                 setTimeout(() => {
                     carregarDadosAtividade(numeroAtivUrl);
                 }, 50);
