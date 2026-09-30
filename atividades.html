@@ -25,7 +25,6 @@
             padding: 0;
         }
 
-        /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
             padding: 0.8rem 2rem;
@@ -79,14 +78,12 @@
             background-color: #1d4ed8;
         }
 
-        /* Contentor Principal */
         .main-container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
-        /* Controlo de Visibilidade das Secções */
         .app-section {
             display: none;
         }
@@ -94,7 +91,6 @@
             display: block;
         }
 
-        /* Cartão de Cabeçalho da Secção */
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -127,7 +123,6 @@
             flex-wrap: wrap;
         }
 
-        /* Botões do Topo */
         .btn-top-action {
             background-color: #1e293b;
             color: white;
@@ -156,7 +151,6 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Hub de 3 Cartões (Menu Principal) */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -204,7 +198,6 @@
             line-height: 1.4;
         }
 
-        /* Cartão da Tabela */
         .table-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -245,7 +238,6 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela */
         .btn-action {
             padding: 6px 14px;
             border-radius: 6px;
@@ -273,7 +265,6 @@
             opacity: 0.6;
         }
 
-        /* Formulários e Modais Estilizados */
         .form-card, .custom-modal {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -344,7 +335,6 @@
             line-height: 1.5;
         }
 
-        /* Campos com suporte a readonly/disabled no modal */
         .custom-modal input:disabled, 
         .custom-modal select:disabled, 
         .custom-modal textarea:disabled,
@@ -357,7 +347,6 @@
             border-color: #d1d5db !important;
         }
 
-        /* Estrutura de Objetivos e Metas PEE */
         .pee-objetivo-box {
             background: #fafaf9;
             border: 1px solid var(--border-color);
@@ -417,7 +406,6 @@
 </head>
 <body>
 
-    <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
             <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
@@ -431,7 +419,6 @@
 
     <div class="main-container">
         
-        <!-- ================= VISTA 1: MENU PRINCIPAL (HUB DE 3 CARTÕES) ================= -->
         <div id="secaoMenu" class="app-section active">
             <div class="section-header-card">
                 <div>
@@ -441,7 +428,6 @@
             </div>
 
             <div class="menu-grid">
-                <!-- Cartão 1: Atividades Registadas -->
                 <div onclick="mostrarSecao('secaoAtividades')" class="menu-card" style="border-top-color: var(--primary-green);">
                     <div class="icon">➕</div>
                     <div>
@@ -450,7 +436,6 @@
                     </div>
                 </div>
 
-                <!-- Cartão 2: Avaliar Atividade -->
                 <div onclick="mostrarSecao('secaoAvaliadas')" class="menu-card" style="border-top-color: var(--color-accent);">
                     <div class="icon">⭐</div>
                     <div>
@@ -459,7 +444,6 @@
                     </div>
                 </div>
 
-                <!-- Cartão 3: Registar Objetivos -->
                 <div onclick="mostrarSecao('secaoObjetivos')" class="menu-card" style="border-top-color: #16a34a;">
                     <div class="icon">🎯</div>
                     <div>
@@ -470,7 +454,6 @@
             </div>
         </div>
 
-        <!-- ================= VISTA 2: LISTA DE ATIVIDADES REGISTADAS ================= -->
         <div id="secaoAtividades" class="app-section">
             <div class="section-header-card">
                 <div>
@@ -498,7 +481,6 @@
             </div>
         </div>
 
-        <!-- ================= VISTA 3: LISTA DE ATIVIDADES AVALIADAS ================= -->
         <div id="secaoAvaliadas" class="app-section">
             <div class="section-header-card">
                 <div>
@@ -526,7 +508,6 @@
             </div>
         </div>
 
-        <!-- ================= VISTA 4: OBJETIVOS REGISTADOS ================= -->
         <div id="secaoObjetivos" class="app-section">
             <div class="section-header-card">
                 <div>
@@ -556,7 +537,6 @@
 
     </div>
 
-    <!-- MODAL DE ATIVIDADES -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0;">Detalhes da Atividade</h2>
@@ -596,7 +576,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE AVALIAÇÃO -->
     <div id="avaliacaoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0;">Avaliar Atividade</h2>
@@ -677,7 +656,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE OBJETIVO / AVALIAÇÃO GLOBAL -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
@@ -726,11 +704,9 @@
                     </div>
                 </div>
 
-                <!-- OBJETIVOS E METAS DO PEE (COM CAIXAS DE VERIFICAÇÃO) -->
                 <div class="form-group">
                     <label style="margin-bottom: 10px; display: block; font-weight: 600;">Objetivos e respetivas Metas do PEE abrangidos:</label>
                     
-                    <!-- Objetivo 1 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> 
@@ -744,7 +720,6 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 2 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> 
@@ -762,7 +737,6 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 3 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> 
@@ -776,7 +750,6 @@
                         </div>
                     </div>
 
-                    <!-- Objetivo 4 -->
                     <div class="pee-objetivo-box">
                         <label class="pee-obj-title">
                             <input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> 
@@ -818,7 +791,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE APAGAR GENÉRICO -->
     <div id="confirmModal" class="custom-modal-overlay">
         <div class="custom-modal" style="max-width: 400px; text-align: center;">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
@@ -855,7 +827,6 @@
         let idParaApagar = null;
         let tipoApagar = null;
 
-        // --- CARREGAR ATIVIDADES ---
         function carregarAtividades() {
             const tbody = document.getElementById('atividadesTableBody');
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
@@ -884,7 +855,6 @@
             });
         }
 
-        // --- CARREGAR AVALIAÇÕES ---
         function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
@@ -927,7 +897,6 @@
             });
         }
 
-        // --- CARREGAR OBJETIVOS ---
         function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
@@ -964,7 +933,6 @@
             });
         }
 
-        // Modais de Atividade
         function verAtividade(id) {
             const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
             if(!ativ) return;
@@ -1012,7 +980,6 @@
             carregarObjetivos();
         }
 
-        // Modais de Avaliação
         function verAvaliacao(id) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avs = JSON.parse(localStorage.getItem(chave)) || [];
@@ -1049,7 +1016,7 @@
             document.getElementById('modalAvDinamica').value = av.dinamica || '';
             document.getElementById('modalAvInteresse').value = av.interesse || '';
             
-            // CAPTAÇÃO ROBUSTA DA SUGESTÃO DE TODAS AS PROPRIEDADES POSSÍVEIS
+            // Captação robusta de sugestões/comentários
             document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes || '';
 
             document.getElementById('modalAvNumAtividade').readOnly = true;
@@ -1084,19 +1051,21 @@
                     a.pertinencia = document.getElementById('modalAvPertinencia').value;
                     a.dinamica = document.getElementById('modalAvDinamica').value;
                     a.interesse = document.getElementById('modalAvInteresse').value;
-                    // Guarda em todas as propriedades para manter compatibilidade total
+                    
+                    // Atualiza em todas as propriedades para garantir compatibilidade
                     a.comentario = textoSugestao;
                     a.parecer = textoSugestao;
                     a.sugestao = textoSugestao;
+                    a.observacoes = textoSugestao;
                 }
                 return a;
             });
             localStorage.setItem(chave, JSON.stringify(avs));
             fecharModalAvaliacao();
             carregarAvaliacoes();
+            carregarObjetivos();
         }
 
-        // --- MODAIS DE OBJETIVOS ---
         function verObjetivo(id) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const reg = registos.find(r => r.id === id);
@@ -1144,30 +1113,21 @@
                     if (!isNaN(d)) { somaD += d; countD++; }
                     if (!isNaN(i)) { somaI += i; countI++; }
 
-                    // Verifica todas as propriedades onde o comentário/sugestão pode estar guardado
                     let comentario = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes;
                     if (comentario && typeof comentario === 'string' && comentario.trim() !== '') {
-                        let textoLimpo = comentario.trim();
-                        if (textoLimpo.includes(':') && !textoLimpo.startsWith('http')) {
-                            const partes = textoLimpo.split(':');
-                            if (partes.length > 1 && partes[0].length < 25) {
-                                textoLimpo = partes.slice(1).join(':').trim();
-                            }
-                        }
-                        listaSugestoes.push(textoLimpo);
+                        listaSugestoes.push(comentario.trim());
                     }
                 });
 
                 const mediaP = countP > 0 ? (somaP / countP).toFixed(1) : '0.0';
                 const mediaD = countD > 0 ? (somaD / countD).toFixed(1) : '0.0';
                 const mediaI = countI > 0 ? (somaI / countI).toFixed(1) : '0.0';
-                
                 const totalGeralNum = ((parseFloat(mediaP) + parseFloat(mediaD) + parseFloat(mediaI)) / 3).toFixed(1);
 
                 mediaGeralTexto = `Pertinência: ${mediaP} | Dinâmica: ${mediaD} | Interesse: ${mediaI} (Média Global: ${totalGeralNum})`;
 
                 if (listaSugestoes.length > 0) {
-                    sugestoesFormatadas = listaSugestoes.join('; - ');
+                    sugestoesFormatadas = listaSugestoes.join('; ');
                 }
             } else {
                 mediaGeralTexto = reg.mediaAvaliacao || reg.media || 'Pertinência: 0.0 | Dinâmica: 0.0 | Interesse: 0.0 (Média Global: 0.0)';
@@ -1200,21 +1160,18 @@
             const guardadasMeta = reg.metasCheckboxes || reg.metas || reg.metaCheckboxes || [];
 
             objCheckboxes.forEach(cb => {
-                const estaSelecionado = Array.isArray(guardadosObj) && guardadosObj.some(val => val.trim() === cb.value.trim());
-                cb.checked = estaSelecionado;
+                cb.checked = Array.isArray(guardadosObj) && guardadosObj.some(val => val.trim() === cb.value.trim());
                 cb.disabled = somenteLeitura;
             });
 
             metaCheckboxes.forEach(cb => {
-                const estaSelecionado = Array.isArray(guardadasMeta) && guardadasMeta.some(val => val.trim() === cb.value.trim());
-                cb.checked = estaSelecionado;
+                cb.checked = Array.isArray(guardadasMeta) && guardadasMeta.some(val => val.trim() === cb.value.trim());
                 cb.disabled = somenteLeitura;
             });
 
             document.getElementById('modalObjPaa').disabled = somenteLeitura;
             document.getElementById('modalObjPee').disabled = somenteLeitura;
             document.getElementById('modalObjResumo').readOnly = somenteLeitura;
-            
             document.getElementById('modalObjSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
             document.getElementById('objetivoModal').style.display = 'flex';
         }
@@ -1244,7 +1201,6 @@
             carregarObjetivos();
         }
 
-        // Apagar genérico
         function confirmarApagar(id, tipo) {
             idParaApagar = id;
             tipoApagar = tipo;
@@ -1281,7 +1237,6 @@
             }
         };
 
-        // Inicializar dados ao carregar
         carregarAtividades();
         carregarAvaliacoes();
         carregarObjetivos();
