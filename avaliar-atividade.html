@@ -104,7 +104,7 @@
             color: #dc2626;
         }
 
-        select, textarea {
+        select, input[type="text"], textarea {
             width: 100%;
             padding: 10px 14px;
             border: 1px solid #d1d5db;
@@ -115,7 +115,14 @@
             background-color: #fff;
         }
 
-        select:focus, textarea:focus {
+        input[readonly] {
+            background-color: #e5e7eb !important;
+            color: #1f2937 !important;
+            font-weight: 600 !important;
+            cursor: not-allowed;
+        }
+
+        select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: var(--color-accent);
             box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
@@ -172,14 +179,22 @@
     <div class="main-container">
         <div class="form-card">
             <h1>Avaliar Atividade</h1>
-            <p class="subtitle">Selecione a atividade pretendida e preencha os parâmetros de avaliação e sugestões.</p>
+            <p class="subtitle">Selecione o número da atividade para preencher automaticamente o nome, e submeta a avaliação e sugestões.</p>
 
             <form id="formAvaliacao" onsubmit="guardarAvaliacao(event)">
+                
+                <!-- Seleção do Número da Atividade -->
                 <div class="form-group">
-                    <label>Selecione a Atividade <span class="required">*</span></label>
-                    <select id="selectAtividade" required>
-                        <option value="">A carregar atividades...</option>
+                    <label>Número da Atividade <span class="required">*</span></label>
+                    <select id="selectNumeroAtividade" required onchange="atualizarNomeAtividade()">
+                        <option value="">Selecione o número da atividade</option>
                     </select>
+                </div>
+
+                <!-- Nome da Atividade (Preenchimento Automático) -->
+                <div class="form-group">
+                    <label>Nome / Título da Atividade (Preenchimento Automático)</label>
+                    <input type="text" id="inputNomeAtividade" readonly placeholder="Será preenchido automaticamente ao escolher o número...">
                 </div>
 
                 <div class="form-group">
@@ -248,12 +263,12 @@
             window.location.href = 'index.html';
         }
 
-        // Carregar lista de atividades disponíveis para avaliação no Select
+        // Carregar lista de números de atividades disponíveis no Select
         function carregarSelectAtividades() {
-            const select = document.getElementById('selectAtividade');
+            const select = document.getElementById('selectNumeroAtividade');
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             
-            select.innerHTML = '<option value="">Selecione uma atividade</option>';
+            select.innerHTML = '<option value="">Selecione o número da atividade</option>';
             
             if (atividades.length === 0) {
                 select.innerHTML = '<option value="">Não existem atividades criadas</option>';
@@ -261,17 +276,39 @@
             }
 
             atividades.forEach(ativ => {
+                const numAtv = ativ.numero || ativ.id;
                 const opt = document.createElement('option');
-                opt.value = ativ.id;
-                opt.textContent = `[${ativ.numero || ativ.id}] ${ativ.titulo} (${ativ.anoLetivo || ''})`;
+                opt.value = ativ.id; // Guarda o ID interno para referência
+                opt.textContent = `Nº ${numAtv} - ${ativ.titulo}`;
                 select.appendChild(opt);
             });
+        }
+
+        // Preenche o campo de nome automaticamente com base na seleção do número
+        function atualizarNomeAtividade() {
+            const select = document.getElementById('selectNumeroAtividade');
+            const idSelecionado = select.value;
+            const inputNome = document.getElementById('inputNomeAtividade');
+
+            if (!idSelecionado) {
+                inputNome.value = '';
+                return;
+            }
+
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const ativSelecionada = atividades.find(a => a.id == idSelecionado);
+
+            if (ativSelecionada) {
+                inputNome.value = ativSelecionada.titulo || '';
+            } else {
+                inputNome.value = '';
+            }
         }
 
         function guardarAvaliacao(e) {
             e.preventDefault();
             
-            const atividadeId = document.getElementById('selectAtividade').value;
+            const atividadeId = document.getElementById('selectNumeroAtividade').value;
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const ativSelecionada = atividades.find(a => a.id == atividadeId);
 
@@ -293,7 +330,7 @@
                 dinamica: document.getElementById('dinamica').value,
                 interesse: document.getElementById('interesse').value,
                 
-                // Grava a sugestão em todas as propriedades para total compatibilidade com a tabela e objetivos
+                // Grava a sugestão em todas as propriedades para garantir total compatibilidade
                 comentario: textoSugestao,
                 sugestao: textoSugestao,
                 observacoes: textoSugestao,
@@ -307,7 +344,7 @@
             avaliacoes.push(novaAvaliacao);
             localStorage.setItem('avaliacoesAtividades', JSON.stringify(avaliacoes));
 
-            alert('Avaliação guardada com sucesso!');
+            alert('Avaliação e sugestões guardadas com sucesso!');
             window.location.href = 'atividades.html';
         }
 
