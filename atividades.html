@@ -255,8 +255,8 @@
             opacity: 0.85;
         }
 
-        .btn-view { background-color: #0d9488; color: white; }
-        .btn-edit { background-color: #047857; color: white; }
+        .btn-view { background-color: #0ea5e9; color: white; }
+        .btn-edit { background-color: #f59e0b; color: white; }
         .btn-delete { background-color: #dc2626; color: white; }
 
         .btn-action:disabled {
@@ -475,7 +475,7 @@
                             <th style="width: 15%;">Nº Atividade</th>
                             <th>Título / Descrição</th>
                             <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%; text-align: right;">Ações</th>
+                            <th style="width: 25%; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="atividadesTableBody"></tbody>
@@ -503,7 +503,7 @@
                             <th style="width: 15%;">Nº Atividade</th>
                             <th>Título / Descrição</th>
                             <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%; text-align: right;">Ações</th>
+                            <th style="width: 25%; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="avaliadasTableBody"></tbody>
@@ -531,7 +531,7 @@
                             <th style="width: 15%;">Nº Atividade</th>
                             <th>Atividade / Metas Associadas</th>
                             <th style="width: 25%;">Criado por</th>
-                            <th style="width: 20%; text-align: right;">Ações</th>
+                            <th style="width: 25%; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="objetivosTableBody"></tbody>
@@ -541,7 +541,7 @@
 
     </div>
 
-    <!-- Modais e Scripts Originais -->
+    <!-- Modais e Formulários Modificados para reutilizar a estrutura "Criar" -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0;">Detalhes da Atividade</h2>
@@ -661,6 +661,7 @@
         </div>
     </div>
 
+    <!-- Modal que replica exatamente o formulário de criar objetivos com os campos preenchidos -->
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
@@ -790,7 +791,7 @@
 
                 <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Registo de Objetivos</button>
+                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar Alterações de Objetivos</button>
                 </div>
             </form>
         </div>
@@ -851,8 +852,8 @@
                     <td style="font-weight: 600;">${ativ.titulo}</td>
                     <td>${ativ.criadorNome || 'Desconhecido'}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verAtividade(${ativ.id})">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAtividade(${ativ.id})">Editar</button>
+                        <button class="btn-action btn-view" onclick="abrirModalAtividade(${ativ.id}, 'ver')">Ver</button>
+                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="abrirModalAtividade(${ativ.id}, 'editar')">Editar</button>
                         <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id}, 'atividade')">Apagar</button>
                     </td>
                 `;
@@ -893,8 +894,8 @@
                     <td style="font-weight: 600;">${tituloAtividade}</td>
                     <td>${criador}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verAvaliacao('${idReal}')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarAvaliacao('${idReal}')">Editar</button>
+                        <button class="btn-action btn-view" onclick="abrirModalAvaliacao('${idReal}', 'ver')">Ver</button>
+                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="abrirModalAvaliacao('${idReal}', 'editar')">Editar</button>
                         <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}', 'avaliacao')">Apagar</button>
                     </td>
                 `;
@@ -929,8 +930,8 @@
                     <td style="font-weight: 600;">${tituloAtividade}</td>
                     <td>${criadorNome}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verObjetivo(${idReal})">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="editarObjetivo(${idReal})">Editar</button>
+                        <button class="btn-action btn-view" onclick="abrirModalObjetivo(${idReal}, 'ver')">Ver</button>
+                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="abrirModalObjetivo(${idReal}, 'editar')">Editar</button>
                         <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal}, 'objetivo')">Apagar</button>
                     </td>
                 `;
@@ -938,270 +939,180 @@
             });
         }
 
-        function verAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-            preencherModalAtiv(ativ, true);
-        }
-        function editarAtividade(id) {
-            const ativ = (JSON.parse(localStorage.getItem('atividades')) || []).find(a => a.id == id);
-            if(!ativ) return;
-            document.getElementById('modalTitle').innerText = 'Editar Atividade';
-            preencherModalAtiv(ativ, false);
-        }
-        function preencherModalAtiv(ativ, somenteLeitura) {
+        // Funções para abrir/fechar e preencher os modais (Ver / Editar)
+        function abrirModalAtividade(id, modo) {
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const ativ = atividades.find(a => a.id == id);
+            if (!ativ) return;
+
             document.getElementById('editAtividadeId').value = ativ.id;
             document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
             document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '';
-            document.getElementById('modalTipoAtividade').value = ativ.tipo || '';
+            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '2025/2026';
+            document.getElementById('modalTipoAtividade').value = ativ.tipo || 'Atividade';
 
-            document.getElementById('modalNumAtividade').readOnly = true;
-            document.getElementById('modalNomeAtividade').readOnly = somenteLeitura;
-            document.getElementById('modalAnoLetivo').disabled = somenteLeitura;
-            document.getElementById('modalTipoAtividade').disabled = somenteLeitura;
-            document.getElementById('modalSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
+            const inputs = document.querySelectorAll('#atividadeFormModal input, #atividadeFormModal select, #atividadeFormModal textarea');
+            const saveBtn = document.getElementById('modalSaveBtn');
+
+            if (modo === 'ver') {
+                document.getElementById('modalTitle').innerText = 'Consultar Atividade';
+                inputs.forEach(el => el.disabled = true);
+                saveBtn.style.display = 'none';
+            } else {
+                document.getElementById('modalTitle').innerText = 'Editar Atividade';
+                inputs.forEach(el => el.disabled = false);
+                document.getElementById('modalNumAtividade').disabled = true; // Mantém número bloqueado
+                saveBtn.style.display = 'inline-block';
+            }
             document.getElementById('atividadeModal').style.display = 'flex';
         }
-        function fecharModal() { document.getElementById('atividadeModal').style.display = 'none'; }
-        
+
+        function fecharModal() {
+            document.getElementById('atividadeModal').style.display = 'none';
+        }
+
         function salvarEdicaoAtividade(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('editAtividadeId').value);
+            const id = document.getElementById('editAtividadeId').value;
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            atividades = atividades.map(a => {
-                if(a.id === id) {
-                    a.titulo = document.getElementById('modalNomeAtividade').value;
-                    a.anoLetivo = document.getElementById('modalAnoLetivo').value;
-                    a.tipo = document.getElementById('modalTipoAtividade').value;
-                }
-                return a;
-            });
-            localStorage.setItem('atividades', JSON.stringify(atividades));
-            fecharModal();
-            carregarAtividades();
-            carregarAvaliacoes();
-            carregarObjetivos();
+            let ativ = atividades.find(a => a.id == id);
+            if (ativ) {
+                ativ.titulo = document.getElementById('modalNomeAtividade').value;
+                ativ.anoLetivo = document.getElementById('modalAnoLetivo').value;
+                ativ.tipo = document.getElementById('modalTipoAtividade').value;
+                localStorage.setItem('atividades', JSON.stringify(atividades));
+                carregarAtividades();
+                fecharModal();
+            }
         }
 
-        function verAvaliacao(id) {
+        function abrirModalAvaliacao(id, modo) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
-            preencherModalAvaliacao(av, true);
-        }
+            const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
+            const av = avaliadas.find((a, idx) => a.id == id || idx == id);
+            if (!av) return;
 
-        function editarAvaliacao(id) {
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avs = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avs.find(a => (a.id == id) || (avs.indexOf(a) == id));
-            if(!av) return;
-            document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
-            preencherModalAvaliacao(av, false);
-        }
-
-        function preencherModalAvaliacao(av, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => 
-                (av.atividadeId && a.id == av.atividadeId) || 
-                (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)) ||
-                (av.id && a.id == av.id)
-            );
-
-            document.getElementById('editAvaliacaoId').value = av.id !== undefined ? av.id : '';
-            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-            document.getElementById('modalAvTituloAtividade').value = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || '');
-            document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
-            
-            document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.tipoAvaliador || av.avaliadorTipo || '';
+            document.getElementById('editAvaliacaoId').value = id;
+            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || av.atividadeId || '-';
+            document.getElementById('modalAvTituloAtividade').value = av.tituloAtividade || av.atividadeNome || av.titulo || '';
+            document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || '2025/2026';
+            document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.avaliadorTipo || '';
             document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
             document.getElementById('modalAvDinamica').value = av.dinamica || '';
             document.getElementById('modalAvInteresse').value = av.interesse || '';
-            
-            document.getElementById('modalAvComentario').value = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes || '';
+            document.getElementById('modalAvComentario').value = av.comentario || av.sugestoes || '';
 
-            document.getElementById('modalAvNumAtividade').readOnly = true;
-            document.getElementById('modalAvTituloAtividade').readOnly = true;
-            document.getElementById('modalAvAnoLetivo').readOnly = true;
+            const inputs = document.querySelectorAll('#avaliacaoFormModal input, #avaliacaoFormModal select, #avaliacaoFormModal textarea');
+            const saveBtn = document.getElementById('modalAvSaveBtn');
 
-            document.getElementById('modalAvDocenteAluno').disabled = somenteLeitura;
-            document.getElementById('modalAvPertinencia').disabled = somenteLeitura;
-            document.getElementById('modalAvDinamica').disabled = somenteLeitura;
-            document.getElementById('modalAvInteresse').disabled = somenteLeitura;
-            document.getElementById('modalAvComentario').readOnly = somenteLeitura;
-
-            document.getElementById('modalAvSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
+            if (modo === 'ver') {
+                document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
+                inputs.forEach(el => el.disabled = true);
+                saveBtn.style.display = 'none';
+            } else {
+                document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
+                inputs.forEach(el => el.disabled = false);
+                document.getElementById('modalAvNumAtividade').disabled = true;
+                document.getElementById('modalAvTituloAtividade').disabled = true;
+                document.getElementById('modalAvAnoLetivo').disabled = true;
+                saveBtn.style.display = 'inline-block';
+            }
             document.getElementById('avaliacaoModal').style.display = 'flex';
         }
 
-        function fecharModalAvaliacao() { document.getElementById('avaliacaoModal').style.display = 'none'; }
+        function fecharModalAvaliacao() {
+            document.getElementById('avaliacaoModal').style.display = 'none';
+        }
 
         function salvarEdicaoAvaliacao(e) {
             e.preventDefault();
-            const idInput = document.getElementById('editAvaliacaoId').value;
+            const id = document.getElementById('editAvaliacaoId').value;
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            let avs = JSON.parse(localStorage.getItem(chave)) || [];
-            
-            const textoSugestao = document.getElementById('modalAvComentario').value;
-
-            avs = avs.map((a, idx) => {
-                const matchId = (idInput !== "" && a.id == idInput);
-                const matchIdx = (idInput === "" && idx == idInput);
-                if(matchId || matchIdx) {
-                    a.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
-                    a.pertinencia = document.getElementById('modalAvPertinencia').value;
-                    a.dinamica = document.getElementById('modalAvDinamica').value;
-                    a.interesse = document.getElementById('modalAvInteresse').value;
-                    
-                    a.comentario = textoSugestao;
-                    a.parecer = textoSugestao;
-                    a.sugestao = textoSugestao;
-                    a.observacoes = textoSugestao;
-                }
-                return a;
-            });
-            localStorage.setItem(chave, JSON.stringify(avs));
-            fecharModalAvaliacao();
-            carregarAvaliacoes();
-            carregarObjetivos();
-        }
-
-        function verObjetivo(id) {
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const reg = registos.find(r => r.id === id);
-            if(!reg) return;
-            document.getElementById('modalObjetivoTitle').innerText = 'Consultar Registo de Objetivos';
-            preencherModalObjetivo(reg, true);
-        }
-
-        function editarObjetivo(id) {
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const reg = registos.find(r => r.id === id);
-            if(!reg) return;
-            document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
-            preencherModalObjetivo(reg, false);
-        }
-
-        function preencherModalObjetivo(reg, somenteLeitura) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-
-            const ativIdReal = reg.atividadeId || (atividadeCorrespondente ? atividadeCorrespondente.id : null);
-            const ativNumReal = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : null);
-
-            const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const todasAvs = JSON.parse(localStorage.getItem(chaveAv)) || [];
-            const avsDaAtividade = todasAvs.filter(av => 
-                (ativIdReal && (av.atividadeId == ativIdReal || av.id == ativIdReal)) ||
-                (ativNumReal && (av.numeroAtividade == ativNumReal))
-            );
-
-            let mediaGeralTexto = 'Pendente';
-            let sugestoesFormatadas = '';
-
-            if (avsDaAtividade.length > 0) {
-                let somaP = 0, somaD = 0, somaI = 0;
-                let countP = 0, countD = 0, countI = 0;
-                let listaSugestoes = [];
-
-                avsDaAtividade.forEach(av => {
-                    const p = parseFloat(av.pertinencia);
-                    const d = parseFloat(av.dinamica);
-                    const i = parseFloat(av.interesse);
-
-                    if (!isNaN(p)) { somaP += p; countP++; }
-                    if (!isNaN(d)) { somaD += d; countD++; }
-                    if (!isNaN(i)) { somaI += i; countI++; }
-
-                    let comentario = av.comentario || av.parecer || av.texto || av.sugestao || av.observacoes;
-                    if (comentario && typeof comentario === 'string' && comentario.trim() !== '') {
-                        listaSugestoes.push(comentario.trim());
-                    }
-                });
-
-                const mediaP = countP > 0 ? (somaP / countP).toFixed(1) : '0.0';
-                const mediaD = countD > 0 ? (somaD / countD).toFixed(1) : '0.0';
-                const mediaI = countI > 0 ? (somaI / countI).toFixed(1) : '0.0';
-                const totalGeralNum = ((parseFloat(mediaP) + parseFloat(mediaD) + parseFloat(mediaI)) / 3).toFixed(1);
-
-                mediaGeralTexto = `Pertinência: ${mediaP} | Dinâmica: ${mediaD} | Interesse: ${mediaI} (Média Global: ${totalGeralNum})`;
-
-                if (listaSugestoes.length > 0) {
-                    sugestoesFormatadas = listaSugestoes.join('; ');
-                }
-            } else {
-                mediaGeralTexto = reg.mediaAvaliacao || reg.media || 'Pertinência: 0.0 | Dinâmica: 0.0 | Interesse: 0.0 (Média Global: 0.0)';
-                sugestoesFormatadas = reg.sugestoes || reg.observacoes || '';
+            let avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
+            let av = avaliadas.find((a, idx) => a.id == id || idx == id);
+            if (av) {
+                av.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
+                av.pertinencia = document.getElementById('modalAvPertinencia').value;
+                av.dinamica = document.getElementById('modalAvDinamica').value;
+                av.interesse = document.getElementById('modalAvInteresse').value;
+                av.comentario = document.getElementById('modalAvComentario').value;
+                localStorage.setItem(chave, JSON.stringify(avaliadas));
+                carregarAvaliacoes();
+                fecharModalAvaliacao();
             }
+        }
+
+        function abrirModalObjetivo(id, modo) {
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            const reg = registos.find(r => r.id == id);
+            if (!reg) return;
 
             document.getElementById('editObjetivoId').value = reg.id;
-            document.getElementById('modalObjNumAtividade').value = ativNumReal || '-';
-            document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : '');
-            document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || (atividadeCorrespondente ? atividadeCorrespondente.anoLetivo : '-');
-            document.getElementById('modalObjTipo').value = reg.tipoAtividade || reg.tipo || (atividadeCorrespondente ? atividadeCorrespondente.tipo : '-');
-            
-            document.getElementById('modalObjPaa').value = reg.paa || '';
-            document.getElementById('modalObjPee').value = reg.pee || '';
-            document.getElementById('modalObjMedia').value = mediaGeralTexto;
-            document.getElementById('modalObjSugestoes').value = sugestoesFormatadas;
+            document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || '-';
+            document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || '';
+            document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || '';
+            document.getElementById('modalObjTipo').value = reg.tipoAtividade || '';
+            document.getElementById('modalObjPaa').value = reg.integraPaa || '';
+            document.getElementById('modalObjPee').value = reg.integraPee || '';
+            document.getElementById('modalObjMedia').value = reg.mediaGeral || 'N/A';
+            document.getElementById('modalObjSugestoes').value = reg.sugestoesRecolhidas || '';
             document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
 
-            document.getElementById('modalObjNumAtividade').readOnly = true;
-            document.getElementById('modalObjNomeAtividade').readOnly = true;
-            document.getElementById('modalObjAnoLetivo').readOnly = true;
-            document.getElementById('modalObjTipo').readOnly = true;
-            document.getElementById('modalObjMedia').readOnly = true;
-            document.getElementById('modalObjSugestoes').readOnly = true;
-
-            const objCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="objCheck"]');
-            const metaCheckboxes = document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]');
-            
-            const guardadosObj = reg.objetivosCheckboxes || reg.objetivos || reg.objCheckboxes || [];
-            const guardadasMeta = reg.metasCheckboxes || reg.metas || reg.metaCheckboxes || [];
-
-            objCheckboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadosObj) && guardadosObj.some(val => val.trim() === cb.value.trim());
-                cb.disabled = somenteLeitura;
+            // Marcar checkboxes correspondentes aos objetivos e metas gravados
+            document.querySelectorAll('#objetivoFormModal input[name="objCheck"]').forEach(chk => {
+                chk.checked = reg.objetivosSelecionados && reg.objetivosSelecionados.includes(chk.value);
+            });
+            document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]').forEach(chk => {
+                chk.checked = reg.metasSelecionadas && reg.metasSelecionadas.includes(chk.value);
             });
 
-            metaCheckboxes.forEach(cb => {
-                cb.checked = Array.isArray(guardadasMeta) && guardadasMeta.some(val => val.trim() === cb.value.trim());
-                cb.disabled = somenteLeitura;
-            });
+            const inputs = document.querySelectorAll('#objetivoFormModal input, #objetivoFormModal select, #objetivoFormModal textarea');
+            const saveBtn = document.getElementById('modalObjSaveBtn');
 
-            document.getElementById('modalObjPaa').disabled = somenteLeitura;
-            document.getElementById('modalObjPee').disabled = somenteLeitura;
-            document.getElementById('modalObjResumo').readOnly = somenteLeitura;
-            document.getElementById('modalObjSaveBtn').style.display = somenteLeitura ? 'none' : 'inline-block';
+            if (modo === 'ver') {
+                document.getElementById('modalObjetivoTitle').innerText = 'Consultar Registo de Objetivos';
+                inputs.forEach(el => el.disabled = true);
+                saveBtn.style.display = 'none';
+            } else {
+                document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
+                inputs.forEach(el => el.disabled = false);
+                document.getElementById('modalObjNumAtividade').disabled = true;
+                document.getElementById('modalObjNomeAtividade').disabled = true;
+                document.getElementById('modalObjAnoLetivo').disabled = true;
+                document.getElementById('modalObjTipo').disabled = true;
+                document.getElementById('modalObjMedia').disabled = true;
+                document.getElementById('modalObjSugestoes').disabled = true;
+                saveBtn.style.display = 'inline-block';
+            }
             document.getElementById('objetivoModal').style.display = 'flex';
         }
 
-        function fecharModalObjetivo() { document.getElementById('objetivoModal').style.display = 'none'; }
+        function fecharModalObjetivo() {
+            document.getElementById('objetivoModal').style.display = 'none';
+        }
 
         function salvarEdicaoObjetivo(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('editObjetivoId').value);
+            const id = document.getElementById('editObjetivoId').value;
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            
-            const objSelecionados = Array.from(document.querySelectorAll('#objetivoFormModal input[name="objCheck"]:checked')).map(cb => cb.value);
-            const metasSelecionadas = Array.from(document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked')).map(cb => cb.value);
+            let reg = registos.find(r => r.id == id);
+            if (reg) {
+                reg.integraPaa = document.getElementById('modalObjPaa').value;
+                reg.integraPee = document.getElementById('modalObjPee').value;
+                reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
 
-            registos = registos.map(reg => {
-                if(reg.id === id) {
-                    reg.paa = document.getElementById('modalObjPaa').value;
-                    reg.pee = document.getElementById('modalObjPee').value;
-                    reg.objetivosCheckboxes = objSelecionados;
-                    reg.metasCheckboxes = metasSelecionadas;
-                    reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
-                }
-                return reg;
-            });
-            localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-            fecharModalObjetivo();
-            carregarObjetivos();
+                let objsSel = [];
+                document.querySelectorAll('#objetivoFormModal input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
+                reg.objetivosSelecionados = objsSel;
+
+                let metasSel = [];
+                document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
+                reg.metasSelecionadas = metasSel;
+
+                localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
+                carregarObjetivos();
+                fecharModalObjetivo();
+            }
         }
 
         function confirmarApagar(id, tipo) {
