@@ -500,6 +500,15 @@
             const container = document.getElementById('peeContainer');
             if (val === 'Sim') {
                 container.style.display = 'block';
+                // ATUALIZAÇÃO: Quando seleciona "Sim", exibimos logo todas as listas de metas visíveis e abertas para facilitar a consulta/edição imediata
+                for(let i=1; i<=4; i++) {
+                    const chk = document.getElementById(`obj${i}Check`);
+                    const list = document.getElementById(`listObj${i}`);
+                    if(chk && list) {
+                        chk.checked = true; // Marca o objetivo como selecionado/ativo visualmente
+                        list.style.display = 'flex'; // Mantém sempre visível/expandido
+                    }
+                }
             } else {
                 container.style.display = 'none';
                 for(let i=1; i<=4; i++) {
@@ -557,9 +566,7 @@
             const modoConsulta = urlParams.get('mode') === 'view';
             const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
 
-            // Verificar se já existe registo guardado para esta atividade
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            // Se estivermos a editar o próprio registo atual, ignoramos a verificação de duplicado dele mesmo
             const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
 
             if (regExistente && !modoConsulta && String(numInput) !== String(idEditandoUrl)) {
@@ -616,7 +623,7 @@
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
                     
-                    // FORÇAR a chamada da função para exibir o contentor visual imediatamente
+                    // Força a exibição do contentor PEE
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -630,7 +637,7 @@
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
                                         objCheck.checked = true;
-                                        box.style.display = 'flex'; // Exibe a lista do objetivo correspondente
+                                        box.style.display = 'flex'; // Exibe a lista do objetivo correspondente expandida
                                     }
                                 }
                             }
@@ -670,7 +677,6 @@
             }
         }
 
-        // Carregar dados existentes ao abrir a página via URL com segurança
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
@@ -701,7 +707,6 @@
 
             const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
 
-            // Bloquear duplicados se já existir e não estivermos a editar o mesmo registo
             if (indexExistente !== -1 && String(numAtividade) !== String(idEditandoUrl)) {
                 mostrarPopup('Atenção', `A Atividade #${numAtividade} já possui objetivos registados e não pode ser duplicada.`);
                 document.getElementById('btnGuardar').disabled = true;
@@ -731,7 +736,6 @@
                 dataRegisto: new Date().toISOString().split('T')[0]
             };
 
-            // Se já existia, substitui (atualiza). Se não, adiciona novo.
             if (indexExistente !== -1) {
                 registos[indexExistente] = dadosRegisto;
             } else {
