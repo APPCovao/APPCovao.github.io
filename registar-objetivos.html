@@ -500,13 +500,11 @@
             const container = document.getElementById('peeContainer');
             if (val === 'Sim') {
                 container.style.display = 'block';
-                // ATUALIZAÇÃO: Quando seleciona "Sim", exibimos logo todas as listas de metas visíveis e abertas para facilitar a consulta/edição imediata
+                // Mantém todas as listas de metas sempre visíveis e abertas para consulta/edição imediata
                 for(let i=1; i<=4; i++) {
-                    const chk = document.getElementById(`obj${i}Check`);
                     const list = document.getElementById(`listObj${i}`);
-                    if(chk && list) {
-                        chk.checked = true; // Marca o objetivo como selecionado/ativo visualmente
-                        list.style.display = 'flex'; // Mantém sempre visível/expandido
+                    if(list) {
+                        list.style.display = 'flex';
                     }
                 }
             } else {
@@ -524,13 +522,8 @@
             const list = document.getElementById(`listObj${num}`);
             if(!chk || !list) return;
 
-            const isChecked = chk.checked;
-            list.style.display = isChecked ? 'flex' : 'none';
-
-            if (!isChecked) {
-                const checkboxes = list.querySelectorAll('input[type="checkbox"]');
-                checkboxes.forEach(cb => cb.checked = false);
-            }
+            // Mantém sempre flex para aparecer aberto conforme pedido
+            list.style.display = 'flex';
         }
 
         function limparFormularioExcetoNumero() {
@@ -623,7 +616,7 @@
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
                     
-                    // Força a exibição do contentor PEE
+                    // Força a exibição do contentor PEE e abre todas as metas
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -631,13 +624,12 @@
                         checkboxesMetas.forEach(cb => {
                             if (regExistente.metasPee.includes(cb.value)) {
                                 cb.checked = true;
-                                const box = cb.closest('.meta-checkbox-list');
+                                const box = cb.closest('.pee-objective-box');
                                 if (box) {
-                                    const objNum = box.id.replace('listObj', '');
+                                    const objNum = box.querySelector('input[type="checkbox"]').id.replace('obj', '').replace('Check', '');
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
-                                        objCheck.checked = true;
-                                        box.style.display = 'flex'; // Exibe a lista do objetivo correspondente expandida
+                                        objCheck.checked = true; // Marca também o objetivo principal correspondente
                                     }
                                 }
                             }
