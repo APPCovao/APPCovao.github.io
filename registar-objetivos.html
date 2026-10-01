@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registo de Objetivos e Metas</title>
-    <!-- Estilos CSS (exemplo limpo e responsivo) -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,33 +65,33 @@
 <body>
 
     <div class="container">
-        <h2 id="tituloPaginaHeader">Registo de Objetivos</h2>
-        <p class="subtitle" id="subtituloPaginaHeader">Preencha os campos necessários para o registo.</p>
+        <h2 id="tituloPaginaHeader">Registo de Objetivos e Metas</h2>
+        <p class="subtitle" id="subtituloPaginaHeader">Preencha os dados necessários.</p>
 
         <form id="formObjetivos">
             <div class="form-group">
-                <label for="numeroAtividade">Número da Atividade / ID:</label>
+                <label for="numeroAtividade">Número da Atividade:</label>
                 <input type="text" id="numeroAtividade" name="numeroAtividade" required>
             </div>
 
-            <div class="form-group">
+            <!-- Objetivos e Metas visíveis diretamente, sem depender de nenhum PEE -->
+            <div class="form-group" id="blocoObjetivosMetas">
                 <label for="descricaoObjetivo">Objetivos e Metas:</label>
-                <textarea id="descricaoObjetivo" name="descricaoObjetivo" placeholder="Insira os objetivos e metas pretendidos..."></textarea>
+                <textarea id="descricaoObjetivo" name="descricaoObjetivo" placeholder="Insira os objetivos e metas..."></textarea>
             </div>
 
             <div class="form-group">
-                <label for="observacoes">Observações Adicionais:</label>
-                <input type="text" id="observacoes" name="observacoes" placeholder="Outras informações relevantes">
+                <label for="observacoes">Observações:</label>
+                <input type="text" id="observacoes" name="observacoes">
             </div>
 
             <div class="btn-container">
-                <button type="submit" id="btnGuardar">Guardar Registo</button>
+                <button type="submit" id="btnGuardar">Guardar</button>
             </div>
         </form>
     </div>
 
     <script>
-        // Função simulada para carregar dados existentes (localStorage ou base de dados)
         function carregarDadosAtividade(id) {
             const dadosSalvos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || {};
             const dadosAtividade = dadosSalvos[id];
@@ -106,26 +105,22 @@
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
-            const modoUrl = urlParams.get('modo'); // 'ver', 'editar' ou 'criar'
+            const modoUrl = urlParams.get('modo'); // 'ver', 'editar' ou vazio (criar)
 
-            // Se existir um ID na URL, preenchemos e carregamos os dados automaticamente
             if (numeroAtivUrl) {
                 const inputNum = document.getElementById('numeroAtividade');
                 inputNum.value = numeroAtivUrl;
-                inputNum.readOnly = true; // Bloqueia a alteração do ID principal
-                
+                inputNum.readOnly = true; 
                 setTimeout(() => {
                     carregarDadosAtividade(numeroAtivUrl);
                 }, 50);
             }
 
-            // Gestão de Modos (Ver, Editar, Criar) sem dependências restritivas do PEE
             if (modoUrl === 'ver') {
                 document.getElementById('tituloPaginaHeader').innerText = 'Visualizar Registo de Objetivos';
-                document.getElementById('subtituloPaginaHeader').innerText = 'Modo de visualização dos objetivos, metas e conclusões.';
+                document.getElementById('subtituloPaginaHeader').innerText = 'Modo de visualização.';
                 document.getElementById('btnGuardar').style.display = 'none';
                 
-                // Desativa todos os campos para consulta segura
                 setTimeout(() => {
                     document.querySelectorAll('input, textarea, select').forEach(el => {
                         el.disabled = true;
@@ -134,15 +129,10 @@
 
             } else if (modoUrl === 'editar') {
                 document.getElementById('tituloPaginaHeader').innerText = 'Editar Registo de Objetivos';
-                document.getElementById('subtituloPaginaHeader').innerText = 'Altere os dados pretendidos e guarde as alterações.';
-                // Campos mantêm-se ativos para edição livre, carregando os dados pré-existentes
-            } else {
-                document.getElementById('tituloPaginaHeader').innerText = 'Novo Registo de Objetivos';
-                document.getElementById('subtituloPaginaHeader').innerText = 'Introduza os novos objetivos e metas.';
+                document.getElementById('subtituloPaginaHeader').innerText = 'Altere os dados pretendidos.';
             }
         });
 
-        // Evento de submissão do formulário
         document.getElementById('formObjetivos').addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('numeroAtividade').value;
@@ -154,7 +144,6 @@
             
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(dadosSalvos));
             alert('Registo guardado com sucesso!');
-            window.location.href = 'index.html'; // Redirecionamento opcional após guardar
         });
     </script>
 </body>
