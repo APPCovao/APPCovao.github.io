@@ -198,6 +198,7 @@
         }
 
         .btn-ver { background-color: #0d9488; color: white; }
+        .btn-editar { background-color: #047857; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
         /* Formulário Estilizado */
@@ -236,6 +237,13 @@
             box-sizing: border-box;
             font-family: inherit;
             background-color: #fff;
+        }
+
+        input:disabled, select:disabled {
+            background-color: #f8fafc;
+            color: var(--primary-green);
+            font-weight: 600;
+            cursor: not-allowed;
         }
 
         input:focus, select:focus {
@@ -284,7 +292,7 @@
             <div class="section-header-card">
                 <div>
                     <h1>Estatísticas de Turmas</h1>
-                    <p>Consulte ou crie novos registos de aproveitamento (Português e Matemática).</p>
+                    <p>Consulte, edite ou crie novos registos de aproveitamento (Português e Matemática).</p>
                 </div>
                 <div class="header-actions">
                     <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
@@ -302,7 +310,7 @@
                             <th>Português (Bom/M. Bom)</th>
                             <th>Matemática (Bom/M. Bom)</th>
                             <th>Data</th>
-                            <th style="width: 140px; text-align: right;">Ações</th>
+                            <th style="width: 220px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaTurmasBody">
@@ -459,6 +467,16 @@
         document.getElementById('bonsPort').addEventListener('input', calcularPercentagens);
         document.getElementById('bonsMat').addEventListener('input', calcularPercentagens);
 
+        function ajustarModoFormulario(isSomenteLeitura) {
+            const inputs = document.querySelectorAll('#turmaForm input, #turmaForm select');
+            inputs.forEach(el => {
+                if (el.id !== 'editIndex') {
+                    el.disabled = isSomenteLeitura;
+                }
+            });
+            document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-flex';
+        }
+
         function carregarTurmas() {
             const tbody = document.getElementById('tabelaTurmasBody');
             if (!tbody) return;
@@ -490,6 +508,7 @@
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})">Ver</button>
                         ${temPermissao ? `
+                            <button class="btn-action btn-editar" onclick="editarRegisto(${indexReal})">Editar</button>
                             <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})">Apagar</button>
                         ` : '<span style="color: #9ca3af; font-size: 0.85rem;">🔒 Bloqueado</span>'}
                     </td>
@@ -504,6 +523,8 @@
             document.getElementById('percPortDisplay').innerText = '0%';
             document.getElementById('percMatDisplay').innerText = '0%';
             
+            ajustarModoFormulario(false);
+
             document.getElementById('formTitle').innerText = 'Registar Dados da Turma (Novo Registo)';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
@@ -529,8 +550,34 @@
             document.getElementById('bonsMat').value = t.bonsMat;
             
             calcularPercentagens();
+            ajustarModoFormulario(true); // Bloqueia todos os campos
 
             document.getElementById('formTitle').innerText = 'Visualizar Registo da Turma';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function editarRegisto(index) {
+            let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
+            const t = turmas[index];
+
+            if (!currentUser.isAdmin && t.userEmail !== currentUser.email) {
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar este registo.', '🔒');
+                return;
+            }
+
+            ajustarModoFormulario(false); // Liberta os campos para edição
+            document.getElementById('editIndex').value = index;
+            document.getElementById('nomeTurma').value = t.nomeTurma;
+            document.getElementById('anoLetivo').value = t.anoLetivo;
+            document.getElementById('numAlunos').value = t.totalAlunos;
+            document.getElementById('bonsPort').value = t.bonsPort;
+            document.getElementById('bonsMat').value = t.bonsMat;
+
+            calcularPercentagens();
+
+            document.getElementById('formTitle').innerText = 'Editar Registo da Turma';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -584,7 +631,7 @@
                 bonsMat: bonsMat,
                 percMat: percMat + '%',
                 registadoPor: currentUser.name || currentUser.nome || '',
-                userEmail: currentUser.email,
+                userEmail: currentUser.email || '',
                 dataRegisto: index !== "" ? turmas[index].dataRegisto : new Date().toISOString().split('T')[0]
             };
             
