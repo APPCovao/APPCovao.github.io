@@ -277,7 +277,8 @@
             </div>
             <div class="header-actions">
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
-                <a href="nova-avaliacao-form.html" class="btn-top-action" style="background-color: var(--color-accent);">⭐ Avaliar Atividade</a>
+                <!-- Alterado para invocar diretamente a função unificada de Criar/Avaliar -->
+                <button type="button" class="btn-top-action" style="background-color: var(--color-accent);" onclick="abrirModalAvaliacao(null, 'criar')">⭐ Avaliar Atividade</button>
             </div>
         </div>
 
@@ -296,26 +297,25 @@
         </div>
     </div>
 
-    <!-- Modal para Ver / Editar Avaliação -->
+    <!-- Modal para Criar / Ver / Editar Avaliação -->
     <div id="avaliacaoModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0;">Avaliar Atividade</h2>
-            <form id="avaliacaoFormModal" onsubmit="salvarEdicaoAvaliacao(event)">
+            <form id="avaliacaoFormModal" onsubmit="salvarFormularioAvaliacao(event)">
                 <input type="hidden" id="editAvaliacaoId">
                 
                 <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalAvNumAtividade" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalAvTituloAtividade" readonly>
+                    <label>Selecione a Atividade <span class="required" id="reqSelectAtividade">*</span></label>
+                    <select id="modalAvSelectAtividade">
+                        <option value="">Selecione uma atividade disponível</option>
+                    </select>
+                    <!-- Campo de leitura usado quando está em modo ver/editar registo existente -->
+                    <input type="text" id="modalAvTituloAtividadeReadonly" readonly style="display: none; margin-top: 5px;">
                 </div>
 
                 <div class="form-group">
                     <label>Ano Letivo</label>
-                    <input type="text" id="modalAvAnoLetivo" readonly>
+                    <input type="text" id="modalAvAnoLetivo" value="2025/2026">
                 </div>
 
                 <div class="form-group">
@@ -392,6 +392,21 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
+        function popularSelectAtividades(selecionadoId = '') {
+            const select = document.getElementById('modalAvSelectAtividade');
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            select.innerHTML = '<option value="">Selecione uma atividade disponível</option>';
+            atividades.forEach(att => {
+                const opt = document.createElement('option');
+                opt.value = att.id || att.numero;
+                opt.textContent = `[Nº ${att.numero || att.id}] ${att.titulo || att.nome || 'Atividade'}`;
+                if (selecionadoId && (att.id == selecionadoId || att.numero == selecionadoId)) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+        }
+
         function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
@@ -434,36 +449,63 @@
             });
         }
 
+        // Função Unificada: Criar, Ver ou Editar utilizam o mesmo modal/formulário
         function abrirModalAvaliacao(id, modo) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            const av = avaliadas.find((a, idx) => a.id == id || idx == id);
-            if (!av) return;
-
-            document.getElementById('editAvaliacaoId').value = id;
-            document.getElementById('modalAvNumAtividade').value = av.numeroAtividade || av.atividadeId || '-';
-            document.getElementById('modalAvTituloAtividade').value = av.tituloAtividade || av.atividadeNome || av.titulo || '';
-            document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || '2025/2026';
-            document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.avaliadorTipo || '';
-            document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
-            document.getElementById('modalAvDinamica').value = av.dinamica || '';
-            document.getElementById('modalAvInteresse').value = av.interesse || '';
-            document.getElementById('modalAvComentario').value = av.comentario || av.sugestoes || '';
-
-            const inputs = document.querySelectorAll('#avaliacaoFormModal input, #avaliacaoFormModal select, #avaliacaoFormModal textarea');
+            
+            const inputs = document.querySelectorAll('#avaliacaoFormModal input:not([type="hidden"]), #avaliacaoFormModal select, #avaliacaoFormModal textarea');
             const saveBtn = document.getElementById('modalAvSaveBtn');
+            const selectAtividadeEl = document.getElementById('modalAvSelectAtividade');
+            const readOnlyAtividadeEl = document.getElementById('modalAvTituloAtividadeReadonly');
 
-            if (modo === 'ver') {
-                document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
-                inputs.forEach(el => el.disabled = true);
-                saveBtn.style.display = 'none';
-            } else {
-                document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
+            if (modo === 'criar') {
+                document.getElementById('modalAvaliacaoTitle').innerText = 'Criar Nova Avaliação';
+                document.getElementById('editAvaliacaoId').value = '';
+                document.getElementById('avaliacaoFormModal').reset();
+                
+                popularSelectAtividades();
+                selectAtividadeEl.style.display = 'block';
+                selectAtividadeEl.required = true;
+                readOnlyAtividadeEl.style.display = 'none';
+
                 inputs.forEach(el => el.disabled = false);
-                document.getElementById('modalAvNumAtividade').disabled = true;
-                document.getElementById('modalAvTituloAtividade').disabled = true;
-                document.getElementById('modalAvAnoLetivo').disabled = true;
+                document.getElementById('modalAvAnoLetivo').value = '2025/2026';
                 saveBtn.style.display = 'inline-block';
+            } else {
+                const av = avaliadas.find((a, idx) => a.id == id || idx == id);
+                if (!av) return;
+
+                document.getElementById('editAvaliacaoId').value = id;
+                document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || '2025/2026';
+                document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.avaliadorTipo || '';
+                document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
+                document.getElementById('modalAvDinamica').value = av.dinamica || '';
+                document.getElementById('modalAvInteresse').value = av.interesse || '';
+                document.getElementById('modalAvComentario').value = av.comentario || av.sugestoes || '';
+
+                const atividadeIdVinculada = av.atividadeId || av.numeroAtividade || '';
+                const tituloVinculado = av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade';
+
+                if (modo === 'ver') {
+                    document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
+                    selectAtividadeEl.style.display = 'none';
+                    selectAtividadeEl.required = false;
+                    readOnlyAtividadeEl.style.display = 'block';
+                    readOnlyAtividadeEl.value = `[Nº ${atividadeIdVinculada}] ${tituloVinculado}`;
+
+                    inputs.forEach(el => el.disabled = true);
+                    saveBtn.style.display = 'none';
+                } else {
+                    document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
+                    popularSelectAtividades(atividadeIdVinculada);
+                    selectAtividadeEl.style.display = 'block';
+                    selectAtividadeEl.required = true;
+                    readOnlyAtividadeEl.style.display = 'none';
+
+                    inputs.forEach(el => el.disabled = false);
+                    saveBtn.style.display = 'inline-block';
+                }
             }
             document.getElementById('avaliacaoModal').style.display = 'flex';
         }
@@ -472,22 +514,54 @@
             document.getElementById('avaliacaoModal').style.display = 'none';
         }
 
-        function salvarEdicaoAvaliacao(e) {
+        function salvarFormularioAvaliacao(e) {
             e.preventDefault();
             const id = document.getElementById('editAvaliacaoId').value;
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             let avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            let av = avaliadas.find((a, idx) => a.id == id || idx == id);
-            if (av) {
-                av.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
-                av.pertinencia = document.getElementById('modalAvPertinencia').value;
-                av.dinamica = document.getElementById('modalAvDinamica').value;
-                av.interesse = document.getElementById('modalAvInteresse').value;
-                av.comentario = document.getElementById('modalAvComentario').value;
-                localStorage.setItem(chave, JSON.stringify(avaliadas));
-                carregarAvaliacoes();
-                fecharModalAvaliacao();
+            
+            const atividadeIdSelecionada = document.getElementById('modalAvSelectAtividade').value;
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const attEncontrada = atividades.find(a => a.id == atividadeIdSelecionada || a.numero == atividadeIdSelecionada);
+
+            if (id === '' || id === null) {
+                // Criar Novo Registo
+                const novaAvaliacao = {
+                    id: Date.now(),
+                    criadorId: currentUser.id,
+                    avaliadorNome: currentUser.name || currentUser.email,
+                    atividadeId: atividadeIdSelecionada,
+                    numeroAtividade: attEncontrada ? (attEncontrada.numero || attEncontrada.id) : atividadeIdSelecionada,
+                    tituloAtividade: attEncontrada ? attEncontrada.titulo : 'Atividade',
+                    anoLetivo: document.getElementById('modalAvAnoLetivo').value,
+                    docenteAluno: document.getElementById('modalAvDocenteAluno').value,
+                    pertinencia: document.getElementById('modalAvPertinencia').value,
+                    dinamica: document.getElementById('modalAvDinamica').value,
+                    interesse: document.getElementById('modalAvInteresse').value,
+                    comentario: document.getElementById('modalAvComentario').value
+                };
+                avaliadas.push(novaAvaliacao);
+            } else {
+                // Atualizar Registo Existente
+                let av = avaliadas.find((a, idx) => a.id == id || idx == id);
+                if (av) {
+                    av.atividadeId = atividadeIdSelecionada;
+                    if (attEncontrada) {
+                        av.numeroAtividade = attEncontrada.numero || attEncontrada.id;
+                        av.tituloAtividade = attEncontrada.titulo;
+                    }
+                    av.anoLetivo = document.getElementById('modalAvAnoLetivo').value;
+                    av.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
+                    av.pertinencia = document.getElementById('modalAvPertinencia').value;
+                    av.dinamica = document.getElementById('modalAvDinamica').value;
+                    av.interesse = document.getElementById('modalAvInteresse').value;
+                    av.comentario = document.getElementById('modalAvComentario').value;
+                }
             }
+
+            localStorage.setItem(chave, JSON.stringify(avaliadas));
+            carregarAvaliacoes();
+            fecharModalAvaliacao();
         }
 
         let idParaApagar = null;
