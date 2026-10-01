@@ -530,6 +530,14 @@
             document.getElementById('paaSelect').value = '';
             document.getElementById('peeSelect').value = '';
             controlarCamposPEE();
+            
+            // Desmarcar explicitamente todas as checkboxes do PEE
+            for(let i=1; i<=4; i++) {
+                const objChk = document.getElementById(`obj${i}Check`);
+                if(objChk) objChk.checked = false;
+            }
+            document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
+
             document.getElementById('mediaAvaliacoes').value = '';
             document.getElementById('sugestoesRecolhidas').value = '';
             document.getElementById('resumoConclusoes').value = '';
@@ -613,7 +621,6 @@
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
                     
-                    // Garante que mostra o bloco do PEE se estiver a "Sim"
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -627,7 +634,6 @@
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
                                         objCheck.checked = true;
-                                        // Força a exibição visual da lista da meta correspondente
                                         toggleObj(objNum);
                                     }
                                 }
@@ -637,31 +643,17 @@
 
                     document.getElementById('resumoConclusoes').value = regExistente.resumoConclusoes || '';
                 } else {
-                    // SE FOR UMA ATIVIDADE NOVA, PUXA OS DADOS DO ÚLTIMO REGISTO COMO PREDEFINIÇÃO
-                    if (registos.length > 0) {
-                        const ultimoRegisto = registos[registos.length - 1];
-                        document.getElementById('paaSelect').value = ultimoRegisto.paa || '';
-                        document.getElementById('peeSelect').value = ultimoRegisto.pee || '';
-                        controlarCamposPEE();
-                        
-                        if (ultimoRegisto.metasPee && Array.isArray(ultimoRegisto.metasPee)) {
-                            const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]');
-                            checkboxesMetas.forEach(cb => {
-                                if (ultimoRegisto.metasPee.includes(cb.value)) {
-                                    cb.checked = true;
-                                    const box = cb.closest('.pee-objective-box');
-                                    if (box) {
-                                        const objNum = box.querySelector('input[type="checkbox"]').id.replace('obj', '').replace('Check', '');
-                                        const objCheck = document.getElementById(`obj${objNum}Check`);
-                                        if (objCheck) {
-                                            objCheck.checked = true;
-                                            toggleObj(objNum);
-                                        }
-                                    }
-                                }
-                            });
-                        }
+                    // ATIVIDADE NOVA: Limpa explicitamente os seletores PAA/PEE e caixas de seleção
+                    document.getElementById('paaSelect').value = '';
+                    document.getElementById('peeSelect').value = '';
+                    controlarCamposPEE();
+                    
+                    for(let i=1; i<=4; i++) {
+                        const objChk = document.getElementById(`obj${i}Check`);
+                        if(objChk) objChk.checked = false;
                     }
+                    document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
+                    document.getElementById('resumoConclusoes').value = '';
                 }
             } else {
                 nomeInput.value = '';
