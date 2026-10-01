@@ -121,15 +121,21 @@
             background-color: #0f172a;
         }
 
-        /* Grelha para os Cartões de Destaque (3 colunas) */
+        /* Grelha para os Cartões de Destaque (4 colunas) */
         .stats-grid-top {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 25px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
+            .stats-grid-top {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
             .stats-grid-top {
                 grid-template-columns: 1fr;
             }
@@ -139,7 +145,7 @@
             background: linear-gradient(135deg, #14532d 0%, #166534 100%);
             color: white;
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -154,26 +160,31 @@
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         }
 
+        .stat-main-card.alt3 {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        }
+
         .stat-main-card h3 {
-            margin: 0 0 8px 0;
-            font-size: 16px;
+            margin: 0 0 6px 0;
+            font-size: 14px;
             color: #dcfce7;
             font-weight: 500;
         }
 
         .stat-main-card.alt1 h3 { color: #ccfbf1; }
         .stat-main-card.alt2 h3 { color: #e0f2fe; }
+        .stat-main-card.alt3 h3 { color: #ede9fe; }
 
         .stat-main-card .stat-value {
-            font-size: 36px;
+            font-size: 30px;
             font-weight: 800;
             margin: 0;
         }
 
         .stat-main-card .stat-icon {
-            font-size: 40px;
+            font-size: 32px;
             background: rgba(255, 255, 255, 0.15);
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
         }
 
@@ -264,7 +275,7 @@
         <div class="section-header-card">
             <div>
                 <h1>Relatórios e Estatísticas</h1>
-                <p>Análise detalhada das requisições, atividades e avaliações do sistema.</p>
+                <p>Análise detalhada das requisições, atividades, avaliações e objetivos do sistema.</p>
             </div>
             <div>
                 <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
@@ -295,6 +306,14 @@
                     <p id="statAvaliadas" class="stat-value">0</p>
                 </div>
                 <div class="stat-icon">⭐</div>
+            </div>
+
+            <div class="stat-main-card alt3">
+                <div>
+                    <h3>Objetivos Registados</h3>
+                    <p id="statObjetivos" class="stat-value">0</p>
+                </div>
+                <div class="stat-icon">🎯</div>
             </div>
         </div>
 
@@ -359,29 +378,31 @@
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // 2. Número de Atividades (Extrai o identificador único/número para evitar duplicados como 1, 1, 2, 2)
+            // Função auxiliar para extrair identificador único sem duplicados
+            function contarUnicos(lista) {
+                const idsUnicos = new Set(
+                    lista.map(item => {
+                        return item.numero_requisicao !== undefined ? item.numero_requisicao : 
+                               (item.numero !== undefined ? item.numero : 
+                               (item.id !== undefined ? item.id : item.titulo));
+                    })
+                );
+                return idsUnicos.size;
+            }
+
+            // 2. Número de Atividades
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const idsAtividadesUnicos = new Set(
-                atividadesLista.map(item => {
-                    return item.numero_requisicao !== undefined ? item.numero_requisicao : 
-                           (item.numero !== undefined ? item.numero : 
-                           (item.id !== undefined ? item.id : item.titulo));
-                })
-            );
-            document.getElementById('statAtividades').innerText = idsAtividadesUnicos.size;
+            document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
 
-            // 3. Atividades Avaliadas (Extrai estritamente o número identificador único para colapsar 1, 1, 2, 2 em apenas 2)
+            // 3. Atividades Avaliadas
             const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            const idsAvaliadasUnicos = new Set(
-                avaliadasLista.map(item => {
-                    return item.numero_requisicao !== undefined ? item.numero_requisicao : 
-                           (item.numero !== undefined ? item.numero : 
-                           (item.id !== undefined ? item.id : item.titulo));
-                })
-            );
-            document.getElementById('statAvaliadas').innerText = idsAvaliadasUnicos.size;
+            document.getElementById('statAvaliadas').innerText = contarUnicos(avaliadasLista);
 
-            // 4. Contagens para os Gráficos de Requisições
+            // 4. Objetivos Registados (Lê do localStorage de objetivos, aplicando também a remoção de duplicados)
+            const objetivosLista = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registosObjetivos')) || [];
+            document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
+
+            // 5. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
