@@ -328,7 +328,7 @@
 
             <div class="stat-main-card alt4">
                 <div>
-                    <h3>Atividades no PAA (Sim)</h3>
+                    <h3>PAA (Sim - Objetivos)</h3>
                     <p id="statPaa" class="stat-value">0</p>
                 </div>
                 <div class="stat-icon">📅</div>
@@ -417,43 +417,47 @@
                 return idsUnicos.size;
             }
 
-            // 2. Número de Atividades (Lê do localStorage 'atividades')
+            // 2. Número de Atividades
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
             document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
 
-            // 3. Atividades Avaliadas (Lê de forma segura e única)
+            // 3. Atividades Avaliadas (Conta IDs/números únicos de atividades presentes nas avaliações, ignorando múltiplas avaliações da mesma atividade)
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
                             (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
             const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
-            document.getElementById('statAvaliadas').innerText = contarUnicos(avaliadasLista);
+            
+            // Mapeia especificamente o identificador da atividade avaliada (ex: idAtividade, numeroAtividade, atividadeId ou numero)
+            const idsAtividadesAvaliadasUnicas = new Set(
+                avaliadasLista.map(item => {
+                    return item.idAtividade !== undefined ? item.idAtividade :
+                           (item.numeroAtividade !== undefined ? item.numeroAtividade :
+                           (item.atividadeId !== undefined ? item.atividadeId :
+                           (item.numero !== undefined ? item.numero : item.id)));
+                })
+            );
+            document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
 
-            // 4. Objetivos Registados (Lê do localStorage 'registosObjetivosAtividades')
+            // 4. Objetivos Registados
             const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
-            // 5. Atividades com 'Sim' no PAA e PEE (Verifica a lista principal 'atividades')
-            let contadorPaa = 0;
-            let contadorPee = 0;
-
-            atividadesLista.forEach(ativ => {
-                // Verifica diferentes variações possíveis para PAA (ex: 'paa', 'noPaa', 'fazPartePaa', etc.)
-                const valPaa = ativ.paa || ativ.fazPartePaa || ativ.noPaa || '';
-                if (typeof valPaa === 'string' && valPaa.toLowerCase() === 'sim') {
-                    contadorPaa++;
-                } else if (valPaa === true) {
-                    contadorPaa++;
+            // 5. Análise de PAA ("Sim" nos Objetivos) e PEE nas Atividades
+            let contadorPaaObjetivos = 0;
+            objetivosLista.forEach(obj => {
+                const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || '';
+                if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
+                    contadorPaaObjetivos++;
                 }
+            });
+            document.getElementById('statPaa').innerText = contadorPaaObjetivos;
 
-                // Verifica diferentes variações possíveis para PEE
+            let contadorPee = 0;
+            atividadesLista.forEach(ativ => {
                 const valPee = ativ.pee || ativ.fazPartePee || ativ.noPee || '';
-                if (typeof valPee === 'string' && valPee.toLowerCase() === 'sim') {
-                    contadorPee++;
-                } else if (valPee === true) {
+                if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
                     contadorPee++;
                 }
             });
-
-            document.getElementById('statPaa').innerText = contadorPaa;
             document.getElementById('statPee').innerText = contadorPee;
 
             // 6. Contagens para os Gráficos de Requisições
