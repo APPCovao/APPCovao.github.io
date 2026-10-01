@@ -131,7 +131,7 @@
             background-color: #fff;
         }
 
-        input[readonly], textarea[readonly], select:disabled {
+        input[readonly], textarea[readonly] {
             background-color: #f8fafc !important;
             color: var(--color-primary) !important;
             font-weight: 600 !important;
@@ -523,24 +523,11 @@
                 return;
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const modo = urlParams.get('mode'); // 'view' para ver, senão é criar/editar
-            const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const ativEncontrada = atividades.find(a => String(a.numero) === String(numInput));
 
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
-
-            if (regExistente && modo !== 'view' && String(numInput) !== String(idEditandoUrl)) {
-                aviso.textContent = `Atenção: A Atividade #${numInput} já tem objetivos registados. Não é permitido criar duplicados.`;
-                aviso.style.display = 'block';
-                if(btnGuardar) btnGuardar.disabled = true;
-            } else if (modo !== 'view') {
-                aviso.style.display = 'none';
-                if(btnGuardar) btnGuardar.disabled = false;
-            }
-
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const ativEncontrada = atividades.find(a => String(a.numero) === String(numInput));
 
             if (ativEncontrada) {
                 nomeInput.value = ativEncontrada.titulo || '';
@@ -585,7 +572,7 @@
                 controlarCamposPEE();
                 document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
 
-                // Preencher com os dados do registo existente (Consulta ou Edição)
+                // Preencher com os dados do registo existente (caso exista)
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
@@ -613,25 +600,6 @@
                     aviso.textContent = 'Atividade não encontrada.';
                     aviso.style.display = 'block';
                 }
-            }
-
-            // Ajustes visuais consoante o Modo (View vs Edit vs Criar)
-            if (modo === 'view') {
-                document.getElementById('tituloPaginaHeader').textContent = 'Consulta de Objetivos da Atividade';
-                document.getElementById('subtituloPaginaHeader').textContent = 'Visualização dos objetivos e metas do PEE associados.';
-                document.getElementById('numeroAtividade').readOnly = true;
-                document.getElementById('paaSelect').disabled = true;
-                document.getElementById('peeSelect').disabled = true;
-                document.getElementById('resumoConclusoes').readOnly = true;
-                
-                document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.disabled = true);
-                
-                const btnGrd = document.getElementById('btnGuardar');
-                if(btnGrd) btnGrd.style.display = 'none';
-            } else if (idEditandoUrl) {
-                document.getElementById('tituloPaginaHeader').textContent = 'Editar Objetivos da Atividade';
-                document.getElementById('subtituloPaginaHeader').textContent = 'Modo de edição dos objetivos e conclusões associados.';
-                document.getElementById('numeroAtividade').readOnly = true;
             }
         }
 
@@ -664,12 +632,6 @@
             const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
 
             const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
-
-            if (indexExistente !== -1 && String(numAtividade) !== String(idEditandoUrl)) {
-                mostrarPopup('Atenção', `A Atividade #${numAtividade} já possui objetivos registados e não pode ser duplicada.`);
-                document.getElementById('btnGuardar').disabled = true;
-                return;
-            }
 
             const peeVal = document.getElementById('peeSelect').value;
             let metasSelecionadas = [];
