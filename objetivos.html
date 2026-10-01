@@ -4,110 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Objetivos e Metas - Registos Covão</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
+        :root {
+            --primary-green: #15803d;
+            --primary-green-hover: #166534;
+            --bg-page: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-light: #4b5563;
+            --border-color: #bbf7d0;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #14532d;
+            padding: 0.8rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .navbar .brand img {
+            height: 30px;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .navbar .user-info span {
+            color: #dcfce7;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
         .objectives-container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-header-card h2 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin: 0 0 6px 0;
+        }
+
+        .section-header-card p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
         }
 
         .objective-card {
-            background: var(--color-white);
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
             overflow: hidden;
-            border-left: 5px solid var(--color-primary);
         }
 
         .objective-header {
             background-color: #f8fafc;
-            padding: 1.25rem 1.5rem;
+            padding: 18px 24px;
             border-bottom: 1px solid #e2e8f0;
+            border-left: 6px solid var(--primary-green);
         }
 
         .objective-header h3 {
-            color: var(--color-primary);
-            font-size: 1.2rem;
+            color: var(--primary-green);
+            font-size: 1.15rem;
             margin: 0;
+            font-weight: 700;
         }
 
         .objective-body {
-            padding: 1.5rem;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .meta-box {
             background: #fdfdfd;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .meta-box:last-child {
-            margin-bottom: 0;
+            padding: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
 
         .meta-title {
-            font-weight: bold;
-            color: var(--color-accent);
+            font-weight: 700;
+            color: #0d9488;
             font-size: 1.05rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+        }
+
+        .meta-description {
+            margin: 0 0 15px 0;
+            font-weight: 500;
+            color: var(--text-main);
+            font-size: 0.95rem;
         }
 
         .actions-list {
             list-style-type: none;
             padding-left: 0;
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .actions-list li {
             position: relative;
             padding-left: 1.5rem;
-            margin-bottom: 0.5rem;
             font-size: 0.95rem;
-            color: var(--text-main);
+            color: var(--text-light);
         }
 
         .actions-list li::before {
             content: "•";
             position: absolute;
             left: 0.25rem;
-            color: var(--color-primary);
+            color: var(--primary-green);
             font-weight: bold;
             font-size: 1.2rem;
             line-height: 1;
         }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
     </style>
 </head>
 <body>
+
     <div class="navbar">
         <div class="brand">
             <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <span>Olá, <strong id="userNameSpan"></strong></span>
-            <a href="atividades.html" style="color: white; text-decoration: none; font-weight: 600;">⬅️ Voltar</a>
+            <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
+            <a href="atividades.html" class="btn-voltar-menu">⬅️ Voltar</a>
         </div>
     </div>
 
     <div class="objectives-container">
-        <div class="dashboard-header">
+        
+        <!-- Cabeçalho Principal -->
+        <div class="section-header-card">
             <div>
                 <h2>Objetivos e Metas Pedagógicas</h2>
-                <p style="color: var(--text-light); font-size: 0.9rem;">Consulta dos objetivos estratégicos, metas e respetivas ações planeadas.</p>
+                <p>Consulta dos objetivos estratégicos, metas e respetivas ações planeadas.</p>
             </div>
         </div>
 
@@ -120,7 +221,7 @@
                 <!-- Meta 1 -->
                 <div class="meta-box">
                     <div class="meta-title">🎯 Meta 1</div>
-                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente realizar seis Reuniões de Concelho de Turma de forma a colmatar as fragilidades identificadas na Turma/Grupo</p>
+                    <p class="meta-description">Anualmente realizar seis Reuniões de Concelho de Turma de forma a colmatar as fragilidades identificadas na Turma/Grupo</p>
                     <ul class="actions-list">
                         <li>Criar grelhas de registo</li>
                         <li>Realizar uma sessão de esclarecimento para o preenchimento da grelha</li>
@@ -140,7 +241,7 @@
                 <!-- Meta 2 -->
                 <div class="meta-box">
                     <div class="meta-title">🎯 Meta 2</div>
-                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente 75% dos alunos devem atingir as menções de Bom e Muito Bom no português</p>
+                    <p class="meta-description">Anualmente 75% dos alunos devem atingir as menções de Bom e Muito Bom no português</p>
                     <ul class="actions-list">
                         <li>Realizar concursos de escrita, soletração e ortografia</li>
                         <li>Realizar momentos de leitura através da Hora do Conto</li>
@@ -151,9 +252,9 @@
                 </div>
 
                 <!-- Meta 3 -->
-                <div class="meta-box" style="margin-top: 1rem;">
+                <div class="meta-box">
                     <div class="meta-title">🎯 Meta 3</div>
-                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente 75% dos alunos devem atingir as menções de Bom e Muito Bom na Matemática</p>
+                    <p class="meta-description">Anualmente 75% dos alunos devem atingir as menções de Bom e Muito Bom na Matemática</p>
                     <ul class="actions-list">
                         <li>Realizar concurso “Será que já sei”</li>
                         <li>Realizar desafios “Reis da tabuada”</li>
@@ -173,7 +274,7 @@
                 <!-- Meta 4 -->
                 <div class="meta-box">
                     <div class="meta-title">🎯 Meta 4</div>
-                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente cada professor tem que realizar pelo menos 6 atividades por área curricular em cada período com recurso às tecnologias</p>
+                    <p class="meta-description">Anualmente cada professor tem que realizar pelo menos 6 atividades por área curricular em cada período com recurso às tecnologias</p>
                     <ul class="actions-list">
                         <li>Realizar ações de formação/sensibilização sobre os recursos tecnológicos existentes</li>
                         <li>Criar recursos de forma colaborativa</li>
@@ -194,7 +295,7 @@
                 <!-- Meta 5 -->
                 <div class="meta-box">
                     <div class="meta-title">🎯 Meta 5</div>
-                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Anualmente realizar dois questionários para a comunidade escolar</p>
+                    <p class="meta-description">Anualmente realizar dois questionários para a comunidade escolar</p>
                     <ul class="actions-list">
                         <li>Criar os questionários</li>
                         <li>Aplicar os questionários</li>
@@ -202,9 +303,9 @@
                 </div>
 
                 <!-- Meta 6 -->
-                <div class="meta-box" style="margin-top: 1rem;">
+                <div class="meta-box">
                     <div class="meta-title">🎯 Meta 6</div>
-                    <p style="margin-bottom: 0.75rem; font-weight: 500;">Envolver os Encarregados de Educação em 6 atividades/ações/projetos anuais</p>
+                    <p class="meta-description">Envolver os Encarregados de Educação em 6 atividades/ações/projetos anuais</p>
                     <ul class="actions-list">
                         <li>Convidar os pais para a participação em dias festivos</li>
                         <li>Realizar ações de sensibilização/reuniões com os encarregados de educação</li>
@@ -222,7 +323,7 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
+            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.nome || 'Utilizador';
         }
     </script>
 </body>
