@@ -121,7 +121,7 @@
             background-color: #0f172a;
         }
 
-        /* Grelha para os Cartões de Destaque (4 colunas) */
+        /* Grelha para os Cartões de Destaque */
         .stats-grid-top {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -164,6 +164,14 @@
             background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
         }
 
+        .stat-main-card.alt4 {
+            background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+        }
+
+        .stat-main-card.alt5 {
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+        }
+
         .stat-main-card h3 {
             margin: 0 0 6px 0;
             font-size: 14px;
@@ -174,6 +182,8 @@
         .stat-main-card.alt1 h3 { color: #ccfbf1; }
         .stat-main-card.alt2 h3 { color: #e0f2fe; }
         .stat-main-card.alt3 h3 { color: #ede9fe; }
+        .stat-main-card.alt4 h3 { color: #ffedd5; }
+        .stat-main-card.alt5 h3 { color: #fef3c7; }
 
         .stat-main-card .stat-value {
             font-size: 30px;
@@ -315,6 +325,22 @@
                 </div>
                 <div class="stat-icon">🎯</div>
             </div>
+
+            <div class="stat-main-card alt4">
+                <div>
+                    <h3>Atividades no PAA (Sim)</h3>
+                    <p id="statPaa" class="stat-value">0</p>
+                </div>
+                <div class="stat-icon">📅</div>
+            </div>
+
+            <div class="stat-main-card alt5">
+                <div>
+                    <h3>Atividades no PEE (Sim)</h3>
+                    <p id="statPee" class="stat-value">0</p>
+                </div>
+                <div class="stat-icon">🏫</div>
+            </div>
         </div>
 
         <!-- Grelha de Gráficos (Áreas e Equipamentos) -->
@@ -395,17 +421,42 @@
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
             document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
 
-            // 3. Atividades Avaliadas (Verifica ambas as chaves possíveis no localStorage de avaliações)
+            // 3. Atividades Avaliadas (Lê de forma segura e única)
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
                             (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
             const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
             document.getElementById('statAvaliadas').innerText = contarUnicos(avaliadasLista);
 
-            // 4. Objetivos Registados (Lê do localStorage correto 'registosObjetivosAtividades')
+            // 4. Objetivos Registados (Lê do localStorage 'registosObjetivosAtividades')
             const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
-            // 5. Contagens para os Gráficos de Requisições
+            // 5. Atividades com 'Sim' no PAA e PEE (Verifica a lista principal 'atividades')
+            let contadorPaa = 0;
+            let contadorPee = 0;
+
+            atividadesLista.forEach(ativ => {
+                // Verifica diferentes variações possíveis para PAA (ex: 'paa', 'noPaa', 'fazPartePaa', etc.)
+                const valPaa = ativ.paa || ativ.fazPartePaa || ativ.noPaa || '';
+                if (typeof valPaa === 'string' && valPaa.toLowerCase() === 'sim') {
+                    contadorPaa++;
+                } else if (valPaa === true) {
+                    contadorPaa++;
+                }
+
+                // Verifica diferentes variações possíveis para PEE
+                const valPee = ativ.pee || ativ.fazPartePee || ativ.noPee || '';
+                if (typeof valPee === 'string' && valPee.toLowerCase() === 'sim') {
+                    contadorPee++;
+                } else if (valPee === true) {
+                    contadorPee++;
+                }
+            });
+
+            document.getElementById('statPaa').innerText = contadorPaa;
+            document.getElementById('statPee').innerText = contadorPee;
+
+            // 6. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
