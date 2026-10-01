@@ -613,6 +613,7 @@
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
                     
+                    // Garante que mostra o bloco do PEE se estiver a "Sim"
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -626,6 +627,8 @@
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
                                         objCheck.checked = true;
+                                        // Força a exibição visual da lista da meta correspondente
+                                        toggleObj(objNum);
                                     }
                                 }
                             }
@@ -650,7 +653,10 @@
                                     if (box) {
                                         const objNum = box.querySelector('input[type="checkbox"]').id.replace('obj', '').replace('Check', '');
                                         const objCheck = document.getElementById(`obj${objNum}Check`);
-                                        if (objCheck) objCheck.checked = true;
+                                        if (objCheck) {
+                                            objCheck.checked = true;
+                                            toggleObj(objNum);
+                                        }
                                     }
                                 }
                             });
