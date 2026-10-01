@@ -305,13 +305,10 @@
             font-size: 14px;
             cursor: pointer;
             border: none;
-        }
-
-        .modal-btn-primary {
             background-color: var(--color-primary);
             color: white;
         }
-        .modal-btn-primary:hover { background-color: var(--color-primary-hover); }
+        .modal-btn:hover { background-color: var(--color-primary-hover); }
     </style>
 </head>
 <body>
@@ -469,7 +466,7 @@
             buttonsEl.innerHTML = '';
 
             const btnOk = document.createElement('button');
-            btnOk.className = 'modal-btn modal-btn-primary';
+            btnOk.className = 'modal-btn';
             btnOk.textContent = 'OK';
             btnOk.onclick = () => {
                 fecharPopup();
@@ -527,7 +524,7 @@
             }
 
             const urlParams = new URLSearchParams(window.location.search);
-            const modo = urlParams.get('mode'); // 'view' para ver, 'edit' (ou vazio) para criar/editar
+            const modo = urlParams.get('mode'); // 'view' para ver, senão é criar/editar
             const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
 
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
@@ -618,10 +615,10 @@
                 }
             }
 
-            // Tratamento específico para o modo de Visualização (Ver)
+            // Ajustes visuais consoante o Modo (View vs Edit vs Criar)
             if (modo === 'view') {
                 document.getElementById('tituloPaginaHeader').textContent = 'Consulta de Objetivos da Atividade';
-                document.getElementById('subtituloPaginaHeader').textContent = 'Modo de visualização dos objetivos e metas do PEE associados.';
+                document.getElementById('subtituloPaginaHeader').textContent = 'Visualização dos objetivos e metas do PEE associados.';
                 document.getElementById('numeroAtividade').readOnly = true;
                 document.getElementById('paaSelect').disabled = true;
                 document.getElementById('peeSelect').disabled = true;
@@ -632,7 +629,6 @@
                 const btnGrd = document.getElementById('btnGuardar');
                 if(btnGrd) btnGrd.style.display = 'none';
             } else if (idEditandoUrl) {
-                // Modo Edição
                 document.getElementById('tituloPaginaHeader').textContent = 'Editar Objetivos da Atividade';
                 document.getElementById('subtituloPaginaHeader').textContent = 'Modo de edição dos objetivos e conclusões associados.';
                 document.getElementById('numeroAtividade').readOnly = true;
