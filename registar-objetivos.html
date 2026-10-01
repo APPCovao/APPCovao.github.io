@@ -236,10 +236,6 @@
         .btn-guardar:hover {
             background-color: var(--color-primary-hover);
         }
-        .btn-guardar:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-        }
 
         .modal-overlay {
             position: fixed;
@@ -514,12 +510,10 @@
             const mediaInput = document.getElementById('mediaAvaliacoes');
             const sugestoesInput = document.getElementById('sugestoesRecolhidas');
             const aviso = document.getElementById('avisoAtividade');
-            const btnGuardar = document.getElementById('btnGuardar');
 
             if (!numInput) {
                 limparFormularioExcetoNumero();
                 aviso.style.display = 'none';
-                if(btnGuardar) btnGuardar.disabled = false;
                 return;
             }
 
@@ -566,13 +560,7 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
-                // Limpar seleções prévias antes de carregar
-                document.getElementById('paaSelect').value = '';
-                document.getElementById('peeSelect').value = '';
-                controlarCamposPEE();
-                document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
-
-                // Preencher com os dados do registo existente (caso exista)
+                // Preencher com os dados do registo existente (caso já tenha sido guardado anteriormente)
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
@@ -628,9 +616,6 @@
             }
 
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const urlParams = new URLSearchParams(window.location.search);
-            const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
-
             const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
 
             const peeVal = document.getElementById('peeSelect').value;
