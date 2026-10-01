@@ -124,7 +124,7 @@
         /* Grelha para os Cartões de Destaque */
         .stats-grid-top {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -336,7 +336,7 @@
 
             <div class="stat-main-card alt5">
                 <div>
-                    <h3>Atividades no PEE (Sim)</h3>
+                    <h3>PEE (Sim - Objetivos)</h3>
                     <p id="statPee" class="stat-value">0</p>
                 </div>
                 <div class="stat-icon">🏫</div>
@@ -421,12 +421,11 @@
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
             document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
 
-            // 3. Atividades Avaliadas (Conta IDs/números únicos de atividades presentes nas avaliações, ignorando múltiplas avaliações da mesma atividade)
+            // 3. Atividades Avaliadas (Conta IDs/números únicos de atividades presentes nas avaliações)
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
                             (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
             const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
             
-            // Mapeia especificamente o identificador da atividade avaliada (ex: idAtividade, numeroAtividade, atividadeId ou numero)
             const idsAtividadesAvaliadasUnicas = new Set(
                 avaliadasLista.map(item => {
                     return item.idAtividade !== undefined ? item.idAtividade :
@@ -441,24 +440,26 @@
             const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
-            // 5. Análise de PAA ("Sim" nos Objetivos) e PEE nas Atividades
+            // 5. Análise de PAA e PEE ("Sim") dentro dos Objetivos Registados
             let contadorPaaObjetivos = 0;
+            let contadorPeeObjetivos = 0;
+
             objetivosLista.forEach(obj => {
+                // Verifica PAA
                 const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || '';
                 if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                     contadorPaaObjetivos++;
                 }
-            });
-            document.getElementById('statPaa').innerText = contadorPaaObjetivos;
 
-            let contadorPee = 0;
-            atividadesLista.forEach(ativ => {
-                const valPee = ativ.pee || ativ.fazPartePee || ativ.noPee || '';
+                // Verifica PEE (pesquisa várias chaves comuns para PEE nos objetivos)
+                const valPee = obj.pee || obj.fazPartePee || obj.noPee || obj.integraPee || '';
                 if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
-                    contadorPee++;
+                    contadorPeeObjetivos++;
                 }
             });
-            document.getElementById('statPee').innerText = contadorPee;
+
+            document.getElementById('statPaa').innerText = contadorPaaObjetivos;
+            document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
             // 6. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
