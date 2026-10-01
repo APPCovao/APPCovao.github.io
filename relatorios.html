@@ -359,19 +359,27 @@
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // 2. Número de Atividades (Sem duplicados usando Set com base num identificador único)
+            // 2. Número de Atividades (Extrai o identificador único/número para evitar duplicados como 1, 1, 2, 2)
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const atividadesUnicas = new Set(
-                atividadesLista.map(item => item.numero_requisicao || item.numero || item.id || item.titulo || JSON.stringify(item))
+            const idsAtividadesUnicos = new Set(
+                atividadesLista.map(item => {
+                    return item.numero_requisicao !== undefined ? item.numero_requisicao : 
+                           (item.numero !== undefined ? item.numero : 
+                           (item.id !== undefined ? item.id : item.titulo));
+                })
             );
-            document.getElementById('statAtividades').innerText = atividadesUnicas.size;
+            document.getElementById('statAtividades').innerText = idsAtividadesUnicos.size;
 
-            // 3. Atividades Avaliadas (Sem duplicados usando Set com base num identificador único)
+            // 3. Atividades Avaliadas (Extrai estritamente o número identificador único para colapsar 1, 1, 2, 2 em apenas 2)
             const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            const avaliadasUnicas = new Set(
-                avaliadasLista.map(item => item.numero_requisicao || item.numero || item.id || item.titulo || JSON.stringify(item))
+            const idsAvaliadasUnicos = new Set(
+                avaliadasLista.map(item => {
+                    return item.numero_requisicao !== undefined ? item.numero_requisicao : 
+                           (item.numero !== undefined ? item.numero : 
+                           (item.id !== undefined ? item.id : item.titulo));
+                })
             );
-            document.getElementById('statAvaliadas').innerText = avaliadasUnicas.size;
+            document.getElementById('statAvaliadas').innerText = idsAvaliadasUnicos.size;
 
             // 4. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
