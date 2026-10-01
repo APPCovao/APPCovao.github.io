@@ -517,10 +517,10 @@
         }
 
         function toggleObj(num) {
-            const chk = document.getElementById(`obj${num}Check`);
             const list = document.getElementById(`listObj${num}`);
-            if(!chk || !list) return;
-            list.style.display = 'flex';
+            if(list) {
+                list.style.display = 'flex';
+            }
         }
 
         function limparFormularioExcetoNumero() {
@@ -531,7 +531,6 @@
             document.getElementById('peeSelect').value = '';
             controlarCamposPEE();
             
-            // Desmarcar explicitamente todas as checkboxes do PEE
             for(let i=1; i<=4; i++) {
                 const objChk = document.getElementById(`obj${i}Check`);
                 if(objChk) objChk.checked = false;
@@ -616,6 +615,16 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
+                // Limpar seleções prévias antes de carregar
+                document.getElementById('paaSelect').value = '';
+                document.getElementById('peeSelect').value = '';
+                controlarCamposPEE();
+                for(let i=1; i<=4; i++) {
+                    const objChk = document.getElementById(`obj${i}Check`);
+                    if(objChk) objChk.checked = false;
+                }
+                document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
+
                 // Preencher com os dados do registo existente (Consulta ou Edição)
                 if (regExistente) {
                     document.getElementById('paaSelect').value = regExistente.paa || '';
@@ -630,10 +639,10 @@
                                 cb.checked = true;
                                 const box = cb.closest('.pee-objective-box');
                                 if (box) {
-                                    const objNum = box.querySelector('input[type="checkbox"]').id.replace('obj', '').replace('Check', '');
-                                    const objCheck = document.getElementById(`obj${objNum}Check`);
-                                    if (objCheck) {
-                                        objCheck.checked = true;
+                                    const objNumInput = box.querySelector('input[type="checkbox"]');
+                                    if (objNumInput) {
+                                        objNumInput.checked = true;
+                                        const objNum = objNumInput.id.replace('obj', '').replace('Check', '');
                                         toggleObj(objNum);
                                     }
                                 }
@@ -642,18 +651,6 @@
                     }
 
                     document.getElementById('resumoConclusoes').value = regExistente.resumoConclusoes || '';
-                } else {
-                    // ATIVIDADE NOVA: Limpa explicitamente os seletores PAA/PEE e caixas de seleção
-                    document.getElementById('paaSelect').value = '';
-                    document.getElementById('peeSelect').value = '';
-                    controlarCamposPEE();
-                    
-                    for(let i=1; i<=4; i++) {
-                        const objChk = document.getElementById(`obj${i}Check`);
-                        if(objChk) objChk.checked = false;
-                    }
-                    document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
-                    document.getElementById('resumoConclusoes').value = '';
                 }
             } else {
                 nomeInput.value = '';
