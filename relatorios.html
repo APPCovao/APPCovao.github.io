@@ -378,28 +378,31 @@
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // Função auxiliar para extrair identificador único sem duplicados
+            // Função auxiliar rigorosa para filtrar elementos duplicados baseando-se no identificador único
             function contarUnicos(lista) {
                 const idsUnicos = new Set(
                     lista.map(item => {
-                        return item.numero_requisicao !== undefined ? item.numero_requisicao : 
-                               (item.numero !== undefined ? item.numero : 
-                               (item.id !== undefined ? item.id : item.titulo));
+                        return item.numero !== undefined ? item.numero : 
+                               (item.id !== undefined ? item.id : 
+                               (item.numeroAtividade !== undefined ? item.numeroAtividade : 
+                               (item.atividadeId !== undefined ? item.atividadeId : item.titulo)));
                     })
                 );
                 return idsUnicos.size;
             }
 
-            // 2. Número de Atividades
-            const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || JSON.parse(localStorage.getItem('registosCAA')) || [];
+            // 2. Número de Atividades (Lê do localStorage 'atividades')
+            const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
             document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
 
-            // 3. Atividades Avaliadas
-            const avaliadasLista = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            // 3. Atividades Avaliadas (Verifica ambas as chaves possíveis no localStorage de avaliações)
+            const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
+                            (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
+            const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
             document.getElementById('statAvaliadas').innerText = contarUnicos(avaliadasLista);
 
-            // 4. Objetivos Registados (Lê do localStorage de objetivos, aplicando também a remoção de duplicados)
-            const objetivosLista = JSON.parse(localStorage.getItem('objetivos')) || JSON.parse(localStorage.getItem('registosObjetivos')) || [];
+            // 4. Objetivos Registados (Lê do localStorage correto 'registosObjetivosAtividades')
+            const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
             // 5. Contagens para os Gráficos de Requisições
