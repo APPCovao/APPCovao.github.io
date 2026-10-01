@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turmas - Registos Covão</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
         :root {
-            --color-primary: #15803d;
-            --color-primary-hover: #166534;
+            --primary-green: #15803d;
+            --primary-green-hover: #166534;
             --bg-page: #f0fdf4;
             --card-bg: #ffffff;
-            --border-color: #bbf7d0;
             --text-main: #1f2937;
-            --text-light: #4b5563;
+            --border-color: #bbf7d0;
         }
 
         body {
@@ -24,6 +22,7 @@
             padding: 0;
         }
 
+        /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
             padding: 0.8rem 2rem;
@@ -42,52 +41,19 @@
             font-size: 1.1rem;
         }
 
-        .navbar .brand img {
-            height: 32px;
-        }
-
-        .navbar .user-info {
+        .navbar .nav-right {
             display: flex;
             align-items: center;
             gap: 20px;
             font-size: 14px;
+        }
+
+        .navbar .nav-right span {
             color: #dcfce7;
         }
 
-        /* Estilo idêntico ao CAA / Referência */
-        .caa-container {
-            max-width: 900px;
-            margin: 30px auto;
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px 40px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-        }
-
-        .caa-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-
-        .caa-title h2 {
-            color: var(--color-primary);
-            font-size: 1.4rem;
-            margin: 0 0 4px 0;
-        }
-
-        .caa-title p {
-            color: var(--text-light);
-            font-size: 0.85rem;
-            margin: 0;
-        }
-
-        .btn-top-voltar {
-            background-color: #1e293b;
+        .btn-voltar-menu {
+            background-color: #2563eb;
             color: white;
             border: none;
             padding: 6px 14px;
@@ -102,8 +68,145 @@
             transition: background 0.2s;
         }
 
-        .btn-top-voltar:hover {
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Contentor Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Cartão de Cabeçalho da Secção */
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-header-card h1 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin: 0 0 6px 0;
+        }
+
+        .section-header-card p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Botões do Topo */
+        .btn-top-action {
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-top-action:hover {
             background-color: #0f172a;
+        }
+
+        .btn-top-primary {
+            background-color: var(--primary-green);
+        }
+
+        .btn-top-primary:hover {
+            background-color: var(--primary-green-hover);
+        }
+
+        /* Cartão da Tabela */
+        .table-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0fdf4;
+            color: var(--primary-green);
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 18px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #fafaf9;
+        }
+
+        /* Botões de Ação na Tabela */
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 4px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-action:hover {
+            opacity: 0.85;
+        }
+
+        .btn-ver { background-color: #0d9488; color: white; }
+        .btn-apagar { background-color: #dc2626; color: white; }
+
+        /* Formulário Estilizado */
+        .form-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .form-group {
@@ -118,12 +221,16 @@
             color: #374151;
         }
 
+        .required {
+            color: #dc2626;
+        }
+
         input[type="text"],
         input[type="number"],
         select {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 14px;
             box-sizing: border-box;
@@ -133,7 +240,7 @@
 
         input:focus, select:focus {
             outline: none;
-            border-color: var(--color-primary);
+            border-color: var(--primary-green);
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
@@ -143,314 +250,192 @@
             padding: 10px 14px;
             border-radius: 6px;
             font-weight: bold;
-            color: var(--color-primary);
+            color: var(--primary-green);
             font-size: 15px;
         }
 
-        .form-actions {
+        .form-footer {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
             margin-top: 30px;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid #e5e7eb;
             padding-top: 20px;
-        }
-
-        .btn-acao {
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-cancelar {
-            background-color: #64748b;
-            color: white;
-        }
-        .btn-cancelar:hover {
-            background-color: #475569;
-        }
-
-        .btn-guardar {
-            background-color: var(--color-primary);
-            color: white;
-        }
-        .btn-guardar:hover {
-            background-color: var(--color-primary-hover);
-        }
-
-        /* Tabela */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        th, td {
-            padding: 12px 14px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background-color: #f8fafc;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-light);
-        }
-
-        /* Modais */
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
-
-        .custom-modal {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            text-align: center;
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .custom-modal h3 {
-            color: var(--color-primary);
-            margin-bottom: 0.5rem;
-            margin-top: 0;
-        }
-
-        .custom-modal p {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-
-        .btn-modal {
-            padding: 0.75rem 1.25rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            background-color: var(--color-primary);
-            color: white;
-            width: 100%;
-        }
-        .btn-modal:hover {
-            opacity: 0.9;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
+
+    <!-- Barra Superior -->
+    <nav class="navbar">
         <div class="brand">
-            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span>Registos Covão</span>
+            <span>🏫 Registos Covão - Turmas</span>
         </div>
-        <div class="user-info">
-            <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
+        <div class="nav-right">
+            <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Voltar ao Menu</a>
         </div>
-    </div>
+    </nav>
 
-    <!-- SEÇÃO DA LISTA DE TURMAS -->
-    <div id="secaoLista" class="caa-container">
-        <div class="caa-header">
-            <div class="caa-title">
-                <h2>Gestão de Turmas</h2>
-                <p>Estatísticas de Português e Matemática por Turma</p>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <a href="dashboard.html" class="btn-top-voltar">Menu Principal</a>
-                <button type="button" class="btn-acao btn-guardar" onclick="mostrarFormulario()" style="padding: 6px 14px; font-size: 13px;">➕ Novo Registo</button>
-            </div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Turma</th>
-                    <th>Ano Letivo</th>
-                    <th>Alunos</th>
-                    <th>Português (Bom/M. Bom)</th>
-                    <th>Matemática (Bom/M. Bom)</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaTurmasBody">
-                <!-- Preenchido via JavaScript -->
-            </tbody>
-        </table>
+    <div class="main-container">
         
-        <div id="emptyState" class="empty-state" style="display: none;">
-            <p>Ainda não existem turmas registadas.</p>
+        <!-- Vista Principal: Tabela e Cabeçalho -->
+        <div id="vistaTabela">
+            <div class="section-header-card">
+                <div>
+                    <h1>Estatísticas de Turmas</h1>
+                    <p>Consulte ou crie novos registos de aproveitamento (Português e Matemática).</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
+                    <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Novo Registo</button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Turma</th>
+                            <th>Ano Letivo</th>
+                            <th>Nº Alunos</th>
+                            <th>Português (Bom/M. Bom)</th>
+                            <th>Matemática (Bom/M. Bom)</th>
+                            <th>Data</th>
+                            <th style="width: 140px; text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaTurmasBody">
+                        <!-- Dados injetados por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Vista de Formulário (Oculto por defeito) -->
+        <div id="vistaFormulario" style="display: none;" class="form-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+                <div>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">Registar Dados da Turma</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 14px;">EB1/PE do Covão e Vargens – Estatísticas de Turma (Português e Matemática)</p>
+                </div>
+                <button class="btn-top-action" onclick="fecharFormulario()">← Voltar</button>
+            </div>
+
+            <form id="turmaForm">
+                <input type="hidden" id="editIndex" value="">
+
+                <div class="form-group">
+                    <label for="nomeTurma">1. Turma <span class="required">*</span></label>
+                    <select id="nomeTurma" required>
+                        <option value="" disabled selected>Selecione a turma</option>
+                        <option value="1ºA">1ºA</option>
+                        <option value="1ºB">1ºB</option>
+                        <option value="2ºA">2ºA</option>
+                        <option value="2ºB">2ºB</option>
+                        <option value="3ºA">3ºA</option>
+                        <option value="3ºB">3ºB</option>
+                        <option value="4ºA">4ºA</option>
+                        <option value="4ºB">4ºB</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="anoLetivo">2. Ano Letivo <span class="required">*</span></label>
+                    <select id="anoLetivo" required>
+                        <option value="" disabled selected>Selecione o ano letivo</option>
+                        <option value="2023/2024">2023/2024</option>
+                        <option value="2024/2025">2024/2025</option>
+                        <option value="2025/2026">2025/2026</option>
+                        <option value="2026/2027">2026/2027</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="numAlunos">3. Número Total de Alunos <span class="required">*</span></label>
+                    <input type="number" id="numAlunos" min="1" required placeholder="Ex: 15">
+                </div>
+
+                <div class="form-group">
+                    <label for="bonsPort">4. Nº de Alunos com Bom e Muito Bom a Português <span class="required">*</span></label>
+                    <input type="number" id="bonsPort" min="0" required placeholder="Ex: 12">
+                </div>
+
+                <div class="form-group">
+                    <label>Percentagem a Português (Calculada Automaticamente)</label>
+                    <div id="percPortDisplay" class="calc-display">0%</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bonsMat">5. Nº de Alunos com Bom e Muito Bom a Matemática <span class="required">*</span></label>
+                    <input type="number" id="bonsMat" min="0" required placeholder="Ex: 10">
+                </div>
+
+                <div class="form-group">
+                    <label>Percentagem a Matemática (Calculada Automaticamente)</label>
+                    <div id="percMatDisplay" class="calc-display">0%</div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Voltar / Fechar</button>
+                    <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar Registo da Turma</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- SEÇÃO DO FORMULÁRIO (Inicialmente oculta) -->
-    <div id="secaoFormulario" class="caa-container" style="display: none;">
-        <div class="caa-header">
-            <div class="caa-title">
-                <h2>Registar Dados da Turma</h2>
-                <p>EB1/PE do Covão e Vargens – Estatísticas de Turma (Português e Matemática)</p>
+    <!-- Popup Personalizado -->
+    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
+        <div style="background: white; padding: 2rem; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏫</div>
+            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: var(--primary-green);">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 20px 0; color: #1f2937; line-height: 1.5;"></p>
+            <div id="popupButtons" style="display: flex; justify-content: center; gap: 10px;">
+                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>
             </div>
-            <button type="button" class="btn-top-voltar" onclick="mostrarLista()">Voltar à Lista</button>
-        </div>
-        
-        <form id="turmaForm">
-            <div class="form-group">
-                <label for="nomeTurma">1. Turma *</label>
-                <select id="nomeTurma" required>
-                    <option value="" disabled selected>Selecione a turma</option>
-                    <option value="1ºA">1ºA</option>
-                    <option value="1ºB">1ºB</option>
-                    <option value="2ºA">2ºA</option>
-                    <option value="2ºB">2ºB</option>
-                    <option value="3ºA">3ºA</option>
-                    <option value="3ºB">3ºB</option>
-                    <option value="4ºA">4ºA</option>
-                    <option value="4ºB">4ºB</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="anoLetivo">2. Ano Letivo *</label>
-                <select id="anoLetivo" required>
-                    <option value="" disabled selected>Selecione o ano letivo</option>
-                    <option value="2023/2024">2023/2024</option>
-                    <option value="2024/2025">2024/2025</option>
-                    <option value="2025/2026">2025/2026</option>
-                    <option value="2026/2027">2026/2027</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="numAlunos">3. Número Total de Alunos *</label>
-                <input type="number" id="numAlunos" min="1" required placeholder="Ex: 15">
-            </div>
-
-            <div class="form-group">
-                <label for="bonsPort">4. Nº de Alunos com Bom e Muito Bom a Português *</label>
-                <input type="number" id="bonsPort" min="0" required placeholder="Ex: 12">
-            </div>
-
-            <div class="form-group">
-                <label>Percentagem a Português (Calculada Automaticamente)</label>
-                <div id="percPortDisplay" class="calc-display">0%</div>
-            </div>
-
-            <div class="form-group">
-                <label for="bonsMat">5. Nº de Alunos com Bom e Muito Bom a Matemática *</label>
-                <input type="number" id="bonsMat" min="0" required placeholder="Ex: 10">
-            </div>
-
-            <div class="form-group">
-                <label>Percentagem a Matemática (Calculada Automaticamente)</label>
-                <div id="percMatDisplay" class="calc-display">0%</div>
-            </div>
-
-            <div class="form-actions">
-                <button type="button" class="btn-acao btn-cancelar" onclick="mostrarLista()">Cancelar</button>
-                <button type="submit" class="btn-acao btn-guardar">Guardar Registo da Turma</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- MODAL DE SUCESSO -->
-    <div id="successModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
-            <h3>Turma Registada!</h3>
-            <p id="successMessage">Os dados da turma foram guardados com sucesso.</p>
-            <button type="button" class="btn-modal" onclick="fecharModalSucesso()">OK</button>
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(!currentUser) {
-            window.location.href = 'index.html';
-        } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || 'Utilizador';
-        }
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
+        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
 
-        function mostrarFormulario() {
-            document.getElementById('secaoLista').style.display = 'none';
-            document.getElementById('secaoFormulario').style.display = 'block';
-            document.getElementById('turmaForm').reset();
-            document.getElementById('percPortDisplay').innerText = '0%';
-            document.getElementById('percMatDisplay').innerText = '0%';
-        }
-
-        function mostrarLista() {
-            document.getElementById('secaoFormulario').style.display = 'none';
-            document.getElementById('secaoLista').style.display = 'block';
-            carregarTurmas();
-        }
-
-        function carregarTurmas() {
-            let turmas = [];
-            try {
-                turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-            } catch (err) {
-                turmas = [];
-            }
-
-            const tbody = document.getElementById('tabelaTurmasBody');
-            const emptyState = document.getElementById('emptyState');
-            tbody.innerHTML = '';
-
-            if (turmas.length === 0) {
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            emptyState.style.display = 'none';
-
-            turmas.forEach(t => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${t.nomeTurma}</strong></td>
-                    <td>${t.anoLetivo}</td>
-                    <td>${t.totalAlunos}</td>
-                    <td>${t.bonsPort} (${t.percPort})</td>
-                    <td>${t.bonsMat} (${t.percMat})</td>
-                    <td>${t.dataRegisto || '-'}</td>
+        function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫', onConfirm = null) {
+            document.getElementById('popupTitle').innerText = titulo;
+            document.getElementById('popupMessage').innerText = mensagem;
+            document.getElementById('popupIcon').innerText = icone;
+            
+            const btnContainer = document.getElementById('popupButtons');
+            
+            if (onConfirm) {
+                btnContainer.innerHTML = `
+                    <button id="popupCancelBtn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
                 `;
-                tbody.appendChild(tr);
-            });
+                document.getElementById('customPopup').style.display = 'flex';
+
+                document.getElementById('popupCancelBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                };
+
+                document.getElementById('popupConfirmBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                    onConfirm();
+                };
+            } else {
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>`;
+                document.getElementById('customPopup').style.display = 'flex';
+
+                document.getElementById('popupOkBtn').onclick = () => {
+                    document.getElementById('customPopup').style.display = 'none';
+                };
+            }
         }
 
-        // Cálculo automático de percentagens
+        function fecharPopup() {
+            document.getElementById('customPopup').style.display = 'none';
+        }
+
         function calcularPercentagens() {
             const totalAlunos = parseInt(document.getElementById('numAlunos').value) || 0;
             const bonsPort = parseInt(document.getElementById('bonsPort').value) || 0;
@@ -474,64 +459,146 @@
         document.getElementById('bonsPort').addEventListener('input', calcularPercentagens);
         document.getElementById('bonsMat').addEventListener('input', calcularPercentagens);
 
-        // Submissão do formulário
-        const form = document.getElementById('turmaForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
+        function carregarTurmas() {
+            const tbody = document.getElementById('tabelaTurmasBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
 
-                const totalAlunos = parseInt(document.getElementById('numAlunos').value);
-                const bonsPort = parseInt(document.getElementById('bonsPort').value);
-                const bonsMat = parseInt(document.getElementById('bonsMat').value);
+            let turmas = [];
+            try {
+                turmas = JSON.parse(localStorage.getItem('turmas')) || [];
+            } catch (err) {
+                turmas = [];
+            }
 
-                if (bonsPort > totalAlunos || bonsMat > totalAlunos) {
-                    alert('O número de alunos com Bom/Muito Bom não pode ser superior ao total de alunos da turma.');
-                    return;
-                }
+            if (turmas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #6b7280;">Ainda não existem turmas registadas.</td></tr>`;
+                return;
+            }
 
-                const { percPort, percMat } = calcularPercentagens();
+            turmas.forEach((t, indexReal) => {
+                const tr = document.createElement('tr');
+                const temPermissao = currentUser.isAdmin || t.userEmail === currentUser.email;
 
-                let turmas = [];
-                try {
-                    turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-                } catch (err) {
-                    turmas = [];
-                }
-
-                const novaTurma = {
-                    id: Date.now(),
-                    nomeTurma: document.getElementById('nomeTurma').value,
-                    anoLetivo: document.getElementById('anoLetivo').value,
-                    totalAlunos: totalAlunos,
-                    bonsPort: bonsPort,
-                    percPort: percPort + '%',
-                    bonsMat: bonsMat,
-                    percMat: percMat + '%',
-                    registadoPor: currentUser.name || '',
-                    dataRegisto: new Date().toISOString().split('T')[0]
-                };
-                
-                turmas.push(novaTurma);
-                localStorage.setItem('turmas', JSON.stringify(turmas));
-
-                const msgElement = document.getElementById('successMessage');
-                const modalElement = document.getElementById('successModal');
-                
-                if (msgElement) {
-                    msgElement.innerText = `Dados da turma ${novaTurma.nomeTurma} guardados com sucesso!`;
-                }
-                if (modalElement) {
-                    modalElement.style.display = 'flex';
-                }
+                tr.innerHTML = `
+                    <td><strong>${t.nomeTurma}</strong></td>
+                    <td>${t.anoLetivo}</td>
+                    <td>${t.totalAlunos}</td>
+                    <td>${t.bonsPort} (${t.percPort})</td>
+                    <td>${t.bonsMat} (${t.percMat})</td>
+                    <td>${t.dataRegisto || '-'}</td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})">Ver</button>
+                        ${temPermissao ? `
+                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})">Apagar</button>
+                        ` : '<span style="color: #9ca3af; font-size: 0.85rem;">🔒 Bloqueado</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
-        function fecharModalSucesso() {
-            document.getElementById('successModal').style.display = 'none';
-            mostrarLista();
+        function abrirFormularioCriacao() {
+            document.getElementById('editIndex').value = '';
+            document.getElementById('turmaForm').reset();
+            document.getElementById('percPortDisplay').innerText = '0%';
+            document.getElementById('percMatDisplay').innerText = '0%';
+            
+            document.getElementById('formTitle').innerText = 'Registar Dados da Turma (Novo Registo)';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Inicializar carregando a tabela
+        function fecharFormulario() {
+            document.getElementById('vistaFormulario').style.display = 'none';
+            document.getElementById('vistaTabela').style.display = 'block';
+            document.getElementById('turmaForm').reset();
+        }
+
+        function verRegisto(index) {
+            let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
+            const t = turmas[index];
+            if (!t) return;
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('nomeTurma').value = t.nomeTurma;
+            document.getElementById('anoLetivo').value = t.anoLetivo;
+            document.getElementById('numAlunos').value = t.totalAlunos;
+            document.getElementById('bonsPort').value = t.bonsPort;
+            document.getElementById('bonsMat').value = t.bonsMat;
+            
+            calcularPercentagens();
+
+            document.getElementById('formTitle').innerText = 'Visualizar Registo da Turma';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function eliminarRegisto(index) {
+            let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
+            const t = turmas[index];
+
+            if (!currentUser.isAdmin && t.userEmail !== currentUser.email) {
+                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para apagar este registo.', '🔒');
+                return;
+            }
+
+            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo de turma?', '⚠️', () => {
+                turmas.splice(index, 1);
+                localStorage.setItem('turmas', JSON.stringify(turmas));
+                carregarTurmas();
+            });
+        }
+
+        document.getElementById('turmaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const totalAlunos = parseInt(document.getElementById('numAlunos').value);
+            const bonsPort = parseInt(document.getElementById('bonsPort').value);
+            const bonsMat = parseInt(document.getElementById('bonsMat').value);
+
+            if (bonsPort > totalAlunos || bonsMat > totalAlunos) {
+                mostrarPopupPersonalizado('Aviso', 'O número de alunos com Bom/Muito Bom não pode ser superior ao total de alunos da turma.', '⚠️');
+                return;
+            }
+
+            const { percPort, percMat } = calcularPercentagens();
+            let turmas = [];
+            try {
+                turmas = JSON.parse(localStorage.getItem('turmas')) || [];
+            } catch (err) {
+                turmas = [];
+            }
+
+            const index = document.getElementById('editIndex').value;
+
+            const novaTurma = {
+                id: index !== "" ? turmas[index].id : Date.now(),
+                nomeTurma: document.getElementById('nomeTurma').value,
+                anoLetivo: document.getElementById('anoLetivo').value,
+                totalAlunos: totalAlunos,
+                bonsPort: bonsPort,
+                percPort: percPort + '%',
+                bonsMat: bonsMat,
+                percMat: percMat + '%',
+                registadoPor: currentUser.name || currentUser.nome || '',
+                userEmail: currentUser.email,
+                dataRegisto: index !== "" ? turmas[index].dataRegisto : new Date().toISOString().split('T')[0]
+            };
+            
+            if (index === "") {
+                turmas.push(novaTurma);
+            } else {
+                turmas[index] = novaTurma;
+            }
+
+            localStorage.setItem('turmas', JSON.stringify(turmas));
+            fecharFormulario();
+            carregarTurmas();
+        });
+
         carregarTurmas();
     </script>
 </body>
