@@ -330,7 +330,7 @@
         <div class="caa-header">
             <div class="caa-title">
                 <h2 id="tituloPaginaHeader">Registo de Objetivos e Avaliação Global</h2>
-                <p>Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+                <p id="subtituloPaginaHeader">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             </div>
             <a href="atividades.html" class="btn-top-voltar">⬅ Voltar</a>
         </div>
@@ -527,17 +527,17 @@
             }
 
             const urlParams = new URLSearchParams(window.location.search);
-            const modoConsulta = urlParams.get('mode') === 'view';
+            const modo = urlParams.get('mode'); // 'view' para ver, 'edit' (ou vazio) para criar/editar
             const idEditandoUrl = urlParams.get('id') || urlParams.get('numero');
 
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const regExistente = registos.find(r => String(r.numeroAtividade) === String(numInput));
 
-            if (regExistente && !modoConsulta && String(numInput) !== String(idEditandoUrl)) {
+            if (regExistente && modo !== 'view' && String(numInput) !== String(idEditandoUrl)) {
                 aviso.textContent = `Atenção: A Atividade #${numInput} já tem objetivos registados. Não é permitido criar duplicados.`;
                 aviso.style.display = 'block';
                 if(btnGuardar) btnGuardar.disabled = true;
-            } else if (!modoConsulta) {
+            } else if (modo !== 'view') {
                 aviso.style.display = 'none';
                 if(btnGuardar) btnGuardar.disabled = false;
             }
@@ -618,8 +618,10 @@
                 }
             }
 
-            if (modoConsulta) {
+            // Tratamento específico para o modo de Visualização (Ver)
+            if (modo === 'view') {
                 document.getElementById('tituloPaginaHeader').textContent = 'Consulta de Objetivos da Atividade';
+                document.getElementById('subtituloPaginaHeader').textContent = 'Modo de visualização dos objetivos e metas do PEE associados.';
                 document.getElementById('numeroAtividade').readOnly = true;
                 document.getElementById('paaSelect').disabled = true;
                 document.getElementById('peeSelect').disabled = true;
@@ -629,6 +631,11 @@
                 
                 const btnGrd = document.getElementById('btnGuardar');
                 if(btnGrd) btnGrd.style.display = 'none';
+            } else if (idEditandoUrl) {
+                // Modo Edição
+                document.getElementById('tituloPaginaHeader').textContent = 'Editar Objetivos da Atividade';
+                document.getElementById('subtituloPaginaHeader').textContent = 'Modo de edição dos objetivos e conclusões associados.';
+                document.getElementById('numeroAtividade').readOnly = true;
             }
         }
 
