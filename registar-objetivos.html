@@ -161,6 +161,34 @@
             }
         }
 
+        /* Estilo para grupo de checkboxes Sim/Não */
+        .checkbox-inline-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 6px;
+        }
+
+        .checkbox-inline-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .checkbox-inline-group input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: var(--color-primary);
+            cursor: pointer;
+        }
+
         .pee-objective-box {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -354,29 +382,27 @@
 
             <div class="row-grid">
                 <div class="form-group">
-                    <label for="paaSelect">Integra o PAA? <span class="required">*</span></label>
-                    <select id="paaSelect" required>
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
-                    </select>
+                    <label>Integra o PAA? <span class="required">*</span></label>
+                    <div class="checkbox-inline-group">
+                        <label><input type="checkbox" id="paaSim" onclick="selecionarUnicoPaa('Sim')"> Sim</label>
+                        <label><input type="checkbox" id="paaNao" onclick="selecionarUnicoPaa('Não')"> Não</label>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="peeSelect">Integra o PEE? <span class="required">*</span></label>
-                    <select id="peeSelect" required onchange="controlarCamposPEE()">
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
-                    </select>
+                    <label>Integra o PEE? <span class="required">*</span></label>
+                    <div class="checkbox-inline-group">
+                        <label><input type="checkbox" id="peeSim" onclick="selecionarUnicoPee('Sim')"> Sim</label>
+                        <label><input type="checkbox" id="peeNao" onclick="selecionarUnicoPee('Não')"> Não</label>
+                    </div>
                 </div>
             </div>
 
-            <!-- Recinto Múltiplo Direto para Seleção de Metas do PEE -->
+            <!-- Recinto para Seleção de Objetivos e Metas do PEE -->
             <div id="peeContainer" style="display: none; margin-bottom: 20px;">
-                <label style="margin-bottom: 10px; font-size: 0.9rem; color: var(--color-primary); font-weight: 600;">Selecione diretamente as Metas do PEE abrangidas:</label>
+                <label style="margin-bottom: 10px; font-size: 0.9rem; color: var(--color-primary); font-weight: 600;">Selecione os Objetivos e Metas do PEE abrangidos:</label>
 
-                <!-- Objetivo 1 -->
+                <!-- Objetivo 1 & Meta 1 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 1: Melhorar a articulação pedagógica</div>
                     <div class="meta-checkbox-list">
@@ -384,7 +410,7 @@
                     </div>
                 </div>
 
-                <!-- Objetivo 2 -->
+                <!-- Objetivo 2 & Meta 2 e 3 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 2: Melhorar os resultados académicos dos alunos</div>
                     <div class="meta-checkbox-list">
@@ -393,7 +419,7 @@
                     </div>
                 </div>
 
-                <!-- Objetivo 3 -->
+                <!-- Objetivo 3 & Meta 4 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</div>
                     <div class="meta-checkbox-list">
@@ -401,7 +427,7 @@
                     </div>
                 </div>
 
-                <!-- Objetivo 4 -->
+                <!-- Objetivo 4 & Meta 5 e 6 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 4: Aumentar a participação da comunidade e encarregados de educação</div>
                     <div class="meta-checkbox-list">
@@ -477,25 +503,51 @@
             document.getElementById('customModal').classList.remove('active');
         }
 
-        function controlarCamposPEE() {
-            const val = document.getElementById('peeSelect').value;
+        function selecionarUnicoPaa(valor) {
+            if (valor === 'Sim') {
+                document.getElementById('paaSim').checked = true;
+                document.getElementById('paaNao').checked = false;
+            } else {
+                document.getElementById('paaSim').checked = false;
+                document.getElementById('paaNao').checked = true;
+            }
+        }
+
+        function selecionarUnicoPee(valor) {
             const container = document.getElementById('peeContainer');
-            if (val === 'Sim') {
+            if (valor === 'Sim') {
+                document.getElementById('peeSim').checked = true;
+                document.getElementById('peeNao').checked = false;
                 container.style.display = 'block';
             } else {
+                document.getElementById('peeSim').checked = false;
+                document.getElementById('peeNao').checked = true;
                 container.style.display = 'none';
                 document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
             }
+        }
+
+        function obterValorPaa() {
+            if (document.getElementById('paaSim').checked) return 'Sim';
+            if (document.getElementById('paaNao').checked) return 'Não';
+            return '';
+        }
+
+        function obterValorPee() {
+            if (document.getElementById('peeSim').checked) return 'Sim';
+            if (document.getElementById('peeNao').checked) return 'Não';
+            return '';
         }
 
         function limparFormularioExcetoNumero() {
             document.getElementById('nomeAtividade').value = '';
             document.getElementById('anoLetivoAtividade').value = '';
             document.getElementById('tipoAtividade').value = '';
-            document.getElementById('paaSelect').value = '';
-            document.getElementById('peeSelect').value = '';
-            controlarCamposPEE();
-            
+            document.getElementById('paaSim').checked = false;
+            document.getElementById('paaNao').checked = false;
+            document.getElementById('peeSim').checked = false;
+            document.getElementById('peeNao').checked = false;
+            document.getElementById('peeContainer').style.display = 'none';
             document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
             document.getElementById('mediaAvaliacoes').value = '';
             document.getElementById('sugestoesRecolhidas').value = '';
@@ -560,12 +612,16 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
-                // Preencher com os dados do registo existente (caso já tenha sido guardado anteriormente)
+                // Preencher dados do registo existente se houver
                 if (regExistente) {
-                    document.getElementById('paaSelect').value = regExistente.paa || '';
-                    document.getElementById('peeSelect').value = regExistente.pee || '';
-                    
-                    controlarCamposPEE();
+                    if (regExistente.paa === 'Sim') selecionarUnicoPaa('Sim');
+                    else if (regExistente.paa === 'Não') selecionarUnicoPaa('Não');
+
+                    if (regExistente.pee === 'Sim') {
+                        selecionarUnicoPee('Sim');
+                    } else if (regExistente.pee === 'Não') {
+                        selecionarUnicoPee('Não');
+                    }
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
                         const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]');
@@ -594,6 +650,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
+            const modoUrl = urlParams.get('modo'); // 'ver' ou 'editar' ou 'criar'
 
             if (numeroAtivUrl) {
                 const inputNum = document.getElementById('numeroAtividade');
@@ -601,6 +658,20 @@
                 setTimeout(() => {
                     carregarDadosAtividade(numeroAtivUrl);
                 }, 50);
+            }
+
+            if (modoUrl === 'ver') {
+                document.getElementById('tituloPaginaHeader').innerText = 'Visualizar Registo de Objetivos';
+                document.getElementById('subtituloPaginaHeader').innerText = 'Modo de visualização dos objetivos, metas e conclusões.';
+                document.getElementById('btnGuardar').style.display = 'none';
+                
+                // Desativar inputs para leitura
+                setTimeout(() => {
+                    document.querySelectorAll('input, textarea').forEach(el => {
+                        if (el.id !== 'numeroAtividade') el.disabled = true;
+                    });
+                    document.getElementById('numeroAtividade').readOnly = true;
+                }, 100);
             }
         });
 
@@ -615,10 +686,17 @@
                 return;
             }
 
+            const paaVal = obterValorPaa();
+            const peeVal = obterValorPee();
+
+            if (!paaVal || !peeVal) {
+                mostrarPopup('Atenção', 'Por favor, indique se a atividade integra o PAA e o PEE.');
+                return;
+            }
+
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const indexExistente = registos.findIndex(r => String(r.numeroAtividade) === String(numAtividade));
 
-            const peeVal = document.getElementById('peeSelect').value;
             let metasSelecionadas = [];
             if (peeVal === 'Sim') {
                 const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]:checked');
@@ -631,7 +709,7 @@
                 nomeAtividade: nomeAtividade,
                 anoLetivo: document.getElementById('anoLetivoAtividade').value,
                 tipoAtividade: document.getElementById('tipoAtividade').value,
-                paa: document.getElementById('paaSelect').value,
+                paa: paaVal,
                 pee: peeVal,
                 metasPee: metasSelecionadas,
                 mediasAvaliacao: document.getElementById('mediaAvaliacoes').value,
