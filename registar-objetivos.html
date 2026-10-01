@@ -500,7 +500,6 @@
             const container = document.getElementById('peeContainer');
             if (val === 'Sim') {
                 container.style.display = 'block';
-                // Mantém todas as listas de metas sempre visíveis e abertas para consulta/edição imediata
                 for(let i=1; i<=4; i++) {
                     const list = document.getElementById(`listObj${i}`);
                     if(list) {
@@ -521,8 +520,6 @@
             const chk = document.getElementById(`obj${num}Check`);
             const list = document.getElementById(`listObj${num}`);
             if(!chk || !list) return;
-
-            // Mantém sempre flex para aparecer aberto conforme pedido
             list.style.display = 'flex';
         }
 
@@ -616,7 +613,6 @@
                     document.getElementById('paaSelect').value = regExistente.paa || '';
                     document.getElementById('peeSelect').value = regExistente.pee || '';
                     
-                    // Força a exibição do contentor PEE e abre todas as metas
                     controlarCamposPEE();
 
                     if (regExistente.metasPee && Array.isArray(regExistente.metasPee)) {
@@ -629,7 +625,7 @@
                                     const objNum = box.querySelector('input[type="checkbox"]').id.replace('obj', '').replace('Check', '');
                                     const objCheck = document.getElementById(`obj${objNum}Check`);
                                     if (objCheck) {
-                                        objCheck.checked = true; // Marca também o objetivo principal correspondente
+                                        objCheck.checked = true;
                                     }
                                 }
                             }
@@ -637,6 +633,29 @@
                     }
 
                     document.getElementById('resumoConclusoes').value = regExistente.resumoConclusoes || '';
+                } else {
+                    // SE FOR UMA ATIVIDADE NOVA, PUXA OS DADOS DO ÚLTIMO REGISTO COMO PREDEFINIÇÃO
+                    if (registos.length > 0) {
+                        const ultimoRegisto = registos[registos.length - 1];
+                        document.getElementById('paaSelect').value = ultimoRegisto.paa || '';
+                        document.getElementById('peeSelect').value = ultimoRegisto.pee || '';
+                        controlarCamposPEE();
+                        
+                        if (ultimoRegisto.metasPee && Array.isArray(ultimoRegisto.metasPee)) {
+                            const checkboxesMetas = document.querySelectorAll('input[name="metaPee"]');
+                            checkboxesMetas.forEach(cb => {
+                                if (ultimoRegisto.metasPee.includes(cb.value)) {
+                                    cb.checked = true;
+                                    const box = cb.closest('.pee-objective-box');
+                                    if (box) {
+                                        const objNum = box.querySelector('input[type="checkbox"]').id.replace('obj', '').replace('Check', '');
+                                        const objCheck = document.getElementById(`obj${objNum}Check`);
+                                        if (objCheck) objCheck.checked = true;
+                                    }
+                                }
+                            });
+                        }
+                    }
                 }
             } else {
                 nomeInput.value = '';
@@ -650,7 +669,6 @@
                 }
             }
 
-            // Se for modo de consulta, bloquear todos os campos interativos
             if (modoConsulta) {
                 document.getElementById('tituloPaginaHeader').textContent = 'Consulta de Objetivos da Atividade';
                 document.getElementById('numeroAtividade').readOnly = true;
