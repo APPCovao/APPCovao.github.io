@@ -174,16 +174,13 @@
             color: var(--color-primary);
             font-size: 0.95rem;
             margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .meta-checkbox-list {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            padding-left: 1rem;
+            padding-left: 0.5rem;
         }
 
         .checkbox-label {
@@ -382,26 +379,22 @@
                 </div>
             </div>
 
-            <!-- Recinto Múltiplo para Seleção de Objetivos e Metas do PEE -->
+            <!-- Recinto Múltiplo Direto para Seleção de Metas do PEE -->
             <div id="peeContainer" style="display: none; margin-bottom: 20px;">
-                <label style="margin-bottom: 10px; font-size: 0.9rem; color: var(--color-primary); font-weight: 600;">Selecione os Objetivos e respetivas Metas do PEE abrangidos:</label>
+                <label style="margin-bottom: 10px; font-size: 0.9rem; color: var(--color-primary); font-weight: 600;">Selecione diretamente as Metas do PEE abrangidas:</label>
 
                 <!-- Objetivo 1 -->
                 <div class="pee-objective-box">
-                    <div class="pee-objective-title">
-                        <input type="checkbox" id="obj1Check" onchange="toggleObj(1)"> Objetivo 1: Melhorar a articulação pedagógica
-                    </div>
-                    <div class="meta-checkbox-list" id="listObj1" style="display: none;">
+                    <div class="pee-objective-title">Objetivo 1: Melhorar a articulação pedagógica</div>
+                    <div class="meta-checkbox-list">
                         <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 1 - Meta 1: Realizar 6 Reuniões de Conselho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Conselho de Turma</label>
                     </div>
                 </div>
 
                 <!-- Objetivo 2 -->
                 <div class="pee-objective-box">
-                    <div class="pee-objective-title">
-                        <input type="checkbox" id="obj2Check" onchange="toggleObj(2)"> Objetivo 2: Melhorar os resultados académicos dos alunos
-                    </div>
-                    <div class="meta-checkbox-list" id="listObj2" style="display: none;">
+                    <div class="pee-objective-title">Objetivo 2: Melhorar os resultados académicos dos alunos</div>
+                    <div class="meta-checkbox-list">
                         <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 2: 75% alunos com Bom/Muito Bom em Português"> Meta 2: 75% alunos com menções de Bom e Muito Bom no português</label>
                         <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 2 - Meta 3: 75% alunos com Bom/Muito Bom em Matemática"> Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática</label>
                     </div>
@@ -409,20 +402,16 @@
 
                 <!-- Objetivo 3 -->
                 <div class="pee-objective-box">
-                    <div class="pee-objective-title">
-                        <input type="checkbox" id="obj3Check" onchange="toggleObj(3)"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas
-                    </div>
-                    <div class="meta-checkbox-list" id="listObj3" style="display: none;">
+                    <div class="pee-objective-title">Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</div>
+                    <div class="meta-checkbox-list">
                         <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 3 - Meta 4: Realizar pelo menos 6 atividades com tecnologias"> Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias</label>
                     </div>
                 </div>
 
                 <!-- Objetivo 4 -->
                 <div class="pee-objective-box">
-                    <div class="pee-objective-title">
-                        <input type="checkbox" id="obj4Check" onchange="toggleObj(4)"> Objetivo 4: Aumentar a participação da comunidade e encarregados de educação
-                    </div>
-                    <div class="meta-checkbox-list" id="listObj4" style="display: none;">
+                    <div class="pee-objective-title">Objetivo 4: Aumentar a participação da comunidade e encarregados de educação</div>
+                    <div class="meta-checkbox-list">
                         <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 5: Realizar dois questionários à comunidade escolar"> Meta 5: Anualmente realizar dois questionários para a comunidade escolar</label>
                         <label class="checkbox-label"><input type="checkbox" name="metaPee" value="Objetivo 4 - Meta 6: Envolver os Encarregados de Educação em 6 atividades"> Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais</label>
                     </div>
@@ -500,26 +489,9 @@
             const container = document.getElementById('peeContainer');
             if (val === 'Sim') {
                 container.style.display = 'block';
-                for(let i=1; i<=4; i++) {
-                    const list = document.getElementById(`listObj${i}`);
-                    if(list) {
-                        list.style.display = 'flex';
-                    }
-                }
             } else {
                 container.style.display = 'none';
-                for(let i=1; i<=4; i++) {
-                    const chk = document.getElementById(`obj${i}Check`);
-                    if(chk) chk.checked = false;
-                    toggleObj(i);
-                }
-            }
-        }
-
-        function toggleObj(num) {
-            const list = document.getElementById(`listObj${num}`);
-            if(list) {
-                list.style.display = 'flex';
+                document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
             }
         }
 
@@ -531,12 +503,7 @@
             document.getElementById('peeSelect').value = '';
             controlarCamposPEE();
             
-            for(let i=1; i<=4; i++) {
-                const objChk = document.getElementById(`obj${i}Check`);
-                if(objChk) objChk.checked = false;
-            }
             document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
-
             document.getElementById('mediaAvaliacoes').value = '';
             document.getElementById('sugestoesRecolhidas').value = '';
             document.getElementById('resumoConclusoes').value = '';
@@ -619,10 +586,6 @@
                 document.getElementById('paaSelect').value = '';
                 document.getElementById('peeSelect').value = '';
                 controlarCamposPEE();
-                for(let i=1; i<=4; i++) {
-                    const objChk = document.getElementById(`obj${i}Check`);
-                    if(objChk) objChk.checked = false;
-                }
                 document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.checked = false);
 
                 // Preencher com os dados do registo existente (Consulta ou Edição)
@@ -637,15 +600,6 @@
                         checkboxesMetas.forEach(cb => {
                             if (regExistente.metasPee.includes(cb.value)) {
                                 cb.checked = true;
-                                const box = cb.closest('.pee-objective-box');
-                                if (box) {
-                                    const objNumInput = box.querySelector('input[type="checkbox"]');
-                                    if (objNumInput) {
-                                        objNumInput.checked = true;
-                                        const objNum = objNumInput.id.replace('obj', '').replace('Check', '');
-                                        toggleObj(objNum);
-                                    }
-                                }
                             }
                         });
                     }
@@ -671,10 +625,6 @@
                 document.getElementById('peeSelect').disabled = true;
                 document.getElementById('resumoConclusoes').readOnly = true;
                 
-                for(let i=1; i<=4; i++) {
-                    const objChk = document.getElementById(`obj${i}Check`);
-                    if(objChk) objChk.disabled = true;
-                }
                 document.querySelectorAll('input[name="metaPee"]').forEach(cb => cb.disabled = true);
                 
                 const btnGrd = document.getElementById('btnGuardar');
