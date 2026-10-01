@@ -1,1 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - Centro de Apoio à Aprendizagem (CAA)</title>
+    <style>
+        :root {
+            --primary-green: #15803d;
+            --primary-green-hover: #166534;
+            --bg-page: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border-color: #bbf7d0;
+        }
 
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Barra de Navegação Superior */
+        .navbar {
+            background-color: #14532d;
+            padding: 0.8rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .navbar .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .navbar .nav-right span {
+            color: #dcfce7;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Contentor Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Cartão de Cabeçalho da Secção */
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-header-card h1 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin: 0 0 6px 0;
+        }
+
+        .section-header-card p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Botões do Topo */
+        .btn-top-action {
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-top-action:hover {
+            background-color: #0f172a;
+        }
+
+        .btn-top-primary {
+            background-color: var(--primary-green);
+        }
+
+        .btn-top-primary:hover {
+            background-color: var(--primary-green-hover);
+        }
+
+        /* Filtros de Pesquisa */
+        .filter-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .filter-group input, .filter-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        /* Cartão da Tabela de Relatório */
+        .table-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0fdf4;
+            color: var(--primary-green);
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #fafaf9;
+        }
+
+        /* Botão de Ação na Tabela */
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: opacity 0.2s;
+            background-color: #0d9488;
+            color: white;
+        }
+
+        .btn-action:hover {
+            opacity: 0.85;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .table-card, .table-card * {
+                visibility: visible;
+            }
+            .table-card {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .navbar, .section-header-card, .filter-card, .btn-action {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <nav class="navbar">
+        <div class="brand">
+            <span>🏫 Gestão CAA</span>
+        </div>
+        <div class="nav-right">
+            <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Voltar ao Menu</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        
+        <!-- Cabeçalho do Relatório -->
+        <div class="section-header-card">
+            <div>
+                <h1>Relatório Geral do CAA</h1>
+                <p>Consolidação e consulta global de todas as atividades desenvolvidas no Centro de Apoio à Aprendizagem.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
+                <button class="btn-top-action btn-top-primary" onclick="window.print()">🖨️ Imprimir Relatório</button>
+            </div>
+        </div>
+
+        <!-- Secção de Filtros -->
+        <div class="filter-card">
+            <div class="filter-group">
+                <label for="filtroAluno">Filtrar por Aluno</label>
+                <input type="text" id="filtroAluno" placeholder="Nome do aluno..." oninput="filtrarRelatorio()">
+            </div>
+            <div class="filter-group">
+                <label for="filtroTurma">Filtrar por Turma / Sala</label>
+                <select id="filtroTurma" onchange="filtrarRelatorio()">
+                    <option value="">Todas as turmas</option>
+                    <option value="1ºA">1ºA</option>
+                    <option value="1ºB">1ºB</option>
+                    <option value="2ºA">2ºA</option>
+                    <option value="2ºB">2ºB</option>
+                    <option value="3ºA">3ºA</option>
+                    <option value="3ºB">3ºB</option>
+                    <option value="4ºA">4ºA</option>
+                    <option value="4ºB">4ºB</option>
+                    <option value="Abelhinhas">Abelhinhas</option>
+                    <option value="Arco-Íris">Arco-Íris</option>
+                    <option value="Flores">Flores</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filtroResponsavel">Filtrar por Responsável</label>
+                <input type="text" id="filtroResponsavel" placeholder="Nome do docente..." oninput="filtrarRelatorio()">
+            </div>
+        </div>
+
+        <!-- Tabela do Relatório Consolidado -->
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">Nº</th>
+                        <th style="width: 110px;">Data</th>
+                        <th>Aluno</th>
+                        <th>Turma(s)</th>
+                        <th>Atividade</th>
+                        <th>Responsável</th>
+                        <th style="width: 100px; text-align: right;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="relatorioTableBody">
+                    <!-- Dados injetados por JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
+        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
+
+        function carregarRelatorio() {
+            const tbody = document.getElementById('relatorioTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+
+            if (registos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #6b7280;">Sem registos disponíveis para gerar o relatório.</td></tr>`;
+                return;
+            }
+
+            renderizarTabela(registos);
+        }
+
+        function renderizarTabela(dados) {
+            const tbody = document.getElementById('relatorioTableBody');
+            tbody.innerHTML = '';
+
+            if (dados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #6b7280;">Nenhum registo encontrado com os filtros aplicados.</td></tr>`;
+                return;
+            }
+
+            dados.forEach((reg) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary-green);">${reg.numero_atividade || '-'}</td>
+                    <td>${reg.data_atividade || '-'}</td>
+                    <td style="font-weight: 600;">${reg.nome_aluno || '-'}</td>
+                    <td>${reg.turmas || '-'}</td>
+                    <td>${reg.atividade || '-'}</td>
+                    <td>${reg.responsaveis || '-'}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-action" onclick="verDetalheRegisto(${reg.numero_atividade})">Consultar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrarRelatorio() {
+            const textoAluno = document.getElementById('filtroAluno').value.toLowerCase();
+            const turmaSelecionada = document.getElementById('filtroTurma').value;
+            const textoResponsavel = document.getElementById('filtroResponsavel').value.toLowerCase();
+
+            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+
+            const filtrados = registos.filter(reg => {
+                const matchAluno = (reg.nome_aluno || '').toLowerCase().includes(textoAluno);
+                const matchTurma = turmaSelecionada === "" || (reg.turmas || '').includes(turmaSelecionada);
+                const matchResp = (reg.responsaveis || '').toLowerCase().includes(textoResponsavel);
+
+                return matchAluno && matchTurma && matchResp;
+            });
+
+            renderizarTabela(filtrados);
+        }
+
+        function verDetalheRegisto(numeroAtividade) {
+            // Guarda temporariamente o número para redirecionar e abrir diretamente no CAA se desejado
+            localStorage.setItem('consultarCAA_num', numeroAtividade);
+            window.location.href = 'caa.html';
+        }
+
+        carregarRelatorio();
+    </script>
+</body>
+</html>
