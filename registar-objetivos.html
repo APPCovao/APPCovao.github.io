@@ -161,7 +161,6 @@
             }
         }
 
-        /* Estilo para grupo de checkboxes Sim/Não */
         .checkbox-inline-group {
             display: flex;
             gap: 20px;
@@ -398,11 +397,10 @@
                 </div>
             </div>
 
-            <!-- Recinto para Seleção de Objetivos e Metas do PEE -->
+            <!-- Recinto para Seleção de Objetivos e Metas do PEE (sempre visível quando PEE é Sim) -->
             <div id="peeContainer" style="display: none; margin-bottom: 20px;">
                 <label style="margin-bottom: 10px; font-size: 0.9rem; color: var(--color-primary); font-weight: 600;">Selecione os Objetivos e Metas do PEE abrangidos:</label>
 
-                <!-- Objetivo 1 & Meta 1 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 1: Melhorar a articulação pedagógica</div>
                     <div class="meta-checkbox-list">
@@ -410,7 +408,6 @@
                     </div>
                 </div>
 
-                <!-- Objetivo 2 & Meta 2 e 3 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 2: Melhorar os resultados académicos dos alunos</div>
                     <div class="meta-checkbox-list">
@@ -419,7 +416,6 @@
                     </div>
                 </div>
 
-                <!-- Objetivo 3 & Meta 4 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</div>
                     <div class="meta-checkbox-list">
@@ -427,7 +423,6 @@
                     </div>
                 </div>
 
-                <!-- Objetivo 4 & Meta 5 e 6 -->
                 <div class="pee-objective-box">
                     <div class="pee-objective-title">Objetivo 4: Aumentar a participação da comunidade e encarregados de educação</div>
                     <div class="meta-checkbox-list">
@@ -612,7 +607,6 @@
                     sugestoesInput.value = 'Nenhuma sugestão disponível.';
                 }
 
-                // Preencher dados do registo existente se houver
                 if (regExistente) {
                     if (regExistente.paa === 'Sim') selecionarUnicoPaa('Sim');
                     else if (regExistente.paa === 'Não') selecionarUnicoPaa('Não');
@@ -650,7 +644,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const numeroAtivUrl = urlParams.get('id') || urlParams.get('numero');
-            const modoUrl = urlParams.get('modo'); // 'ver' ou 'editar' ou 'criar'
 
             if (numeroAtivUrl) {
                 const inputNum = document.getElementById('numeroAtividade');
@@ -658,20 +651,6 @@
                 setTimeout(() => {
                     carregarDadosAtividade(numeroAtivUrl);
                 }, 50);
-            }
-
-            if (modoUrl === 'ver') {
-                document.getElementById('tituloPaginaHeader').innerText = 'Visualizar Registo de Objetivos';
-                document.getElementById('subtituloPaginaHeader').innerText = 'Modo de visualização dos objetivos, metas e conclusões.';
-                document.getElementById('btnGuardar').style.display = 'none';
-                
-                // Desativar inputs para leitura
-                setTimeout(() => {
-                    document.querySelectorAll('input, textarea').forEach(el => {
-                        if (el.id !== 'numeroAtividade') el.disabled = true;
-                    });
-                    document.getElementById('numeroAtividade').readOnly = true;
-                }, 100);
             }
         });
 
