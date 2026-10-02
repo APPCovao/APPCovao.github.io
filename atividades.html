@@ -167,7 +167,7 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
+            <span><strong id="userNameSpan">Utilizador</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">⬅️ Menu</a>
         </div>
     </nav>
@@ -215,7 +215,11 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
+            // Obter o nome (ou usar o email/fallback) e isolar apenas o primeiro nome
+            let nomeCompleto = currentUser.name || currentUser.nome || currentUser.email || 'Utilizador';
+            // Se o nome contiver '@' (caso seja email), usa a parte antes do '@', senão separa pelo espaço
+            let primeiroNome = nomeCompleto.includes('@') ? nomeCompleto.split('@')[0] : nomeCompleto.split(' ')[0];
+            document.getElementById('userNameSpan').innerText = primeiroNome;
         }
     </script>
 </body>
