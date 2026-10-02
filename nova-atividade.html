@@ -291,7 +291,7 @@
             </div>
             <div class="header-actions">
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
-                <a href="criar-atividade-form.html" class="btn-top-action btn-top-primary">➕ Criar Nova Atividade</a>
+                <button type="button" class="btn-top-action btn-top-primary" onclick="abrirModalAtividade(null, 'criar')">➕ Criar Nova Atividade</button>
             </div>
         </div>
 
@@ -310,19 +310,19 @@
         </div>
     </div>
 
-    <!-- Modal para Ver / Editar (Replica o formulário de criação) -->
+    <!-- Modal para Criar / Ver / Editar Atividade -->
     <div id="atividadeModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0;">Detalhes da Atividade</h2>
-            <form id="atividadeFormModal" onsubmit="salvarEdicaoAtividade(event)">
+            <form id="atividadeFormModal" onsubmit="salvarAtividade(event)">
                 <input type="hidden" id="editAtividadeId">
                 <div class="form-group">
                     <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly>
+                    <input type="text" id="modalNumAtividade" readonly placeholder="Gerado automaticamente">
                 </div>
                 <div class="form-group">
                     <label>Nome da Atividade <span class="required">*</span></label>
-                    <input type="text" id="modalNomeAtividade" required>
+                    <input type="text" id="modalNomeAtividade" required placeholder="Insira o nome da atividade">
                 </div>
                 <div class="form-group">
                     <label>Ano Letivo <span class="required">*</span></label>
@@ -407,27 +407,41 @@
 
         function abrirModalAtividade(id, modo) {
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const ativ = atividades.find(a => a.id == id);
-            if (!ativ) return;
-
-            document.getElementById('editAtividadeId').value = ativ.id;
-            document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
-            document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-            document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '2025/2026';
-            document.getElementById('modalTipoAtividade').value = ativ.tipo || 'Atividade';
-
-            const inputs = document.querySelectorAll('#atividadeFormModal input, #atividadeFormModal select');
+            const inputs = document.querySelectorAll('#atividadeFormModal input:not([type="hidden"]), #atividadeFormModal select');
             const saveBtn = document.getElementById('modalSaveBtn');
 
-            if (modo === 'ver') {
-                document.getElementById('modalTitle').innerText = 'Consultar Atividade';
-                inputs.forEach(el => el.disabled = true);
-                saveBtn.style.display = 'none';
-            } else {
-                document.getElementById('modalTitle').innerText = 'Editar Atividade';
+            if (modo === 'criar') {
+                document.getElementById('modalTitle').innerText = 'Criar Nova Atividade';
+                document.getElementById('editAtividadeId').value = '';
+                document.getElementById('atividadeFormModal').reset();
+                
+                // Calcular próximo número de atividade automaticamente (opcional mas útil)
+                const proximoNum = atividades.length > 0 ? Math.max(...atividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
+                document.getElementById('modalNumAtividade').value = proximoNum;
+
                 inputs.forEach(el => el.disabled = false);
-                document.getElementById('modalNumAtividade').disabled = true;
+                document.getElementById('modalNumAtividade').disabled = true; // Mantém o número bloqueado por ser automático
                 saveBtn.style.display = 'inline-block';
+            } else {
+                const ativ = atividades.find(a => a.id == id);
+                if (!ativ) return;
+
+                document.getElementById('editAtividadeId').value = ativ.id;
+                document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
+                document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
+                document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '2025/2026';
+                document.getElementById('modalTipoAtividade').value = ativ.tipo || 'Atividade';
+
+                if (modo === 'ver') {
+                    document.getElementById('modalTitle').innerText = 'Consultar Atividade';
+                    inputs.forEach(el => el.disabled = true);
+                    saveBtn.style.display = 'none';
+                } else {
+                    document.getElementById('modalTitle').innerText = 'Editar Atividade';
+                    inputs.forEach(el => el.disabled = false);
+                    document.getElementById('modalNumAtividade').disabled = true;
+                    saveBtn.style.display = 'inline-block';
+                }
             }
             document.getElementById('atividadeModal').style.display = 'flex';
         }
@@ -436,19 +450,39 @@
             document.getElementById('atividadeModal').style.display = 'none';
         }
 
-        function salvarEdicaoAtividade(e) {
+        function salvarAtividade(e) {
             e.preventDefault();
             const id = document.getElementById('editAtividadeId').value;
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            let ativ = atividades.find(a => a.id == id);
-            if (ativ) {
-                ativ.titulo = document.getElementById('modalNomeAtividade').value;
-                ativ.anoLetivo = document.getElementById('modalAnoLetivo').value;
-                ativ.tipo = document.getElementById('modalTipoAtividade').value;
-                localStorage.setItem('atividades', JSON.stringify(atividades));
-                carregarAtividades();
-                fecharModal();
+
+            if (id === '' || id === null) {
+                // Criar nova
+                const novoId = Date.now();
+                const proximoNum = atividades.length > 0 ? Math.max(...atividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
+                
+                const novaAtiv = {
+                    id: novoId,
+                    numero: proximoNum,
+                    titulo: document.getElementById('modalNomeAtividade').value,
+                    anoLetivo: document.getElementById('modalAnoLetivo').value,
+                    tipo: document.getElementById('modalTipoAtividade').value,
+                    criadorId: currentUser.id,
+                    criadorNome: currentUser.name || currentUser.email
+                };
+                atividades.push(novaAtiv);
+            } else {
+                // Editar existente
+                let ativ = atividades.find(a => a.id == id);
+                if (ativ) {
+                    ativ.titulo = document.getElementById('modalNomeAtividade').value;
+                    ativ.anoLetivo = document.getElementById('modalAnoLetivo').value;
+                    ativ.tipo = document.getElementById('modalTipoAtividade').value;
+                }
             }
+
+            localStorage.setItem('atividades', JSON.stringify(atividades));
+            carregarAtividades();
+            fecharModal();
         }
 
         let idParaApagar = null;
