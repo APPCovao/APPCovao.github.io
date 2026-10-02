@@ -429,7 +429,7 @@
         <!-- 4º Título: Objetivos e Metas -->
         <div class="theme-section">
             <h2>4. Objetivos e Metas</h2>
-            <p class="theme-desc">Análise da seleção de objetivos e metas nos registos efetuados.</p>
+            <p class="theme-desc">Análise da seleção de objetivos e metas nas checkboxes dos registos.</p>
             
             <div class="stats-grid-2" style="margin-bottom: 20px;">
                 <div class="stat-main-card alt7">
@@ -452,15 +452,15 @@
             <div class="reports-grid">
                 <!-- Gráfico / Objetivos -->
                 <div class="report-box">
-                    <h4>Seleção por Objetivo</h4>
-                    <p>Contagem de ocorrências por cada objetivo (ex: Objetivo 1, Objetivo 2, etc.).</p>
+                    <h4>Seleção por Objetivo (Checkboxes)</h4>
+                    <p>Contagem de ocorrências por cada objetivo selecionado.</p>
                     <div id="chartObjetivos" class="chart-container"></div>
                 </div>
 
                 <!-- Gráfico / Metas -->
                 <div class="report-box">
-                    <h4>Seleção por Meta</h4>
-                    <p>Contagem de ocorrências por cada meta (ex: Meta 1, Meta 2, etc.).</p>
+                    <h4>Seleção por Meta (Checkboxes)</h4>
+                    <p>Contagem de ocorrências por cada meta selecionada.</p>
                     <div id="chartMetas" class="chart-container"></div>
                 </div>
             </div>
@@ -540,7 +540,6 @@
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
-            // Função auxiliar rigorosa para filtrar elementos duplicados baseando-se no identificador único
             function contarUnicos(lista) {
                 const idsUnicos = new Set(
                     lista.map(item => {
@@ -615,42 +614,79 @@
             document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
             renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
 
-            // 7. Secção 4: Objetivos e Metas (leitura de 'registosObjetivosAtividades' ou 'atividades')
+            // 7. Secção 4: Objetivos e Metas (Leitura avançada para Arrays de Checkboxes ou campos diretos)
             let contagemObjetivos = {};
             let contagemMetas = {};
             let totalObjSel = 0;
             let totalMetasSel = 0;
 
-            // Vamos combinar as fontes de dados possíveis para garantir que apanha os objetivos e metas selecionados
-            const fonteDadosObjMeta = [...objetivosLista, ...atividadesList];
+            const todasFontes = [...objetivosLista, ...atividadesLista];
 
-            fonteDadosObjMeta.forEach(item => {
-                // Procura por objetivos (pode vir como 'objetivo', 'objetivos', 'obj', etc.)
-                const objVal = item.objetivo || item.objetivos || item.obj || '';
-                if (objVal) {
-                    // Se vier em forma de lista ou string separada por vírgulas, trata ambos
-                    const objetivosArray = Array.isArray(objVal) ? objVal : [objVal];
-                    objetivosArray.forEach(o => {
-                        const nomeObj = String(o).trim();
-                        if (nomeObj) {
-                            contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
-                            totalObjSel++;
-                        }
-                    });
-                }
+            todasFontes.forEach(item => {
+                // A) Verificar se existe um campo que guarda um array de objetivos (ex: item.objetivos = ["Objetivo 1", "Objetivo 2"])
+                const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
+                camposObjPossiveis.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(o => {
+                            let nome = String(o).trim();
+                            if (nome) {
+                                contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
+                                totalObjSel++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        val.split(',').forEach(o => {
+                            let nome = o.trim();
+                            if (nome) {
+                                contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
+                                totalObjSel++;
+                            }
+                        });
+                    }
+                });
 
-                // Procura por metas (pode vir como 'meta', 'metas', etc.)
-                const metaVal = item.meta || item.metas || '';
-                if (metaVal) {
-                    const metasArray = Array.isArray(metaVal) ? metaVal : [metaVal];
-                    metasArray.forEach(m => {
-                        const nomeMeta = String(m).trim();
-                        if (nomeMeta) {
-                            contagemMetas[nomeMeta] = (contagemMetas[nomeMeta] || 0) + 1;
-                            totalMetasSel++;
-                        }
-                    });
-                }
+                // B) Verificar se as checkboxes estão guardadas como propriedades individuais (ex: item.objetivo1 = true, item.obj1 = true)
+                Object.keys(item).forEach(chave => {
+                    const chaveLower = chave.toLowerCase();
+                    if ((chaveLower.includes('obj') || chaveLower.includes('objetivo')) && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
+                        // Formata o nome para ficar bonito (ex: objetivo1 -> Objetivo 1)
+                        let nomeFormatado = chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase());
+                        contagemObjetivos[nomeFormatado] = (contagemObjetivos[nomeFormatado] || 0) + 1;
+                        totalObjSel++;
+                    }
+                });
+
+                // C) Verificar se existe um campo que guarda um array de metas (ex: item.metas = ["Meta 1", "Meta 2"])
+                const camposMetaPossiveis = [item.metas, item.meta, item.metasSelecionadas];
+                camposMetaPossiveis.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(m => {
+                            let nome = String(m).trim();
+                            if (nome) {
+                                contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
+                                totalMetasSel++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        val.split(',').forEach(m => {
+                            let nome = m.trim();
+                            if (nome) {
+                                contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
+                                totalMetasSel++;
+                            }
+                        });
+                    }
+                });
+
+                // D) Verificar se as metas estão guardadas como propriedades individuais (ex: item.meta1 = true)
+                Object.keys(item).forEach(chave => {
+                    const chaveLower = chave.toLowerCase();
+                    if (chaveLower.includes('meta') && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
+                        let nomeFormatado = chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase());
+                        contagemMetas[nomeFormatado] = (contagemMetas[nomeFormatado] || 0) + 1;
+                        totalMetasSel++;
+                    }
+                });
             });
 
             document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
