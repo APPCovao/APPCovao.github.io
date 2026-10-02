@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atividades Registadas - Registos Covão</title>
+    <title>Atividades - Registos Covão</title>
     <style>
         :root {
             --primary-green: #15803d;
@@ -41,9 +41,7 @@
             font-size: 1.1rem;
         }
 
-        .navbar .brand img {
-            height: 32px;
-        }
+        .navbar .brand img { height: 32px; }
 
         .navbar .user-info {
             display: flex;
@@ -52,9 +50,7 @@
             font-size: 14px;
         }
 
-        .navbar .user-info span {
-            color: #dcfce7;
-        }
+        .navbar .user-info span { color: #dcfce7; }
 
         .btn-voltar-menu {
             background-color: #2563eb;
@@ -71,16 +67,17 @@
             gap: 6px;
             transition: background 0.2s;
         }
-
-        .btn-voltar-menu:hover {
-            background-color: #1d4ed8;
-        }
+        .btn-voltar-menu:hover { background-color: #1d4ed8; }
 
         .main-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 30px auto;
             padding: 0 20px;
         }
+
+        /* Secções (Alternam entre Listagem e Formulário) */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
 
         .section-header-card {
             background-color: var(--card-bg);
@@ -96,10 +93,10 @@
             gap: 1rem;
         }
 
-        .section-header-card h1 {
+        .section-header-card h1, .section-header-card h2 {
             color: var(--primary-green);
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 24px;
+            margin: 0 0 4px 0;
         }
 
         .section-header-card p {
@@ -129,26 +126,18 @@
             transition: background 0.2s;
             text-decoration: none;
         }
+        .btn-top-action:hover { background-color: #0f172a; }
+        .btn-top-primary { background-color: var(--primary-green); }
+        .btn-top-primary:hover { background-color: var(--primary-green-hover); }
 
-        .btn-top-action:hover {
-            background-color: #0f172a;
-        }
-
-        .btn-top-primary {
-            background-color: var(--primary-green);
-        }
-
-        .btn-top-primary:hover {
-            background-color: var(--primary-green-hover);
-        }
-
-        .table-card {
+        .table-card, .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+
+        .table-card { overflow-x: auto; }
 
         table {
             width: 100%;
@@ -195,30 +184,8 @@
         .btn-delete { background-color: #dc2626; color: white; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        .custom-modal {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 750px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
+        /* Estilos do Formulário (na mesma página) */
+        .form-card { padding: 30px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
         .required { color: #dc2626; }
@@ -240,8 +207,8 @@
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
-        .custom-modal input:disabled, .custom-modal select:disabled, .custom-modal textarea:disabled,
-        .custom-modal input[readonly] {
+        input:disabled, select:disabled, textarea:disabled,
+        input[readonly] {
             background-color: #e5e7eb !important;
             color: #1f2937 !important;
             font-weight: 600 !important;
@@ -249,7 +216,7 @@
             border-color: #d1d5db !important;
         }
 
-        .modal-buttons {
+        .form-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
@@ -268,6 +235,28 @@
         }
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-modal-cancel:hover { background-color: #cbd5e1; }
+
+        /* Modal de Confirmação de Apagar */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+        .custom-modal {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -279,84 +268,89 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅️ Voltar ao Menu</a>
+            <a href="menu.html" class="btn-voltar-menu">⬅️ Voltar ao Menu</a>
         </div>
     </nav>
 
     <div class="main-container">
-        <div class="section-header-card">
-            <div>
-                <h1>Atividades Registadas</h1>
-                <p>Consulta e gestão de todas as atividades criadas no sistema.</p>
+
+        <!-- SECÇÃO 1: LISTAGEM -->
+        <div id="seccaoListagem" class="view-section active">
+            <div class="section-header-card">
+                <div>
+                    <h1>Atividades Registadas</h1>
+                    <p>Consulta e gestão de todas as atividades criadas no sistema.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="menu.html" class="btn-top-action">⬅️ Voltar</a>
+                    <button type="button" class="btn-top-action btn-top-primary" onclick="mudarParaFormulario('criar')">➕ Criar Nova Atividade</button>
+                </div>
             </div>
-            <div class="header-actions">
-                <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
-                <button type="button" class="btn-top-action btn-top-primary" onclick="abrirModalAtividade(null, 'criar')">➕ Criar Nova Atividade</button>
+
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Nº Atividade</th>
+                            <th>Título / Descrição</th>
+                            <th style="width: 25%;">Criado por</th>
+                            <th style="width: 25%; text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="atividadesTableBody"></tbody>
+                </table>
             </div>
         </div>
 
-        <div class="table-card">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 15%;">Nº Atividade</th>
-                        <th>Título / Descrição</th>
-                        <th style="width: 25%;">Criado por</th>
-                        <th style="width: 25%; text-align: right;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="atividadesTableBody"></tbody>
-            </table>
+        <!-- SECÇÃO 2: FORMULÁRIO (DENTRO DA MESMA PÁGINA) -->
+        <div id="seccaoFormulario" class="view-section">
+            <div class="form-card">
+                <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0; margin-bottom: 20px;">Detalhes da Atividade</h2>
+                <form id="atividadeFormModal" onsubmit="salvarAtividade(event)">
+                    <input type="hidden" id="editAtividadeId">
+                    <div class="form-group">
+                        <label>Número da Atividade</label>
+                        <input type="text" id="modalNumAtividade" readonly placeholder="Gerado automaticamente">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome da Atividade <span class="required">*</span></label>
+                        <input type="text" id="modalNomeAtividade" required placeholder="Insira o nome da atividade">
+                    </div>
+                    <div class="form-group">
+                        <label>Ano Letivo <span class="required">*</span></label>
+                        <select id="modalAnoLetivo" required>
+                            <option value="2023/2024">2023/2024</option>
+                            <option value="2024/2025">2024/2025</option>
+                            <option value="2025/2026">2025/2026</option>
+                            <option value="2026/2027">2026/2027</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Atividade <span class="required">*</span></label>
+                        <select id="modalTipoAtividade" required>
+                            <option value="Atividade">Atividade</option>
+                            <option value="Projeto">Projeto</option>
+                            <option value="Formação/acção">Formação/acção</option>
+                            <option value="Visita de Estudo">Visita de Estudo</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn-modal btn-modal-cancel" onclick="mudarParaListagem()">Voltar</button>
+                        <button type="submit" id="modalSaveBtn" class="btn-modal btn-top-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Modal para Criar / Ver / Editar Atividade -->
-    <div id="atividadeModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0;">Detalhes da Atividade</h2>
-            <form id="atividadeFormModal" onsubmit="salvarAtividade(event)">
-                <input type="hidden" id="editAtividadeId">
-                <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalNumAtividade" readonly placeholder="Gerado automaticamente">
-                </div>
-                <div class="form-group">
-                    <label>Nome da Atividade <span class="required">*</span></label>
-                    <input type="text" id="modalNomeAtividade" required placeholder="Insira o nome da atividade">
-                </div>
-                <div class="form-group">
-                    <label>Ano Letivo <span class="required">*</span></label>
-                    <select id="modalAnoLetivo" required>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Atividade <span class="required">*</span></label>
-                    <select id="modalTipoAtividade" required>
-                        <option value="Atividade">Atividade</option>
-                        <option value="Projeto">Projeto</option>
-                        <option value="Formação/acção">Formação/acção</option>
-                        <option value="Visita de Estudo">Visita de Estudo</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModal()">Fechar</button>
-                    <button type="submit" id="modalSaveBtn" class="btn-modal btn-top-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
     </div>
 
     <!-- Modal de Confirmação de Apagar -->
     <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; text-align: center;">
+        <div class="custom-modal">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
             <h3 style="color: #ef4444; margin-bottom: 0.5rem; margin-top: 0;">Confirmar Remoção</h3>
             <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Tens a certeza que pretendes apagar este registo?</p>
-            <div class="modal-buttons" style="justify-content: center; border-top: none; padding-top: 0;">
+            <div style="display: flex; justify-content: center; gap: 12px;">
                 <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
                 <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
             </div>
@@ -377,60 +371,40 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        function carregarAtividades() {
-            const tbody = document.getElementById('atividadesTableBody');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
-
-            if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades registadas.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            [...atividades].reverse().forEach(ativ => {
-                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary-green);">${ativ.numero || ativ.id || '-'}</td>
-                    <td style="font-weight: 600;">${ativ.titulo}</td>
-                    <td>${ativ.criadorNome || 'Desconhecido'}</td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="abrirModalAtividade(${ativ.id}, 'ver')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="abrirModalAtividade(${ativ.id}, 'editar')">Editar</button>
-                        <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id})">Apagar</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        // Funções para alternar entre as secções na mesma página
+        function mudarParaListagem() {
+            document.getElementById('seccaoFormulario').classList.remove('active');
+            document.getElementById('seccaoListagem').classList.add('active');
+            carregarAtividades();
         }
 
-        function abrirModalAtividade(id, modo) {
+        function mudarParaFormulario(modo, id = null) {
+            document.getElementById('seccaoListagem').classList.remove('active');
+            document.getElementById('seccaoFormulario').classList.add('active');
+
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const inputs = document.querySelectorAll('#atividadeFormModal input:not([type="hidden"]), #atividadeFormModal select');
             const saveBtn = document.getElementById('modalSaveBtn');
+            const form = document.getElementById('atividadeFormModal');
+            form.reset();
 
             if (modo === 'criar') {
                 document.getElementById('modalTitle').innerText = 'Criar Nova Atividade';
                 document.getElementById('editAtividadeId').value = '';
-                document.getElementById('atividadeFormModal').reset();
-                
-                // Calcular próximo número de atividade automaticamente (opcional mas útil)
                 const proximoNum = atividades.length > 0 ? Math.max(...atividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
                 document.getElementById('modalNumAtividade').value = proximoNum;
-
                 inputs.forEach(el => el.disabled = false);
-                document.getElementById('modalNumAtividade').disabled = true; // Mantém o número bloqueado por ser automático
+                document.getElementById('modalNumAtividade').disabled = true;
                 saveBtn.style.display = 'inline-block';
             } else {
                 const ativ = atividades.find(a => a.id == id);
-                if (!ativ) return;
-
-                document.getElementById('editAtividadeId').value = ativ.id;
-                document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
-                document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-                document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '2025/2026';
-                document.getElementById('modalTipoAtividade').value = ativ.tipo || 'Atividade';
+                if (ativ) {
+                    document.getElementById('editAtividadeId').value = ativ.id;
+                    document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
+                    document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
+                    document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '2025/2026';
+                    document.getElementById('modalTipoAtividade').value = ativ.tipo || 'Atividade';
+                }
 
                 if (modo === 'ver') {
                     document.getElementById('modalTitle').innerText = 'Consultar Atividade';
@@ -443,22 +417,44 @@
                     saveBtn.style.display = 'inline-block';
                 }
             }
-            document.getElementById('atividadeModal').style.display = 'flex';
         }
 
-        function fecharModal() {
-            document.getElementById('atividadeModal').style.display = 'none';
+        function carregarAtividades() {
+            const tbody = document.getElementById('atividadesTableBody');
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            tbody.innerHTML = '';
+
+            if (atividades.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades registadas.</td></tr>`;
+                return;
+            }
+
+            const userIsAdmin = isAdminUser(currentUser);
+            ([...atividades].reverse()).forEach(ativ => {
+                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary-green);">${ativ.numero || ativ.id || '-'}</td>
+                    <td style="font-weight: 600;">${ativ.titulo}</td>
+                    <td>${ativ.criadorNome || 'Desconhecido'}</td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn-action btn-view" onclick="mudarParaFormulario('ver', ${ativ.id})">Ver</button>
+                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="mudarParaFormulario('editar', ${ativ.id})">Editar</button>
+                        <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${ativ.id})">Apagar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         function salvarAtividade(e) {
             e.preventDefault();
-            const id = document.getElementById('editAtividadeId').value;
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const idEdit = document.getElementById('editAtividadeId').value;
+            let listaAtividades = JSON.parse(localStorage.getItem('atividades')) || [];
 
-            if (id === '' || id === null) {
-                // Criar nova
+            if (idEdit === '' || idEdit === null) {
                 const novoId = Date.now();
-                const proximoNum = atividades.length > 0 ? Math.max(...atividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
+                const proximoNum = listaAtividades.length > 0 ? Math.max(...listaAtividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
                 
                 const novaAtiv = {
                     id: novoId,
@@ -469,10 +465,9 @@
                     criadorId: currentUser.id,
                     criadorNome: currentUser.name || currentUser.email
                 };
-                atividades.push(novaAtiv);
+                listaAtividades.push(novaAtiv);
             } else {
-                // Editar existente
-                let ativ = atividades.find(a => a.id == id);
+                let ativ = listaAtividades.find(a => a.id == idEdit);
                 if (ativ) {
                     ativ.titulo = document.getElementById('modalNomeAtividade').value;
                     ativ.anoLetivo = document.getElementById('modalAnoLetivo').value;
@@ -480,9 +475,8 @@
                 }
             }
 
-            localStorage.setItem('atividades', JSON.stringify(atividades));
-            carregarAtividades();
-            fecharModal();
+            localStorage.setItem('atividades', JSON.stringify(listaAtividades));
+            mudarParaListagem();
         }
 
         let idParaApagar = null;
@@ -505,6 +499,7 @@
             }
         };
 
+        // Inicializar listagem ao carregar a página
         carregarAtividades();
     </script>
 </body>
