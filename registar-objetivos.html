@@ -332,7 +332,7 @@
 
     <!-- Modal para Criar / Ver / Editar Registo de Objetivos -->
     <div id="objetivoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
+        <div class="custom-modal" id="customModalContent">
             <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
             <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             
@@ -516,7 +516,6 @@
                 document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || '';
                 document.getElementById('modalObjTipo').value = atv.tipo || '';
 
-                // Calcular média e sugestões a partir das avaliações guardadas
                 calcularMediaESugestoes(atv.id, atv.numero);
                 return atv;
             } else {
@@ -530,7 +529,6 @@
         }
 
         function calcularMediaESugestoes(atvId, atvNumero) {
-            // Recolhe avaliações de todas as possíveis chaves guardadas no localStorage
             const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
             const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
             const av3 = JSON.parse(localStorage.getItem('avaliacoes')) || [];
@@ -538,7 +536,6 @@
             
             const todasAvaliacoes = [...av1, ...av2, ...av3, ...av4];
             
-            // Filtra as avaliações que correspondem à atividade por ID ou por Número
             const avaliacoesDaAtividade = todasAvaliacoes.filter(av => {
                 const matchId = (av.atividadeId && String(av.atividadeId) === String(atvId)) || 
                                 (av.idAtividade && String(av.idAtividade) === String(atvId)) ||
@@ -552,7 +549,7 @@
 
             if (avaliacoesDaAtividade.length === 0) {
                 document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
-                document.getElementById('modalObjSugestoes').value = 'Nenhuma sugestão recolhida.';
+                document.getElementById('modalObjSugestoes').value = '- Sem sugestão recolhida.';
                 return;
             }
 
@@ -576,7 +573,7 @@
 
                 const sug = av.comentario || av.sugestoes || av.sugestao || av.comentarios;
                 if (sug && String(sug).trim() !== '') {
-                    listaSugestoes.push(`• ${String(sug).trim()}`);
+                    listaSugestoes.push(`- ${String(sug).trim()}`);
                 }
             });
 
@@ -593,7 +590,7 @@
             if (listaSugestoes.length > 0) {
                 document.getElementById('modalObjSugestoes').value = listaSugestoes.join('\n');
             } else {
-                document.getElementById('modalObjSugestoes').value = 'Sem sugestões registadas pelos avaliadores.';
+                document.getElementById('modalObjSugestoes').value = '- Sem sugestões registadas pelos avaliadores.';
             }
         }
 
@@ -655,7 +652,11 @@
                     saveBtn.style.display = 'inline-block';
                 }
             }
-            document.getElementById('objetivoModal').style.display = 'flex';
+
+            // Coloca o modal sempre no início (topo) ao abrir
+            const modalContainer = document.getElementById('objetivoModal');
+            modalContainer.style.display = 'flex';
+            document.getElementById('customModalContent').scrollTop = 0;
         }
 
         function fecharModalObjetivo() {
