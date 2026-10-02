@@ -307,7 +307,7 @@
         <div class="section-header-card">
             <div>
                 <h1>Objetivos e Avaliações Globais</h1>
-                <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
+                <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais[cite: 3].</p>
             </div>
             <div class="header-actions">
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
@@ -334,7 +334,7 @@
     <div id="objetivoModal" class="custom-modal-overlay">
         <div class="custom-modal" id="customModalContent">
             <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações[cite: 3].</p>
             
             <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
@@ -653,7 +653,6 @@
                 }
             }
 
-            // Coloca o modal sempre no início (topo) ao abrir
             const modalContainer = document.getElementById('objetivoModal');
             modalContainer.style.display = 'flex';
             document.getElementById('customModalContent').scrollTop = 0;
@@ -725,7 +724,7 @@
             document.getElementById('confirmModal').style.display = 'flex';
         }
         function fecharConfirmarApagar() {
-            idParaApagar = null;
+            idParaApager = null;
             document.getElementById('confirmModal').style.display = 'none';
         }
 
