@@ -143,12 +143,38 @@
             gap: 20px;
         }
 
+        .theme-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f0fdf4;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         .theme-section h2 {
             color: var(--primary-green);
             font-size: 20px;
-            margin: 0 0 4px 0;
-            border-bottom: 2px solid #f0fdf4;
-            padding-bottom: 10px;
+            margin: 0;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-container input {
+            padding: 6px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-container input:focus {
+            border-color: var(--primary-green);
         }
 
         .table-responsive {
@@ -206,6 +232,22 @@
         .btn-delete:hover {
             background-color: #fecaca;
         }
+
+        .btn-delete-all {
+            background-color: #dc2626;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-delete-all:hover {
+            background-color: #b91c1c;
+        }
     </style>
 </head>
 <body>
@@ -226,18 +268,17 @@
         <!-- Cabeçalho Principal -->
         <div class="section-header-card">
             <div>
-                <h1>Gestão de Utilizadores e Permissões</h1>
-                <p>Como administrador, pode eliminar, alterar ou dar permissões de admin.</p>
+                <h1>Painel de Administração</h1>
+                <p>Gestão centralizada de utilizadores e registos de atividades.</p>
             </div>
             <div>
                 <a href="dashboard.html" class="btn-top-action">← Voltar</a>
             </div>
         </div>
 
-        <!-- Secção da Tabela de Utilizadores -->
+        <!-- 1. Secção de Utilizadores -->
         <div class="theme-section">
-            <h2>Lista de Utilizadores Registados</h2>
-            
+            <h2>Gestão de Utilizadores e Permissões</h2>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -249,6 +290,36 @@
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
+                        <!-- Preenchido dinamicamente via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. Secção de Atividades -->
+        <div class="theme-section">
+            <div class="theme-section-header">
+                <h2>Gestão de Atividades</h2>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <div class="filter-container">
+                        <label for="filterNumero" style="font-size: 13px; font-weight: 600; color: var(--text-light);">Filtrar Nº:</label>
+                        <input type="text" id="filterNumero" placeholder="Ex: 1, 2..." oninput="carregarAtividades()">
+                    </div>
+                    <button class="btn-delete-all" onclick="eliminarTodasAtividades()">🗑️ Apagar Todas as Atividades</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nº Atividade</th>
+                            <th>Título / Descrição</th>
+                            <th>Tipo</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activitiesTableBody">
                         <!-- Preenchido dinamicamente via JS -->
                     </tbody>
                 </table>
@@ -268,7 +339,7 @@
             document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
         }
 
-        // Função para carregar e desenhar os utilizadores na tabela
+        // --- GESTÃO DE UTILIZADORES ---
         function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
             if (!tbody) return;
@@ -283,7 +354,6 @@
 
             users.forEach((u, index) => {
                 const tr = document.createElement('tr');
-
                 const isAdm = u.isAdmin ? '<span style="color: var(--primary-green); font-weight: bold;">Administrador</span>' : '<span style="color: var(--text-light);">Utilizador Padrão</span>';
 
                 tr.innerHTML = `
@@ -329,7 +399,71 @@
             }
         }
 
+        // --- GESTÃO DE ATIVIDADES ---
+        function carregarAtividades() {
+            const tbody = document.getElementById('activitiesTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const filtro = document.getElementById('filterNumero').value.trim().toLowerCase();
+
+            // Filtrar se houver texto escrito na caixa de pesquisa por número/ID
+            const atividadesFiltradas = atividades.map((atv, originalIndex) => ({ atv, originalIndex })).filter(({ atv }) => {
+                if (!filtro) return true;
+                const numAtv = String(atv.numero !== undefined ? atv.numero : (atv.id !== undefined ? atv.id : atv.numeroAtividade || '')).toLowerCase();
+                const tituloAtv = String(atv.titulo || '').toLowerCase();
+                return numAtv.includes(filtro) || tituloAtv.includes(filtro);
+            });
+
+            if (atividadesFiltradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhuma atividade encontrada.</td></tr>`;
+                return;
+            }
+
+            atividadesFiltradas.forEach(({ atv, originalIndex }) => {
+                const tr = document.createElement('tr');
+                const numAtv = atv.numero !== undefined ? atv.numero : (atv.id !== undefined ? atv.id : (atv.numeroAtividade || '-'));
+                const titulo = atv.titulo || atv.nome || atv.descricao || 'Sem título';
+                const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Geral';
+
+                tr.innerHTML = `
+                    <td><strong>#${numAtv}</strong></td>
+                    <td>${titulo}</td>
+                    <td><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${tipo}</span></td>
+                    <td style="text-align: right;">
+                        <button class="btn-action btn-delete" onclick="eliminarAtividade(${originalIndex})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function eliminarAtividade(index) {
+            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            if (confirm('Tem a certeza que pretende eliminar esta atividade?')) {
+                atividades.splice(index, 1);
+                localStorage.setItem('atividades', JSON.stringify(atividades));
+                carregarAtividades();
+            }
+        }
+
+        function eliminarTodasAtividades() {
+            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            if (atividades.length === 0) {
+                alert('Não existem atividades para apagar.');
+                return;
+            }
+
+            if (confirm('ATENÇÃO: Tem a certeza absoluta que pretende eliminar TODAS as atividades registadas? Esta ação é irreversível!')) {
+                localStorage.removeItem('atividades');
+                carregarAtividades();
+            }
+        }
+
+        // Inicializar painel
         carregarUtilizadores();
+        carregarAtividades();
     </script>
 </body>
 </html>
