@@ -166,7 +166,7 @@
 
         @media (max-width: 900px) {
             .stats-grid-3, .stats-grid-2, .reports-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -365,7 +365,7 @@
         <!-- 3º Título: Cumprimento dos objetivos e metas -->
         <div class="theme-section">
             <h2>3. Cumprimento dos objetivos e metas</h2>
-            <p class="theme-desc">Acompanhamento do progresso para os Objetivos e Metas (Inclui Objetivo 1, Objetivo 2, Meta 1, Meta 2 e Meta 3).</p>
+            <p class="theme-desc">Acompanhamento do progresso para os Objetivos e Metas.</p>
             
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="report-box">
@@ -379,19 +379,18 @@
                 </div>
             </div>
 
-            <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
+            <!-- Objetivo 2, Meta 2 e Meta 3 na mesma linha (3 colunas) -->
+            <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 20px;">
                 <div class="report-box">
                     <h4>Objetivo 2</h4>
                     <div id="chartGanttObj2" class="chart-container"></div>
                 </div>
 
                 <div class="report-box">
-                    <h4>Meta 2 (Geral)</h4>
+                    <h4>Meta 2 (Português)</h4>
                     <div id="chartGanttMeta2" class="chart-container"></div>
                 </div>
-            </div>
 
-            <div class="reports-grid" style="grid-template-columns: 1fr; margin-top: 20px;">
                 <div class="report-box">
                     <h4>Meta 3 (Matemática)</h4>
                     <div id="chartGanttMeta3" class="chart-container"></div>
@@ -551,21 +550,22 @@
             container.appendChild(itemDiv);
         }
 
-        function renderizarProgressoPorcentagemGantt(containerId, nomeItem, percentagemAtual, metaPercentagem = 75) {
+        function renderizarProgressoMetaGantt(containerId, nomeItem, percentagemAtual, metaPercentagem = 75) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
-            const percentagemEfetiva = Math.min(Math.max(percentagemAtual, 0), 100);
+            // O gráfico fica completo (100% da barra) quando atinge a meta de 75%
+            const progressoVisual = Math.min(Math.max(Math.round((percentagemAtual / metaPercentagem) * 100), 0), 100);
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
-                    <span>${nomeItem} (Atingido: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
-                    <span style="color: var(--primary-green);">${percentagemEfetiva}%</span>
+                    <span>${nomeItem} (Média: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
+                    <span style="color: var(--primary-green);">${progressoVisual}% da Meta</span>
                 </div>
                 <div class="chart-bar-bg">
-                    <div class="chart-bar-fill" style="width: ${percentagemEfetiva}%;"></div>
+                    <div class="chart-bar-fill" style="width: ${progressoVisual}%;"></div>
                 </div>
             `;
             container.appendChild(itemDiv);
@@ -691,56 +691,9 @@
             renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1, 6);
 
             // ==========================================
-            // Lógica para Objetivo 2, Meta 2 e Meta 3 (Turmas / Alunos / Menções)
+            // Lógica para Objetivo 2, Meta 2 (Português) e Meta 3 (Matemática)
             // ==========================================
-            const turmasLista = JSON.parse(localStorage.getItem('turmas')) || [];
-            
-            let totalAlunosGeral = 0;
-            let alunosBomMuitoBomGeral = 0;
-
-            let totalAlunosMatematica = 0;
-            let alunosBomMuitoBomMatematica = 0;
-
             let contagemObj2 = 0;
-
-            turmasLista.forEach(turma => {
-                // Assumindo que cada turma tem uma lista de alunos ou um contador, ajustável conforme o teu formato em turmas.html
-                // Exemplo comum: turma.alunos (array de objetos com menções/avaliações) ou turma.numAlunos
-                const alunos = turma.alunos || turma.listaAlunos || [];
-                
-                if (Array.isArray(alunos) && alunos.length > 0) {
-                    totalAlunosGeral += alunos.length;
-
-                    alunos.forEach(aluno => {
-                        // Verificar menção geral (ex: aluno.mencao, aluno.avaliacaoGlobal, etc.)
-                        const mencaoGeral = String(aluno.mencao || aluno.avaliacao || aluno.resultado || '').toLowerCase().trim();
-                        if (mencaoGeral.includes('bom') || mencaoGeral.includes('muito bom')) {
-                            alunosBomMuitoBomGeral++;
-                        }
-
-                        // Verificar menção específica de Matemática (ex: aluno.mencaoMatematica, aluno.matematica, etc.)
-                        const mencaoMat = String(aluno.matematica || aluno.mencaoMatematica || aluno.notaMatematica || '').toLowerCase().trim();
-                        if (mencaoMat.includes('bom') || mencaoMat.includes('muito bom')) {
-                            alunosBomMuitoBomMatematica++;
-                        }
-                    });
-
-                    totalAlunosMatematica += alunos.length;
-                } else if (typeof turma.totalAlunos === 'number') {
-                    // Caso guardes apenas contadores agregados por turma
-                    totalAlunosGeral += turma.totalAlunos;
-                    totalAlunosMatematica += turma.totalAlunos;
-                    
-                    if (typeof turma.alunosBomMuitoBom === 'number') {
-                        alunosBomMuitoBomGeral += turma.alunosBomMuitoBom;
-                    }
-                    if (typeof turma.alunosBomMuitoBomMat === 'number') {
-                        alunosBomMuitoBomMatematica += turma.alunosBomMuitoBomMat;
-                    }
-                }
-            });
-
-            // Contabilizar se o Objetivo 2 surge nos registos globais
             todasFontesAnalise.forEach(item => {
                 const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                 camposObj.forEach(val => {
@@ -760,15 +713,55 @@
                     contagemObj2++;
                 }
             });
-
-            // Calcular percentagens
-            const percentagemMeta2 = totalAlunosGeral > 0 ? Math.round((alunosBomMuitoBomGeral / totalAlunosGeral) * 100) : 0;
-            const percentagemMeta3 = totalAlunosMatematica > 0 ? Math.round((alunosBomMuitoBomMatematica / totalAlunosMatematica) * 100) : 0;
-
-            // Renderizar gráficos para Objetivo 2, Meta 2 e Meta 3
             renderizarProgressoGantt('chartGanttObj2', 'Objetivo 2', contagemObj2, 6);
-            renderizarProgressoPorcentagemGantt('chartGanttMeta2', 'Meta 2 (Geral)', percentagemMeta2, 75);
-            renderizarProgressoPorcentagemGantt('chartGanttMeta3', 'Meta 3 (Matemática)', percentagemMeta3, 75);
+
+            // Cálculo das Médias das Percentagens (Meta 2 - Português | Meta 3 - Matemática)
+            const turmasLista = JSON.parse(localStorage.getItem('turmas')) || [];
+            
+            let somaPercentagensPort = 0;
+            let somaPercentagensMat = 0;
+            let countTurmasPort = 0;
+            let countTurmasMat = 0;
+
+            turmasLista.forEach(turma => {
+                // Português (Meta 2)
+                let valPort = turma.portugues || turma.porcentagemPortugues || turma.percPort || turma.portuguesBomMBom;
+                if (valPort !== undefined && valPort !== null && !isNaN(valPort)) {
+                    somaPercentagensPort += parseFloat(valPort);
+                    countTurmasPort++;
+                } else if (turma.alunos && Array.isArray(turma.alunos) && turma.alunos.length > 0) {
+                    let alunosBomMBomPort = 0;
+                    turma.alunos.forEach(aluno => {
+                        let m = String(aluno.portugues || aluno.mencaoPort || aluno.mencaoPortugues || '').toLowerCase();
+                        if (m.includes('bom') || m.includes('muito bom')) alunosBomMBomPort++;
+                    });
+                    let perc = (alunosBomMBomPort / turma.alunos.length) * 100;
+                    somaPercentagensPort += perc;
+                    countTurmasPort++;
+                }
+
+                // Matemática (Meta 3)
+                let valMat = turma.matematica || turma.porcentagemMatematica || turma.percMat || turma.matematicaBomMBom;
+                if (valMat !== undefined && valMat !== null && !isNaN(valMat)) {
+                    somaPercentagensMat += parseFloat(valMat);
+                    countTurmasMat++;
+                } else if (turma.alunos && Array.isArray(turma.alunos) && turma.alunos.length > 0) {
+                    let alunosBomMBomMat = 0;
+                    turma.alunos.forEach(aluno => {
+                        let m = String(aluno.matematica || aluno.mencaoMat || aluno.mencaoMatematica || '').toLowerCase();
+                        if (m.includes('bom') || m.includes('muito bom')) alunosBomMBomMat++;
+                    });
+                    let perc = (alunosBomMBomMat / turma.alunos.length) * 100;
+                    somaPercentagensMat += perc;
+                    countTurmasMat++;
+                }
+            });
+
+            const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
+            const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
+
+            renderizarProgressoMetaGantt('chartGanttMeta2', 'Meta 2 (Português)', mediaMeta2, 75);
+            renderizarProgressoMetaGantt('chartGanttMeta3', 'Meta 3 (Matemática)', mediaMeta3, 75);
 
             // ==========================================
             // Restantes Gráficos
@@ -859,7 +852,6 @@
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
-            requisicoesLista.exports = requisicoesLista || [];
             requisicoesLista.forEach(req => {
                 const area = req.area || 'Outras';
                 const equipamento = req.equipamento || 'Outro';
