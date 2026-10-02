@@ -207,7 +207,7 @@
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
         .required { color: #dc2626; }
 
-        input[type="text"], select, textarea {
+        input[type="text"], input[type="number"], select, textarea {
             width: 100%;
             padding: 10px 14px;
             border: 1px solid #d1d5db;
@@ -277,7 +277,6 @@
             </div>
             <div class="header-actions">
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
-                <!-- Alterado para invocar diretamente a função unificada de Criar/Avaliar -->
                 <button type="button" class="btn-top-action" style="background-color: var(--color-accent);" onclick="abrirModalAvaliacao(null, 'criar')">⭐ Avaliar Atividade</button>
             </div>
         </div>
@@ -305,12 +304,18 @@
                 <input type="hidden" id="editAvaliacaoId">
                 
                 <div class="form-group">
-                    <label>Selecione a Atividade <span class="required" id="reqSelectAtividade">*</span></label>
-                    <select id="modalAvSelectAtividade">
-                        <option value="">Selecione uma atividade disponível</option>
-                    </select>
-                    <!-- Campo de leitura usado quando está em modo ver/editar registo existente -->
-                    <input type="text" id="modalAvTituloAtividadeReadonly" readonly style="display: none; margin-top: 5px;">
+                    <label>Nº da Atividade <span class="required">*</span></label>
+                    <input type="number" id="modalAvNumeroAtividade" placeholder="Ex: 1, 2, 3..." required oninput="preencherDadosAtividadePorNumero(this.value)">
+                </div>
+
+                <div class="form-group">
+                    <label>Nome da Atividade</label>
+                    <input type="text" id="modalAvNomeAtividade" readonly placeholder="Preenchido automaticamente pelo número">
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Atividade</label>
+                    <input type="text" id="modalAvTipoAtividade" readonly placeholder="Preenchido automaticamente pelo número">
                 </div>
 
                 <div class="form-group">
@@ -392,19 +397,21 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        function popularSelectAtividades(selecionadoId = '') {
-            const select = document.getElementById('modalAvSelectAtividade');
+        // Função para preencher automaticamente os campos com base no número inserido
+        function preencherDadosAtividadePorNumero(numero) {
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            select.innerHTML = '<option value="">Selecione uma atividade disponível</option>';
-            atividades.forEach(att => {
-                const opt = document.createElement('option');
-                opt.value = att.id || att.numero;
-                opt.textContent = `[Nº ${att.numero || att.id}] ${att.titulo || att.nome || 'Atividade'}`;
-                if (selecionadoId && (att.id == selecionadoId || att.numero == selecionadoId)) {
-                    opt.selected = true;
+            const attEncontrada = atividades.find(a => a.numero == numero || a.id == numero);
+
+            if (attEncontrada) {
+                document.getElementById('modalAvNomeAtividade').value = attEncontrada.titulo || attEncontrada.nome || '';
+                document.getElementById('modalAvTipoAtividade').value = attEncontrada.tipo || attEncontrada.tipoAtividade || '';
+                if (attEncontrada.anoLetivo) {
+                    document.getElementById('modalAvAnoLetivo').value = attEncontrada.anoLetivo;
                 }
-                select.appendChild(opt);
-            });
+            } else {
+                document.getElementById('modalAvNomeAtividade').value = '';
+                document.getElementById('modalAvTipoAtividade').value = '';
+            }
         }
 
         function carregarAvaliacoes() {
@@ -431,7 +438,7 @@
                 );
 
                 const numAtividade = av.numeroAtividade || (atividadeCorrespondente ? (atividadeCorrespondente.numero || atividadeCorrespondente.id) : '-');
-                const tituloAtividade = atividadeCorrespondente ? atividadeCorrespondente.titulo : (av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade Avaliada');
+                const tituloAtividade = av.tituloAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade Avaliada');
                 const criador = av.avaliadorNome || av.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : 'Desconhecido');
 
                 const tr = document.createElement('tr');
@@ -456,20 +463,15 @@
             
             const inputs = document.querySelectorAll('#avaliacaoFormModal input:not([type="hidden"]), #avaliacaoFormModal select, #avaliacaoFormModal textarea');
             const saveBtn = document.getElementById('modalAvSaveBtn');
-            const selectAtividadeEl = document.getElementById('modalAvSelectAtividade');
-            const readOnlyAtividadeEl = document.getElementById('modalAvTituloAtividadeReadonly');
 
             if (modo === 'criar') {
                 document.getElementById('modalAvaliacaoTitle').innerText = 'Criar Nova Avaliação';
                 document.getElementById('editAvaliacaoId').value = '';
                 document.getElementById('avaliacaoFormModal').reset();
                 
-                popularSelectAtividades();
-                selectAtividadeEl.style.display = 'block';
-                selectAtividadeEl.required = true;
-                readOnlyAtividadeEl.style.display = 'none';
-
                 inputs.forEach(el => el.disabled = false);
+                document.getElementById('modalAvNomeAtividade').readOnly = true;
+                document.getElementById('modalAvTipoAtividade').readOnly = true;
                 document.getElementById('modalAvAnoLetivo').value = '2025/2026';
                 saveBtn.style.display = 'inline-block';
             } else {
@@ -477,6 +479,10 @@
                 if (!av) return;
 
                 document.getElementById('editAvaliacaoId').value = id;
+                const numAtt = av.numeroAtividade || av.atividadeId || '';
+                document.getElementById('modalAvNumeroAtividade').value = numAtt;
+                preencherDadosAtividadePorNumero(numAtt);
+
                 document.getElementById('modalAvAnoLetivo').value = av.anoLetivo || '2025/2026';
                 document.getElementById('modalAvDocenteAluno').value = av.docenteAluno || av.avaliadorTipo || '';
                 document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
@@ -484,26 +490,15 @@
                 document.getElementById('modalAvInteresse').value = av.interesse || '';
                 document.getElementById('modalAvComentario').value = av.comentario || av.sugestoes || '';
 
-                const atividadeIdVinculada = av.atividadeId || av.numeroAtividade || '';
-                const tituloVinculado = av.tituloAtividade || av.atividadeNome || av.titulo || 'Atividade';
-
                 if (modo === 'ver') {
                     document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
-                    selectAtividadeEl.style.display = 'none';
-                    selectAtividadeEl.required = false;
-                    readOnlyAtividadeEl.style.display = 'block';
-                    readOnlyAtividadeEl.value = `[Nº ${atividadeIdVinculada}] ${tituloVinculado}`;
-
                     inputs.forEach(el => el.disabled = true);
                     saveBtn.style.display = 'none';
                 } else {
                     document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
-                    popularSelectAtividades(atividadeIdVinculada);
-                    selectAtividadeEl.style.display = 'block';
-                    selectAtividadeEl.required = true;
-                    readOnlyAtividadeEl.style.display = 'none';
-
                     inputs.forEach(el => el.disabled = false);
+                    document.getElementById('modalAvNomeAtividade').readOnly = true;
+                    document.getElementById('modalAvTipoAtividade').readOnly = true;
                     saveBtn.style.display = 'inline-block';
                 }
             }
@@ -520,9 +515,9 @@
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             let avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
             
-            const atividadeIdSelecionada = document.getElementById('modalAvSelectAtividade').value;
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const attEncontrada = atividades.find(a => a.id == atividadeIdSelecionada || a.numero == atividadeIdSelecionada);
+            const numeroAtividade = document.getElementById('modalAvNumeroAtividade').value;
+            const nomeAtividade = document.getElementById('modalAvNomeAtividade').value;
+            const tipoAtividade = document.getElementById('modalAvTipoAtividade').value;
 
             if (id === '' || id === null) {
                 // Criar Novo Registo
@@ -530,9 +525,9 @@
                     id: Date.now(),
                     criadorId: currentUser.id,
                     avaliadorNome: currentUser.name || currentUser.email,
-                    atividadeId: atividadeIdSelecionada,
-                    numeroAtividade: attEncontrada ? (attEncontrada.numero || attEncontrada.id) : atividadeIdSelecionada,
-                    tituloAtividade: attEncontrada ? attEncontrada.titulo : 'Atividade',
+                    numeroAtividade: numeroAtividade,
+                    tituloAtividade: nomeAtividade || 'Atividade',
+                    tipoAtividade: tipoAtividade,
                     anoLetivo: document.getElementById('modalAvAnoLetivo').value,
                     docenteAluno: document.getElementById('modalAvDocenteAluno').value,
                     pertinencia: document.getElementById('modalAvPertinencia').value,
@@ -545,11 +540,9 @@
                 // Atualizar Registo Existente
                 let av = avaliadas.find((a, idx) => a.id == id || idx == id);
                 if (av) {
-                    av.atividadeId = atividadeIdSelecionada;
-                    if (attEncontrada) {
-                        av.numeroAtividade = attEncontrada.numero || attEncontrada.id;
-                        av.tituloAtividade = attEncontrada.titulo;
-                    }
+                    av.numeroAtividade = numeroAtividade;
+                    av.tituloAtividade = nomeAtividade || av.tituloAtividade;
+                    av.tipoAtividade = tipoAtividade || av.tipoAtividade;
                     av.anoLetivo = document.getElementById('modalAvAnoLetivo').value;
                     av.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
                     av.pertinencia = document.getElementById('modalAvPertinencia').value;
