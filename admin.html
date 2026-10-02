@@ -440,7 +440,10 @@
                 window.location.href = 'dashboard.html';
             });
         } else {
-            document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
+            // Obter o nome e isolar apenas o primeiro nome (se não for Administrador)
+            let nomeCompleto = currentUser.name || currentUser.nome || 'Administrador';
+            let primeiroNome = nomeCompleto === 'Administrador' ? 'Administrador' : nomeCompleto.split(' ')[0];
+            document.getElementById('userNameDisplay').innerText = primeiroNome;
         }
 
         // --- SISTEMA DE POPUPS PERSONALIZADOS ---
@@ -592,7 +595,6 @@
                 () => {
                     let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
                     
-                    // Identificar o número/ID exato da atividade a remover
                     const atvAlvo = atividades[index];
                     if (!atvAlvo) return;
                     
@@ -612,9 +614,9 @@
                         let listaAv = JSON.parse(localStorage.getItem(chaveStorage)) || [];
                         listaAv = listaAv.filter(item => {
                             const idAv = item.idAtividade !== undefined ? item.idAtividade :
-                                         (item.numeroAtividade !== undefined ? item.numeroAtividade :
-                                         (item.atividadeId !== undefined ? item.atividadeId :
-                                         (item.numero !== undefined ? item.numero : item.id)));
+                                                   (item.numeroAtividade !== undefined ? item.numeroAtividade :
+                                                   (item.atividadeId !== undefined ? item.atividadeId :
+                                                   (item.numero !== undefined ? item.numero : item.id)));
                             return !numerosPossiveisAlvo.includes(idAv);
                         });
                         localStorage.setItem(chaveStorage, JSON.stringify(listaAv));
@@ -624,9 +626,9 @@
                     let objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
                     objetivosLista = objetivosLista.filter(item => {
                         const idObj = item.numero !== undefined ? item.numero : 
-                                      (item.id !== undefined ? item.id : 
-                                      (item.numeroAtividade !== undefined ? item.numeroAtividade : 
-                                      (item.atividadeId !== undefined ? item.atividadeId : null)));
+                                                (item.id !== undefined ? item.id : 
+                                                (item.numeroAtividade !== undefined ? item.numeroAtividade : 
+                                                (item.atividadeId !== undefined ? item.atividadeId : null)));
                         return !numerosPossiveisAlvo.includes(idObj);
                     });
                     localStorage.setItem('registosObjetivosAtividades', JSON.stringify(objetivosLista));
