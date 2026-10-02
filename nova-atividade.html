@@ -184,7 +184,7 @@
         .btn-delete { background-color: #dc2626; color: white; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
-        /* Estilos do Formulário (na mesma página) */
+        /* Estilos do Formulário */
         .form-card { padding: 30px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
@@ -232,6 +232,8 @@
             border: none;
             cursor: pointer;
             font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
         }
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-modal-cancel:hover { background-color: #cbd5e1; }
@@ -268,7 +270,7 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <a href="menu.html" class="btn-voltar-menu">⬅️ Voltar ao Menu</a>
+            <a href="dashboard.html" class="btn-voltar-menu">⬅️ Voltar ao Menu</a>
         </div>
     </nav>
 
@@ -282,7 +284,7 @@
                     <p>Consulta e gestão de todas as atividades criadas no sistema.</p>
                 </div>
                 <div class="header-actions">
-                    <a href="menu.html" class="btn-top-action">⬅️ Voltar</a>
+                    <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
                     <button type="button" class="btn-top-action btn-top-primary" onclick="mudarParaFormulario('criar')">➕ Criar Nova Atividade</button>
                 </div>
             </div>
@@ -335,7 +337,7 @@
                         </select>
                     </div>
                     <div class="form-buttons">
-                        <button type="button" class="btn-modal btn-modal-cancel" onclick="mudarParaListagem()">Voltar</button>
+                        <a href="atividades.html" class="btn-modal btn-modal-cancel">Voltar</a>
                         <button type="submit" id="modalSaveBtn" class="btn-modal btn-top-primary">Guardar</button>
                     </div>
                 </form>
@@ -476,7 +478,7 @@
             }
 
             localStorage.setItem('atividades', JSON.stringify(listaAtividades));
-            mudarParaListagem();
+            window.location.href = 'atividades.html';
         }
 
         let idParaApagar = null;
