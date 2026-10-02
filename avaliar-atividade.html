@@ -299,7 +299,7 @@
             </table>
         </div>
 
-        <!-- Formulário Integrado (Substitui o Modal Antigo) -->
+        <!-- Formulário Integrado -->
         <div id="avaliacaoFormCard" class="form-card">
             <h2 id="formAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0; margin-bottom: 20px;">Avaliar Atividade</h2>
             <form id="avaliacaoFormElement" onsubmit="salvarFormularioAvaliacao(event)">
@@ -482,7 +482,6 @@
             const inputs = document.querySelectorAll('#avaliacaoFormElement input:not([type="hidden"]), #avaliacaoFormElement select, #avaliacaoFormElement textarea');
             const saveBtn = document.getElementById('modalAvSaveBtn');
 
-            // Esconder listagem e cabeçalho da tabela, mostrar formulário
             document.getElementById('listHeaderCard').style.display = 'none';
             document.getElementById('listTableCard').style.display = 'none';
             document.getElementById('avaliacaoFormCard').style.display = 'block';
@@ -583,7 +582,6 @@
             carregarAvaliacoes();
             fecharFormularioAvaliacao();
 
-            // Mostrar popup de sucesso ao gravar
             document.getElementById('successPopupText').innerText = mensagemSucesso;
             document.getElementById('successPopupModal').style.display = 'flex';
         }
