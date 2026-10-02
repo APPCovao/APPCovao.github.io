@@ -75,7 +75,6 @@
             padding: 0 20px;
         }
 
-        /* Secções (Alternam entre Listagem e Formulário) */
         .view-section { display: none; }
         .view-section.active { display: block; }
 
@@ -184,7 +183,6 @@
         .btn-delete { background-color: #dc2626; color: white; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
-        /* Estilos do Formulário */
         .form-card { padding: 30px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
@@ -238,7 +236,7 @@
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-modal-cancel:hover { background-color: #cbd5e1; }
 
-        /* Modal de Confirmação de Apagar */
+        /* Modal de Confirmação e Alertas */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -304,7 +302,7 @@
             </div>
         </div>
 
-        <!-- SECÇÃO 2: FORMULÁRIO (DENTRO DA MESMA PÁGINA) -->
+        <!-- SECÇÃO 2: FORMULÁRIO -->
         <div id="seccaoFormulario" class="view-section">
             <div class="form-card">
                 <h2 id="modalTitle" style="color: var(--primary-green); margin-top: 0; margin-bottom: 20px;">Detalhes da Atividade</h2>
@@ -337,7 +335,7 @@
                         </select>
                     </div>
                     <div class="form-buttons">
-                        <a href="nova-atividade.html" class="btn-modal btn-modal-cancel">Fechar</a>
+                        <a href="atividades.html" class="btn-modal btn-modal-cancel">Fechar</a>
                         <button type="submit" id="modalSaveBtn" class="btn-modal btn-top-primary">Guardar</button>
                     </div>
                 </form>
@@ -359,6 +357,16 @@
         </div>
     </div>
 
+    <!-- Novo Modal / Popup Personalizado de Sucesso -->
+    <div id="successModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--primary-green);">✅</div>
+            <h3 style="color: var(--primary-green); margin-bottom: 0.5rem; margin-top: 0;">Sucesso!</h3>
+            <p id="successModalText" style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Registo guardado com sucesso.</p>
+            <button type="button" class="btn-modal btn-top-primary" onclick="fecharSucessoEContinuar()">OK</button>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -373,7 +381,6 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        // Funções para alternar entre as secções na mesma página
         function mudarParaListagem() {
             document.getElementById('seccaoFormulario').classList.remove('active');
             document.getElementById('seccaoListagem').classList.add('active');
@@ -453,6 +460,7 @@
             e.preventDefault();
             const idEdit = document.getElementById('editAtividadeId').value;
             let listaAtividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            let mensagemPopup = '';
 
             if (idEdit === '' || idEdit === null) {
                 const novoId = Date.now();
@@ -468,16 +476,26 @@
                     criadorNome: currentUser.name || currentUser.email
                 };
                 listaAtividades.push(novaAtiv);
+                mensagemPopup = `A atividade nº ${proximoNum} foi criada com sucesso!`;
             } else {
                 let ativ = listaAtividades.find(a => a.id == idEdit);
                 if (ativ) {
                     ativ.titulo = document.getElementById('modalNomeAtividade').value;
                     ativ.anoLetivo = document.getElementById('modalAnoLetivo').value;
                     ativ.tipo = document.getElementById('modalTipoAtividade').value;
+                    mensagemPopup = `A atividade nº ${ativ.numero || ativ.id} foi atualizada com sucesso!`;
                 }
             }
 
             localStorage.setItem('atividades', JSON.stringify(listaAtividades));
+            
+            // Mostrar o popup personalizado em vez de redirecionar de imediato
+            document.getElementById('successModalText').innerText = mensagemPopup;
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        function fecharSucessoEContinuar() {
+            document.getElementById('successModal').style.display = 'none';
             window.location.href = 'atividades.html';
         }
 
