@@ -549,7 +549,7 @@
 
             if (avaliacoesDaAtividade.length === 0) {
                 document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
-                document.getElementById('modalObjSugestoes').value = '- Sem sugestão recolhida.';
+                document.getElementById('modalObjSugestoes').value = '- Sem sugestão recolhida;';
                 return;
             }
 
@@ -573,7 +573,7 @@
 
                 const sug = av.comentario || av.sugestoes || av.sugestao || av.comentarios;
                 if (sug && String(sug).trim() !== '') {
-                    listaSugestoes.push(`- ${String(sug).trim()}`);
+                    listaSugestoes.push(`-${String(sug).trim()};`);
                 }
             });
 
@@ -588,9 +588,9 @@
             }
 
             if (listaSugestoes.length > 0) {
-                document.getElementById('modalObjSugestoes').value = listaSugestoes.join('\n');
+                document.getElementById('modalObjSugestoes').value = listaSugestoes.join(' ');
             } else {
-                document.getElementById('modalObjSugestoes').value = '- Sem sugestões registadas pelos avaliadores.';
+                document.getElementById('modalObjSugestoes').value = '- Sem sugestões registadas pelos avaliadores;';
             }
         }
 
