@@ -370,7 +370,7 @@
             <div class="stats-grid-2">
                 <div class="stat-main-card alt4">
                     <div>
-                        <h3>PAA (Sim - Objetivos)</h3>
+                        <h3>PAA</h3>
                         <p id="statPaa" class="stat-value">0</p>
                     </div>
                     <div class="stat-icon">📅</div>
@@ -378,7 +378,7 @@
 
                 <div class="stat-main-card alt5">
                     <div>
-                        <h3>PEE (Sim - Objetivos)</h3>
+                        <h3>PEE</h3>
                         <p id="statPee" class="stat-value">0</p>
                     </div>
                     <div class="stat-icon">🏫</div>
@@ -506,12 +506,12 @@
             let contadorPeeObjetivos = 0;
 
             objetivosLista.forEach(obj => {
-                const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || '';
+                const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
                 if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                     contadorPaaObjetivos++;
                 }
 
-                const valPee = obj.pee || obj.fazPartePee || obj.noPee || obj.integraPee || '';
+                const valPee = obj.pee || obj.fazPartePee || obj.noPee || obj.integraPee || obj.integraPEE || '';
                 if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
                     contadorPeeObjetivos++;
                 }
