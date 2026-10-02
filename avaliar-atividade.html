@@ -266,8 +266,8 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅️ Menu</a>
+            <span><strong id="userNameSpan">Utilizador</strong></span>
+            <a href="atividades.html" class="btn-voltar-menu">⬅️️ Menu</a>
         </div>
     </nav>
 
@@ -409,7 +409,9 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
+            const fullName = currentUser.name || currentUser.email || 'Utilizador';
+            const firstName = fullName.trim().split(' ')[0];
+            document.getElementById('userNameSpan').innerText = firstName;
         }
 
         function isAdminUser(user) {
