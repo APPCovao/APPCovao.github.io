@@ -234,12 +234,6 @@
         .report-box h4 {
             color: var(--primary-green);
             font-size: 16px;
-            margin: 0 0 4px 0;
-        }
-
-        .report-box p {
-            color: #4b5563;
-            font-size: 12px;
             margin: 0 0 15px 0;
         }
 
@@ -298,7 +292,6 @@
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
-            <!-- Removida a palavra "Olá" do HTML -->
             <span><strong id="userNameDisplay">Administrador Covão</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
@@ -384,14 +377,12 @@
             
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="report-box">
-                    <h4>Progresso - Objetivo 1</h4>
-                    <p>Progresso baseado nas ocorrências (Meta: 6 registos = 100%).</p>
+                    <h4>Objetivo 1</h4>
                     <div id="chartGanttObj1" class="chart-container"></div>
                 </div>
 
                 <div class="report-box">
-                    <h4>Progresso - Meta 1</h4>
-                    <p>Progresso baseado nas ocorrências (Meta: 6 registos = 100%).</p>
+                    <h4>Meta 1</h4>
                     <div id="chartGanttMeta1" class="chart-container"></div>
                 </div>
             </div>
@@ -492,7 +483,6 @@
     </div>
 
     <script>
-        // Lógica do primeiro nome aplicada
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
         const firstName = fullName.trim().split(' ')[0];
@@ -529,13 +519,11 @@
             });
         }
 
-        // Função específica para a nova secção de progresso (Gantt/Percentagem até 100% com limite de 6)
         function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
             const limiteMeta = 6;
-            // Limita a contagem a um máximo de 6 para efeitos visuais/percentagem (não ultrapassa 100%)
             const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
             const percentagem = Math.round((quantidadeEfetiva / limiteMeta) * 100);
 
@@ -602,7 +590,6 @@
             );
             document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
 
-            // Suporta dados de objetivos e procura também no "restar_objetivos.html" (armazenado em localStorage 'registosObjetivosAtividades' ou 'restar_objetivos')
             const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || JSON.parse(localStorage.getItem('restar_objetivos')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
@@ -624,14 +611,12 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-            // Lógica para calcular contagens do Objetivo 1 e Meta 1 (verificando tanto em localStorage geral como no restar_objetivos)
             let contagemObj1 = 0;
             let contagemMeta1 = 0;
 
             const todasFontesAnalise = [...objetivosLista, ...atividadesLista, ...(JSON.parse(localStorage.getItem('restar_objetivos')) || [])];
 
             todasFontesAnalise.forEach(item => {
-                // Verificar Objetivo 1
                 const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                 camposObj.forEach(val => {
                     if (Array.isArray(val)) {
@@ -651,7 +636,6 @@
                     contagemObj1++;
                 }
 
-                // Verificar Meta 1
                 const camposMeta = [item.metas, item.meta, item.metasSelecionadas];
                 camposMeta.forEach(val => {
                     if (Array.isArray(val)) {
@@ -672,7 +656,6 @@
                 }
             });
 
-            // Renderizar na nova 3ª secção os gráficos de progresso tipo Gantt
             renderizarProgressoGantt('chartGanttObj1', 'Objetivo 1', contagemObj1);
             renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1);
 
