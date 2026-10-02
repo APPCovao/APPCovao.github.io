@@ -3,56 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Registos App</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Painel Admin - Registos Covão</title>
     <style>
-        .btn-action {
-            padding: 0.3rem 0.6rem;
+        :root {
+            --primary-green: #15803d;
+            --primary-green-hover: #166534;
+            --bg-page: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-light: #4b5563;
+            --border-color: #bbf7d0;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #14532d;
+            padding: 0.8rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .navbar .brand img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
             border-radius: 4px;
+        }
+
+        .navbar .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .navbar .nav-right span {
+            color: #dcfce7;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
             border: none;
-            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-header-card h1 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin: 0 0 6px 0;
+        }
+
+        .section-header-card p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .btn-top-action {
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-top-action:hover {
+            background-color: #0f172a;
+        }
+
+        .theme-section {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .theme-section h2 {
+            color: var(--primary-green);
+            font-size: 20px;
+            margin: 0 0 4px 0;
+            border-bottom: 2px solid #f0fdf4;
+            padding-bottom: 10px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 12px 16px;
+            background-color: #f8fafc;
+            color: var(--primary-green);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
             cursor: pointer;
             font-weight: 600;
+            transition: background 0.2s;
         }
+
         .btn-toggle {
-            background-color: #f1f5f9;
-            color: var(--color-primary, #0f766e);
-            margin-right: 0.5rem;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            margin-right: 8px;
         }
-        .btn-toggle:hover { background-color: #e2e8f0; }
+
+        .btn-toggle:hover {
+            background-color: #bae6fd;
+        }
+
         .btn-delete {
             background-color: #fee2e2;
-            color: #ef4444;
+            color: #dc2626;
         }
-        .btn-delete:hover { background-color: #fecaca; }
+
+        .btn-delete:hover {
+            background-color: #fecaca;
+        }
     </style>
 </head>
 <body>
+
     <nav class="navbar">
-        <div class="logo">⚙️ Painel de Administrador</div>
-        <ul class="nav-links">
-            <li><a href="dashboard.html" style="color: white; text-decoration: none;">Dashboard</a></li>
-        </ul>
-    </nav>
-    <div class="container" style="margin-top: 2rem; max-width: 900px;">
-        <h2>Gestão de Utilizadores e Permissões</h2>
-        <p style="color: var(--text-muted, #64748b); margin-bottom: 1.5rem;">Como administrador, pode eliminar, alterar ou dar permissões de admin.</p>
-        
-        <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #cbd5e1; text-align: left;">
-                        <th style="padding: 0.75rem;">Utilizador</th>
-                        <th style="padding: 0.75rem;">Email</th>
-                        <th style="padding: 0.75rem;">Função</th>
-                        <th style="padding: 0.75rem; text-align: right;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTableBody">
-                    <!-- Preenchido dinamicamente via JS -->
-                </tbody>
-            </table>
+        <div class="brand">
+            <img src="imagens/logo.png" alt="Logo Registos Covão" onerror="this.style.display='none'">
+            <span>Registos Covão</span>
         </div>
+        <div class="nav-right">
+            <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Voltar ao Menu</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        
+        <!-- Cabeçalho Principal -->
+        <div class="section-header-card">
+            <div>
+                <h1>Gestão de Utilizadores e Permissões</h1>
+                <p>Como administrador, pode eliminar, alterar ou dar permissões de admin.</p>
+            </div>
+            <div>
+                <a href="dashboard.html" class="btn-top-action">← Voltar</a>
+            </div>
+        </div>
+
+        <!-- Secção da Tabela de Utilizadores -->
+        <div class="theme-section">
+            <h2>Lista de Utilizadores Registados</h2>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Utilizador</th>
+                            <th>Email</th>
+                            <th>Função</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Preenchido dinamicamente via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <script src="js/auth.js"></script>
@@ -62,6 +264,8 @@
         if(!currentUser || !currentUser.isAdmin) {
             alert('Acesso restrito a administradores!');
             window.location.href = 'dashboard.html';
+        } else {
+            document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
         }
 
         // Função para carregar e desenhar os utilizadores na tabela
@@ -79,15 +283,14 @@
 
             users.forEach((u, index) => {
                 const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #f1f5f9';
 
-                const isAdm = u.isAdmin ? '<span style="color: #0f766e; font-weight: bold;">Administrador</span>' : 'Utilizador Padrão';
+                const isAdm = u.isAdmin ? '<span style="color: var(--primary-green); font-weight: bold;">Administrador</span>' : '<span style="color: var(--text-light);">Utilizador Padrão</span>';
 
                 tr.innerHTML = `
-                    <td style="padding: 0.75rem;">${u.name || u.nome || 'Sem Nome'}</td>
-                    <td style="padding: 0.75rem; color: #64748b;">${u.email}</td>
-                    <td style="padding: 0.75rem;">${isAdm}</td>
-                    <td style="padding: 0.75rem; text-align: right;">
+                    <td>${u.name || u.nome || 'Sem Nome'}</td>
+                    <td style="color: var(--text-light);">${u.email}</td>
+                    <td>${isAdm}</td>
+                    <td style="text-align: right;">
                         <button class="btn-action btn-toggle" onclick="alternarAdmin(${index})">
                             ${u.isAdmin ? 'Remover Admin' : 'Tornar Admin'}
                         </button>
