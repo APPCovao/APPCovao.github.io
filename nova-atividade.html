@@ -236,7 +236,7 @@
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-modal-cancel:hover { background-color: #cbd5e1; }
 
-        /* Modal de Confirmação e Alertas */
+        /* Modais Overlay */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -357,13 +357,13 @@
         </div>
     </div>
 
-    <!-- Novo Modal / Popup Personalizado de Sucesso -->
+    <!-- Popup Personalizado de Sucesso com botão para nova-atividade.html -->
     <div id="successModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--primary-green);">✅</div>
-            <h3 style="color: var(--primary-green); margin-bottom: 0.5rem; margin-top: 0;">Sucesso!</h3>
-            <p id="successModalText" style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Registo guardado com sucesso.</p>
-            <button type="button" class="btn-modal btn-top-primary" onclick="fecharSucessoEContinuar()">OK</button>
+            <h3 style="color: var(--primary-green); margin-bottom: 0.5rem; margin-top: 0;">Registo Guardado!</h3>
+            <p id="successModalText" style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">A atividade foi guardada com sucesso.</p>
+            <a href="nova-atividade.html" class="btn-modal btn-top-primary" style="text-decoration: none; display: inline-block;">Voltar para nova-atividade.html</a>
         </div>
     </div>
 
@@ -489,14 +489,9 @@
 
             localStorage.setItem('atividades', JSON.stringify(listaAtividades));
             
-            // Mostrar o popup personalizado em vez de redirecionar de imediato
+            // Força a exibição correta do popup com flex
             document.getElementById('successModalText').innerText = mensagemPopup;
             document.getElementById('successModal').style.display = 'flex';
-        }
-
-        function fecharSucessoEContinuar() {
-            document.getElementById('successModal').style.display = 'none';
-            window.location.href = 'atividades.html';
         }
 
         let idParaApagar = null;
