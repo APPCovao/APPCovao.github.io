@@ -203,6 +203,10 @@
             background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
         }
 
+        .stat-main-card.alt6 {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        }
+
         .stat-main-card h3 {
             margin: 0 0 6px 0;
             font-size: 14px;
@@ -215,6 +219,7 @@
         .stat-main-card.alt3 h3 { color: #ede9fe; }
         .stat-main-card.alt4 h3 { color: #ffedd5; }
         .stat-main-card.alt5 h3 { color: #fef3c7; }
+        .stat-main-card.alt6 h3 { color: #f1f5f9; }
 
         .stat-main-card .stat-value {
             font-size: 30px;
@@ -229,7 +234,7 @@
             border-radius: 10px;
         }
 
-        /* Grelha de Gráficos (Requisições) */
+        /* Grelha de Gráficos */
         .reports-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -391,9 +396,34 @@
             </div>
         </div>
 
-        <!-- 3º Título: Requisições -->
+        <!-- 3º Título: Tipo de Atividade -->
         <div class="theme-section">
-            <h2>3. Requisições</h2>
+            <h2>3. Tipo de Atividade</h2>
+            <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
+            
+            <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 20px;">
+                <div class="stat-main-card alt6">
+                    <div>
+                        <h3>Total de Tipos / Tipologias</h3>
+                        <p id="statTotalTipos" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🏷️</div>
+                </div>
+            </div>
+
+            <div class="reports-grid" style="grid-template-columns: 1fr;">
+                <!-- Gráfico / Distribuição por Tipo de Atividade -->
+                <div class="report-box">
+                    <h4>Distribuição por Tipo de Atividade</h4>
+                    <p>Contagem de atividades agrupadas por categoria/tipo.</p>
+                    <div id="chartTiposAtividade" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4º Título: Requisições -->
+        <div class="theme-section">
+            <h2>4. Requisições</h2>
             <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
             
             <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 20px;">
@@ -482,7 +512,7 @@
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
             document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
 
-            // 3. Atividades Avaliadas (Conta IDs/números únicos de atividades presentes nas avaliações)
+            // 3. Atividades Avaliadas
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
                             (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
             const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
@@ -520,7 +550,27 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-            // 6. Contagens para os Gráficos de Requisições
+            // 6. Contagem de Tipos de Atividade (Procura em 'atividades' ou 'registosObjetivosAtividades' pela propriedade tipo / tipoAtividade)
+            let contagemTipos = {};
+            atividadesLista.forEach(atv => {
+                const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
+                contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
+            });
+
+            // Se não encontrar nas atividades, tenta procurar nos objetivos
+            if (Object.keys(contagemTipos).length === 0 || (Object.keys(contagemTipos).length === 1 && contagemTipos['Não Especificado'])) {
+                objetivosLista.forEach(obj => {
+                    const tipo = obj.tipo || obj.tipoAtividade || obj.categoria || '';
+                    if (tipo) {
+                        contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
+                    }
+                });
+            }
+
+            document.getElementById('statTotalTipos').innerText = Object.keys(contagemTipos).length;
+            renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
+
+            // 7. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
