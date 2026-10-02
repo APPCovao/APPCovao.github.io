@@ -183,33 +183,13 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .stat-main-card.alt1 {
-            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-        }
-
-        .stat-main-card.alt2 {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-        }
-
-        .stat-main-card.alt3 {
-            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-        }
-
-        .stat-main-card.alt4 {
-            background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
-        }
-
-        .stat-main-card.alt5 {
-            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
-        }
-
-        .stat-main-card.alt6 {
-            background: linear-gradient(135deg, #475569 0%, #334155 100%);
-        }
-
-        .stat-main-card.alt7 {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
+        .stat-main-card.alt1 { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); }
+        .stat-main-card.alt2 { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+        .stat-main-card.alt3 { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+        .stat-main-card.alt4 { background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%); }
+        .stat-main-card.alt5 { background: linear-gradient(135deg, #b45309 0%, #92400e 100%); }
+        .stat-main-card.alt6 { background: linear-gradient(135deg, #475569 0%, #334155 100%); }
+        .stat-main-card.alt7 { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
 
         .stat-main-card h3 {
             margin: 0 0 6px 0;
@@ -301,7 +281,6 @@
             transition: width 0.6s ease;
         }
 
-        /* Espaço reservado para futuros gráficos PAA/PEE */
         .future-charts-placeholder {
             margin-top: 20px;
             border: 2px dashed #cbd5e1;
@@ -395,7 +374,6 @@
                 </div>
             </div>
 
-            <!-- Espaço reservado para gráficos futuros do PAA/PEE -->
             <div class="future-charts-placeholder">
                 📊 <em>Espaço reservado para futuros gráficos de PAA e PEE (a implementar em breve).</em>
             </div>
@@ -417,7 +395,6 @@
             </div>
 
             <div class="reports-grid" style="grid-template-columns: 1fr;">
-                <!-- Gráfico / Distribuição por Tipo de Atividade -->
                 <div class="report-box">
                     <h4>Distribuição por Tipo de Atividade</h4>
                     <p>Contagem de atividades agrupadas por categoria/tipo.</p>
@@ -450,14 +427,12 @@
             </div>
 
             <div class="reports-grid">
-                <!-- Gráfico / Objetivos -->
                 <div class="report-box">
                     <h4>Seleção por Objetivo (Checkboxes)</h4>
                     <p>Contagem de ocorrências por cada objetivo selecionado.</p>
                     <div id="chartObjetivos" class="chart-container"></div>
                 </div>
 
-                <!-- Gráfico / Metas -->
                 <div class="report-box">
                     <h4>Seleção por Meta (Checkboxes)</h4>
                     <p>Contagem de ocorrências por cada meta selecionada.</p>
@@ -482,14 +457,12 @@
             </div>
 
             <div class="reports-grid">
-                <!-- Gráfico / Distribuição por Área -->
                 <div class="report-box">
                     <h4>Requisições por Área</h4>
                     <p>Volume de pedidos divididos pelas áreas letivas.</p>
                     <div id="chartAreas" class="chart-container"></div>
                 </div>
 
-                <!-- Gráfico / Distribuição por Equipamento -->
                 <div class="report-box">
                     <h4>Requisições por Equipamento</h4>
                     <p>Materiais e dispositivos mais requisitados.</p>
@@ -535,8 +508,24 @@
             });
         }
 
+        // Função Auxiliar para limpar a descrição e manter apenas o nome curto (ex: "Objetivo 2" em vez de "Objetivo 2: Descrição...")
+        function limparNomeCurto(texto) {
+            if (!texto) return '';
+            let str = String(texto).trim();
+            
+            // Corta se encontrar dois-pontos, travessão ou hífen seguido de descrição
+            if (str.includes(':')) {
+                str = str.split(':')[0].trim();
+            } else if (str.includes(' - ')) {
+                str = str.split(' - ')[0].trim();
+            } else if (str.includes(' – ')) {
+                str = str.split(' – ')[0].trim();
+            }
+            
+            return str;
+        }
+
         function carregarRelatorios() {
-            // 1. Total de Requisições
             const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
             document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
 
@@ -552,12 +541,10 @@
                 return idsUnicos.size;
             }
 
-            // 2. Número de Atividades
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
             const totalAtividadesUnicas = contarUnicos(atividadesLista);
             document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
 
-            // 3. Atividades Avaliadas
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
                             (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
             const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
@@ -572,11 +559,9 @@
             );
             document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
 
-            // 4. Objetivos Registados
             const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
-            // 5. Análise de PAA e PEE ("Sim") dentro dos Objetivos Registados
             let contadorPaaObjetivos = 0;
             let contadorPeeObjetivos = 0;
 
@@ -595,26 +580,16 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-            // 6. Contagem de Tipos de Atividade
             let contagemTipos = {};
             atividadesLista.forEach(atv => {
                 const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
                 contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
             });
 
-            if (Object.keys(contagemTipos).length === 0 || (Object.keys(contagemTipos).length === 1 && contagemTipos['Não Especificado'])) {
-                objetivosLista.forEach(obj => {
-                    const tipo = obj.tipo || obj.tipoAtividade || obj.categoria || '';
-                    if (tipo) {
-                        contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
-                    }
-                });
-            }
-
             document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
             renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
 
-            // 7. Secção 4: Objetivos e Metas (Leitura avançada para Arrays de Checkboxes ou campos diretos)
+            // Secção 4: Objetivos e Metas (Apenas com nome curto)
             let contagemObjetivos = {};
             let contagemMetas = {};
             let totalObjSel = 0;
@@ -623,12 +598,12 @@
             const todasFontes = [...objetivosLista, ...atividadesLista];
 
             todasFontes.forEach(item => {
-                // A) Verificar se existe um campo que guarda um array de objetivos (ex: item.objetivos = ["Objetivo 1", "Objetivo 2"])
+                // A) Arrays ou strings de objetivos
                 const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                 camposObjPossiveis.forEach(val => {
                     if (Array.isArray(val)) {
                         val.forEach(o => {
-                            let nome = String(o).trim();
+                            let nome = limparNomeCurto(o);
                             if (nome) {
                                 contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
                                 totalObjSel++;
@@ -636,7 +611,7 @@
                         });
                     } else if (typeof val === 'string' && val.trim() !== '') {
                         val.split(',').forEach(o => {
-                            let nome = o.trim();
+                            let nome = limparNomeCurto(o);
                             if (nome) {
                                 contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
                                 totalObjSel++;
@@ -645,23 +620,22 @@
                     }
                 });
 
-                // B) Verificar se as checkboxes estão guardadas como propriedades individuais (ex: item.objetivo1 = true, item.obj1 = true)
+                // B) Propriedades individuais booleanas de objetivos (ex: objetivo1, obj2)
                 Object.keys(item).forEach(chave => {
                     const chaveLower = chave.toLowerCase();
                     if ((chaveLower.includes('obj') || chaveLower.includes('objetivo')) && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
-                        // Formata o nome para ficar bonito (ex: objetivo1 -> Objetivo 1)
-                        let nomeFormatado = chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase());
+                        let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
                         contagemObjetivos[nomeFormatado] = (contagemObjetivos[nomeFormatado] || 0) + 1;
                         totalObjSel++;
                     }
                 });
 
-                // C) Verificar se existe um campo que guarda um array de metas (ex: item.metas = ["Meta 1", "Meta 2"])
+                // C) Arrays ou strings de metas
                 const camposMetaPossiveis = [item.metas, item.meta, item.metasSelecionadas];
                 camposMetaPossiveis.forEach(val => {
                     if (Array.isArray(val)) {
                         val.forEach(m => {
-                            let nome = String(m).trim();
+                            let nome = limparNomeCurto(m);
                             if (nome) {
                                 contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
                                 totalMetasSel++;
@@ -669,7 +643,7 @@
                         });
                     } else if (typeof val === 'string' && val.trim() !== '') {
                         val.split(',').forEach(m => {
-                            let nome = m.trim();
+                            let nome = limparNomeCurto(m);
                             if (nome) {
                                 contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
                                 totalMetasSel++;
@@ -678,11 +652,11 @@
                     }
                 });
 
-                // D) Verificar se as metas estão guardadas como propriedades individuais (ex: item.meta1 = true)
+                // D) Propriedades individuais booleanas de metas (ex: meta1)
                 Object.keys(item).forEach(chave => {
                     const chaveLower = chave.toLowerCase();
                     if (chaveLower.includes('meta') && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
-                        let nomeFormatado = chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase());
+                        let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
                         contagemMetas[nomeFormatado] = (contagemMetas[nomeFormatado] || 0) + 1;
                         totalMetasSel++;
                     }
@@ -694,7 +668,7 @@
             renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
             renderizarGraficoBarras('chartMetas', contagemMetas);
 
-            // 8. Contagens para os Gráficos de Requisições
+            // Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
