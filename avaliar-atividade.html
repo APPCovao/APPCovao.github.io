@@ -126,13 +126,16 @@
 
         .btn-top-action:hover { background-color: #0f172a; }
 
-        .table-card {
+        .table-card, .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
+
+        .table-card { overflow-x: auto; }
+        .form-card { padding: 30px; display: none; }
 
         table {
             width: 100%;
@@ -198,13 +201,12 @@
             padding: 30px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 750px;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-width: 450px;
+            text-align: center;
         }
 
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; text-align: left; }
         .required { color: #dc2626; }
 
         input[type="text"], input[type="number"], select, textarea {
@@ -226,8 +228,8 @@
 
         textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
 
-        .custom-modal input:disabled, .custom-modal select:disabled, .custom-modal textarea:disabled,
-        .custom-modal input[readonly] {
+        .form-card input:disabled, .form-card select:disabled, .form-card textarea:disabled,
+        .form-card input[readonly] {
             background-color: #e5e7eb !important;
             color: #1f2937 !important;
             font-weight: 600 !important;
@@ -270,18 +272,20 @@
     </nav>
 
     <div class="main-container">
-        <div class="section-header-card">
+        <!-- Cabeçalho Principal da Listagem -->
+        <div id="listHeaderCard" class="section-header-card">
             <div>
                 <h1>Atividades Avaliadas</h1>
                 <p>Consulta e gestão de todas as avaliações efetuadas.</p>
             </div>
             <div class="header-actions">
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
-                <button type="button" class="btn-top-action" style="background-color: var(--color-accent);" onclick="abrirModalAvaliacao(null, 'criar')">⭐ Avaliar Atividade</button>
+                <button type="button" class="btn-top-action" style="background-color: var(--color-accent);" onclick="mostrarFormularioAvaliacao(null, 'criar')">⭐ Avaliar Atividade</button>
             </div>
         </div>
 
-        <div class="table-card">
+        <!-- Tabela de Listagem -->
+        <div id="listTableCard" class="table-card">
             <table>
                 <thead>
                     <tr>
@@ -294,13 +298,11 @@
                 <tbody id="avaliadasTableBody"></tbody>
             </table>
         </div>
-    </div>
 
-    <!-- Modal para Criar / Ver / Editar Avaliação -->
-    <div id="avaliacaoModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <h2 id="modalAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0;">Avaliar Atividade</h2>
-            <form id="avaliacaoFormModal" onsubmit="salvarFormularioAvaliacao(event)">
+        <!-- Formulário Integrado (Substitui o Modal Antigo) -->
+        <div id="avaliacaoFormCard" class="form-card">
+            <h2 id="formAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0; margin-bottom: 20px;">Avaliar Atividade</h2>
+            <form id="avaliacaoFormElement" onsubmit="salvarFormularioAvaliacao(event)">
                 <input type="hidden" id="editAvaliacaoId">
                 
                 <div class="form-group">
@@ -369,16 +371,28 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalAvaliacao()">Fechar</button>
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharFormularioAvaliacao()">Cancelar</button>
                     <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Popup de Mensagem de Sucesso ao Gravar -->
+    <div id="successPopupModal" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #10b981;">✅</div>
+            <h3 style="color: var(--color-accent); margin-bottom: 0.5rem; margin-top: 0;">Sucesso</h3>
+            <p id="successPopupText" style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Avaliação guardada com sucesso!</p>
+            <div class="modal-buttons" style="justify-content: center; border-top: none; padding-top: 0;">
+                <button type="button" class="btn-modal" style="background-color: var(--color-accent); color: white; width: 100%;" onclick="fecharSuccessPopup()">OK</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Confirmação de Apagar -->
     <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; text-align: center;">
+        <div class="custom-modal">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
             <h3 style="color: #ef4444; margin-bottom: 0.5rem; margin-top: 0;">Confirmar Remoção</h3>
             <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Tens a certeza que pretendes apagar este registo?</p>
@@ -452,8 +466,8 @@
                     <td style="font-weight: 600;">${tituloAtividade}</td>
                     <td>${criador}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="abrirModalAvaliacao('${idReal}', 'ver')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="abrirModalAvaliacao('${idReal}', 'editar')">Editar</button>
+                        <button class="btn-action btn-view" onclick="mostrarFormularioAvaliacao('${idReal}', 'ver')">Ver</button>
+                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormularioAvaliacao('${idReal}', 'editar')">Editar</button>
                         <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}')">Apagar</button>
                     </td>
                 `;
@@ -461,17 +475,23 @@
             });
         }
 
-        function abrirModalAvaliacao(id, modo) {
+        function mostrarFormularioAvaliacao(id, modo) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
             
-            const inputs = document.querySelectorAll('#avaliacaoFormModal input:not([type="hidden"]), #avaliacaoFormModal select, #avaliacaoFormModal textarea');
+            const inputs = document.querySelectorAll('#avaliacaoFormElement input:not([type="hidden"]), #avaliacaoFormElement select, #avaliacaoFormElement textarea');
             const saveBtn = document.getElementById('modalAvSaveBtn');
 
+            // Esconder listagem e cabeçalho da tabela, mostrar formulário
+            document.getElementById('listHeaderCard').style.display = 'none';
+            document.getElementById('listTableCard').style.display = 'none';
+            document.getElementById('avaliacaoFormCard').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             if (modo === 'criar') {
-                document.getElementById('modalAvaliacaoTitle').innerText = 'Criar Nova Avaliação';
+                document.getElementById('formAvaliacaoTitle').innerText = 'Criar Nova Avaliação';
                 document.getElementById('editAvaliacaoId').value = '';
-                document.getElementById('avaliacaoFormModal').reset();
+                document.getElementById('avaliacaoFormElement').reset();
                 
                 inputs.forEach(el => el.disabled = false);
                 document.getElementById('modalAvNomeAtividade').readOnly = true;
@@ -495,22 +515,23 @@
                 document.getElementById('modalAvComentario').value = av.comentario || av.sugestoes || '';
 
                 if (modo === 'ver') {
-                    document.getElementById('modalAvaliacaoTitle').innerText = 'Consultar Avaliação';
+                    document.getElementById('formAvaliacaoTitle').innerText = 'Consultar Avaliação';
                     inputs.forEach(el => el.disabled = true);
                     saveBtn.style.display = 'none';
                 } else {
-                    document.getElementById('modalAvaliacaoTitle').innerText = 'Editar Avaliação';
+                    document.getElementById('formAvaliacaoTitle').innerText = 'Editar Avaliação';
                     inputs.forEach(el => el.disabled = false);
                     document.getElementById('modalAvNomeAtividade').readOnly = true;
                     document.getElementById('modalAvTipoAtividade').readOnly = true;
                     saveBtn.style.display = 'inline-block';
                 }
             }
-            document.getElementById('avaliacaoModal').style.display = 'flex';
         }
 
-        function fecharModalAvaliacao() {
-            document.getElementById('avaliacaoModal').style.display = 'none';
+        function fecharFormularioAvaliacao() {
+            document.getElementById('avaliacaoFormCard').style.display = 'none';
+            document.getElementById('listHeaderCard').style.display = 'flex';
+            document.getElementById('listTableCard').style.display = 'block';
         }
 
         function salvarFormularioAvaliacao(e) {
@@ -522,6 +543,8 @@
             const numeroAtividade = document.getElementById('modalAvNumeroAtividade').value;
             const nomeAtividade = document.getElementById('modalAvNomeAtividade').value;
             const tipoAtividade = document.getElementById('modalAvTipoAtividade').value;
+
+            let mensagemSucesso = "Avaliação guardada com sucesso!";
 
             if (id === '' || id === null) {
                 const novaAvaliacao = {
@@ -539,6 +562,7 @@
                     comentario: document.getElementById('modalAvComentario').value
                 };
                 avaliadas.push(novaAvaliacao);
+                mensagemSucesso = "Nova avaliação criada com sucesso!";
             } else {
                 let av = avaliadas.find((a, idx) => a.id == id || idx == id);
                 if (av) {
@@ -552,11 +576,20 @@
                     av.interesse = document.getElementById('modalAvInteresse').value;
                     av.comentario = document.getElementById('modalAvComentario').value;
                 }
+                mensagemSucesso = "Alterações guardadas com sucesso!";
             }
 
             localStorage.setItem(chave, JSON.stringify(avaliadas));
             carregarAvaliacoes();
-            fecharModalAvaliacao();
+            fecharFormularioAvaliacao();
+
+            // Mostrar popup de sucesso ao gravar
+            document.getElementById('successPopupText').innerText = mensagemSucesso;
+            document.getElementById('successPopupModal').style.display = 'flex';
+        }
+
+        function fecharSuccessPopup() {
+            document.getElementById('successPopupModal').style.display = 'none';
         }
 
         let idParaApagar = null;
