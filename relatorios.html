@@ -207,6 +207,10 @@
             background: linear-gradient(135deg, #475569 0%, #334155 100%);
         }
 
+        .stat-main-card.alt7 {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
         .stat-main-card h3 {
             margin: 0 0 6px 0;
             font-size: 14px;
@@ -220,6 +224,7 @@
         .stat-main-card.alt4 h3 { color: #ffedd5; }
         .stat-main-card.alt5 h3 { color: #fef3c7; }
         .stat-main-card.alt6 h3 { color: #f1f5f9; }
+        .stat-main-card.alt7 h3 { color: #d1fae5; }
 
         .stat-main-card .stat-value {
             font-size: 30px;
@@ -407,7 +412,7 @@
                         <h3>Total de Atividades</h3>
                         <p id="statTotalTipos" class="stat-value">0</p>
                     </div>
-                    <div class="stat-icon">🏷️️</div>
+                    <div class="stat-icon">🏷</div>
                 </div>
             </div>
 
@@ -421,9 +426,49 @@
             </div>
         </div>
 
-        <!-- 4º Título: Requisições -->
+        <!-- 4º Título: Objetivos e Metas -->
         <div class="theme-section">
-            <h2>4. Requisições</h2>
+            <h2>4. Objetivos e Metas</h2>
+            <p class="theme-desc">Análise da seleção de objetivos e metas nos registos efetuados.</p>
+            
+            <div class="stats-grid-2" style="margin-bottom: 20px;">
+                <div class="stat-main-card alt7">
+                    <div>
+                        <h3>Total de Objetivos Selecionados</h3>
+                        <p id="statTotalObjetivosSel" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🎯</div>
+                </div>
+
+                <div class="stat-main-card alt3">
+                    <div>
+                        <h3>Total de Metas Selecionadas</h3>
+                        <p id="statTotalMetasSel" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">📈</div>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <!-- Gráfico / Objetivos -->
+                <div class="report-box">
+                    <h4>Seleção por Objetivo</h4>
+                    <p>Contagem de ocorrências por cada objetivo (ex: Objetivo 1, Objetivo 2, etc.).</p>
+                    <div id="chartObjetivos" class="chart-container"></div>
+                </div>
+
+                <!-- Gráfico / Metas -->
+                <div class="report-box">
+                    <h4>Seleção por Meta</h4>
+                    <p>Contagem de ocorrências por cada meta (ex: Meta 1, Meta 2, etc.).</p>
+                    <div id="chartMetas" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5º Título: Requisições -->
+        <div class="theme-section">
+            <h2>5. Requisições</h2>
             <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
             
             <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 20px;">
@@ -567,11 +612,53 @@
                 });
             }
 
-            // Atribui o número total de atividades ao cartão da 3ª secção
             document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
             renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
 
-            // 7. Contagens para os Gráficos de Requisições
+            // 7. Secção 4: Objetivos e Metas (leitura de 'registosObjetivosAtividades' ou 'atividades')
+            let contagemObjetivos = {};
+            let contagemMetas = {};
+            let totalObjSel = 0;
+            let totalMetasSel = 0;
+
+            // Vamos combinar as fontes de dados possíveis para garantir que apanha os objetivos e metas selecionados
+            const fonteDadosObjMeta = [...objetivosLista, ...atividadesList];
+
+            fonteDadosObjMeta.forEach(item => {
+                // Procura por objetivos (pode vir como 'objetivo', 'objetivos', 'obj', etc.)
+                const objVal = item.objetivo || item.objetivos || item.obj || '';
+                if (objVal) {
+                    // Se vier em forma de lista ou string separada por vírgulas, trata ambos
+                    const objetivosArray = Array.isArray(objVal) ? objVal : [objVal];
+                    objetivosArray.forEach(o => {
+                        const nomeObj = String(o).trim();
+                        if (nomeObj) {
+                            contagemObjetivos[nomeObj] = (contagemObjetivos[nomeObj] || 0) + 1;
+                            totalObjSel++;
+                        }
+                    });
+                }
+
+                // Procura por metas (pode vir como 'meta', 'metas', etc.)
+                const metaVal = item.meta || item.metas || '';
+                if (metaVal) {
+                    const metasArray = Array.isArray(metaVal) ? metaVal : [metaVal];
+                    metasArray.forEach(m => {
+                        const nomeMeta = String(m).trim();
+                        if (nomeMeta) {
+                            contagemMetas[nomeMeta] = (contagemMetas[nomeMeta] || 0) + 1;
+                            totalMetasSel++;
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
+            document.getElementById('statTotalMetasSel').innerText = totalMetasSel;
+            renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
+            renderizarGraficoBarras('chartMetas', contagemMetas);
+
+            // 8. Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
