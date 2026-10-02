@@ -404,10 +404,10 @@
             <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 20px;">
                 <div class="stat-main-card alt6">
                     <div>
-                        <h3>Total de Tipos / Tipologias</h3>
+                        <h3>Total de Atividades</h3>
                         <p id="statTotalTipos" class="stat-value">0</p>
                     </div>
-                    <div class="stat-icon">🏷️</div>
+                    <div class="stat-icon">🏷️️</div>
                 </div>
             </div>
 
@@ -510,7 +510,8 @@
 
             // 2. Número de Atividades
             const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
-            document.getElementById('statAtividades').innerText = contarUnicos(atividadesLista);
+            const totalAtividadesUnicas = contarUnicos(atividadesLista);
+            document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
 
             // 3. Atividades Avaliadas
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
@@ -550,14 +551,13 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-            // 6. Contagem de Tipos de Atividade (Procura em 'atividades' ou 'registosObjetivosAtividades' pela propriedade tipo / tipoAtividade)
+            // 6. Contagem de Tipos de Atividade
             let contagemTipos = {};
             atividadesLista.forEach(atv => {
                 const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
                 contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
             });
 
-            // Se não encontrar nas atividades, tenta procurar nos objetivos
             if (Object.keys(contagemTipos).length === 0 || (Object.keys(contagemTipos).length === 1 && contagemTipos['Não Especificado'])) {
                 objetivosLista.forEach(obj => {
                     const tipo = obj.tipo || obj.tipoAtividade || obj.categoria || '';
@@ -567,7 +567,8 @@
                 });
             }
 
-            document.getElementById('statTotalTipos').innerText = Object.keys(contagemTipos).length;
+            // Atribui o número total de atividades ao cartão da 3ª secção
+            document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
             renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
 
             // 7. Contagens para os Gráficos de Requisições
