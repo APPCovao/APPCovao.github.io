@@ -196,14 +196,6 @@
             font-weight: 500;
         }
 
-        .stat-main-card.alt1 h3 { color: #ccfbf1; }
-        .stat-main-card.alt2 h3 { color: #e0f2fe; }
-        .stat-main-card.alt3 h3 { color: #ede9fe; }
-        .stat-main-card.alt4 h3 { color: #ffedd5; }
-        .stat-main-card.alt5 h3 { color: #fef3c7; }
-        .stat-main-card.alt6 h3 { color: #f1f5f9; }
-        .stat-main-card.alt7 h3 { color: #d1fae5; }
-
         .stat-main-card .stat-value {
             font-size: 30px;
             font-weight: 800;
@@ -370,10 +362,10 @@
             </div>
         </div>
 
-        <!-- 3º Título Novo: Cumprimento dos objetivos e metas -->
+        <!-- 3º Título: Cumprimento dos objetivos e metas -->
         <div class="theme-section">
             <h2>3. Cumprimento dos objetivos e metas</h2>
-            <p class="theme-desc">Acompanhamento do progresso para o Objetivo 1 e Meta 1 (Máximo de 100% atingido com 6 registos).</p>
+            <p class="theme-desc">Acompanhamento do progresso para os Objetivos e Metas (Inclui Objetivo 1, Objetivo 2, Meta 1, Meta 2 e Meta 3).</p>
             
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="report-box">
@@ -386,9 +378,28 @@
                     <div id="chartGanttMeta1" class="chart-container"></div>
                 </div>
             </div>
+
+            <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
+                <div class="report-box">
+                    <h4>Objetivo 2</h4>
+                    <div id="chartGanttObj2" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 2 (Geral)</h4>
+                    <div id="chartGanttMeta2" class="chart-container"></div>
+                </div>
+            </div>
+
+            <div class="reports-grid" style="grid-template-columns: 1fr; margin-top: 20px;">
+                <div class="report-box">
+                    <h4>Meta 3 (Matemática)</h4>
+                    <div id="chartGanttMeta3" class="chart-container"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- 4º Título (Renumerado): Tipo de Atividade -->
+        <!-- 4º Título: Tipo de Atividade -->
         <div class="theme-section">
             <h2>4. Tipo de Atividade</h2>
             <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
@@ -412,7 +423,7 @@
             </div>
         </div>
 
-        <!-- 5º Título (Renumerado): Objetivos e Metas -->
+        <!-- 5º Título: Objetivos e Metas -->
         <div class="theme-section">
             <h2>5. Objetivos e Metas</h2>
             <p class="theme-desc">Análise da seleção de objetivos e metas nas checkboxes dos registos.</p>
@@ -450,7 +461,7 @@
             </div>
         </div>
 
-        <!-- 6º Título (Renumerado): Requisições -->
+        <!-- 6º Título: Requisições -->
         <div class="theme-section">
             <h2>6. Requisições</h2>
             <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
@@ -519,11 +530,10 @@
             });
         }
 
-        function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual) {
+        function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual, limiteMeta = 6) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
-            const limiteMeta = 6;
             const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
             const percentagem = Math.round((quantidadeEfetiva / limiteMeta) * 100);
 
@@ -531,11 +541,31 @@
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
-                    <span>${nomeItem} (Registo: ${quantidadeAtual}/6)</span>
+                    <span>${nomeItem} (Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
                     <span style="color: var(--primary-green);">${percentagem}%</span>
                 </div>
                 <div class="chart-bar-bg">
                     <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        }
+
+        function renderizarProgressoPorcentagemGantt(containerId, nomeItem, percentagemAtual, metaPercentagem = 75) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const percentagemEfetiva = Math.min(Math.max(percentagemAtual, 0), 100);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-bar-item';
+            itemDiv.innerHTML = `
+                <div class="chart-bar-info">
+                    <span>${nomeItem} (Atingido: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
+                    <span style="color: var(--primary-green);">${percentagemEfetiva}%</span>
+                </div>
+                <div class="chart-bar-bg">
+                    <div class="chart-bar-fill" style="width: ${percentagemEfetiva}%;"></div>
                 </div>
             `;
             container.appendChild(itemDiv);
@@ -577,7 +607,7 @@
             document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
 
             const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
-                            (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
+                          (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
             const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
             
             const idsAtividadesAvaliadasUnicas = new Set(
@@ -611,6 +641,7 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
+            // Secção 3: Objetivo 1 e Meta 1
             let contagemObj1 = 0;
             let contagemMeta1 = 0;
 
@@ -656,9 +687,92 @@
                 }
             });
 
-            renderizarProgressoGantt('chartGanttObj1', 'Objetivo 1', contagemObj1);
-            renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1);
+            renderizarProgressoGantt('chartGanttObj1', 'Objetivo 1', contagemObj1, 6);
+            renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1, 6);
 
+            // ==========================================
+            // Lógica para Objetivo 2, Meta 2 e Meta 3 (Turmas / Alunos / Menções)
+            // ==========================================
+            const turmasLista = JSON.parse(localStorage.getItem('turmas')) || [];
+            
+            let totalAlunosGeral = 0;
+            let alunosBomMuitoBomGeral = 0;
+
+            let totalAlunosMatematica = 0;
+            let alunosBomMuitoBomMatematica = 0;
+
+            let contagemObj2 = 0;
+
+            turmasLista.forEach(turma => {
+                // Assumindo que cada turma tem uma lista de alunos ou um contador, ajustável conforme o teu formato em turmas.html
+                // Exemplo comum: turma.alunos (array de objetos com menções/avaliações) ou turma.numAlunos
+                const alunos = turma.alunos || turma.listaAlunos || [];
+                
+                if (Array.isArray(alunos) && alunos.length > 0) {
+                    totalAlunosGeral += alunos.length;
+
+                    alunos.forEach(aluno => {
+                        // Verificar menção geral (ex: aluno.mencao, aluno.avaliacaoGlobal, etc.)
+                        const mencaoGeral = String(aluno.mencao || aluno.avaliacao || aluno.resultado || '').toLowerCase().trim();
+                        if (mencaoGeral.includes('bom') || mencaoGeral.includes('muito bom')) {
+                            alunosBomMuitoBomGeral++;
+                        }
+
+                        // Verificar menção específica de Matemática (ex: aluno.mencaoMatematica, aluno.matematica, etc.)
+                        const mencaoMat = String(aluno.matematica || aluno.mencaoMatematica || aluno.notaMatematica || '').toLowerCase().trim();
+                        if (mencaoMat.includes('bom') || mencaoMat.includes('muito bom')) {
+                            alunosBomMuitoBomMatematica++;
+                        }
+                    });
+
+                    totalAlunosMatematica += alunos.length;
+                } else if (typeof turma.totalAlunos === 'number') {
+                    // Caso guardes apenas contadores agregados por turma
+                    totalAlunosGeral += turma.totalAlunos;
+                    totalAlunosMatematica += turma.totalAlunos;
+                    
+                    if (typeof turma.alunosBomMuitoBom === 'number') {
+                        alunosBomMuitoBomGeral += turma.alunosBomMuitoBom;
+                    }
+                    if (typeof turma.alunosBomMuitoBomMat === 'number') {
+                        alunosBomMuitoBomMatematica += turma.alunosBomMuitoBomMat;
+                    }
+                }
+            });
+
+            // Contabilizar se o Objetivo 2 surge nos registos globais
+            todasFontesAnalise.forEach(item => {
+                const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
+                camposObj.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(o => {
+                            if (limparNomeCurto(o).toLowerCase() === 'objetivo 2' || limparNomeCurto(o).toLowerCase() === 'obj 2' || String(o).includes('2')) {
+                                contagemObj2++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        if (val.toLowerCase().includes('objetivo 2') || val.toLowerCase().includes('obj 2')) {
+                            contagemObj2++;
+                        }
+                    }
+                });
+                if (item.objetivo2 === true || item.objetivo2 === 'true' || item.objetivo2 === 'Sim' || item.obj2 === true) {
+                    contagemObj2++;
+                }
+            });
+
+            // Calcular percentagens
+            const percentagemMeta2 = totalAlunosGeral > 0 ? Math.round((alunosBomMuitoBomGeral / totalAlunosGeral) * 100) : 0;
+            const percentagemMeta3 = totalAlunosMatematica > 0 ? Math.round((alunosBomMuitoBomMatematica / totalAlunosMatematica) * 100) : 0;
+
+            // Renderizar gráficos para Objetivo 2, Meta 2 e Meta 3
+            renderizarProgressoGantt('chartGanttObj2', 'Objetivo 2', contagemObj2, 6);
+            renderizarProgressoPorcentagemGantt('chartGanttMeta2', 'Meta 2 (Geral)', percentagemMeta2, 75);
+            renderizarProgressoPorcentagemGantt('chartGanttMeta3', 'Meta 3 (Matemática)', percentagemMeta3, 75);
+
+            // ==========================================
+            // Restantes Gráficos
+            // ==========================================
             let contagemTipos = {};
             atividadesLista.forEach(atv => {
                 const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
@@ -745,6 +859,7 @@
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
+            requisicoesLista.exports = requisicoesLista || [];
             requisicoesLista.forEach(req => {
                 const area = req.area || 'Outras';
                 const equipamento = req.equipamento || 'Outro';
