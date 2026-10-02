@@ -530,13 +530,25 @@
         }
 
         function calcularMediaESugestoes(atvId, atvNumero) {
-            // Procura avaliações guardadas (chaves comuns: 'avaliacoes', 'registosAvaliacoes', etc.)
-            let avaliacoes = JSON.parse(localStorage.getItem('avaliacoes')) || JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
+            // Recolhe avaliações de todas as possíveis chaves guardadas no localStorage
+            const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
+            const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+            const av3 = JSON.parse(localStorage.getItem('avaliacoes')) || [];
+            const av4 = JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
             
-            // Filtra as avaliações que correspondem à atividade
-            const avaliacoesDaAtividade = avaliacoes.filter(av => 
-                av.atividadeId == atvId || av.numeroAtividade == atvNumero || String(av.idAtividade) == String(atvId)
-            );
+            const todasAvaliacoes = [...av1, ...av2, ...av3, ...av4];
+            
+            // Filtra as avaliações que correspondem à atividade por ID ou por Número
+            const avaliacoesDaAtividade = todasAvaliacoes.filter(av => {
+                const matchId = (av.atividadeId && String(av.atividadeId) === String(atvId)) || 
+                                (av.idAtividade && String(av.idAtividade) === String(atvId)) ||
+                                (av.id && String(av.id) === String(atvId));
+                
+                const matchNum = (av.numeroAtividade && String(av.numeroAtividade) === String(atvNumero)) ||
+                                 (av.numero && String(av.numero) === String(atvNumero));
+
+                return matchId || matchNum;
+            });
 
             if (avaliacoesDaAtividade.length === 0) {
                 document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
@@ -551,7 +563,6 @@
             let listaSugestoes = [];
 
             avaliacoesDaAtividade.forEach(av => {
-                // Suporta várias estruturas possíveis para as notas (ex: pertinencia, dinamica, interesse)
                 const p = parseFloat(av.pertinencia || av.notaPertinencia || av.p || 0);
                 const d = parseFloat(av.dinamica || av.notaDinamica || av.d || 0);
                 const i = parseFloat(av.interesse || av.notaInteresse || av.int || 0);
@@ -563,7 +574,7 @@
                     totalValidas++;
                 }
 
-                const sug = av.sugestoes || av.sugestao || av.comentarios || av.comentario;
+                const sug = av.comentario || av.sugestoes || av.sugestao || av.comentarios;
                 if (sug && String(sug).trim() !== '') {
                     listaSugestoes.push(`• ${String(sug).trim()}`);
                 }
