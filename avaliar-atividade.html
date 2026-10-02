@@ -319,8 +319,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Ano Letivo</label>
-                    <input type="text" id="modalAvAnoLetivo" value="2025/2026">
+                    <label>Ano Letivo <span class="required">*</span></label>
+                    <select id="modalAvAnoLetivo" required>
+                        <option value="">Selecione o ano letivo</option>
+                        <option value="2023/2024">2023/2024</option>
+                        <option value="2024/2025">2024/2025</option>
+                        <option value="2025/2026">2025/2026</option>
+                        <option value="2026/2027">2026/2027</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -397,7 +403,6 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        // Função para preencher automaticamente os campos com base no número inserido
         function preencherDadosAtividadePorNumero(numero) {
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const attEncontrada = atividades.find(a => a.numero == numero || a.id == numero);
@@ -456,7 +461,6 @@
             });
         }
 
-        // Função Unificada: Criar, Ver ou Editar utilizam o mesmo modal/formulário
         function abrirModalAvaliacao(id, modo) {
             const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
             const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
@@ -520,7 +524,6 @@
             const tipoAtividade = document.getElementById('modalAvTipoAtividade').value;
 
             if (id === '' || id === null) {
-                // Criar Novo Registo
                 const novaAvaliacao = {
                     id: Date.now(),
                     criadorId: currentUser.id,
@@ -537,7 +540,6 @@
                 };
                 avaliadas.push(novaAvaliacao);
             } else {
-                // Atualizar Registo Existente
                 let av = avaliadas.find((a, idx) => a.id == id || idx == id);
                 if (av) {
                     av.numeroAtividade = numeroAtividade;
