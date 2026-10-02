@@ -196,6 +196,14 @@
             font-weight: 500;
         }
 
+        .stat-main-card.alt1 h3 { color: #ccfbf1; }
+        .stat-main-card.alt2 h3 { color: #e0f2fe; }
+        .stat-main-card.alt3 h3 { color: #ede9fe; }
+        .stat-main-card.alt4 h3 { color: #ffedd5; }
+        .stat-main-card.alt5 h3 { color: #fef3c7; }
+        .stat-main-card.alt6 h3 { color: #f1f5f9; }
+        .stat-main-card.alt7 h3 { color: #d1fae5; }
+
         .stat-main-card .stat-value {
             font-size: 30px;
             font-weight: 800;
@@ -255,7 +263,6 @@
             height: 14px;
             width: 100%;
             overflow: hidden;
-            position: relative;
         }
 
         .chart-bar-fill {
@@ -263,17 +270,6 @@
             height: 100%;
             border-radius: 6px;
             transition: width 0.6s ease;
-        }
-
-        /* Linha de referência dos 75% */
-        .target-line {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 75%;
-            width: 2px;
-            background-color: #dc2626;
-            z-index: 2;
         }
 
         .future-charts-placeholder {
@@ -301,7 +297,7 @@
         </div>
     </nav>
 
-    <main class="main-container">
+    <div class="main-container">
         
         <!-- Cabeçalho -->
         <div class="section-header-card">
@@ -374,50 +370,25 @@
             </div>
         </div>
 
-        <!-- 3º Título: Cumprimento dos objetivos e metas (Reorganizado em Objetivos vs Metas) -->
+        <!-- 3º Título Novo: Cumprimento dos objetivos e metas -->
         <div class="theme-section">
             <h2>3. Cumprimento dos objetivos e metas</h2>
-            <p class="theme-desc">Análise comparativa agrupada por Objetivos (Lado Esquerdo) e Metas (Lado Direito - Meta de referência: 75%).</p>
+            <p class="theme-desc">Acompanhamento do progresso para o Objetivo 1 e Meta 1 (Máximo de 100% atingido com 6 registos).</p>
             
-            <div class="stats-grid-2">
-                <!-- COLUNA DA ESQUERDA: OBJETIVOS -->
-                <div class="report-box" style="margin: 0; display: flex; flex-direction: column; gap: 20px;">
-                    <h4 style="border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 0;">Objetivos</h4>
-                    
-                    <div>
-                        <strong style="font-size: 14px; color: #374151; display: block; margin-bottom: 8px;">Objetivo 1</strong>
-                        <div id="chartGanttObj1" class="chart-container"></div>
-                    </div>
-
-                    <div>
-                        <strong style="font-size: 14px; color: #374151; display: block; margin-bottom: 8px;">Objetivo 2</strong>
-                        <div id="chartGanttObj2" class="chart-container"></div>
-                    </div>
+            <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="report-box">
+                    <h4>Objetivo 1</h4>
+                    <div id="chartGanttObj1" class="chart-container"></div>
                 </div>
 
-                <!-- COLUNA DA DIREITA: METAS -->
-                <div class="report-box" style="margin: 0; display: flex; flex-direction: column; gap: 15px;">
-                    <h4 style="border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 0;">Metas (Meta mínima: 75%)</h4>
-                    
-                    <div>
-                        <strong style="font-size: 14px; color: #374151; display: block; margin-bottom: 6px;">Meta 1</strong>
-                        <div id="chartGanttMeta1" class="chart-container"></div>
-                    </div>
-
-                    <div>
-                        <strong style="font-size: 14px; color: #374151; display: block; margin-bottom: 6px;">Meta 2 (Português - Bom/Muito Bom)</strong>
-                        <div id="chartGanttMeta2" class="chart-container"></div>
-                    </div>
-
-                    <div>
-                        <strong style="font-size: 14px; color: #374151; display: block; margin-bottom: 6px;">Meta 3 (Matemática - Bom/Muito Bom)</strong>
-                        <div id="chartGanttMeta3" class="chart-container"></div>
-                    </div>
+                <div class="report-box">
+                    <h4>Meta 1</h4>
+                    <div id="chartGanttMeta1" class="chart-container"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 4º Título: Tipo de Atividade -->
+        <!-- 4º Título (Renumerado): Tipo de Atividade -->
         <div class="theme-section">
             <h2>4. Tipo de Atividade</h2>
             <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
@@ -441,7 +412,7 @@
             </div>
         </div>
 
-        <!-- 5º Título: Objetivos e Metas -->
+        <!-- 5º Título (Renumerado): Objetivos e Metas -->
         <div class="theme-section">
             <h2>5. Objetivos e Metas</h2>
             <p class="theme-desc">Análise da seleção de objetivos e metas nas checkboxes dos registos.</p>
@@ -479,7 +450,7 @@
             </div>
         </div>
 
-        <!-- 6º Título: Requisições -->
+        <!-- 6º Título (Renumerado): Requisições -->
         <div class="theme-section">
             <h2>6. Requisições</h2>
             <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
@@ -509,7 +480,7 @@
             </div>
         </div>
 
-    </main>
+    </div>
 
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
@@ -548,7 +519,6 @@
             });
         }
 
-        // Gráfico para Objetivos e Meta 1 (com limite fixo de 6)
         function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -561,56 +531,11 @@
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
-                    <span>Registo: ${quantidadeAtual}/6</span>
+                    <span>${nomeItem} (Registo: ${quantidadeAtual}/6)</span>
                     <span style="color: var(--primary-green);">${percentagem}%</span>
                 </div>
                 <div class="chart-bar-bg">
                     <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
-                </div>
-            `;
-            container.appendChild(itemDiv);
-        }
-
-        // Gráfico para Objetivo 2 (contagem livre sem limite de 6)
-        function renderizarProgressoLivre(containerId, quantidadeAtual) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'chart-bar-item';
-            itemDiv.innerHTML = `
-                <div class="chart-bar-info">
-                    <span>Total de Registos</span>
-                    <span style="color: var(--primary-green);">${quantidadeAtual}</span>
-                </div>
-                <div class="chart-bar-bg">
-                    <div class="chart-bar-fill" style="width: 100%;"></div>
-                </div>
-            `;
-            container.appendChild(itemDiv);
-        }
-
-        // Gráfico de barra de percentagem para Meta 2 e Meta 3 (com linha indicadora de 75%)
-        function renderizarBarraPercentagemTurmas(containerId, parte, total) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-
-            const percentagem = total > 0 ? Math.round((parte / total) * 100) : 0;
-            const pctLimitada = Math.min(Math.max(percentagem, 0), 100);
-            const atingiuMeta = percentagem >= 75;
-
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'chart-bar-item';
-            itemDiv.innerHTML = `
-                <div class="chart-bar-info">
-                    <span>${parte} de ${total} alunos (${pctLimitada}%)</span>
-                    <span style="color: ${atingiuMeta ? '#15803d' : '#dc2626'}; font-weight: 700;">
-                        ${atingiuMeta ? '✔ Meta Atingida (≥75%)' : '✖ Abaixo de 75%'}
-                    </span>
-                </div>
-                <div class="chart-bar-bg" title="Linha vermelha indica os 75% necessários">
-                    <div class="target-line"></div>
-                    <div class="chart-bar-fill" style="width: ${pctLimitada}%; background-color: ${atingiuMeta ? 'var(--primary-green)' : '#f97316'};"></div>
                 </div>
             `;
             container.appendChild(itemDiv);
@@ -686,15 +611,12 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-            // Análise de Objetivos e Metas para a Secção 3
             let contagemObj1 = 0;
-            let contagemObj2 = 0;
             let contagemMeta1 = 0;
 
             const todasFontesAnalise = [...objetivosLista, ...atividadesLista, ...(JSON.parse(localStorage.getItem('restar_objetivos')) || [])];
 
             todasFontesAnalise.forEach(item => {
-                // Objetivo 1
                 const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                 camposObj.forEach(val => {
                     if (Array.isArray(val)) {
@@ -709,29 +631,11 @@
                         }
                     }
                 });
+
                 if (item.objetivo1 === true || item.objetivo1 === 'true' || item.objetivo1 === 'Sim' || item.obj1 === true) {
                     contagemObj1++;
                 }
 
-                // Objetivo 2
-                camposObj.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(o => {
-                            if (limparNomeCurto(o).toLowerCase() === 'objetivo 2' || limparNomeCurto(o).toLowerCase() === 'obj 2' || String(o).includes('2')) {
-                                contagemObj2++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        if (val.toLowerCase().includes('objetivo 2') || val.toLowerCase().includes('obj 2')) {
-                            contagemObj2++;
-                        }
-                    }
-                });
-                if (item.objetivo2 === true || item.objetivo2 === 'true' || item.objetivo2 === 'Sim' || item.obj2 === true) {
-                    contagemObj2++;
-                }
-
-                // Meta 1
                 const camposMeta = [item.metas, item.meta, item.metasSelecionadas];
                 camposMeta.forEach(val => {
                     if (Array.isArray(val)) {
@@ -746,58 +650,14 @@
                         }
                     }
                 });
+
                 if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') {
                     contagemMeta1++;
                 }
             });
 
             renderizarProgressoGantt('chartGanttObj1', 'Objetivo 1', contagemObj1);
-            renderizarProgressoLivre('chartGanttObj2', contagemObj2);
             renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1);
-
-            // Leitura de turmas.html (dados armazenados em turmas ou alunos no localStorage)
-            const turmasData = JSON.parse(localStorage.getItem('turmas')) || JSON.parse(localStorage.getItem('alunos')) || [];
-            
-            let totalAlunosGeral = 0;
-            let alunosBomMuitoBomPortugues = 0;
-            let alunosBomMuitoBomMatematica = 0;
-
-            function avaliacaoEBomOuMuitoBom(avaliacao) {
-                if (!avaliacao) return false;
-                const avStr = String(avaliacao).toLowerCase().trim();
-                return avStr.includes('bom') || avStr.includes('muito bom') || avStr.includes('mb') || avStr.includes('b');
-            }
-
-            turmasData.forEach(item => {
-                const listaAlunos = item.alunos || (Array.isArray(item) ? item : [item]);
-                
-                listaAlunos.forEach(aluno => {
-                    totalAlunosGeral++;
-                    
-                    const avPort = aluno.portugues || aluno.notaPortugues || (aluno.disciplinas && (aluno.disciplinas.portugues || aluno.disciplinas.port)) || aluno.port || '';
-                    if (avaliacaoEBomOuMuitoBom(avPort)) {
-                        alunosBomMuitoBomPortugues++;
-                    }
-
-                    const avMat = aluno.matematica || aluno.notaMatematica || (aluno.disciplinas && (aluno.disciplinas.matematica || aluno.disciplinas.mat)) || aluno.mat || '';
-                    if (avaliacaoEBomOuMuitoBom(avMat)) {
-                        alunosBomMuitoBomMatematica++;
-                    }
-                });
-            });
-
-            if (totalAlunosGeral === 0) {
-                const avaliacoesAlunosGeral = JSON.parse(localStorage.getItem('avaliacoesAlunos')) || [];
-                totalAlunosGeral = avaliacoesAlunosGeral.length;
-                
-                avaliacoesAlunosGeral.forEach(al => {
-                    if (avaliacaoEBomOuMuitoBom(al.portugues || al.notaPortugues)) alunosBomMuitoBomPortugues++;
-                    if (avaliacaoEBomOuMuitoBom(al.matematica || al.notaMatematica)) alunosBomMuitoBomMatematica++;
-                });
-            }
-
-            renderizarBarraPercentagemTurmas('chartGanttMeta2', alunosBomMuitoBomPortugues, totalAlunosGeral);
-            renderizarBarraPercentagemTurmas('chartGanttMeta3', alunosBomMuitoBomMatematica, totalAlunosGeral);
 
             let contagemTipos = {};
             atividadesLista.forEach(atv => {
