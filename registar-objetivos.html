@@ -125,13 +125,16 @@
 
         .btn-top-action:hover { background-color: #0f172a; }
 
-        .table-card {
+        .table-card, .form-section-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
+
+        .table-card { overflow-x: auto; }
+        .form-section-card { padding: 30px; display: none; }
 
         table {
             width: 100%;
@@ -178,30 +181,6 @@
         .btn-delete { background-color: #dc2626; color: white; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        .custom-modal {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 750px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
         .required { color: #dc2626; }
@@ -225,8 +204,7 @@
 
         textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
 
-        .custom-modal input:disabled, .custom-modal select:disabled, .custom-modal textarea:disabled,
-        .custom-modal input[readonly] {
+        input:disabled, select:disabled, textarea:disabled, input[readonly] {
             background-color: #e5e7eb !important;
             color: #1f2937 !important;
             font-weight: 600 !important;
@@ -269,7 +247,7 @@
             cursor: pointer;
         }
 
-        .modal-buttons {
+        .form-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
@@ -278,7 +256,7 @@
             padding-top: 20px;
         }
 
-        .btn-modal {
+        .btn-form-action {
             padding: 10px 18px;
             border-radius: 8px;
             font-weight: 600;
@@ -286,8 +264,30 @@
             cursor: pointer;
             font-size: 14px;
         }
-        .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
-        .btn-modal-cancel:hover { background-color: #cbd5e1; }
+        .btn-cancel { background-color: #e2e8f0; color: #334155; }
+        .btn-cancel:hover { background-color: #cbd5e1; }
+
+        /* Modal simples apenas para apagar registo */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+        .custom-modal {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -299,23 +299,25 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅️ Voltar ao Menu</a>
+            <a href="atividades.html" class="btn-voltar-menu">⬅️️ Voltar ao Menu</a>
         </div>
     </nav>
 
     <div class="main-container">
-        <div class="section-header-card">
+        <!-- CABEÇALHO DA LISTAGEM -->
+        <div id="listagemHeaderCard" class="section-header-card">
             <div>
                 <h1>Objetivos e Avaliações Globais</h1>
-                <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais[cite: 3].</p>
+                <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
             </div>
             <div class="header-actions">
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
-                <button type="button" class="btn-top-action" style="background-color: #16a34a;" onclick="abrirModalObjetivo(null, 'criar')">🎯 Registar Objetivos</button>
+                <button type="button" class="btn-top-action" style="background-color: #16a34a;" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
             </div>
         </div>
 
-        <div class="table-card">
+        <!-- TABELA DE LISTAGEM -->
+        <div id="listagemTableCard" class="table-card">
             <table>
                 <thead>
                     <tr>
@@ -328,15 +330,13 @@
                 <tbody id="objetivosTableBody"></tbody>
             </table>
         </div>
-    </div>
 
-    <!-- Modal para Criar / Ver / Editar Registo de Objetivos -->
-    <div id="objetivoModal" class="custom-modal-overlay">
-        <div class="custom-modal" id="customModalContent">
-            <h2 id="modalObjetivoTitle" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações[cite: 3].</p>
+        <!-- SECÇÃO DO FORMULÁRIO (Substitui os popups, abrindo diretamente na página) -->
+        <div id="formularioCard" class="form-section-card">
+            <h2 id="formTitulo" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
+            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             
-            <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
+            <form id="objetivoForm" onsubmit="salvarRegistoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
 
                 <div class="form-group">
@@ -426,9 +426,9 @@
                     <textarea id="modalObjResumo" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." required></textarea>
                 </div>
 
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharModalObjetivo()">Fechar</button>
-                    <button type="submit" id="modalObjSaveBtn" class="btn-modal" style="background-color: #16a34a; color: white;">Guardar</button>
+                <div class="form-buttons">
+                    <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaTabela()">Voltar / Cancelar</button>
+                    <button type="submit" id="btnSalvarForm" class="btn-form-action" style="background-color: #16a34a; color: white;">Guardar</button>
                 </div>
             </form>
         </div>
@@ -436,13 +436,13 @@
 
     <!-- Modal de Confirmação de Apagar -->
     <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; text-align: center;">
+        <div class="custom-modal">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
             <h3 style="color: #ef4444; margin-bottom: 0.5rem; margin-top: 0;">Confirmar Remoção</h3>
             <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Tens a certeza que pretendes apagar este registo?</p>
-            <div class="modal-buttons" style="justify-content: center; border-top: none; padding-top: 0;">
-                <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
-                <button type="button" id="btnConfirmDelete" class="btn-modal" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button type="button" class="btn-form-action btn-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
+                <button type="button" id="btnConfirmDelete" class="btn-form-action" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
             </div>
         </div>
     </div>
@@ -488,8 +488,8 @@
                     <td style="font-weight: 600;">${tituloAtividade}</td>
                     <td>${criadorNome}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="abrirModalObjetivo(${idReal}, 'ver')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="abrirModalObjetivo(${idReal}, 'editar')">Editar</button>
+                        <button class="btn-action btn-view" onclick="mostrarFormulario(${idReal}, 'ver')">Ver</button>
+                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario(${idReal}, 'editar')">Editar</button>
                         <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal})">Apagar</button>
                     </td>
                 `;
@@ -598,15 +598,19 @@
             preencherDadosAutomaticosPorNumero(val);
         }
 
-        function abrirModalObjetivo(id, modo) {
+        function mostrarFormulario(id, modo) {
+            document.getElementById('listagemHeaderCard').style.display = 'none';
+            document.getElementById('listagemTableCard').style.display = 'none';
+            document.getElementById('formularioCard').style.display = 'block';
+
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-            const inputs = document.querySelectorAll('#objetivoFormModal input:not([type="hidden"]), #objetivoFormModal select, #objetivoFormModal textarea');
-            const saveBtn = document.getElementById('modalObjSaveBtn');
+            const inputs = document.querySelectorAll('#objetivoForm input:not([type="hidden"]), #objetivoForm select, #objetivoForm textarea');
+            const saveBtn = document.getElementById('btnSalvarForm');
 
             if (modo === 'criar') {
-                document.getElementById('modalObjetivoTitle').innerText = 'Registar Objetivos e Avaliação Global';
+                document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
                 document.getElementById('editObjetivoId').value = '';
-                document.getElementById('objetivoFormModal').reset();
+                document.getElementById('objetivoForm').reset();
                 
                 inputs.forEach(el => el.disabled = false);
                 document.getElementById('modalObjNomeAtividade').disabled = true;
@@ -630,19 +634,19 @@
                 document.getElementById('modalObjSugestoes').value = reg.sugestoesRecolhidas || '';
                 document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
 
-                document.querySelectorAll('#objetivoFormModal input[name="objCheck"]').forEach(chk => {
+                document.querySelectorAll('#objetivoForm input[name="objCheck"]').forEach(chk => {
                     chk.checked = reg.objetivosSelecionados && reg.objetivosSelecionados.includes(chk.value);
                 });
-                document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]').forEach(chk => {
+                document.querySelectorAll('#objetivoForm input[name="metaCheck"]').forEach(chk => {
                     chk.checked = reg.metasSelecionadas && reg.metasSelecionadas.includes(chk.value);
                 });
 
                 if (modo === 'ver') {
-                    document.getElementById('modalObjetivoTitle').innerText = 'Consultar Registo de Objetivos';
+                    document.getElementById('formTitulo').innerText = 'Consultar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = true);
                     saveBtn.style.display = 'none';
                 } else {
-                    document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
+                    document.getElementById('formTitulo').innerText = 'Editar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = false);
                     document.getElementById('modalObjNomeAtividade').disabled = true;
                     document.getElementById('modalObjAnoLetivo').disabled = true;
@@ -653,25 +657,26 @@
                 }
             }
 
-            const modalContainer = document.getElementById('objetivoModal');
-            modalContainer.style.display = 'flex';
-            document.getElementById('customModalContent').scrollTop = 0;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function fecharModalObjetivo() {
-            document.getElementById('objetivoModal').style.display = 'none';
+        function voltarParaTabela() {
+            document.getElementById('formularioCard').style.display = 'none';
+            document.getElementById('listagemHeaderCard').style.display = 'flex';
+            document.getElementById('listagemTableCard').style.display = 'block';
+            carregarObjetivos();
         }
 
-        function salvarEdicaoObjetivo(e) {
+        function salvarRegistoObjetivo(e) {
             e.preventDefault();
             const id = document.getElementById('editObjetivoId').value;
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
 
             let objsSel = [];
-            document.querySelectorAll('#objetivoFormModal input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
+            document.querySelectorAll('#objetivoForm input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
 
             let metasSel = [];
-            document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
+            document.querySelectorAll('#objetivoForm input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
 
             const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
@@ -714,8 +719,7 @@
             }
 
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-            carregarObjetivos();
-            fecharModalObjetivo();
+            voltarParaTabela();
         }
 
         let idParaApagar = null;
@@ -724,7 +728,7 @@
             document.getElementById('confirmModal').style.display = 'flex';
         }
         function fecharConfirmarApagar() {
-            idParaApager = null;
+            idParaApagar = null;
             document.getElementById('confirmModal').style.display = 'none';
         }
 
