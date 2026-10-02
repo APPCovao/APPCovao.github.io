@@ -357,13 +357,13 @@
         </div>
     </div>
 
-    <!-- Popup Personalizado de Sucesso com botão para nova-atividade.html -->
+    <!-- Popup Personalizado de Sucesso com cor de texto branca garantida -->
     <div id="successModal" class="custom-modal-overlay">
         <div class="custom-modal">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--primary-green);">✅</div>
             <h3 style="color: var(--primary-green); margin-bottom: 0.5rem; margin-top: 0;">Registo Guardado!</h3>
             <p id="successModalText" style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">A atividade foi guardada com sucesso.</p>
-            <a href="nova-atividade.html" class="btn-modal btn-top-primary" style="text-decoration: none; display: inline-block;">Voltar para nova-atividade.html</a>
+            <a href="nova-atividade.html" class="btn-modal btn-top-primary" style="text-decoration: none; display: inline-block; color: white;">Voltar para nova-atividade.html</a>
         </div>
     </div>
 
@@ -489,7 +489,6 @@
 
             localStorage.setItem('atividades', JSON.stringify(listaAtividades));
             
-            // Força a exibição correta do popup com flex
             document.getElementById('successModalText').innerText = mensagemPopup;
             document.getElementById('successModal').style.display = 'flex';
         }
