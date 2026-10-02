@@ -248,6 +248,97 @@
         .btn-delete-all:hover {
             background-color: #b91c1c;
         }
+
+        /* --- POPUPS PERSONALIZADOS (MODAL) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 24px 30px;
+            border-radius: var(--radius);
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .modal-message {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .modal-btn-cancel {
+            background-color: #f1f5f9;
+            color: var(--text-light);
+        }
+        .modal-btn-cancel:hover { background-color: #e2e8f0; }
+
+        .modal-btn-confirm {
+            background-color: #dc2626;
+            color: white;
+        }
+        .modal-btn-confirm:hover { background-color: #b91c1c; }
+
+        .modal-btn-ok {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        .modal-btn-ok:hover { background-color: var(--primary-green-hover); }
     </style>
 </head>
 <body>
@@ -305,7 +396,7 @@
                         <label for="filterNumero" style="font-size: 13px; font-weight: 600; color: var(--text-light);">Filtrar Nº:</label>
                         <input type="text" id="filterNumero" placeholder="Ex: 1, 2..." oninput="carregarAtividades()">
                     </div>
-                    <button class="btn-delete-all" onclick="eliminarTodasAtividades()">🗑️ Apagar Todas as Atividades</button>
+                    <button class="btn-delete-all" onclick="confirmarApagarTodas()">🗑️ Apagar Todas as Atividades</button>
                 </div>
             </div>
 
@@ -328,15 +419,70 @@
 
     </div>
 
+    <!-- POPUP PERSONALIZADO (MODAL) -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-card">
+            <div id="modalIcon" class="modal-icon">⚠️</div>
+            <div id="modalTitle" class="modal-title">Confirmação</div>
+            <div id="modalMessage" class="modal-message">Mensagem de aviso aqui...</div>
+            <div id="modalButtons" class="modal-buttons">
+                <!-- Botões geridos dinamicamente -->
+            </div>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script>
         // Restringir acesso apenas a admins
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser || !currentUser.isAdmin) {
-            alert('Acesso restrito a administradores!');
-            window.location.href = 'dashboard.html';
+            mostrarAlerta('Acesso Restrito', 'Esta página é de acesso exclusivo a administradores!', () => {
+                window.location.href = 'dashboard.html';
+            });
         } else {
             document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
+        }
+
+        // --- SISTEMA DE POPUPS PERSONALIZADOS ---
+        function mostrarAlerta(titulo, mensagem, callbackOnClose = null) {
+            const overlay = document.getElementById('customModal');
+            document.getElementById('modalIcon').innerText = 'ℹ️';
+            document.getElementById('modalTitle').innerText = titulo;
+            document.getElementById('modalMessage').innerText = mensagem;
+            
+            const btnContainer = document.getElementById('modalButtons');
+            btnContainer.innerHTML = `<button class="modal-btn modal-btn-ok" id="modalOkBtn">OK</button>`;
+            
+            overlay.classList.add('active');
+
+            document.getElementById('modalOkBtn').onclick = () => {
+                overlay.classList.remove('active');
+                if (callbackOnClose) callbackOnClose();
+            };
+        }
+
+        function mostrarConfirmacao(titulo, mensagem, onConfirm) {
+            const overlay = document.getElementById('customModal');
+            document.getElementById('modalIcon').innerText = '⚠️';
+            document.getElementById('modalTitle').innerText = titulo;
+            document.getElementById('modalMessage').innerText = mensagem;
+            
+            const btnContainer = document.getElementById('modalButtons');
+            btnContainer.innerHTML = `
+                <button class="modal-btn modal-btn-cancel" id="modalCancelBtn">Cancelar</button>
+                <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Sim, Apagar</button>
+            `;
+            
+            overlay.classList.add('active');
+
+            document.getElementById('modalCancelBtn').onclick = () => {
+                overlay.classList.remove('active');
+            };
+
+            document.getElementById('modalConfirmBtn').onclick = () => {
+                overlay.classList.remove('active');
+                onConfirm();
+            };
         }
 
         // --- GESTÃO DE UTILIZADORES ---
@@ -375,7 +521,7 @@
             let users = JSON.parse(localStorage.getItem('users')) || [];
             
             if (users[index].email === currentUser.email) {
-                alert('Não pode alterar as suas próprias permissões de administrador.');
+                mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões de administrador.');
                 return;
             }
 
@@ -388,18 +534,19 @@
             let users = JSON.parse(localStorage.getItem('users')) || [];
 
             if (users[index].email === currentUser.email) {
-                alert('Não pode eliminar a sua própria conta ativa.');
+                mostrarAlerta('Aviso', 'Não pode eliminar a sua própria conta ativa.');
                 return;
             }
 
-            if (confirm('Tem a certeza que pretende eliminar este utilizador?')) {
+            mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', () => {
                 users.splice(index, 1);
                 localStorage.setItem('users', JSON.stringify(users));
                 carregarUtilizadores();
-            }
+                mostrarAlerta('Sucesso', 'Utilizador eliminado com sucesso.');
+            });
         }
 
-        // --- GESTÃO DE ATIVIDADES ---
+        // --- GESTÃO DE ATIVIDADES & ELIMINAÇÃO EM CADEIA ---
         function carregarAtividades() {
             const tbody = document.getElementById('activitiesTableBody');
             if (!tbody) return;
@@ -408,7 +555,6 @@
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const filtro = document.getElementById('filterNumero').value.trim().toLowerCase();
 
-            // Filtrar se houver texto escrito na caixa de pesquisa por número/ID
             const atividadesFiltradas = atividades.map((atv, originalIndex) => ({ atv, originalIndex })).filter(({ atv }) => {
                 if (!filtro) return true;
                 const numAtv = String(atv.numero !== undefined ? atv.numero : (atv.id !== undefined ? atv.id : atv.numeroAtividade || '')).toLowerCase();
@@ -432,33 +578,85 @@
                     <td>${titulo}</td>
                     <td><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${tipo}</span></td>
                     <td style="text-align: right;">
-                        <button class="btn-action btn-delete" onclick="eliminarAtividade(${originalIndex})">Eliminar</button>
+                        <button class="btn-action btn-delete" onclick="confirmarEliminarAtividade(${originalIndex}, '${numAtv}')">Eliminar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function eliminarAtividade(index) {
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            if (confirm('Tem a certeza que pretende eliminar esta atividade?')) {
-                atividades.splice(index, 1);
-                localStorage.setItem('atividades', JSON.stringify(atividades));
-                carregarAtividades();
-            }
+        function confirmarEliminarAtividade(index, numAtv) {
+            mostrarConfirmacao(
+                'Eliminar Atividade', 
+                `Tem a certeza que pretende eliminar a Atividade #${numAtv}? Esta ação irá apagar também automaticamente todas as avaliações e registos de objetivos associados a este número.`, 
+                () => {
+                    let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                    
+                    // Identificar o número/ID exato da atividade a remover
+                    const atvAlvo = atividades[index];
+                    if (!atvAlvo) return;
+                    
+                    const numerosPossiveisAlvo = [
+                        atvAlvo.numero, 
+                        atvAlvo.id, 
+                        atvAlvo.numeroAtividade, 
+                        atvAlvo.atividadeId
+                    ].filter(val => val !== undefined && val !== null);
+
+                    // 1. Remover a atividade
+                    atividades.splice(index, 1);
+                    localStorage.setItem('atividades', JSON.stringify(atividades));
+
+                    // 2. Apagar avaliações correspondentes em chaves comuns
+                    ['avaliacoesAtividades', 'atividadesAvaliadas'].forEach(chaveStorage => {
+                        let listaAv = JSON.parse(localStorage.getItem(chaveStorage)) || [];
+                        listaAv = listaAv.filter(item => {
+                            const idAv = item.idAtividade !== undefined ? item.idAtividade :
+                                         (item.numeroAtividade !== undefined ? item.numeroAtividade :
+                                         (item.atividadeId !== undefined ? item.atividadeId :
+                                         (item.numero !== undefined ? item.numero : item.id)));
+                            return !numerosPossiveisAlvo.includes(idAv);
+                        });
+                        localStorage.setItem(chaveStorage, JSON.stringify(listaAv));
+                    });
+
+                    // 3. Apagar registos de objetivos correspondentes
+                    let objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+                    objetivosLista = objetivosLista.filter(item => {
+                        const idObj = item.numero !== undefined ? item.numero : 
+                                      (item.id !== undefined ? item.id : 
+                                      (item.numeroAtividade !== undefined ? item.numeroAtividade : 
+                                      (item.atividadeId !== undefined ? item.atividadeId : null)));
+                        return !numerosPossiveisAlvo.includes(idObj);
+                    });
+                    localStorage.setItem('registosObjetivosAtividades', JSON.stringify(objetivosLista));
+
+                    carregarAtividades();
+                    mostrarAlerta('Sucesso', `Atividade #${numAtv} e respetivos registos associados eliminados com sucesso!`);
+                }
+            );
         }
 
-        function eliminarTodasAtividades() {
+        function confirmarApagarTodas() {
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             if (atividades.length === 0) {
-                alert('Não existem atividades para apagar.');
+                mostrarAlerta('Aviso', 'Não existem atividades para apagar.');
                 return;
             }
 
-            if (confirm('ATENÇÃO: Tem a certeza absoluta que pretende eliminar TODAS as atividades registadas? Esta ação é irreversível!')) {
-                localStorage.removeItem('atividades');
-                carregarAtividades();
-            }
+            mostrarConfirmacao(
+                'Apagar Todas as Atividades', 
+                'ATENÇÃO: Tem a certeza absoluta que pretende eliminar TODAS as atividades, bem como todas as respetivas avaliações e registos de objetivos associados? Esta ação é irreversível!', 
+                () => {
+                    localStorage.removeItem('atividades');
+                    localStorage.removeItem('avaliacoesAtividades');
+                    localStorage.removeItem('atividadesAvaliadas');
+                    localStorage.removeItem('registosObjetivosAtividades');
+
+                    carregarAtividades();
+                    mostrarAlerta('Sucesso', 'Todas as atividades e registos conexos foram apagados com sucesso.');
+                }
+            );
         }
 
         // Inicializar painel
