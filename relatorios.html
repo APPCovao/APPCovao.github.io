@@ -130,7 +130,6 @@
             background-color: #0f172a;
         }
 
-        /* Estrutura por Temas (Títulos Principais) */
         .theme-section {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -153,7 +152,6 @@
             margin: 0 0 20px 0;
         }
 
-        /* Grelhas para os Cartões dentro de cada tema */
         .stats-grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -219,7 +217,6 @@
             border-radius: 10px;
         }
 
-        /* Grelha de Gráficos */
         .reports-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -301,7 +298,8 @@
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
-            <span>Olá, <strong id="userNameDisplay">Administrador Covão</strong></span>
+            <!-- Removida a palavra "Olá" do HTML -->
+            <span><strong id="userNameDisplay">Administrador Covão</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
@@ -379,9 +377,29 @@
             </div>
         </div>
 
-        <!-- 3º Título: Tipo de Atividade -->
+        <!-- 3º Título Novo: Cumprimento dos objetivos e metas -->
         <div class="theme-section">
-            <h2>3. Tipo de Atividade</h2>
+            <h2>3. Cumprimento dos objetivos e metas</h2>
+            <p class="theme-desc">Acompanhamento do progresso para o Objetivo 1 e Meta 1 (Máximo de 100% atingido com 6 registos).</p>
+            
+            <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="report-box">
+                    <h4>Progresso - Objetivo 1</h4>
+                    <p>Progresso baseado nas ocorrências (Meta: 6 registos = 100%).</p>
+                    <div id="chartGanttObj1" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Progresso - Meta 1</h4>
+                    <p>Progresso baseado nas ocorrências (Meta: 6 registos = 100%).</p>
+                    <div id="chartGanttMeta1" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4º Título (Renumerado): Tipo de Atividade -->
+        <div class="theme-section">
+            <h2>4. Tipo de Atividade</h2>
             <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
             
             <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 20px;">
@@ -403,9 +421,9 @@
             </div>
         </div>
 
-        <!-- 4º Título: Objetivos e Metas -->
+        <!-- 5º Título (Renumerado): Objetivos e Metas -->
         <div class="theme-section">
-            <h2>4. Objetivos e Metas</h2>
+            <h2>5. Objetivos e Metas</h2>
             <p class="theme-desc">Análise da seleção de objetivos e metas nas checkboxes dos registos.</p>
             
             <div class="stats-grid-2" style="margin-bottom: 20px;">
@@ -441,9 +459,9 @@
             </div>
         </div>
 
-        <!-- 5º Título: Requisições -->
+        <!-- 6º Título (Renumerado): Requisições -->
         <div class="theme-section">
-            <h2>5. Requisições</h2>
+            <h2>6. Requisições</h2>
             <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
             
             <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 20px;">
@@ -474,8 +492,11 @@
     </div>
 
     <script>
+        // Lógica do primeiro nome aplicada
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
-        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador Covão';
+        const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
+        const firstName = fullName.trim().split(' ')[0];
+        document.getElementById('userNameDisplay').innerText = firstName;
 
         function renderizarGraficoBarras(containerId, dadosObjeto) {
             const container = document.getElementById(containerId);
@@ -508,12 +529,34 @@
             });
         }
 
-        // Função Auxiliar para limpar a descrição e manter apenas o nome curto (ex: "Objetivo 2" em vez de "Objetivo 2: Descrição...")
+        // Função específica para a nova secção de progresso (Gantt/Percentagem até 100% com limite de 6)
+        function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const limiteMeta = 6;
+            // Limita a contagem a um máximo de 6 para efeitos visuais/percentagem (não ultrapassa 100%)
+            const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
+            const percentagem = Math.round((quantidadeEfetiva / limiteMeta) * 100);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-bar-item';
+            itemDiv.innerHTML = `
+                <div class="chart-bar-info">
+                    <span>${nomeItem} (Registo: ${quantidadeAtual}/6)</span>
+                    <span style="color: var(--primary-green);">${percentagem}%</span>
+                </div>
+                <div class="chart-bar-bg">
+                    <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        }
+
         function limparNomeCurto(texto) {
             if (!texto) return '';
             let str = String(texto).trim();
             
-            // Corta se encontrar dois-pontos, travessão ou hífen seguido de descrição
             if (str.includes(':')) {
                 str = str.split(':')[0].trim();
             } else if (str.includes(' - ')) {
@@ -559,7 +602,8 @@
             );
             document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
 
-            const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            // Suporta dados de objetivos e procura também no "restar_objetivos.html" (armazenado em localStorage 'registosObjetivosAtividades' ou 'restar_objetivos')
+            const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || JSON.parse(localStorage.getItem('restar_objetivos')) || [];
             document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
 
             let contadorPaaObjetivos = 0;
@@ -580,6 +624,58 @@
             document.getElementById('statPaa').innerText = contadorPaaObjetivos;
             document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
+            // Lógica para calcular contagens do Objetivo 1 e Meta 1 (verificando tanto em localStorage geral como no restar_objetivos)
+            let contagemObj1 = 0;
+            let contagemMeta1 = 0;
+
+            const todasFontesAnalise = [...objetivosLista, ...atividadesLista, ...(JSON.parse(localStorage.getItem('restar_objetivos')) || [])];
+
+            todasFontesAnalise.forEach(item => {
+                // Verificar Objetivo 1
+                const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
+                camposObj.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(o => {
+                            if (limparNomeCurto(o).toLowerCase() === 'objetivo 1' || limparNomeCurto(o).toLowerCase() === 'obj 1' || String(o).includes('1')) {
+                                contagemObj1++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        if (val.toLowerCase().includes('objetivo 1') || val.toLowerCase().includes('obj 1')) {
+                            contagemObj1++;
+                        }
+                    }
+                });
+
+                if (item.objetivo1 === true || item.objetivo1 === 'true' || item.objetivo1 === 'Sim' || item.obj1 === true) {
+                    contagemObj1++;
+                }
+
+                // Verificar Meta 1
+                const camposMeta = [item.metas, item.meta, item.metasSelecionadas];
+                camposMeta.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(m => {
+                            if (limparNomeCurto(m).toLowerCase() === 'meta 1' || String(m).includes('1')) {
+                                contagemMeta1++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        if (val.toLowerCase().includes('meta 1')) {
+                            contagemMeta1++;
+                        }
+                    }
+                });
+
+                if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') {
+                    contagemMeta1++;
+                }
+            });
+
+            // Renderizar na nova 3ª secção os gráficos de progresso tipo Gantt
+            renderizarProgressoGantt('chartGanttObj1', 'Objetivo 1', contagemObj1);
+            renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1);
+
             let contagemTipos = {};
             atividadesLista.forEach(atv => {
                 const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
@@ -589,7 +685,6 @@
             document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
             renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
 
-            // Secção 4: Objetivos e Metas (Apenas com nome curto)
             let contagemObjetivos = {};
             let contagemMetas = {};
             let totalObjSel = 0;
@@ -598,7 +693,6 @@
             const todasFontes = [...objetivosLista, ...atividadesLista];
 
             todasFontes.forEach(item => {
-                // A) Arrays ou strings de objetivos
                 const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                 camposObjPossiveis.forEach(val => {
                     if (Array.isArray(val)) {
@@ -620,7 +714,6 @@
                     }
                 });
 
-                // B) Propriedades individuais booleanas de objetivos (ex: objetivo1, obj2)
                 Object.keys(item).forEach(chave => {
                     const chaveLower = chave.toLowerCase();
                     if ((chaveLower.includes('obj') || chaveLower.includes('objetivo')) && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
@@ -630,7 +723,6 @@
                     }
                 });
 
-                // C) Arrays ou strings de metas
                 const camposMetaPossiveis = [item.metas, item.meta, item.metasSelecionadas];
                 camposMetaPossiveis.forEach(val => {
                     if (Array.isArray(val)) {
@@ -652,7 +744,6 @@
                     }
                 });
 
-                // D) Propriedades individuais booleanas de metas (ex: meta1)
                 Object.keys(item).forEach(chave => {
                     const chaveLower = chave.toLowerCase();
                     if (chaveLower.includes('meta') && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
@@ -668,7 +759,6 @@
             renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
             renderizarGraficoBarras('chartMetas', contagemMetas);
 
-            // Contagens para os Gráficos de Requisições
             let contagemAreas = {};
             let contagemEquipamentos = {};
 
