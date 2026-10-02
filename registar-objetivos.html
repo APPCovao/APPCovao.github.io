@@ -338,32 +338,25 @@
             
             <form id="objetivoFormModal" onsubmit="salvarEdicaoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
-                
-                <div class="form-group" id="groupSelectAtividade" style="display: none;">
-                    <label>Selecionar Atividade <span class="required">*</span></label>
-                    <select id="modalSelectAtividadeId" onchange="aoSelecionarAtividade(this.value)">
-                        <option value="">Selecione uma atividade</option>
-                    </select>
-                </div>
 
                 <div class="form-group">
-                    <label>Número da Atividade</label>
-                    <input type="text" id="modalObjNumAtividade" readonly placeholder="Gerado automaticamente">
+                    <label>Número da Atividade <span class="required">*</span></label>
+                    <input type="text" id="modalObjNumAtividade" placeholder="Ex: 1, 2, 3..." required oninput="aoMudarNumeroAtividade(this.value)">
                 </div>
 
                 <div class="form-group">
                     <label>Nome da Atividade</label>
-                    <input type="text" id="modalObjNomeAtividade" readonly placeholder="Nome da atividade">
+                    <input type="text" id="modalObjNomeAtividade" readonly placeholder="Preenchimento automático">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" readonly placeholder="Ano letivo">
+                        <input type="text" id="modalObjAnoLetivo" readonly placeholder="Preenchimento automático">
                     </div>
                     <div class="form-group">
                         <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" readonly placeholder="Tipo">
+                        <input type="text" id="modalObjTipo" readonly placeholder="Preenchimento automático">
                     </div>
                 </div>
 
@@ -419,13 +412,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Média Geral das Avaliações</label>
-                    <input type="text" id="modalObjMedia" readonly placeholder="N/A">
+                    <label>Média Geral das Avaliações (Pertinência, Dinâmica e Interesse)</label>
+                    <input type="text" id="modalObjMedia" readonly placeholder="Calculado automaticamente a partir das avaliações">
                 </div>
 
                 <div class="form-group">
-                    <label>Sugestões Recolhidas</label>
-                    <textarea id="modalObjSugestoes" readonly placeholder="Compilação automática das sugestões dos avaliadores..."></textarea>
+                    <label>Sugestões Recolhidas de Todos os Avaliadores</label>
+                    <textarea id="modalObjSugestoes" readonly placeholder="Compilação automática das sugestões..."></textarea>
                 </div>
 
                 <div class="form-group">
@@ -504,50 +497,110 @@
             });
         }
 
-        function carregarSelectAtividades() {
-            const select = document.getElementById('modalSelectAtividadeId');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            select.innerHTML = '<option value="">Selecione uma atividade</option>';
-            atividades.forEach(a => {
-                const opt = document.createElement('option');
-                opt.value = a.id;
-                opt.text = `[Nº ${a.numero || a.id}] ${a.titulo}`;
-                select.appendChild(opt);
-            });
-        }
-
-        function aoSelecionarAtividade(id) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const a = atividades.find(item => item.id == id);
-            if (a) {
-                document.getElementById('modalObjNumAtividade').value = a.numero || a.id;
-                document.getElementById('modalObjNomeAtividade').value = a.titulo || '';
-                document.getElementById('modalObjAnoLetivo').value = a.anoLetivo || '';
-                document.getElementById('modalObjTipo').value = a.tipo || '';
-            } else {
-                document.getElementById('modalObjNumAtividade').value = '';
+        function preencherDadosAutomaticosPorNumero(numInput) {
+            const numStr = String(numInput || '').trim();
+            if (!numStr) {
                 document.getElementById('modalObjNomeAtividade').value = '';
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
+                document.getElementById('modalObjMedia').value = '';
+                document.getElementById('modalObjSugestoes').value = '';
+                return null;
             }
+
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
+
+            if (atv) {
+                document.getElementById('modalObjNomeAtividade').value = atv.titulo || '';
+                document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || '';
+                document.getElementById('modalObjTipo').value = atv.tipo || '';
+
+                // Calcular média e sugestões a partir das avaliações guardadas
+                calcularMediaESugestoes(atv.id, atv.numero);
+                return atv;
+            } else {
+                document.getElementById('modalObjNomeAtividade').value = 'Atividade não encontrada';
+                document.getElementById('modalObjAnoLetivo').value = '';
+                document.getElementById('modalObjTipo').value = '';
+                document.getElementById('modalObjMedia').value = 'N/A';
+                document.getElementById('modalObjSugestoes').value = '';
+                return null;
+            }
+        }
+
+        function calcularMediaESugestoes(atvId, atvNumero) {
+            // Procura avaliações guardadas (chaves comuns: 'avaliacoes', 'registosAvaliacoes', etc.)
+            let avaliacoes = JSON.parse(localStorage.getItem('avaliacoes')) || JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
+            
+            // Filtra as avaliações que correspondem à atividade
+            const avaliacoesDaAtividade = avaliacoes.filter(av => 
+                av.atividadeId == atvId || av.numeroAtividade == atvNumero || String(av.idAtividade) == String(atvId)
+            );
+
+            if (avaliacoesDaAtividade.length === 0) {
+                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
+                document.getElementById('modalObjSugestoes').value = 'Nenhuma sugestão recolhida.';
+                return;
+            }
+
+            let somaPertinencia = 0;
+            let somaDinamica = 0;
+            let somaInteresse = 0;
+            let totalValidas = 0;
+            let listaSugestoes = [];
+
+            avaliacoesDaAtividade.forEach(av => {
+                // Suporta várias estruturas possíveis para as notas (ex: pertinencia, dinamica, interesse)
+                const p = parseFloat(av.pertinencia || av.notaPertinencia || av.p || 0);
+                const d = parseFloat(av.dinamica || av.notaDinamica || av.d || 0);
+                const i = parseFloat(av.interesse || av.notaInteresse || av.int || 0);
+
+                if (p > 0 || d > 0 || i > 0) {
+                    somaPertinencia += p;
+                    somaDinamica += d;
+                    somaInteresse += i;
+                    totalValidas++;
+                }
+
+                const sug = av.sugestoes || av.sugestao || av.comentarios || av.comentario;
+                if (sug && String(sug).trim() !== '') {
+                    listaSugestoes.push(`• ${String(sug).trim()}`);
+                }
+            });
+
+            if (totalValidas > 0) {
+                const mediaP = somaPertinencia / totalValidas;
+                const mediaD = somaDinamica / totalValidas;
+                const mediaI = somaInteresse / totalValidas;
+                const mediaGlobal = (mediaP + mediaD + mediaI) / 3;
+                document.getElementById('modalObjMedia').value = `Média Global: ${mediaGlobal.toFixed(2)} / 5 (Pertinência: ${mediaP.toFixed(1)} | Dinâmica: ${mediaD.toFixed(1)} | Interesse: ${mediaI.toFixed(1)}) — ${totalValidas} avaliação(ões)`;
+            } else {
+                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas.';
+            }
+
+            if (listaSugestoes.length > 0) {
+                document.getElementById('modalObjSugestoes').value = listaSugestoes.join('\n');
+            } else {
+                document.getElementById('modalObjSugestoes').value = 'Sem sugestões registadas pelos avaliadores.';
+            }
+        }
+
+        function aoMudarNumeroAtividade(val) {
+            preencherDadosAutomaticosPorNumero(val);
         }
 
         function abrirModalObjetivo(id, modo) {
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const inputs = document.querySelectorAll('#objetivoFormModal input:not([type="hidden"]), #objetivoFormModal select, #objetivoFormModal textarea');
             const saveBtn = document.getElementById('modalObjSaveBtn');
-            const groupSelectAtividade = document.getElementById('groupSelectAtividade');
 
             if (modo === 'criar') {
                 document.getElementById('modalObjetivoTitle').innerText = 'Registar Objetivos e Avaliação Global';
                 document.getElementById('editObjetivoId').value = '';
                 document.getElementById('objetivoFormModal').reset();
                 
-                groupSelectAtividade.style.display = 'block';
-                carregarSelectAtividades();
-
                 inputs.forEach(el => el.disabled = false);
-                document.getElementById('modalObjNumAtividade').disabled = true;
                 document.getElementById('modalObjNomeAtividade').disabled = true;
                 document.getElementById('modalObjAnoLetivo').disabled = true;
                 document.getElementById('modalObjTipo').disabled = true;
@@ -558,9 +611,8 @@
                 const reg = registos.find(r => r.id == id);
                 if (!reg) return;
 
-                groupSelectAtividade.style.display = 'none';
                 document.getElementById('editObjetivoId').value = reg.id;
-                document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || '-';
+                document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || '';
                 document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || '';
                 document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || '';
                 document.getElementById('modalObjTipo').value = reg.tipoAtividade || '';
@@ -570,9 +622,6 @@
                 document.getElementById('modalObjSugestoes').value = reg.sugestoesRecolhidas || '';
                 document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
 
-                document.querySelectorAll('#objetivoFormModal inputname="objCheck"').forEach(chk => {
-                    chk.checked = false;
-                });
                 document.querySelectorAll('#objetivoFormModal input[name="objCheck"]').forEach(chk => {
                     chk.checked = reg.objetivosSelecionados && reg.objetivosSelecionados.includes(chk.value);
                 });
@@ -587,7 +636,6 @@
                 } else {
                     document.getElementById('modalObjetivoTitle').innerText = 'Editar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = false);
-                    document.getElementById('modalObjNumAtividade').disabled = true;
                     document.getElementById('modalObjNomeAtividade').disabled = true;
                     document.getElementById('modalObjAnoLetivo').disabled = true;
                     document.getElementById('modalObjTipo').disabled = true;
@@ -614,40 +662,40 @@
             let metasSel = [];
             document.querySelectorAll('#objetivoFormModal input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
 
-            if (id === '' || id === null) {
-                // Criar novo registo
-                const selectAtvId = document.getElementById('modalSelectAtividadeId').value;
-                if (!selectAtvId) {
-                    alert('Por favor, selecione uma atividade.');
-                    return;
-                }
-                const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                const atv = atividades.find(item => item.id == selectAtvId);
+            const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
 
+            if (id === '' || id === null) {
                 const novoRegisto = {
                     id: Date.now(),
-                    atividadeId: selectAtvId,
-                    numeroAtividade: atv ? (atv.numero || atv.id) : '',
-                    nomeAtividade: atv ? atv.titulo : '',
-                    anoLetivo: atv ? atv.anoLetivo : '',
-                    tipoAtividade: atv ? atv.tipo : '',
+                    atividadeId: atvEncontrada ? atvEncontrada.id : '',
+                    numeroAtividade: numAtvInput,
+                    nomeAtividade: document.getElementById('modalObjNomeAtividade').value,
+                    anoLetivo: document.getElementById('modalObjAnoLetivo').value,
+                    tipoAtividade: document.getElementById('modalObjTipo').value,
                     integraPaa: document.getElementById('modalObjPaa').value,
                     integraPee: document.getElementById('modalObjPee').value,
                     objetivosSelecionados: objsSel,
                     metasSelecionadas: metasSel,
-                    mediaGeral: 'N/A',
-                    sugestoesRecolhidas: '',
+                    mediaGeral: document.getElementById('modalObjMedia').value,
+                    sugestoesRecolhidas: document.getElementById('modalObjSugestoes').value,
                     resumoConclusoes: document.getElementById('modalObjResumo').value,
                     criadorId: currentUser.id,
                     criadorNome: currentUser.name || currentUser.email
                 };
                 registos.push(novoRegisto);
             } else {
-                // Editar existente
                 let reg = registos.find(r => r.id == id);
                 if (reg) {
+                    reg.numeroAtividade = numAtvInput;
+                    reg.nomeAtividade = document.getElementById('modalObjNomeAtividade').value;
+                    reg.anoLetivo = document.getElementById('modalObjAnoLetivo').value;
+                    reg.tipoAtividade = document.getElementById('modalObjTipo').value;
                     reg.integraPaa = document.getElementById('modalObjPaa').value;
                     reg.integraPee = document.getElementById('modalObjPee').value;
+                    reg.mediaGeral = document.getElementById('modalObjMedia').value;
+                    reg.sugestoesRecolhidas = document.getElementById('modalObjSugestoes').value;
                     reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
                     reg.objetivosSelecionados = objsSel;
                     reg.metasSelecionadas = metasSel;
