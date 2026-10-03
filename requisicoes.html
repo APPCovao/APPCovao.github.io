@@ -63,6 +63,26 @@
             white-space: nowrap;
         }
 
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
         .main-container {
             max-width: 1200px;
             margin: 15px auto;
@@ -138,10 +158,6 @@
 
         .btn-top-primary:hover {
             background-color: var(--primary-green-hover);
-        }
-
-        .filter-container {
-            margin-top: 4px;
         }
 
         .filter-container input {
@@ -288,6 +304,7 @@
             .navbar .brand { font-size: 1.1rem; }
             .navbar .nav-right { font-size: 14px; gap: 20px; }
             .navbar .nav-right span { max-width: 200px; }
+            .btn-voltar-menu { font-size: 13px; padding: 6px 14px; }
             .main-container { margin: 30px auto; padding: 0 20px; gap: 25px; }
             .section-header-card { padding: 24px 30px; flex-direction: row; justify-content: space-between; align-items: center; }
             .section-header-top { gap: 6px; }
@@ -313,7 +330,8 @@
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
-            <span>Olá, <strong id="userNameDisplay">Administrador Covão</strong></span>
+            <span><strong id="userNameDisplay">Utilizador</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
 
@@ -442,8 +460,11 @@
             localStorage.setItem('requisicoes', JSON.stringify(dadosIniciais));
         }
 
+        // Gestão do Utilizador Logado (Apenas primeiro nome, sem "Olá")
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão', email: 'admin@covao.pt' };
-        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador Covão';
+        let nomeCompletoUser = currentUser.name || currentUser.nome || currentUser.email || 'Administrador Covão';
+        let primeiroNomeUser = nomeCompletoUser.includes('@') ? nomeCompletoUser.split('@')[0] : nomeCompletoUser.split(' ')[0];
+        document.getElementById('userNameDisplay').innerText = primeiroNomeUser;
 
         function carregarRequisicoes() {
             const tbody = document.getElementById('requisicoesTableBody');
