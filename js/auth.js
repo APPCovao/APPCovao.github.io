@@ -17,11 +17,11 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     }
 }
 
-// 1. Inicializar utilizadores predefinidos
+// 1. Inicializar utilizadores predefinidos (com campos de aprovação)
 if (!localStorage.getItem('users')) {
     const defaultUsers = [
-        { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true },
-        { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false }
+        { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
+        { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
     ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
 }
@@ -109,6 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (found) {
+                // Validação de aprovação do Administrador (exceto administradores)
+                const isAdmin = found.isAdmin === true || found.role === 'admin' || found.tipo === 'admin' || email.toLowerCase().includes('admin');
+                const estaAprovado = found.aprovado === true || found.status === 'aprovado' || found.ativo === true;
+
+                if (!isAdmin && !estaAprovado) {
+                    mostrarPopup('Conta Pendente', 'A sua conta ainda não foi aprovada pelo administrador no painel de controlo. Por favor, aguarde a validação.', '⏳');
+                    return;
+                }
+
                 localStorage.setItem('currentUser', JSON.stringify(found));
                 
                 // Redirecionamento inteligente após o login
@@ -146,19 +155,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Novo utilizador criado fica pendente de aprovação
             const novoUtilizador = {
                 id: Date.now(),
                 name: nameVal,
                 email: emailVal,
                 password: passVal,
-                isAdmin: false
+                isAdmin: false,
+                aprovado: false, // Requer aprovação do administrador
+                status: 'pendente'
             };
 
             users.push(novoUtilizador);
             localStorage.setItem('users', JSON.stringify(users));
             registerForm.reset();
 
-            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! Podes fazer login.', '🎉', () => {
+            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! O acesso só será permitido após o administrador aprovar o registo no painel de controlo.', '🎉', () => {
                 const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container');
                 const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container');
                 if (registerScreen) registerScreen.style.display = 'none';
