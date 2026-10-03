@@ -308,8 +308,8 @@
         </div>
         <div class="user-info">
             <span><strong id="userNameSpan">Utilizador</strong></span>
-            <!-- Botão Voltar dinâmico consoante o domínio do utilizador -->
-            <a href="#" id="btnVoltarMenu" class="btn-voltar-menu" onclick="voltarPaginaPrincipal(event)">⬅ Voltar</a>
+            <!-- Botão Voltar da página de listagem vai para atividades.html -->
+            <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar</a>
         </div>
     </nav>
 
@@ -411,6 +411,7 @@
                 </div>
 
                 <div class="modal-buttons">
+                    <!-- Botão cancelar/voltar dentro dos formulários vai para avaliar-atividade.html -->
                     <button type="button" class="btn-modal btn-modal-cancel" onclick="voltarParaAvaliarAtividade()">Voltar / Cancelar</button>
                     <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
                 </div>
@@ -452,19 +453,6 @@
             const fullName = currentUser.name || currentUser.email || 'Utilizador';
             const firstName = fullName.trim().split(' ')[0];
             document.getElementById('userNameSpan').innerText = firstName;
-        }
-
-        // Função inteligente para o botão Voltar: se for domínio oficial vai para 'atividades.html', senão faz logout ou mantém-se seguro
-        function voltarPaginaPrincipal(e) {
-            e.preventDefault();
-            const email = currentUser && currentUser.email ? currentUser.email.toLowerCase() : '';
-            if (email.endsWith('@edu.madeira.gov.pt')) {
-                window.location.href = 'atividades.html';
-            } else {
-                // Utilizadores externos ao clicar em voltar podem ir para o index (ou efetuar logout)
-                localStorage.removeItem('currentUser');
-                window.location.href = 'index.html';
-            }
         }
 
         function isAdminUser(user) {
@@ -581,6 +569,7 @@
                     inputs.forEach(el => el.disabled = false);
                     document.getElementById('modalAvNomeAtividade').readOnly = true;
                     document.getElementById('modalAvTipoAtividade').readOnly = true;
+                    // Bloqueia o campo do ano letivo no formulário de edição
                     document.getElementById('modalAvAnoLetivo').disabled = true;
                     saveBtn.style.display = 'inline-block';
                 }
@@ -593,6 +582,7 @@
             document.getElementById('listTableCard').style.display = 'block';
         }
 
+        // Redireciona para avaliar-atividade.html quando se clica em Voltar/Cancelar dentro do formulário
         function voltarParaAvaliarAtividade() {
             window.location.href = 'avaliar-atividade.html';
         }
@@ -632,6 +622,7 @@
                     av.numeroAtividade = numeroAtividade;
                     av.tituloAtividade = nomeAtividade || av.tituloAtividade;
                     av.tipoAtividade = tipoAtividade || av.tipoAtividade;
+                    // Mantém o ano letivo anterior ao editar, garantindo que não se altera indevidamente
                     av.anoLetivo = av.anoLetivo || document.getElementById('modalAvAnoLetivo').value;
                     av.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
                     av.pertinencia = document.getElementById('modalAvPertinencia').value;
