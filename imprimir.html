@@ -140,7 +140,7 @@
 <body>
 
     <div class="print-container">
-        <!-- CABEÇALHO COM MAIS DESTAQUE (SEM NÚMERO DE ATIVIDADE) -->
+        <!-- CABEÇALHO -->
         <div class="print-header">
             <div class="school-info">
                 <h2>EB1/PE do Covão e Vargem</h2>
@@ -151,7 +151,7 @@
             </div>
         </div>
 
-        <!-- NOME DA ATIVIDADE EM DESTAQUE (OCUPA A LINHA INTEIRA) -->
+        <!-- NOME DA ATIVIDADE EM DESTAQUE -->
         <div class="section-block" style="background-color: #f0fdf4; border-color: var(--border-color);">
             <div class="label-title">Nome da Atividade</div>
             <div class="value-content" id="printNomeAtividade" style="font-size: 16px; font-weight: 700; color: #14532d;">-</div>
@@ -168,15 +168,21 @@
             </div>
         </div>
 
+        <!-- CAMPO DO RESPONSÁVEL E INTEGRAÇÃO PAA -->
         <div class="grid-2">
+            <div class="section-block">
+                <div class="label-title">Responsável</div>
+                <div class="value-content" id="printResponsavel">-</div>
+            </div>
             <div class="section-block">
                 <div class="label-title">Integra o PAA?</div>
                 <div class="value-content" id="printPaa">-</div>
             </div>
-            <div class="section-block">
-                <div class="label-title">Integra o PEE?</div>
-                <div class="value-content" id="printPee">-</div>
-            </div>
+        </div>
+
+        <div class="section-block">
+            <div class="label-title">Integra o PEE?</div>
+            <div class="value-content" id="printPee">-</div>
         </div>
 
         <div class="section-block">
@@ -216,6 +222,7 @@
                 document.getElementById('printNomeAtividade').innerText = nomeAtividade;
                 document.getElementById('printAnoLetivo').innerText = reg.anoLetivo || '-';
                 document.getElementById('printTipoAtividade').innerText = reg.tipoAtividade || '-';
+                document.getElementById('printResponsavel').innerText = reg.responsavel || '-';
                 document.getElementById('printPaa').innerText = reg.integraPaa || '-';
                 document.getElementById('printPee').innerText = reg.integraPee || '-';
                 document.getElementById('printMedia').innerText = reg.mediaGeral || '-';
