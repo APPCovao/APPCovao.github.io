@@ -396,6 +396,37 @@
                     <div id="chartGanttMeta3" class="chart-container"></div>
                 </div>
             </div>
+
+            <!-- Objetivo 3 e Meta 4 na mesma linha (2 colunas) -->
+            <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
+                <div class="report-box">
+                    <h4>Objetivo 3</h4>
+                    <div id="chartGanttObj3" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 4</h4>
+                    <div id="chartGanttMeta4" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Objetivo 4, Meta 5 e Meta 6 na mesma linha (3 colunas) -->
+            <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 20px;">
+                <div class="report-box">
+                    <h4>Objetivo 4</h4>
+                    <div id="chartGanttObj4" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 5</h4>
+                    <div id="chartGanttMeta5" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 6</h4>
+                    <div id="chartGanttMeta6" class="chart-container"></div>
+                </div>
+            </div>
         </div>
 
         <!-- 4º Título: Tipo de Atividade -->
@@ -498,7 +529,6 @@
         const firstName = fullName.trim().split(' ')[0];
         document.getElementById('userNameDisplay').innerText = firstName;
 
-        // Função para determinar a cor personalizada com base na percentagem (utilizada apenas na Secção 3)
         function obterCorPorPercentagem(percentagem) {
             if (percentagem <= 49) {
                 return '#dc2626'; // Vermelho
@@ -513,7 +543,6 @@
             }
         }
 
-        // Gráficos normais (mantêm o verde padrão)
         function renderizarGraficoBarras(containerId, dadosObjeto) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -545,8 +574,7 @@
             });
         }
 
-        // Gráficos de Gantt da Secção 3 (aplicam a alteração dinâmica de cores)
-        function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual, limiteMeta = 6) {
+        function renderizarProgressoGantt(containerId, quantidadeAtual, limiteMeta = 6) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
@@ -558,7 +586,7 @@
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
-                    <span>${nomeItem} (Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
+                    <span>(Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
                     <span style="color: ${corBarra};">${percentagem}%</span>
                 </div>
                 <div class="chart-bar-bg">
@@ -568,7 +596,7 @@
             container.appendChild(itemDiv);
         }
 
-        function renderizarProgressoMetaGantt(containerId, nomeItem, percentagemAtual, metaPercentagem = 75) {
+        function renderizarProgressoMetaGantt(containerId, percentagemAtual, metaPercentagem = 75) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
@@ -579,8 +607,8 @@
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
-                    <span>${nomeItem} (Média: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
-                    <span style="color: ${corBarra};">${progressoVisual}% da Meta</span>
+                    <span>(Média: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
+                    <span style="color: ${corBarra};">${progressoVisual}%</span>
                 </div>
                 <div class="chart-bar-bg">
                     <div class="chart-bar-fill" style="width: ${progressoVisual}%; background-color: ${corBarra};"></div>
@@ -705,8 +733,8 @@
                 }
             });
 
-            renderizarProgressoGantt('chartGanttObj1', 'Objetivo 1', contagemObj1, 6);
-            renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1, 6);
+            renderizarProgressoGantt('chartGanttObj1', contagemObj1, 6);
+            renderizarProgressoGantt('chartGanttMeta1', contagemMeta1, 6);
 
             // ==========================================
             // Lógica para Meta 2 (Português), Meta 3 (Matemática) e Objetivo 2 (Média de ambos)
@@ -742,9 +770,16 @@
             const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
             const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
 
-            renderizarProgressoMetaGantt('chartGanttObj2', 'Objetivo 2', mediaObj2, 75);
-            renderizarProgressoMetaGantt('chartGanttMeta2', 'Meta 2 (Português)', mediaMeta2, 75);
-            renderizarProgressoMetaGantt('chartGanttMeta3', 'Meta 3 (Matemática)', mediaMeta3, 75);
+            renderizarProgressoMetaGantt('chartGanttObj2', mediaObj2, 75);
+            renderizarProgressoMetaGantt('chartGanttMeta2', mediaMeta2, 75);
+            renderizarProgressoMetaGantt('chartGanttMeta3', mediaMeta3, 75);
+
+            // Inicializações vazias / placeholders para os novos blocos (Objetivo 3, Meta 4, Objetivo 4, Meta 5, Meta 6)
+            renderizarProgressoGantt('chartGanttObj3', 0, 6);
+            renderizarProgressoGantt('chartGanttMeta4', 0, 6);
+            renderizarProgressoGantt('chartGanttObj4', 0, 6);
+            renderizarProgressoGantt('chartGanttMeta5', 0, 6);
+            renderizarProgressoGantt('chartGanttMeta6', 0, 6);
 
             // ==========================================
             // Restantes Gráficos
