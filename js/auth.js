@@ -9,22 +9,22 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     } else {
         const email = usuarioLogado.email ? usuarioLogado.email.toLowerCase() : '';
         const isDominioOficial = email.endsWith('@edu.madeira.gov.pt');
+        const isAdmin = usuarioLogado.isAdmin === true || usuarioLogado.role === 'admin' || usuarioLogado.tipo === 'admin' || email.includes('admin') || email === 'luis.araujo@edu.madeira.gov.pt';
         
-        // Se NÃO for do domínio oficial e NÃO estiver na página de avaliação, redireciona-o para lá
-        if (!isDominioOficial && paginaAtual !== 'avaliar-atividade.html') {
+        // Se NÃO for do domínio oficial, NÃO for admin, e NÃO estiver na página de avaliação, redireciona-o para lá
+        if (!isDominioOficial && !isAdmin && paginaAtual !== 'avaliar-atividade.html') {
             window.location.href = 'avaliar-atividade.html';
         }
     }
 }
 
-// 1. Inicializar ou forçar a atualização dos utilizadores predefinidos com acesso total
+// 1. Inicializar ou forçar a atualização dos utilizadores predefinidos com privilégios de administrador
 const defaultUsers = [
     { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
     { id: 2, name: 'Luís Araújo', email: 'luis.araujo@edu.madeira.gov.pt', password: '1abc234araujo', isAdmin: true, aprovado: true },
     { id: 3, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
 ];
 
-// Garante que os utilizadores predefinidos existem e estão atualizados no localStorage
 let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 defaultUsers.forEach(defUser => {
     const index = storedUsers.findIndex(u => u.email.toLowerCase() === defUser.email.toLowerCase());
@@ -122,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (found) {
                 const emailLower = found.email.toLowerCase();
-                // Identifica se é administrador (incluindo explicitamente o Luís Araújo)
                 const isAdmin = found.isAdmin === true || found.role === 'admin' || found.tipo === 'admin' || emailLower.includes('admin') || emailLower === 'luis.araujo@edu.madeira.gov.pt';
                 const estaAprovado = found.aprovado === true || found.status === 'aprovado' || found.ativo === true;
 
@@ -133,8 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 localStorage.setItem('currentUser', JSON.stringify(found));
                 
-                // Redirecionamento inteligente após o login
-                if (emailLower.endsWith('@edu.madeira.gov.pt')) {
+                // Redirecionamento inteligente: Administradores vão sempre para o dashboard/painel geral
+                if (isAdmin || emailLower.endsWith('@edu.madeira.gov.pt')) {
                     window.location.href = 'dashboard.html';
                 } else {
                     window.location.href = 'avaliar-atividade.html';
@@ -157,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const passVal = inputs[2].value.trim();
 
             if (!nameVal || !emailVal || !passVal) {
-                mostrarPopup('Atenção', 'Por favor, preencha todos os campos.', '⚠️️');
+                mostrarPopup('Atenção', 'Por favor, preencha todos os campos.', '⚠️');
                 return;
             }
 
