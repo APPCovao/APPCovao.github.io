@@ -116,6 +116,24 @@
             background-color: #15803d;
         }
 
+        .btn-back {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-back:hover {
+            background-color: #475569;
+        }
+
         @media print {
             .no-print {
                 display: none;
@@ -168,7 +186,6 @@
             </div>
         </div>
 
-        <!-- CAMPO DO RESPONSÁVEL E INTEGRAÇÃO PAA -->
         <div class="grid-2">
             <div class="section-block">
                 <div class="label-title">Responsável</div>
@@ -202,9 +219,10 @@
             <div class="value-content" id="printResumo" style="white-space: pre-line;">-</div>
         </div>
 
+        <!-- BOTÕES DE AÇÃO (NÃO APARECEM NA IMPRESSÃO) -->
         <div class="no-print">
             <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-            <button class="btn-print" style="background-color: #64748b; margin-left: 10px;" onclick="window.close()">Fechar Janela</button>
+            <a href="objetivos_registados.html" class="btn-back">← Voltar a Registos</a>
         </div>
     </div>
 
@@ -250,12 +268,6 @@
                 alert('Registo não encontrado.');
             }
         }
-
-        window.onload = function() {
-            setTimeout(() => {
-                window.print();
-            }, 500);
-        };
     </script>
 </body>
 </html>
