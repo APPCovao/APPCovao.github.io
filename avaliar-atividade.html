@@ -275,6 +275,13 @@
         }
         @media (min-width: 500px) {
             .modal-buttons { flex-direction: row; justify-content: flex-end; }
+            .grid-scores { grid-template-columns: repeat(3, 1fr) !important; }
+        }
+
+        .grid-scores {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
         .btn-modal {
@@ -301,7 +308,7 @@
         </div>
         <div class="user-info">
             <span><strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅️️ Voltar</a>
+            <a href="avaliar-atividade.html" class="btn-voltar-menu">⬅ Voltar</a>
         </div>
     </nav>
 
@@ -373,10 +380,7 @@
                     </select>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100%, 1fr)); gap: 15px;">
-                    @media (min-width: 500px) {
-                        div[style*="grid-template-columns"] { grid-template-columns: repeat(3, 1fr) !important; }
-                    }
+                <div class="grid-scores">
                     <div class="form-group">
                         <label>Pertinência (1-5) <span class="required">*</span></label>
                         <select id="modalAvPertinencia" required>
