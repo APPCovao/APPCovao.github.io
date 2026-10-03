@@ -74,6 +74,7 @@
             max-width: 1200px;
             margin: 20px auto;
             padding: 0 15px;
+            box-sizing: border-box;
         }
 
         .section-header-card {
@@ -106,6 +107,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            width: 100%;
         }
 
         .btn-top-action {
@@ -122,11 +124,14 @@
             gap: 6px;
             transition: background 0.2s;
             text-decoration: none;
+            width: 100%;
+            justify-content: center;
+            box-sizing: border-box;
         }
 
         .btn-top-action:hover { background-color: #0f172a; }
 
-        /* Estilo da barra de filtros */
+        /* Barra de filtros otimizada */
         .filters-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -137,6 +142,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            box-sizing: border-box;
         }
 
         .filter-group label {
@@ -151,10 +157,10 @@
 
         .filter-group input {
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 14px;
             box-sizing: border-box;
             background-color: #fff;
         }
@@ -171,23 +177,23 @@
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            overflow-x: auto;
         }
 
-        .table-card { overflow-x: auto; }
         .form-section-card { padding: 20px; display: none; }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 500px;
+            min-width: 450px;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 14px 16px;
-            font-size: 12px;
+            padding: 12px 14px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
             border-bottom: 2px solid var(--border-color);
@@ -195,7 +201,7 @@
         }
 
         td {
-            padding: 14px 16px;
+            padding: 12px 14px;
             font-size: 13px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
@@ -214,7 +220,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 3px;
+            margin-right: 2px;
             transition: opacity 0.2s;
             vertical-align: middle;
         }
@@ -308,6 +314,7 @@
             margin-top: 20px;
             border-top: 1px solid #e5e7eb;
             padding-top: 16px;
+            flex-direction: column-reverse;
         }
 
         .btn-form-action {
@@ -317,6 +324,9 @@
             border: none;
             cursor: pointer;
             font-size: 13px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
         }
         .btn-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-cancel:hover { background-color: #cbd5e1; }
@@ -330,6 +340,7 @@
             align-items: center;
             z-index: 2000;
             padding: 1rem;
+            box-sizing: border-box;
         }
         .custom-modal {
             background-color: var(--card-bg);
@@ -340,62 +351,60 @@
             width: 100%;
             max-width: 360px;
             text-align: center;
+            box-sizing: border-box;
         }
 
-        /* MEDIA QUERIES PARA TELEMÓVEL VERTICAL */
+        /* MEDIA QUERIES RIGOROSAS PARA TELEMÓVEL VERTICAL */
         @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
             .navbar {
-                padding: 0.6rem 1rem;
+                padding: 0.6rem 0.8rem;
             }
             .navbar .brand span {
-                display: none;
+                display: none; /* Oculta texto da marca para poupar espaço precioso */
             }
             .navbar .user-info {
-                gap: 10px;
-                font-size: 12px;
+                gap: 8px;
+                font-size: 11px;
             }
             .navbar .user-info span {
-                max-width: 110px;
+                max-width: 95px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
             .main-container {
-                margin: 15px 10px;
+                margin: 10px 6px;
                 padding: 0;
             }
             .section-header-card {
-                padding: 15px;
+                padding: 12px;
                 flex-direction: column;
                 align-items: stretch;
             }
             .section-header-card h1 {
-                font-size: 20px;
+                font-size: 18px;
             }
-            .header-actions {
-                width: 100%;
-            }
-            .btn-top-action {
-                width: 100%;
-                justify-content: center;
+            .section-header-card p {
+                font-size: 12px;
             }
             .filters-card {
-                grid-template-columns: 1fr; /* Filtros passam a coluna única no telemóvel */
-                padding: 12px 15px;
+                grid-template-columns: 1fr; /* Força os filtros a ficarem um abaixo do outro em coluna */
+                padding: 12px;
+                gap: 10px;
             }
             .form-row-grid {
                 grid-template-columns: 1fr;
                 gap: 0;
             }
             .form-section-card {
-                padding: 15px;
+                padding: 12px;
             }
-            .form-buttons {
-                flex-direction: column-reverse;
-            }
-            .btn-form-action {
-                width: 100%;
-                text-align: center;
+            th, td {
+                padding: 10px 8px;
+                font-size: 12px;
             }
         }
     </style>
@@ -428,12 +437,12 @@
         <!-- BARRA DE FILTROS -->
         <div id="listagemFiltersCard" class="filters-card">
             <div class="filter-group">
-                <label for="filtroAtividade">Filtrar por Atividade</label>
-                <input type="text" id="filtroAtividade" placeholder="Pesquisar por nº ou nome..." oninput="carregarObjetivos()">
+                <label for="filtroNumeroAtividade">Nº da Atividade</label>
+                <input type="text" id="filtroNumeroAtividade" placeholder="Ex: 1, 2, 3..." oninput="carregarObjetivos()">
             </div>
             <div class="filter-group">
-                <label for="filtroCriador">Filtrar por Quem Criou</label>
-                <input type="text" id="filtroCriador" placeholder="Pesquisar por nome do autor..." oninput="carregarObjetivos()">
+                <label for="filtroCriador">Quem Criou</label>
+                <input type="text" id="filtroCriador" placeholder="Nome do autor..." oninput="carregarObjetivos()">
             </div>
         </div>
 
@@ -442,9 +451,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 15%;">Nº Ativ.</th>
+                        <th style="width: 20%;">Nº Ativ.</th>
                         <th>Atividade / Metas Associadas</th>
-                        <th style="width: 20%; text-align: right;">Ações</th>
+                        <th style="width: 25%; text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="objetivosTableBody"></tbody>
@@ -453,8 +462,8 @@
 
         <!-- SECÇÃO DO FORMULÁRIO -->
         <div id="formularioCard" class="form-section-card">
-            <h2 id="formTitulo" style="color: #16a34a; margin-top: 0; font-size: 20px;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+            <h2 id="formTitulo" style="color: #16a34a; margin-top: 0; font-size: 18px;">Registo de Objetivos e Avaliação Global</h2>
+            <p style="color: var(--text-light); font-size: 12px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             
             <form id="objetivoForm" onsubmit="salvarRegistoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
@@ -587,25 +596,24 @@
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             tbody.innerHTML = '';
 
-            // Obter valores dos filtros de texto
-            const filtroAtividadeVal = (document.getElementById('filtroAtividade').value || '').toLowerCase().trim();
+            // Obter valores dos filtros específicos
+            const filtroNumAtvVal = (document.getElementById('filtroNumeroAtividade').value || '').toLowerCase().trim();
             const filtroCriadorVal = (document.getElementById('filtroCriador').value || '').toLowerCase().trim();
 
-            // Filtrar registos com base nos inputs de texto
+            // Filtrar registos com base nos campos solicitados
             const registosFiltrados = registos.filter(reg => {
                 let atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
                 const numAtividade = String(reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '')).toLowerCase();
-                const tituloAtividade = String(reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : '')).toLowerCase();
                 const criadorNome = String(reg.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : '')).toLowerCase();
 
-                const matchAtividade = !filtroAtividadeVal || numAtividade.includes(filtroAtividadeVal) || tituloAtividade.includes(filtroAtividadeVal);
+                const matchNum = !filtroNumAtvVal || numAtividade.includes(filtroNumAtvVal);
                 const matchCriador = !filtroCriadorVal || criadorNome.includes(filtroCriadorVal);
 
-                return matchAtividade && matchCriador;
+                return matchNum && matchCriador;
             });
 
             if (registosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem registos de objetivos ou nenhum corresponde à pesquisa.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem registos ou nenhum corresponde aos filtros aplicados.</td></tr>`;
                 return;
             }
 
