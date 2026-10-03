@@ -169,7 +169,7 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 450px;
+            min-width: 320px;
         }
 
         th {
@@ -397,12 +397,12 @@
     <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
-            <img src="logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\'><path d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'></path><polyline points=\'9 22 9 12 15 12 15 22\'></polyline></svg>'">
+            <img src="imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\'><path d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'></path><polyline points=\'9 22 9 12 15 12 15 22\'></polyline></svg>'">
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
             <span><strong id="userNameDisplay">Administrador</strong></span>
-            <a href="dashboard.html" class="btn-voltar-menu">Menu</a>
+            <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
 
@@ -426,7 +426,6 @@
                         <tr>
                             <th style="width: 50px;">Nº</th>
                             <th>Atividade</th>
-                            <th>Responsável</th>
                             <th style="width: 140px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
@@ -557,7 +556,6 @@
 
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
         
-        // Obter apenas o primeiro nome do utilizador logado
         const nomeCompleto = currentUser.name || currentUser.nome || 'Administrador';
         const primeiroNome = nomeCompleto.trim().split(' ')[0];
         document.getElementById('userNameDisplay').innerText = primeiroNome;
@@ -627,7 +625,7 @@
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 13px;">Sem registos guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 13px;">Sem registos guardados.</td></tr>`;
                 return;
             }
 
@@ -641,7 +639,6 @@
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary-green);">${reg.numero_atividade || (indexReal + 1)}</td>
                     <td style="font-weight: 600;">${reg.atividade}</td>
-                    <td>${reg.responsaveis}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-action btn-ver" title="Ver" onclick="verRegisto(${indexReal})">
                             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
