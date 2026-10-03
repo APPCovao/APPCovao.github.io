@@ -1,42 +1,23 @@
 console.log("auth.js carregado com sucesso!");
 
-// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK E RESTRIÇÃO DE DOMÍNIO
+// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK
+// Se a página atual NÃO for a página de login (index.html) e não houver utilizador logado, redireciona logo para o index.
 const paginaAtual = window.location.pathname.split('/').pop();
 if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     const usuarioLogado = JSON.parse(localStorage.getItem('currentUser'));
     if (!usuarioLogado) {
         window.location.href = 'index.html';
-    } else {
-        const email = usuarioLogado.email ? usuarioLogado.email.toLowerCase() : '';
-        const isDominioOficial = email.endsWith('@edu.madeira.gov.pt');
-        const isAdmin = usuarioLogado.isAdmin === true || usuarioLogado.role === 'admin' || usuarioLogado.tipo === 'admin' || email.includes('admin') || email === 'luis.araujo@edu.madeira.gov.pt';
-        
-        // Se NÃO for do domínio oficial, NÃO for admin, e NÃO estiver na página de avaliação, redireciona-o para lá
-        if (!isDominioOficial && !isAdmin && paginaAtual !== 'avaliar-atividade.html') {
-            window.location.href = 'avaliar-atividade.html';
-        }
     }
 }
 
-// 1. Inicializar ou forçar a atualização dos utilizadores predefinidos com privilégios de administrador
-const defaultUsers = [
-    { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
-    { id: 2, name: 'Luís Araújo', email: 'luis.araujo@edu.madeira.gov.pt', password: '1abc234araujo', isAdmin: true, aprovado: true },
-    { id: 3, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
-];
-
-let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-defaultUsers.forEach(defUser => {
-    const index = storedUsers.findIndex(u => u.email.toLowerCase() === defUser.email.toLowerCase());
-    if (index === -1) {
-        storedUsers.push(defUser);
-    } else {
-        storedUsers[index].password = defUser.password;
-        storedUsers[index].isAdmin = defUser.isAdmin;
-        storedUsers[index].aprovado = defUser.aprovado;
-    }
-});
-localStorage.setItem('users', JSON.stringify(storedUsers));
+// 1. Inicializar utilizadores predefinidos
+if (!localStorage.getItem('users')) {
+    const defaultUsers = [
+        { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true },
+        { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false }
+    ];
+    localStorage.setItem('users', JSON.stringify(defaultUsers));
+}
 
 // 2. Injetar Modal Personalizado de forma segura
 if (!document.getElementById('globalCustomModal')) {
@@ -121,23 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (found) {
-                const emailLower = found.email.toLowerCase();
-                const isAdmin = found.isAdmin === true || found.role === 'admin' || found.tipo === 'admin' || emailLower.includes('admin') || emailLower === 'luis.araujo@edu.madeira.gov.pt';
-                const estaAprovado = found.aprovado === true || found.status === 'aprovado' || found.ativo === true;
-
-                if (!isAdmin && !estaAprovado) {
-                    mostrarPopup('Conta Pendente', 'A sua conta ainda não foi aprovada pelo administrador no painel de controlo. Por favor, aguarde a validação.', '⏳');
-                    return;
-                }
-
                 localStorage.setItem('currentUser', JSON.stringify(found));
-                
-                // Redirecionamento inteligente: Administradores vão sempre para o dashboard/painel geral
-                if (isAdmin || emailLower.endsWith('@edu.madeira.gov.pt')) {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    window.location.href = 'avaliar-atividade.html';
-                }
+                window.location.href = 'dashboard.html';
             } else {
                 mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
             }
@@ -166,22 +132,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Novo utilizador criado fica obrigatoriamente pendente de aprovação
             const novoUtilizador = {
                 id: Date.now(),
                 name: nameVal,
                 email: emailVal,
                 password: passVal,
-                isAdmin: false,
-                aprovado: false, // Requer aprovação do administrador
-                status: 'pendente'
+                isAdmin: false
             };
 
             users.push(novoUtilizador);
             localStorage.setItem('users', JSON.stringify(users));
             registerForm.reset();
 
-            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! O acesso só será permitido após o administrador aprovar o registo no painel de controlo.', '🎉', () => {
+            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! Podes fazer login.', '🎉', () => {
                 const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container');
                 const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container');
                 if (registerScreen) registerScreen.style.display = 'none';
