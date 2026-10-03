@@ -291,7 +291,7 @@
             </div>
         </div>
 
-        <!-- 1º Título: Atividades Realizadas -->
+        <!-- 1. Atividades Realizadas -->
         <div class="theme-section">
             <h2>1. Atividades Realizadas</h2>
             <p class="theme-desc">Resumo quantitativo das atividades globais, avaliações efetuadas e objetivos registados.</p>
@@ -323,9 +323,33 @@
             </div>
         </div>
 
-        <!-- 2º Título: Atividades PAA/PEE -->
+        <!-- 2. Tipo de Atividade -->
         <div class="theme-section">
-            <h2>2. Atividades PAA/PEE</h2>
+            <h2>2. Tipo de Atividade</h2>
+            <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
+            
+            <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 15px;">
+                <div class="stat-main-card alt6">
+                    <div>
+                        <h3>Total de Atividades</h3>
+                        <p id="statTotalTipos" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🏷</div>
+                </div>
+            </div>
+
+            <div class="reports-grid" style="grid-template-columns: 1fr;">
+                <div class="report-box">
+                    <h4>Distribuição por Tipo de Atividade</h4>
+                    <p>Contagem de atividades agrupadas por categoria/tipo.</p>
+                    <div id="chartTiposAtividade" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Atividades PAA/PEE -->
+        <div class="theme-section">
+            <h2>3. Atividades PAA/PEE</h2>
             <p class="theme-desc">Acompanhamento da integração de objetivos nos planos PAA e PEE.</p>
             
             <div class="stats-grid-2">
@@ -351,9 +375,47 @@
             </div>
         </div>
 
-        <!-- 3º Título: Cumprimento dos objetivos e metas -->
+        <!-- 4. Objetivos e Metas -->
         <div class="theme-section">
-            <h2>3. Cumprimento dos objetivos e metas</h2>
+            <h2>4. Objetivos e Metas</h2>
+            <p class="theme-desc">Análise da seleção de objetivos e metas nas checkboxes dos registos.</p>
+            
+            <div class="stats-grid-2" style="margin-bottom: 15px;">
+                <div class="stat-main-card alt7">
+                    <div>
+                        <h3>Total de Objetivos Selecionados</h3>
+                        <p id="statTotalObjetivosSel" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🎯</div>
+                </div>
+
+                <div class="stat-main-card alt3">
+                    <div>
+                        <h3>Total de Metas Selecionadas</h3>
+                        <p id="statTotalMetasSel" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">📈</div>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-box">
+                    <h4>Seleção por Objetivo (Checkboxes)</h4>
+                    <p>Contagem de ocorrências por cada objetivo selecionado.</p>
+                    <div id="chartObjetivos" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Seleção por Meta (Checkboxes)</h4>
+                    <p>Contagem de ocorrências por cada meta selecionada.</p>
+                    <div id="chartMetas" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Cumprimento dos objetivos e metas -->
+        <div class="theme-section">
+            <h2>5. Cumprimento dos objetivos e metas</h2>
             <p class="theme-desc">Acompanhamento do progresso para os Objetivos e Metas.</p>
             
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
@@ -418,69 +480,7 @@
             </div>
         </div>
 
-        <!-- 4º Título: Tipo de Atividade -->
-        <div class="theme-section">
-            <h2>4. Tipo de Atividade</h2>
-            <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
-            
-            <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 15px;">
-                <div class="stat-main-card alt6">
-                    <div>
-                        <h3>Total de Atividades</h3>
-                        <p id="statTotalTipos" class="stat-value">0</p>
-                    </div>
-                    <div class="stat-icon">🏷</div>
-                </div>
-            </div>
-
-            <div class="reports-grid" style="grid-template-columns: 1fr;">
-                <div class="report-box">
-                    <h4>Distribuição por Tipo de Atividade</h4>
-                    <p>Contagem de atividades agrupadas por categoria/tipo.</p>
-                    <div id="chartTiposAtividade" class="chart-container"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5º Título: Objetivos e Metas -->
-        <div class="theme-section">
-            <h2>5. Objetivos e Metas</h2>
-            <p class="theme-desc">Análise da seleção de objetivos e metas nas checkboxes dos registos.</p>
-            
-            <div class="stats-grid-2" style="margin-bottom: 15px;">
-                <div class="stat-main-card alt7">
-                    <div>
-                        <h3>Total de Objetivos Selecionados</h3>
-                        <p id="statTotalObjetivosSel" class="stat-value">0</p>
-                    </div>
-                    <div class="stat-icon">🎯</div>
-                </div>
-
-                <div class="stat-main-card alt3">
-                    <div>
-                        <h3>Total de Metas Selecionadas</h3>
-                        <p id="statTotalMetasSel" class="stat-value">0</p>
-                    </div>
-                    <div class="stat-icon">📈</div>
-                </div>
-            </div>
-
-            <div class="reports-grid">
-                <div class="report-box">
-                    <h4>Seleção por Objetivo (Checkboxes)</h4>
-                    <p>Contagem de ocorrências por cada objetivo selecionado.</p>
-                    <div id="chartObjetivos" class="chart-container"></div>
-                </div>
-
-                <div class="report-box">
-                    <h4>Seleção por Meta (Checkboxes)</h4>
-                    <p>Contagem de ocorrências por cada meta selecionada.</p>
-                    <div id="chartMetas" class="chart-container"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 6º Título: Requisições -->
+        <!-- 6. Requisições -->
         <div class="theme-section">
             <h2>6. Requisições</h2>
             <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
