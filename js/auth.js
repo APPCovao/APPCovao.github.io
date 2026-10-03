@@ -1,11 +1,27 @@
 console.log("auth.js carregado com sucesso!");
 
-// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK
-const paginaAtual = window.location.pathname.split('/').pop();
-if (paginaAtual !== '' && paginaAtual !== 'index.html') {
+// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK E RESTRIÇÃO POR DOMÍNIO
+const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
+
+if (paginaAtual !== '' && paginaAtual !== 'index.html' && paginaAtual !== 'dashboard.html') {
     const usuarioLogado = JSON.parse(localStorage.getItem('currentUser'));
+    
     if (!usuarioLogado) {
         window.location.href = 'index.html';
+    } else {
+        // Verificar restrições de domínio para utilizadores não administradores
+        if (!usuarioLogado.isAdmin) {
+            const emailUser = (usuarioLogado.email || '').toLowerCase();
+            const eDominioMadeira = emailUser.endsWith('@edu.madeira.gov.pt');
+
+            // Se NÃO for do domínio @edu.madeira.gov.pt, só pode aceder a 'avaliar-atividade.html' (ou variantes)
+            if (!eDominioMadeira) {
+                const paginasPermitidas = ['avaliar-atividade.html', 'avaliar_atividades.html'];
+                if (!paginasPermitidas.includes(paginaAtual)) {
+                    window.location.href = 'avaliar-atividade.html';
+                }
+            }
+        }
     }
 }
 
@@ -13,7 +29,7 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html') {
 let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 const defaultUsers = [
     { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
-    { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
+    { id: 2, name: 'João Utilizador', email: 'user@edu.madeira.gov.pt', password: '123', isAdmin: false, aprovado: true }
 ];
 
 defaultUsers.forEach(defUser => {
@@ -110,14 +126,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (found) {
-                // Verificar se a conta está aprovada (Administradores entram sempre)
+                // Verificar se a conta está aprovada
                 if (!found.isAdmin && found.aprovado !== true) {
                     mostrarPopup('Conta Pendente', 'A sua conta encontra-se pendente de aprovação por um administrador.', '⏳');
                     return;
                 }
 
                 localStorage.setItem('currentUser', JSON.stringify(found));
-                window.location.href = 'dashboard.html';
+
+                // Redirecionamento inteligente pós-login baseado no domínio
+                if (!found.isAdmin && !found.email.toLowerCase().endsWith('@edu.madeira.gov.pt')) {
+                    window.location.href = 'avaliar-atividade.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
             } else {
                 mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
             }
@@ -146,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Novo utilizador criado fica pendente de aprovação
             const novoUtilizador = {
                 id: Date.now(),
                 name: nameVal,
