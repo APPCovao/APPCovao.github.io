@@ -217,19 +217,18 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação Uniformizados (idênticos a nova-atividade.html)[cite: 2] */
+        /* Botões de Ação Apenas com Ícones (Tamanho e Cores exatas de nova-atividade.html)[cite: 2] */
         .btn-action {
-            padding: 6px 12px;
+            width: 36px;
+            height: 36px;
             border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 15px;
             border: none;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
             margin-right: 4px;
             transition: opacity 0.2s;
         }
@@ -369,7 +368,7 @@
                             <th style="width: 70px;">Nº</th>
                             <th>Área</th>
                             <th>Equipamento / Material</th>
-                            <th style="width: 220px; text-align: right;">Ações</th>
+                            <th style="width: 150px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="requisicoesTableBody">
@@ -500,9 +499,9 @@
                     <td>${req.area || 'N/A'}</td>
                     <td style="font-weight: 600;">${req.equipamento}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verRequisicao(${indexReal})">🔍 Ver</button>
-                        <button class="btn-action btn-edit" onclick="editarRequisicao(${indexReal})">✏️ Editar</button>
-                        <button class="btn-action btn-delete" onclick="eliminarRequisicao(${indexReal})">🗑️ Apagar</button>
+                        <button class="btn-action btn-view" onclick="verRequisicao(${indexReal})" title="Ver">🔍</button>
+                        <button class="btn-action btn-edit" onclick="editarRequisicao(${indexReal})" title="Editar">✏️</button>
+                        <button class="btn-action btn-delete" onclick="eliminarRequisicao(${indexReal})" title="Apagar">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
