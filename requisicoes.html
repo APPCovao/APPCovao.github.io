@@ -213,29 +213,35 @@
             border-bottom: none;
         }
 
-        /* Botões de Ação Uniformizados */
+        tr:hover td {
+            background-color: #fafaf9;
+        }
+
+        /* Botões de Ação Uniformizados (idênticos a nova-atividade.html)[cite: 2] */
         .btn-action {
-            width: 32px;
-            height: 32px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
             border: none;
             cursor: pointer;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 4px;
             margin-right: 4px;
             transition: opacity 0.2s;
-            text-decoration: none;
         }
 
         .btn-action:hover {
             opacity: 0.85;
         }
 
-        .btn-ver { background-color: #3b82f6; color: white; }
-        .btn-editar { background-color: #f59e0b; color: white; }
-        .btn-apagar { background-color: #ef4444; color: white; }
+        .btn-view { background-color: #0ea5e9; color: white; }
+        .btn-edit { background-color: #f59e0b; color: white; }
+        .btn-delete { background-color: #dc2626; color: white; }
+        .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
         .form-card {
             background-color: var(--card-bg);
@@ -363,7 +369,7 @@
                             <th style="width: 70px;">Nº</th>
                             <th>Área</th>
                             <th>Equipamento / Material</th>
-                            <th style="width: 150px; text-align: right;">Ações</th>
+                            <th style="width: 220px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="requisicoesTableBody">
@@ -494,9 +500,9 @@
                     <td>${req.area || 'N/A'}</td>
                     <td style="font-weight: 600;">${req.equipamento}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-ver" onclick="verRequisicao(${indexReal})" title="Ver">👁️</button>
-                        <button class="btn-action btn-editar" onclick="editarRequisicao(${indexReal})" title="Editar">✏️</button>
-                        <button class="btn-action btn-apagar" onclick="eliminarRequisicao(${indexReal})" title="Apagar">🗑️</button>
+                        <button class="btn-action btn-view" onclick="verRequisicao(${indexReal})">🔍 Ver</button>
+                        <button class="btn-action btn-edit" onclick="editarRequisicao(${indexReal})">✏️ Editar</button>
+                        <button class="btn-action btn-delete" onclick="eliminarRequisicao(${indexReal})">🗑️ Apagar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
