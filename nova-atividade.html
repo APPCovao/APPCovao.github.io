@@ -129,7 +129,7 @@
         .btn-top-primary { background-color: var(--primary-green); }
         .btn-top-primary:hover { background-color: var(--primary-green-hover); }
 
-        /* Barra de Filtros (Apenas Filtro por Número) */
+        /* Barra de Filtros */
         .filters-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -336,11 +336,15 @@
                 </div>
             </div>
 
-            <!-- Filtro por Número -->
+            <!-- Filtros por Número e por Criador -->
             <div class="filters-card">
                 <div class="filter-group">
                     <label for="filtroNumero">Filtrar por Nº da Atividade</label>
                     <input type="text" id="filtroNumero" placeholder="Ex: 3" oninput="carregarAtividades()">
+                </div>
+                <div class="filter-group">
+                    <label for="filtroCriador">Filtrar por Criador do Registo</label>
+                    <input type="text" id="filtroCriador" placeholder="Ex: Nome do utilizador" oninput="carregarAtividades()">
                 </div>
             </div>
 
@@ -429,7 +433,6 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            // Extrair apenas o primeiro nome do utilizador logado
             const fullName = currentUser.name || currentUser.email || 'Utilizador';
             const firstName = fullName.trim().split(' ')[0];
             document.getElementById('userNameSpan').innerText = firstName;
@@ -492,17 +495,23 @@
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
 
             const filtroNumVal = document.getElementById('filtroNumero').value.trim().toLowerCase();
+            const filtroCriadorVal = document.getElementById('filtroCriador').value.trim().toLowerCase();
 
-            // Filtrar atividades apenas por número
+            // Filtragem mantida por Número e por Criador
             const atividadesFiltradas = atividades.filter(ativ => {
                 const numStr = String(ativ.numero || ativ.id || '').toLowerCase();
-                return filtroNumVal === '' || numStr.includes(filtroNumVal);
+                const criadorStr = String(ativ.criadorNome || '').toLowerCase();
+
+                const matchNum = filtroNumVal === '' || numStr.includes(filtroNumVal);
+                const matchCriador = filtroCriadorVal === '' || criadorStr.includes(filtroCriadorVal);
+
+                return matchNum && matchCriador;
             });
 
             tbody.innerHTML = '';
 
             if (atividadesFiltradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma atividade encontrada com o filtro selecionado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma atividade encontrada com os filtros selecionados.</td></tr>`;
                 return;
             }
 
