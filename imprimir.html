@@ -35,30 +35,29 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--primary-green);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 3px solid var(--primary-green);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .print-header .logo-area img {
-            height: 45px;
+            height: 60px;
             object-fit: contain;
         }
 
         .print-header .school-info h2 {
             color: var(--primary-green);
-            font-size: 18px;
-            margin: 0 0 4px 0;
+            font-size: 22px;
+            margin: 0 0 6px 0;
         }
 
         .print-header .school-info p {
             margin: 0;
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 600;
             color: #4b5563;
         }
 
-        /* Estilo original restaurado para as caixas de informação */
         .section-block {
             background-color: var(--bg-card);
             border: 1px solid #e5e7eb;
@@ -141,7 +140,7 @@
 <body>
 
     <div class="print-container">
-        <!-- CABEÇALHO COM LOGÓTIPO E ESCOLA -->
+        <!-- CABEÇALHO COM MAIS DESTAQUE (SEM NÚMERO DE ATIVIDADE) -->
         <div class="print-header">
             <div class="school-info">
                 <h2>EB1/PE do Covão e Vargem</h2>
@@ -152,15 +151,10 @@
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="section-block">
-                <div class="label-title">Número da Atividade</div>
-                <div class="value-content" id="printNumAtividade">-</div>
-            </div>
-            <div class="section-block">
-                <div class="label-title">Nome da Atividade</div>
-                <div class="value-content" id="printNomeAtividade">-</div>
-            </div>
+        <!-- NOME DA ATIVIDADE EM DESTAQUE (OCUPA A LINHA INTEIRA) -->
+        <div class="section-block" style="background-color: #f0fdf4; border-color: var(--border-color);">
+            <div class="label-title">Nome da Atividade</div>
+            <div class="value-content" id="printNomeAtividade" style="font-size: 16px; font-weight: 700; color: #14532d;">-</div>
         </div>
 
         <div class="grid-2">
@@ -198,11 +192,6 @@
         </div>
 
         <div class="section-block">
-            <div class="label-title">Sugestões Recolhidas</div>
-            <div class="value-content" id="printSugestoes" style="white-space: pre-line;">-</div>
-        </div>
-
-        <div class="section-block">
             <div class="label-title">Resumo / Conclusões da Atividade</div>
             <div class="value-content" id="printResumo" style="white-space: pre-line;">-</div>
         </div>
@@ -224,14 +213,12 @@
             if (reg) {
                 const nomeAtividade = reg.nomeAtividade || 'Atividade sem nome';
                 
-                document.getElementById('printNumAtividade').innerText = reg.numeroAtividade || '-';
                 document.getElementById('printNomeAtividade').innerText = nomeAtividade;
                 document.getElementById('printAnoLetivo').innerText = reg.anoLetivo || '-';
                 document.getElementById('printTipoAtividade').innerText = reg.tipoAtividade || '-';
                 document.getElementById('printPaa').innerText = reg.integraPaa || '-';
                 document.getElementById('printPee').innerText = reg.integraPee || '-';
                 document.getElementById('printMedia').innerText = reg.mediaGeral || '-';
-                document.getElementById('printSugestoes').innerText = reg.sugestoesRecolhidas || '-';
                 document.getElementById('printResumo').innerText = reg.resumoConclusoes || '-';
 
                 document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
