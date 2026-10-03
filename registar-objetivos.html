@@ -380,8 +380,10 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar ao Menu</a>
+            <!-- Apenas o primeiro nome, sem o "Olá" -->
+            <span><strong id="userNameSpan">Utilizador</strong></span>
+            <!-- Botão alterado para "Menu" -->
+            <a href="atividades.html" class="btn-voltar-menu">⬅ Menu</a>
         </div>
     </nav>
 
@@ -390,7 +392,7 @@
         <div id="listagemHeaderCard" class="section-header-card">
             <div>
                 <h1>Objetivos e Avaliações Globais</h1>
-                <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
+                <p>Consulta de associações a objetivos, metas PEE e avaliações globais.</p>
             </div>
             <div class="header-actions">
                 <button type="button" class="btn-top-action" style="background-color: #16a34a;" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
@@ -426,7 +428,7 @@
         <!-- SECÇÃO DO FORMULÁRIO -->
         <div id="formularioCard" class="form-section-card">
             <h2 id="formTitulo" style="color: #16a34a; margin-top: 0; font-size: 18px;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 12px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+            <p style="color: var(--text-light); font-size: 12px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE e consolide as avaliações.</p>
             
             <form id="objetivoForm" onsubmit="salvarRegistoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
@@ -519,7 +521,6 @@
                 </div>
 
                 <div class="form-buttons">
-                    <!-- BOTÃO VOLTAR ALTERADO PARA FECHAR O FORMULÁRIO E RETORNAR À LISTAGEM DESTA PÁGINA -->
                     <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaListagem()">Voltar / Cancelar</button>
                     <!-- BOTÃO DE IMPRIMIR INTEGRADO -->
                     <a href="#" id="btnImprimirRegisto" class="btn-form-action" style="background-color: #0284c7; color: white; display: none;">🖨️ Imprimir Registo</a>
@@ -548,7 +549,10 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.email || 'Utilizador';
+            // Extrai apenas o primeiro nome do utilizador
+            const nomeCompleto = currentUser.name || currentUser.email || 'Utilizador';
+            const primeiroNome = nomeCompleto.trim().split(' ')[0];
+            document.getElementById('userNameSpan').innerText = primeiroNome;
         }
 
         function isAdminUser(user) {
@@ -779,7 +783,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Função ajustada para voltar para a própria listagem de registar-objetivos.html
         function voltarParaListagem() {
             document.getElementById('btnImprimirRegisto').style.display = 'none';
             document.getElementById('formularioCard').style.display = 'none';
