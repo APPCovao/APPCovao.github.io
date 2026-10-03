@@ -337,7 +337,7 @@
                 </div>
             </div>
 
-            <!-- Filtros por Número e Criador -->
+            <!-- Filtros por Número e Criador (ambos em texto) -->
             <div class="filters-card">
                 <div class="filter-group">
                     <label for="filtroNumero">Filtrar por Nº da Atividade</label>
@@ -345,9 +345,7 @@
                 </div>
                 <div class="filter-group">
                     <label for="filtroCriador">Filtrar por Criador do Registo</label>
-                    <select id="filtroCriador" onchange="carregarAtividades()">
-                        <option value="">Todos os criadores</option>
-                    </select>
+                    <input type="text" id="filtroCriador" placeholder="Ex: Nome do utilizador" oninput="carregarAtividades()">
                 </div>
             </div>
 
@@ -492,43 +490,20 @@
             }
         }
 
-        function atualizarDropdownCriadores(atividades) {
-            const selectCriador = document.getElementById('filtroCriador');
-            const valorAtual = selectCriador.value;
-
-            // Obter criadores únicos
-            const criadoresSet = new Set();
-            atividades.forEach(a => {
-                if (a.criadorNome) criadoresSet.add(a.criadorNome);
-            });
-
-            selectCriador.innerHTML = '<option value="">Todos os criadores</option>';
-            criadoresSet.forEach(criador => {
-                const option = document.createElement('option');
-                option.value = criador;
-                option.textContent = criador;
-                if (criador === valorAtual) option.selected = true;
-                selectCriador.appendChild(option);
-            });
-        }
-
         function carregarAtividades() {
             const tbody = document.getElementById('atividadesTableBody');
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            
-            // Atualizar opções do dropdown de criadores dinamicamente
-            atualizarDropdownCriadores(atividades);
 
             const filtroNumVal = document.getElementById('filtroNumero').value.trim().toLowerCase();
-            const filtroCriadorVal = document.getElementById('filtroCriador').value;
+            const filtroCriadorVal = document.getElementById('filtroCriador').value.trim().toLowerCase();
 
-            // Filtrar atividades
+            // Filtrar atividades por número e criador (texto livre)
             const atividadesFiltradas = atividades.filter(ativ => {
                 const numStr = String(ativ.numero || ativ.id || '').toLowerCase();
-                const criadorStr = ativ.criadorNome || '';
+                const criadorStr = String(ativ.criadorNome || '').toLowerCase();
 
                 const matchNum = filtroNumVal === '' || numStr.includes(filtroNumVal);
-                const matchCriador = filtroCriadorVal === '' || criadorStr === filtroCriadorVal;
+                const matchCriador = filtroCriadorVal === '' || criadorStr.includes(filtroCriadorVal);
 
                 return matchNum && matchCriador;
             });
