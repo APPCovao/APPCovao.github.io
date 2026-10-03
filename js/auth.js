@@ -21,7 +21,8 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html') {
 if (!localStorage.getItem('users')) {
     const defaultUsers = [
         { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
-        { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
+        { id: 2, name: 'Luís Araújo', email: 'luis.araujo@edu.madeira.gov.pt', password: '1abc234araujo', isAdmin: true, aprovado: true },
+        { id: 3, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
     ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
 }
