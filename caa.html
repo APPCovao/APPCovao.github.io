@@ -378,18 +378,6 @@
             .section-header-card { padding: 20px 25px; }
             .form-card { padding: 24px; }
         }
-
-        @media print {
-            body * { visibility: hidden; }
-            #vistaFormulario, #vistaFormulario * { visibility: visible; }
-            #vistaFormulario {
-                position: absolute; left: 0; top: 0; width: 100%;
-                border: none !important; box-shadow: none !important; padding: 0 !important;
-            }
-            .btn-container, .navbar, .image-upload-box, .char-counter, .form-footer {
-                display: none !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -531,7 +519,7 @@
                 </div>
 
                 <div class="form-footer">
-                    <button type="button" id="btnPrintForm" class="btn-top-action" style="background-color: #0ea5e9; display: none;" onclick="window.print()">🖨️ Imprimir</button>
+                    <a href="#" id="btnPrintForm" class="btn-top-action" style="background-color: #0ea5e9; display: none; text-decoration: none; text-align: center;">🖨️ Imprimir Relatório</a>
                     <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Cancelar</button>
                     <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar</button>
                 </div>
@@ -694,7 +682,7 @@
             imagensGuardadas = [];
         }
 
-        function ajustarModoFormulario(isSomenteLeitura) {
+        function ajustarModoFormulario(isSomenteLeitura, index = '') {
             const inputs = document.querySelectorAll('#caaForm input, #caaForm textarea');
             inputs.forEach(el => {
                 if (el.id !== 'editIndex') {
@@ -709,7 +697,14 @@
 
             document.getElementById('boxUploadFicheiro').style.display = isSomenteLeitura ? 'none' : 'block';
             document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-flex';
-            document.getElementById('btnPrintForm').style.display = isSomenteLeitura ? 'inline-flex' : 'none';
+            
+            const btnPrint = document.getElementById('btnPrintForm');
+            if (isSomenteLeitura) {
+                btnPrint.style.display = 'inline-flex';
+                btnPrint.href = `imprimir_caa.html?index=${index}`;
+            } else {
+                btnPrint.style.display = 'none';
+            }
         }
 
         function verRegisto(index) {
@@ -729,7 +724,7 @@
             document.getElementById('responsaveis').value = reg.responsaveis;
             document.getElementById('observacoes').value = reg.observacoes;
 
-            ajustarModoFormulario(true);
+            ajustarModoFormulario(true, index);
 
             const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
             document.querySelectorAll('input[name="turma"]').forEach(cb => {
