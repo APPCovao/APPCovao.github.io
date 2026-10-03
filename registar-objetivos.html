@@ -24,7 +24,7 @@
 
         .navbar {
             background-color: #14532d;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 1.5rem;
             color: white;
             display: flex;
             justify-content: space-between;
@@ -35,18 +35,18 @@
         .navbar .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
-        .navbar .brand img { height: 32px; }
+        .navbar .brand img { height: 28px; }
 
         .navbar .user-info {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-size: 14px;
+            gap: 15px;
+            font-size: 13px;
         }
 
         .navbar .user-info span { color: #dcfce7; }
@@ -55,35 +55,36 @@
             background-color: #2563eb;
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             transition: background 0.2s;
+            white-space: nowrap;
         }
 
         .btn-voltar-menu:hover { background-color: #1d4ed8; }
 
         .main-container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 15px;
         }
 
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 24px 30px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             flex-wrap: wrap;
             gap: 1rem;
@@ -91,19 +92,19 @@
 
         .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 22px;
+            margin: 0 0 4px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: #4b5563;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .header-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
@@ -111,14 +112,14 @@
             background-color: #1e293b;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 16px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: background 0.2s;
             text-decoration: none;
         }
@@ -130,23 +131,24 @@
             border: 2px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .table-card { overflow-x: auto; }
-        .form-section-card { padding: 30px; display: none; }
+        .form-section-card { padding: 20px; display: none; }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            min-width: 550px; /* Garante estrutura limpa sem partir em ecrãs estreitos */
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 16px 20px;
-            font-size: 13px;
+            padding: 14px 16px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.5px;
             border-bottom: 2px solid var(--border-color);
@@ -154,8 +156,8 @@
         }
 
         td {
-            padding: 18px 20px;
-            font-size: 14px;
+            padding: 14px 16px;
+            font-size: 13px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
         }
@@ -173,7 +175,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 4px;
+            margin-right: 3px;
             transition: opacity 0.2s;
             vertical-align: middle;
         }
@@ -188,13 +190,13 @@
         .btn-delete { background-color: #dc2626; color: white; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #374151; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #374151; }
         .required { color: #dc2626; }
 
         input[type="text"], select, textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 10px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 14px;
@@ -209,7 +211,7 @@
             box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
         }
 
-        textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+        textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
 
         input:disabled, select:disabled, textarea:disabled, input[readonly] {
             background-color: #e5e7eb !important;
@@ -219,37 +221,43 @@
             border-color: #d1d5db !important;
         }
 
+        .form-row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         .pee-objetivo-box {
             background: #fafaf9;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
         }
 
         .pee-obj-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--primary-green);
             cursor: pointer;
         }
 
         .pee-meta-list {
-            margin-top: 10px;
-            margin-left: 24px;
+            margin-top: 8px;
+            margin-left: 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .pee-meta-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 13px;
+            font-size: 12px;
             color: #4b5563;
             cursor: pointer;
         }
@@ -257,19 +265,19 @@
         .form-buttons {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 10px;
+            margin-top: 20px;
             border-top: 1px solid #e5e7eb;
-            padding-top: 20px;
+            padding-top: 16px;
         }
 
         .btn-form-action {
-            padding: 10px 18px;
+            padding: 10px 16px;
             border-radius: 8px;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
         .btn-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-cancel:hover { background-color: #cbd5e1; }
@@ -288,11 +296,64 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 30px;
+            padding: 24px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 360px;
             text-align: center;
+        }
+
+        /* MEDIA QUERIES PARA TELEMÓVEL VERTICAL */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.6rem 1rem;
+            }
+            .navbar .brand span {
+                display: none; /* Oculta o texto do logo para poupar espaço horizontal no telemóvel */
+            }
+            .navbar .user-info {
+                gap: 10px;
+                font-size: 12px;
+            }
+            .navbar .user-info span {
+                max-width: 110px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .main-container {
+                margin: 15px 10px;
+                padding: 0;
+            }
+            .section-header-card {
+                padding: 15px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .section-header-card h1 {
+                font-size: 20px;
+            }
+            .header-actions {
+                width: 100%;
+            }
+            .btn-top-action {
+                width: 100%;
+                justify-content: center;
+            }
+            .form-row-grid {
+                grid-template-columns: 1fr; /* Transforma as grelhas duplas em colunas únicas no telemóvel */
+                gap: 0;
+            }
+            .form-section-card {
+                padding: 15px;
+            }
+            .form-buttons {
+                flex-direction: column-reverse;
+            }
+            .btn-form-action {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -305,13 +366,12 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <!-- Botão Voltar da barra superior aponta para atividades.html -->
             <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar</a>
         </div>
     </nav>
 
     <div class="main-container">
-        <!-- CABEÇALHO DA LISTAGEM (Sem o segundo botão voltar) -->
+        <!-- CABEÇALHO DA LISTAGEM -->
         <div id="listagemHeaderCard" class="section-header-card">
             <div>
                 <h1>Objetivos e Avaliações Globais</h1>
@@ -327,10 +387,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 15%;">Nº Atividade</th>
+                        <th style="width: 15%;">Nº Ativ.</th>
                         <th>Atividade / Metas Associadas</th>
                         <th style="width: 25%;">Criado por</th>
-                        <th style="width: 25%; text-align: right;">Ações</th>
+                        <th style="width: 20%; text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="objetivosTableBody"></tbody>
@@ -339,8 +399,8 @@
 
         <!-- SECÇÃO DO FORMULÁRIO -->
         <div id="formularioCard" class="form-section-card">
-            <h2 id="formTitulo" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
+            <h2 id="formTitulo" style="color: #16a34a; margin-top: 0; font-size: 20px;">Registo de Objetivos e Avaliação Global</h2>
+            <p style="color: var(--text-light); font-size: 13px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
             
             <form id="objetivoForm" onsubmit="salvarRegistoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
@@ -355,7 +415,7 @@
                     <input type="text" id="modalObjNomeAtividade" readonly placeholder="Preenchimento automático">
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-row-grid">
                     <div class="form-group">
                         <label>Ano Letivo</label>
                         <input type="text" id="modalObjAnoLetivo" readonly placeholder="Preenchimento automático">
@@ -366,7 +426,7 @@
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-row-grid">
                     <div class="form-group">
                         <label>Integra o PAA? <span class="required">*</span></label>
                         <select id="modalObjPaa" required>
@@ -433,7 +493,6 @@
                 </div>
 
                 <div class="form-buttons">
-                    <!-- Botão cancelar/voltar dentro do formulário aponta para avaliar-atividade.html -->
                     <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaAvaliarAtividade()">Voltar / Cancelar</button>
                     <button type="submit" id="btnSalvarForm" class="btn-form-action" style="background-color: #16a34a; color: white;">Guardar</button>
                 </div>
@@ -444,12 +503,12 @@
     <!-- Modal de Confirmação de Apagar -->
     <div id="confirmModal" class="custom-modal-overlay">
         <div class="custom-modal">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠</div>
-            <h3 style="color: #ef4444; margin-bottom: 0.5rem; margin-top: 0;">Confirmar Remoção</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 14px;">Tens a certeza que pretendes apagar este registo?</p>
-            <div style="display: flex; justify-content: center; gap: 12px;">
-                <button type="button" class="btn-form-action btn-cancel" onclick="fecharConfirmarApagar()">Cancelar</button>
-                <button type="button" id="btnConfirmDelete" class="btn-form-action" style="background-color: #ef4444; color: white;">Sim, Apagar</button>
+            <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">⚠</div>
+            <h3 style="color: #ef4444; margin-bottom: 0.4rem; margin-top: 0; font-size: 18px;">Confirmar Remoção</h3>
+            <p style="color: var(--text-light); margin-bottom: 1.2rem; font-size: 13px;">Tens a certeza que pretendes apagar este registo?</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button type="button" id="btnConfirmDelete" class="btn-form-action" style="background-color: #ef4444; color: white; width: 100%;">Sim, Apagar</button>
+                <button type="button" class="btn-form-action btn-cancel" onclick="fecharConfirmarApagar()" style="width: 100%;">Cancelar</button>
             </div>
         </div>
     </div>
@@ -673,7 +732,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Função de redirecionamento para avaliar-atividade.html ao sair do formulário
         function voltarParaAvaliarAtividade() {
             window.location.href = 'avaliar-atividade.html';
         }
