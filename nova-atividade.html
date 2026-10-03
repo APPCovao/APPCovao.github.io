@@ -129,6 +129,49 @@
         .btn-top-primary { background-color: var(--primary-green); }
         .btn-top-primary:hover { background-color: var(--primary-green-hover); }
 
+        /* Barra de Filtros */
+        .filters-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .filter-group input, .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            font-family: inherit;
+        }
+
+        .filter-group input:focus, .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
+        }
+
         .table-card, .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -294,6 +337,20 @@
                 </div>
             </div>
 
+            <!-- Filtros por Número e Criador -->
+            <div class="filters-card">
+                <div class="filter-group">
+                    <label for="filtroNumero">Filtrar por Nº da Atividade</label>
+                    <input type="text" id="filtroNumero" placeholder="Ex: 3" oninput="carregarAtividades()">
+                </div>
+                <div class="filter-group">
+                    <label for="filtroCriador">Filtrar por Criador do Registo</label>
+                    <select id="filtroCriador" onchange="carregarAtividades()">
+                        <option value="">Todos os criadores</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="table-card">
                 <table>
                     <thead>
@@ -435,18 +492,56 @@
             }
         }
 
+        function atualizarDropdownCriadores(atividades) {
+            const selectCriador = document.getElementById('filtroCriador');
+            const valorAtual = selectCriador.value;
+
+            // Obter criadores únicos
+            const criadoresSet = new Set();
+            atividades.forEach(a => {
+                if (a.criadorNome) criadoresSet.add(a.criadorNome);
+            });
+
+            selectCriador.innerHTML = '<option value="">Todos os criadores</option>';
+            criadoresSet.forEach(criador => {
+                const option = document.createElement('option');
+                option.value = criador;
+                option.textContent = criador;
+                if (criador === valorAtual) option.selected = true;
+                selectCriador.appendChild(option);
+            });
+        }
+
         function carregarAtividades() {
             const tbody = document.getElementById('atividadesTableBody');
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            
+            // Atualizar opções do dropdown de criadores dinamicamente
+            atualizarDropdownCriadores(atividades);
+
+            const filtroNumVal = document.getElementById('filtroNumero').value.trim().toLowerCase();
+            const filtroCriadorVal = document.getElementById('filtroCriador').value;
+
+            // Filtrar atividades
+            const atividadesFiltradas = atividades.filter(ativ => {
+                const numStr = String(ativ.numero || ativ.id || '').toLowerCase();
+                const criadorStr = ativ.criadorNome || '';
+
+                const matchNum = filtroNumVal === '' || numStr.includes(filtroNumVal);
+                const matchCriador = filtroCriadorVal === '' || criadorStr === filtroCriadorVal;
+
+                return matchNum && matchCriador;
+            });
+
             tbody.innerHTML = '';
 
-            if (atividades.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades registadas.</td></tr>`;
+            if (atividadesFiltradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma atividade encontrada com os filtros selecionados.</td></tr>`;
                 return;
             }
 
             const userIsAdmin = isAdminUser(currentUser);
-            ([...atividades].reverse()).forEach(ativ => {
+            ([...atividadesFiltradas].reverse()).forEach(ativ => {
                 const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
