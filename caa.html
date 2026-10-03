@@ -41,18 +41,46 @@
             font-size: 1rem;
         }
 
+        .navbar .brand img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
         .navbar .nav-right {
             display: flex;
             align-items: center;
+            gap: 12px;
             font-size: 13px;
         }
 
         .navbar .nav-right span {
             color: #dcfce7;
-            max-width: 140px;
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
         }
 
         /* Contentor Principal */
@@ -369,10 +397,12 @@
     <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
-            <span>🏫 Gestão CAA</span>
+            <img src="logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\'><path d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'></path><polyline points=\'9 22 9 12 15 12 15 22\'></polyline></svg>'">
+            <span>Registos Covão</span>
         </div>
         <div class="nav-right">
             <span><strong id="userNameDisplay">Administrador</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">Menu</a>
         </div>
     </nav>
 
