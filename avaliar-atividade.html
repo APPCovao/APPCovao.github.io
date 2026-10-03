@@ -308,7 +308,8 @@
         </div>
         <div class="user-info">
             <span><strong id="userNameSpan">Utilizador</strong></span>
-            <a href="avaliar-atividade.html" class="btn-voltar-menu">⬅ Voltar</a>
+            <!-- Botão Voltar da página de listagem vai para atividades.html -->
+            <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar</a>
         </div>
     </nav>
 
@@ -338,7 +339,7 @@
             </table>
         </div>
 
-        <!-- Formulário Integrado -->
+        <!-- Formulário Integrado (Criar / Editar / Ver) -->
         <div id="avaliacaoFormCard" class="form-card">
             <h2 id="formAvaliacaoTitle" style="color: var(--color-accent); margin-top: 0; margin-bottom: 20px;">Avaliar Atividade</h2>
             <form id="avaliacaoFormElement" onsubmit="salvarFormularioAvaliacao(event)">
@@ -410,7 +411,8 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="fecharFormularioAvaliacao()">Cancelar</button>
+                    <!-- Botão cancelar/voltar dentro dos formulários vai para avaliar-atividade.html -->
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="voltarParaAvaliarAtividade()">Voltar / Cancelar</button>
                     <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
                 </div>
             </form>
@@ -576,6 +578,11 @@
             document.getElementById('avaliacaoFormCard').style.display = 'none';
             document.getElementById('listHeaderCard').style.display = 'flex';
             document.getElementById('listTableCard').style.display = 'block';
+        }
+
+        // Redireciona para avaliar-atividade.html quando se clica em Voltar/Cancelar dentro do formulário
+        function voltarParaAvaliarAtividade() {
+            window.location.href = 'avaliar-atividade.html';
         }
 
         function salvarFormularioAvaliacao(e) {
