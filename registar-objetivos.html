@@ -380,9 +380,7 @@
             <span>Registos Covão</span>
         </div>
         <div class="user-info">
-            <!-- Apenas o primeiro nome, sem o "Olá" -->
             <span><strong id="userNameSpan">Utilizador</strong></span>
-            <!-- Botão alterado para "Menu" -->
             <a href="atividades.html" class="btn-voltar-menu">⬅ Menu</a>
         </div>
     </nav>
@@ -511,18 +509,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Sugestões Recolhidas de Todos os Avaliadores</label>
-                    <textarea id="modalObjSugestoes" readonly placeholder="Compilação automática das sugestões..."></textarea>
-                </div>
-
-                <div class="form-group">
                     <label>Resumo / Conclusões da Atividade <span class="required">*</span></label>
                     <textarea id="modalObjResumo" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." required></textarea>
                 </div>
 
+                <!-- CAMPO DO RESPONSÁVEL ENCOSTADO À DIREITA NO FINAL -->
+                <div class="form-group" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 15px;">
+                    <label for="modalObjResponsavel" style="margin-bottom: 0; font-weight: 600; font-size: 13px; color: #374151;">Responsável:</label>
+                    <input type="text" id="modalObjResponsavel" readonly style="width: 250px; background-color: #e5e7eb; text-align: right;" placeholder="Preenchimento automático">
+                </div>
+
                 <div class="form-buttons">
                     <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaListagem()">Voltar / Cancelar</button>
-                    <!-- BOTÃO DE IMPRIMIR INTEGRADO -->
                     <a href="#" id="btnImprimirRegisto" class="btn-form-action" style="background-color: #0284c7; color: white; display: none;">🖨️ Imprimir Registo</a>
                     <button type="submit" id="btnSalvarForm" class="btn-form-action" style="background-color: #16a34a; color: white;">Guardar</button>
                 </div>
@@ -549,7 +547,6 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            // Extrai apenas o primeiro nome do utilizador
             const nomeCompleto = currentUser.name || currentUser.email || 'Utilizador';
             const primeiroNome = nomeCompleto.trim().split(' ')[0];
             document.getElementById('userNameSpan').innerText = primeiroNome;
@@ -621,7 +618,6 @@
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
                 document.getElementById('modalObjMedia').value = '';
-                document.getElementById('modalObjSugestoes').value = '';
                 return null;
             }
 
@@ -640,7 +636,6 @@
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
                 document.getElementById('modalObjMedia').value = 'N/A';
-                document.getElementById('modalObjSugestoes').value = '';
                 return null;
             }
         }
@@ -666,7 +661,6 @@
 
             if (avaliacoesDaAtividade.length === 0) {
                 document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
-                document.getElementById('modalObjSugestoes').value = '- Sem sugestão recolhida;';
                 return;
             }
 
@@ -674,7 +668,6 @@
             let somaDinamica = 0;
             let somaInteresse = 0;
             let totalValidas = 0;
-            let listaSugestoes = [];
 
             avaliacoesDaAtividade.forEach(av => {
                 const p = parseFloat(av.pertinencia || av.notaPertinencia || av.p || 0);
@@ -687,11 +680,6 @@
                     somaInteresse += i;
                     totalValidas++;
                 }
-
-                const sug = av.comentario || av.sugestoes || av.sugestao || av.comentarios;
-                if (sug && String(sug).trim() !== '') {
-                    listaSugestoes.push(`-${String(sug).trim()};`);
-                }
             });
 
             if (totalValidas > 0) {
@@ -702,12 +690,6 @@
                 document.getElementById('modalObjMedia').value = `Média Global: ${mediaGlobal.toFixed(2)} / 5 (Pertinência: ${mediaP.toFixed(1)} | Dinâmica: ${mediaD.toFixed(1)} | Interesse: ${mediaI.toFixed(1)}) — ${totalValidas} avaliação(ões)`;
             } else {
                 document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas.';
-            }
-
-            if (listaSugestoes.length > 0) {
-                document.getElementById('modalObjSugestoes').value = listaSugestoes.join(' ');
-            } else {
-                document.getElementById('modalObjSugestoes').value = '- Sem sugestões registadas pelos avaliadores;';
             }
         }
 
@@ -731,12 +713,16 @@
                 document.getElementById('editObjetivoId').value = '';
                 document.getElementById('objetivoForm').reset();
                 
+                // Preenche o responsável automaticamente com o utilizador logado
+                const nomeUtilizador = currentUser ? (currentUser.name || currentUser.email || 'Utilizador') : '';
+                document.getElementById('modalObjResponsavel').value = nomeUtilizador;
+
                 inputs.forEach(el => el.disabled = false);
                 document.getElementById('modalObjNomeAtividade').disabled = true;
                 document.getElementById('modalObjAnoLetivo').disabled = true;
                 document.getElementById('modalObjTipo').disabled = true;
                 document.getElementById('modalObjMedia').disabled = true;
-                document.getElementById('modalObjSugestoes').disabled = true;
+                document.getElementById('modalObjResponsavel').disabled = true;
                 saveBtn.style.display = 'inline-block';
                 btnImprimir.style.display = 'none';
             } else {
@@ -751,8 +737,8 @@
                 document.getElementById('modalObjPaa').value = reg.integraPaa || '';
                 document.getElementById('modalObjPee').value = reg.integraPee || '';
                 document.getElementById('modalObjMedia').value = reg.mediaGeral || 'N/A';
-                document.getElementById('modalObjSugestoes').value = reg.sugestoesRecolhidas || '';
                 document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
+                document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criadorNome || '';
 
                 document.querySelectorAll('#objetivoForm input[name="objCheck"]').forEach(chk => {
                     chk.checked = reg.objetivosSelecionados && reg.objetivosSelecionados.includes(chk.value);
@@ -774,7 +760,7 @@
                     document.getElementById('modalObjAnoLetivo').disabled = true;
                     document.getElementById('modalObjTipo').disabled = true;
                     document.getElementById('modalObjMedia').disabled = true;
-                    document.getElementById('modalObjSugestoes').disabled = true;
+                    document.getElementById('modalObjResponsavel').disabled = true;
                     saveBtn.style.display = 'inline-block';
                     btnImprimir.style.display = 'none';
                 }
@@ -807,6 +793,8 @@
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
 
+            const responsavelVal = document.getElementById('modalObjResponsavel').value || (currentUser ? (currentUser.name || currentUser.email) : '');
+
             if (id === '' || id === null) {
                 const novoRegisto = {
                     id: Date.now(),
@@ -820,8 +808,8 @@
                     objetivosSelecionados: objsSel,
                     metasSelecionadas: metasSel,
                     mediaGeral: document.getElementById('modalObjMedia').value,
-                    sugestoesRecolhidas: document.getElementById('modalObjSugestoes').value,
                     resumoConclusoes: document.getElementById('modalObjResumo').value,
+                    responsavel: responsavelVal,
                     criadorId: currentUser.id,
                     criadorNome: currentUser.name || currentUser.email
                 };
@@ -836,8 +824,8 @@
                     reg.integraPaa = document.getElementById('modalObjPaa').value;
                     reg.integraPee = document.getElementById('modalObjPee').value;
                     reg.mediaGeral = document.getElementById('modalObjMedia').value;
-                    reg.sugestoesRecolhidas = document.getElementById('modalObjSugestoes').value;
                     reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
+                    reg.responsavel = responsavelVal;
                     reg.objetivosSelecionados = objsSel;
                     reg.metasSelecionadas = metasSel;
                 }
