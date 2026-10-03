@@ -25,7 +25,7 @@
         /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 1.5rem;
             color: white;
             display: flex;
             justify-content: space-between;
@@ -36,47 +36,31 @@
         .navbar .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .navbar .nav-right {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .navbar .nav-right span {
             color: #dcfce7;
-        }
-
-        .btn-voltar-menu {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-
-        .btn-voltar-menu:hover {
-            background-color: #1d4ed8;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         /* Contentor Principal */
         .main-container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 15px auto;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
 
         /* Cartão de Cabeçalho da Secção */
@@ -84,29 +68,32 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 24px 30px;
+            padding: 18px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 20px;
+            margin: 0 0 4px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: #4b5563;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .header-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
+            width: 100%;
         }
 
         /* Botões do Topo */
@@ -114,16 +101,19 @@
             background-color: #1e293b;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
             transition: background 0.2s;
             text-decoration: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .btn-top-action:hover {
@@ -143,7 +133,7 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            overflow: hidden;
+            overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
@@ -151,13 +141,14 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            min-width: 450px;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 16px 20px;
-            font-size: 13px;
+            padding: 12px 14px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
             border-bottom: 2px solid var(--border-color);
@@ -165,8 +156,8 @@
         }
 
         td {
-            padding: 18px 20px;
-            font-size: 14px;
+            padding: 12px 14px;
+            font-size: 13px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
         }
@@ -179,26 +170,34 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela */
+        /* Botões de Ação na Tabela com Ícones */
         .btn-action {
-            padding: 6px 14px;
+            padding: 6px 8px;
             border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 12px;
             border: none;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
-            margin-right: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2px;
             transition: opacity 0.2s;
+            vertical-align: middle;
+        }
+
+        .btn-action svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
         }
 
         .btn-action:hover {
             opacity: 0.85;
         }
 
-        .btn-ver { background-color: #0d9488; color: white; }
-        .btn-editar { background-color: #047857; color: white; }
+        .btn-ver { background-color: #0ea5e9; color: white; }
+        .btn-editar { background-color: #f59e0b; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
         /* Formulário Estilizado */
@@ -206,19 +205,19 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 30px;
+            padding: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 6px;
+            font-size: 13px;
             color: #374151;
         }
 
@@ -232,7 +231,7 @@
         textarea,
         select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 10px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 14px;
@@ -242,10 +241,11 @@
         }
 
         input:readonly {
-            background-color: #f8fafc;
-            color: var(--primary-green);
-            font-weight: 600;
+            background-color: #e5e7eb !important;
+            color: #1f2937 !important;
+            font-weight: 600 !important;
             cursor: not-allowed;
+            border-color: #d1d5db !important;
         }
 
         input:focus, textarea:focus, select:focus {
@@ -256,7 +256,7 @@
 
         textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 90px;
             line-height: 1.5;
         }
 
@@ -269,10 +269,10 @@
 
         .checkbox-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
             background: #fafaf9;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
         }
@@ -281,7 +281,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             font-weight: normal;
             margin-bottom: 0;
@@ -296,7 +296,7 @@
 
         .image-upload-box {
             border: 2px dashed var(--border-color);
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             border-radius: 8px;
             background: #fafaf9;
@@ -312,14 +312,14 @@
         .image-preview-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 12px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .image-preview-item {
             position: relative;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid #d1d5db;
@@ -334,27 +334,29 @@
         .form-footer {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
-            margin-top: 30px;
+            gap: 10px;
+            margin-top: 20px;
             border-top: 1px solid #e5e7eb;
-            padding-top: 20px;
+            padding-top: 15px;
+            flex-direction: column-reverse;
+        }
+
+        @media (min-width: 640px) {
+            .header-actions { width: auto; }
+            .btn-top-action { width: auto; }
+            .checkbox-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+            .form-footer { flex-direction: row; }
+            .main-container { margin: 20px auto; padding: 0 15px; }
+            .section-header-card { padding: 20px 25px; }
+            .form-card { padding: 24px; }
         }
 
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #vistaFormulario, #vistaFormulario * {
-                visibility: visible;
-            }
+            body * { visibility: hidden; }
+            #vistaFormulario, #vistaFormulario * { visibility: visible; }
             #vistaFormulario {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
+                position: absolute; left: 0; top: 0; width: 100%;
+                border: none !important; box-shadow: none !important; padding: 0 !important;
             }
             .btn-container, .navbar, .image-upload-box, .char-counter, .form-footer {
                 display: none !important;
@@ -370,8 +372,7 @@
             <span>🏫 Gestão CAA</span>
         </div>
         <div class="nav-right">
-            <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
-            <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
+            <span><strong id="userNameDisplay">Administrador</strong></span>
         </div>
     </nav>
 
@@ -382,10 +383,9 @@
             <div class="section-header-card">
                 <div>
                     <h1>Registos do CAA</h1>
-                    <p>Consulte, edite ou crie novos registos de atividades pedagógicas.</p>
+                    <p>Consulte, edite ou crie novos registos.</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
                     <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Novo Registo</button>
                 </div>
             </div>
@@ -394,10 +394,10 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 80px;">Nº</th>
+                            <th style="width: 50px;">Nº</th>
                             <th>Atividade</th>
                             <th>Responsável</th>
-                            <th style="width: 240px; text-align: right;">Ações</th>
+                            <th style="width: 140px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="caaTableBody">
@@ -409,12 +409,12 @@
 
         <!-- Vista de Formulário (Oculto por defeito) -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">CAA - Centro de Apoio à Aprendizagem</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 14px;">EB1/PE do Covão e Vargem - Registo de Atividades Pedagógicas</p>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 4px 0; font-size: 18px;">Registo de Atividades</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 12px;">EB1/PE do Covão e Vargem</p>
                 </div>
-                <button class="btn-top-action" onclick="fecharFormulario()">← Voltar</button>
+                <button class="btn-top-action" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="fecharFormulario()">← Voltar</button>
             </div>
 
             <form id="caaForm">
@@ -436,7 +436,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>4. Turma(s) / Sala(s) (Pode selecionar várias)</label>
+                    <label>4. Turma(s) / Sala(s)</label>
                     <div class="checkbox-grid">
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºA"> 1ºA</label>
                         <label class="checkbox-item"><input type="checkbox" name="turma" value="1ºB"> 1ºB</label>
@@ -493,31 +493,31 @@
                 </div>
 
                 <div class="form-group" id="seccaoImagensUpload">
-                    <label>12. Registo Fotográfico / Imagens da Atividade:</label>
+                    <label>12. Registo Fotográfico:</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #4b5563;">📸 Clique aqui para adicionar fotografias</p>
+                        <p style="margin: 0; color: #4b5563; font-size: 13px;">📸 Clique para adicionar fotografias</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
                 </div>
 
                 <div class="form-footer">
-                    <button type="button" id="btnPrintForm" class="btn-top-action" style="background-color: #0d9488; display: none;" onclick="window.print()">🖨️ Imprimir</button>
-                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Voltar / Fechar</button>
-                    <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar Registo</button>
+                    <button type="button" id="btnPrintForm" class="btn-top-action" style="background-color: #0ea5e9; display: none;" onclick="window.print()">🖨️ Imprimir</button>
+                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Cancelar</button>
+                    <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Popup Personalizado -->
-    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
-        <div style="background: white; padding: 2rem; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
-            <div id="popupIcon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏫</div>
-            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: var(--primary-green);">Aviso</h3>
-            <p id="popupMessage" style="margin: 0 0 20px 0; color: #1f2937; line-height: 1.5;"></p>
-            <div id="popupButtons" style="display: flex; justify-content: center; gap: 10px;">
-                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>
+    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000; padding: 1rem; box-sizing: border-box;">
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 340px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 2rem; margin-bottom: 0.4rem;">🏫</div>
+            <h3 id="popupTitle" style="margin: 0 0 8px 0; color: var(--primary-green); font-size: 18px;">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 16px 0; color: #1f2937; line-height: 1.4; font-size: 13px;"></p>
+            <div id="popupButtons" style="display: flex; justify-content: center; gap: 8px;">
+                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">OK</button>
             </div>
         </div>
     </div>
@@ -526,7 +526,11 @@
         let imagensGuardadas = [];
 
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
-        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
+        
+        // Obter apenas o primeiro nome do utilizador logado
+        const nomeCompleto = currentUser.name || currentUser.nome || 'Administrador';
+        const primeiroNome = nomeCompleto.trim().split(' ')[0];
+        document.getElementById('userNameDisplay').innerText = primeiroNome;
 
         function updateCounter(element, counterId) {
             const currentLength = element.value.length;
@@ -543,8 +547,8 @@
             
             if (onConfirm) {
                 btnContainer.innerHTML = `
-                    <button id="popupCancelBtn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
-                    <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
+                    <button id="popupCancelBtn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; flex: 1;">Cancelar</button>
+                    <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; flex: 1;">Apagar</button>
                 `;
                 document.getElementById('customPopup').style.display = 'flex';
 
@@ -557,7 +561,7 @@
                     onConfirm();
                 };
             } else {
-                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>`;
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; width: 100%;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
 
                 document.getElementById('popupOkBtn').onclick = () => {
@@ -593,7 +597,7 @@
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">Sem registos do CAA guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 13px;">Sem registos guardados.</td></tr>`;
                 return;
             }
 
@@ -609,11 +613,17 @@
                     <td style="font-weight: 600;">${reg.atividade}</td>
                     <td>${reg.responsaveis}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})">Ver</button>
+                        <button class="btn-action btn-ver" title="Ver" onclick="verRegisto(${indexReal})">
+                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </button>
                         ${temPermissao ? `
-                            <button class="btn-action btn-editar" onclick="editarRegisto(${indexReal})">Editar</button>
-                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})">Apagar</button>
-                        ` : '<span style="color: #9ca3af; font-size: 0.85rem;">🔒 Bloqueado</span>'}
+                            <button class="btn-action btn-editar" title="Editar" onclick="editarRegisto(${indexReal})">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-apagar" title="Apagar" onclick="eliminarRegisto(${indexReal})">
+                                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        ` : ''}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -638,13 +648,12 @@
             
             const campoNum = document.getElementById('numero_atividade');
             campoNum.value = proximoNumero;
-            campoNum.readOnly = true; // Garante que fica bloqueado na criação
+            campoNum.readOnly = true;
             
             const nomeResponsavel = currentUser.name || currentUser.nome || currentUser.email;
-            const campoResp = document.getElementById('responsaveis');
-            campoResp.value = nomeResponsavel;
+            document.getElementById('responsaveis').value = nomeResponsavel;
 
-            document.getElementById('formTitle').innerText = 'CAA - Centro de Apoio à Aprendizagem (Novo Registo)';
+            document.getElementById('formTitle').innerText = 'Novo Registo de Atividade';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -710,7 +719,7 @@
                 previewContainer.appendChild(wrapper);
             });
 
-            document.getElementById('formTitle').innerText = 'Visualizar Registo CAA';
+            document.getElementById('formTitle').innerText = 'Consultar Registo';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -728,7 +737,7 @@
             ajustarModoFormulario(false);
             document.getElementById('editIndex').value = index;
             document.getElementById('numero_atividade').value = reg.numero_atividade;
-            document.getElementById('numero_atividade').readOnly = true; // Mantém o número bloqueado mesmo na edição
+            document.getElementById('numero_atividade').readOnly = true;
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -754,7 +763,7 @@
                 previewContainer.appendChild(wrapper);
             });
 
-            document.getElementById('formTitle').innerText = 'Editar Registo CAA';
+            document.getElementById('formTitle').innerText = 'Editar Registo';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
