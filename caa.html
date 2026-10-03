@@ -20,12 +20,13 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
+            -webkit-text-size-adjust: 100%;
         }
 
         /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
-            padding: 0.8rem 1.5rem;
+            padding: 0.7rem 1rem;
             color: white;
             display: flex;
             justify-content: space-between;
@@ -36,14 +37,14 @@
         .navbar .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .navbar .brand img {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             object-fit: contain;
             border-radius: 4px;
         }
@@ -51,13 +52,13 @@
         .navbar .nav-right {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 12px;
         }
 
         .navbar .nav-right span {
             color: #dcfce7;
-            max-width: 120px;
+            max-width: 90px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -67,9 +68,9 @@
             background-color: #2563eb;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
@@ -86,8 +87,8 @@
         /* Contentor Principal */
         .main-container {
             max-width: 1200px;
-            margin: 15px auto;
-            padding: 0 10px;
+            margin: 10px auto;
+            padding: 0 8px;
             box-sizing: border-box;
         }
 
@@ -95,27 +96,27 @@
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 18px 20px;
+            border-radius: 10px;
+            padding: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.8rem;
         }
 
         .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 20px;
-            margin: 0 0 4px 0;
+            font-size: 18px;
+            margin: 0 0 2px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: #4b5563;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .header-actions {
@@ -160,7 +161,7 @@
         .table-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
@@ -169,13 +170,13 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 320px;
+            min-width: 280px;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 12px 14px;
+            padding: 10px 12px;
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -184,8 +185,8 @@
         }
 
         td {
-            padding: 12px 14px;
-            font-size: 13px;
+            padding: 10px 12px;
+            font-size: 12px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
         }
@@ -215,8 +216,8 @@
         }
 
         .btn-action svg {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
 
@@ -232,20 +233,20 @@
         .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 13px;
+            margin-bottom: 4px;
+            font-size: 12px;
             color: #374151;
         }
 
@@ -259,10 +260,10 @@
         textarea,
         select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 9px 10px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             box-sizing: border-box;
             font-family: inherit;
             background-color: #fff;
@@ -284,23 +285,23 @@
 
         textarea {
             resize: vertical;
-            min-height: 90px;
-            line-height: 1.5;
+            min-height: 80px;
+            line-height: 1.4;
         }
 
         .char-counter {
-            font-size: 11px;
+            font-size: 10px;
             color: #6b7280;
             text-align: right;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .checkbox-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
             background: #fafaf9;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
         }
@@ -308,8 +309,8 @@
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 6px;
+            font-size: 12px;
             cursor: pointer;
             font-weight: normal;
             margin-bottom: 0;
@@ -324,7 +325,7 @@
 
         .image-upload-box {
             border: 2px dashed var(--border-color);
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             border-radius: 8px;
             background: #fafaf9;
@@ -340,14 +341,14 @@
         .image-preview-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
         }
 
         .image-preview-item {
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid #d1d5db;
@@ -361,22 +362,28 @@
 
         .form-footer {
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 15px;
             border-top: 1px solid #e5e7eb;
-            padding-top: 15px;
-            flex-direction: column-reverse;
+            padding-top: 12px;
+            flex-direction: column;
         }
 
         @media (min-width: 640px) {
+            .navbar { padding: 0.8rem 1.5rem; }
+            .navbar .brand { font-size: 1rem; gap: 10px; }
+            .navbar .brand img { width: 32px; height: 32px; }
+            .navbar .nav-right { gap: 12px; font-size: 13px; }
+            .navbar .nav-right span { max-width: 120px; }
+            .btn-voltar-menu { padding: 6px 12px; font-size: 12px; }
             .header-actions { width: auto; }
             .btn-top-action { width: auto; }
-            .checkbox-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-            .form-footer { flex-direction: row; }
-            .main-container { margin: 20px auto; padding: 0 15px; }
-            .section-header-card { padding: 20px 25px; }
-            .form-card { padding: 24px; }
+            .checkbox-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; padding: 12px; }
+            .form-footer { flex-direction: row; justify-content: flex-end; }
+            .main-container { margin: 15px auto; padding: 0 10px; }
+            .section-header-card { padding: 18px 20px; }
+            .form-card { padding: 20px; }
+            td, th { padding: 12px 14px; font-size: 13px; }
         }
     </style>
 </head>
@@ -412,9 +419,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 50px;">Nº</th>
+                            <th style="width: 45px;">Nº</th>
                             <th>Atividade</th>
-                            <th style="width: 140px; text-align: right;">Ações</th>
+                            <th style="width: 120px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="caaTableBody">
@@ -426,12 +433,12 @@
 
         <!-- Vista de Formulário (Oculto por defeito) -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 4px 0; font-size: 18px;">Registo de Atividades</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 12px;">EB1/PE do Covão e Vargem</p>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 2px 0; font-size: 16px;">Registo de Atividades</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 11px;">EB1/PE do Covão e Vargem</p>
                 </div>
-                <button class="btn-top-action" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="fecharFormulario()">← Voltar</button>
+                <button class="btn-top-action" style="width: auto; padding: 5px 10px; font-size: 11px;" onclick="fecharFormulario()">← Voltar</button>
             </div>
 
             <form id="caaForm">
@@ -512,7 +519,7 @@
                 <div class="form-group" id="seccaoImagensUpload">
                     <label>12. Registo Fotográfico:</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #4b5563; font-size: 13px;">📸 Clique para adicionar fotografias</p>
+                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
@@ -529,12 +536,12 @@
 
     <!-- Popup Personalizado -->
     <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000; padding: 1rem; box-sizing: border-box;">
-        <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 340px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
-            <div id="popupIcon" style="font-size: 2rem; margin-bottom: 0.4rem;">🏫</div>
-            <h3 id="popupTitle" style="margin: 0 0 8px 0; color: var(--primary-green); font-size: 18px;">Aviso</h3>
-            <p id="popupMessage" style="margin: 0 0 16px 0; color: #1f2937; line-height: 1.4; font-size: 13px;"></p>
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 1.8rem; margin-bottom: 0.4rem;">🏫</div>
+            <h3 id="popupTitle" style="margin: 0 0 8px 0; color: var(--primary-green); font-size: 16px;">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 16px 0; color: #1f2937; line-height: 1.4; font-size: 12px;"></p>
             <div id="popupButtons" style="display: flex; justify-content: center; gap: 8px;">
-                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">OK</button>
+                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">OK</button>
             </div>
         </div>
     </div>
@@ -577,7 +584,7 @@
                     onConfirm();
                 };
             } else {
-                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; width: 100%;">OK</button>`;
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; width: 100%;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
 
                 document.getElementById('popupOkBtn').onclick = () => {
@@ -613,7 +620,7 @@
             let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
 
             if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 13px;">Sem registos guardados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #6b7280; font-size: 12px;">Sem registos guardados.</td></tr>`;
                 return;
             }
 
