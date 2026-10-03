@@ -187,15 +187,10 @@
             <div class="value-content" id="printAtividade" style="font-size: 16px; font-weight: 700; color: #14532d;">-</div>
         </div>
 
-        <div class="grid-2">
-            <div class="section-block">
-                <div class="label-title">Nº da Atividade</div>
-                <div class="value-content" id="printNumero">-</div>
-            </div>
-            <div class="section-block">
-                <div class="label-title">Data da Atividade</div>
-                <div class="value-content" id="printData">-</div>
-            </div>
+        <!-- DATA DA ATIVIDADE (OCUPA AGORA A LINHA INTEIRA OU DESTACADA) -->
+        <div class="section-block">
+            <div class="label-title">Data da Atividade</div>
+            <div class="value-content" id="printData">-</div>
         </div>
 
         <div class="grid-2">
@@ -264,7 +259,6 @@
 
             if (reg) {
                 document.getElementById('printAtividade').innerText = reg.atividade || '-';
-                document.getElementById('printNumero').innerText = reg.numero_atividade || '-';
                 document.getElementById('printData').innerText = reg.data_atividade || '-';
                 document.getElementById('printAluno').innerText = reg.nome_aluno || '-';
                 document.getElementById('printTurmas').innerText = reg.turmas || '-';
