@@ -313,11 +313,11 @@
                     <thead>
                         <tr>
                             <th>Turma</th>
-                            <th>Ano Letivo</th>
                             <th>Nº Alunos</th>
-                            <th>Português (Bom/M. Bom)</th>
-                            <th>Matemática (Bom/M. Bom)</th>
-                            <th>Data</th>
+                            <th>Português (Nº Alunos)</th>
+                            <th>Português (%)</th>
+                            <th>Matemática (Nº Alunos)</th>
+                            <th>Matemática (%)</th>
                             <th style="width: 220px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
@@ -508,11 +508,11 @@
 
                 tr.innerHTML = `
                     <td><strong>${t.nomeTurma}</strong></td>
-                    <td>${t.anoLetivo}</td>
                     <td>${t.totalAlunos}</td>
-                    <td>${t.bonsPort} (${t.percPort})</td>
-                    <td>${t.bonsMat} (${t.percMat})</td>
-                    <td>${t.dataRegisto || '-'}</td>
+                    <td>${t.bonsPort}</td>
+                    <td>${t.percPort}</td>
+                    <td>${t.bonsMat}</td>
+                    <td>${t.percMat}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})">Ver</button>
                         ${temPermissao ? `
@@ -615,7 +615,7 @@
             const bonsMat = parseInt(document.getElementById('bonsMat').value);
 
             if (bonsPort > totalAlunos || bonsMat > totalAlunos) {
-                mostrarPopupPersonalizado('Aviso', 'O número de alunos com Bom/Muito Bom não pode ser superior ao total de alunos da turma.', '⚠️️');
+                mostrarPopupPersonalizado('Aviso', 'O número de alunos com Bom/Muito Bom não pode ser superior ao total de alunos da turma.', '⚠');
                 return;
             }
 
