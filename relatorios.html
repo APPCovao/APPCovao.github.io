@@ -258,7 +258,6 @@
         }
 
         .chart-bar-fill {
-            background: var(--primary-green);
             height: 100%;
             border-radius: 6px;
             transition: width 0.6s ease;
@@ -498,6 +497,21 @@
         const firstName = fullName.trim().split(' ')[0];
         document.getElementById('userNameDisplay').innerText = firstName;
 
+        // Função auxiliar para determinar a cor com base na percentagem atingida
+        function obterCorPorPercentagem(percentagem) {
+            if (percentagem <= 49) {
+                return '#dc2626'; // Vermelho
+            } else if (percentagem <= 69) {
+                return '#ea580c'; // Laranja
+            } else if (percentagem <= 90) {
+                return '#ca8a04'; // Amarelo escuro / dourado (legível)
+            } else if (percentagem <= 99) {
+                return '#4ade80'; // Verde claro
+            } else {
+                return '#15803d'; // Verde padrão (100% ou mais)
+            }
+        }
+
         function renderizarGraficoBarras(containerId, dadosObjeto) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -513,16 +527,17 @@
             chaves.forEach(chave => {
                 const quantidade = dadosObjeto[chave];
                 const percentagem = Math.round((quantidade / maxValor) * 100);
+                const corBarra = obterCorPorPercentagem(percentagem);
 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'chart-bar-item';
                 itemDiv.innerHTML = `
                     <div class="chart-bar-info">
                         <span>${chave}</span>
-                        <span style="color: var(--primary-green);">${quantidade}</span>
+                        <span style="color: ${corBarra};">${quantidade}</span>
                     </div>
                     <div class="chart-bar-bg">
-                        <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
+                        <div class="chart-bar-fill" style="width: ${percentagem}%; background-color: ${corBarra};"></div>
                     </div>
                 `;
                 container.appendChild(itemDiv);
@@ -535,16 +550,17 @@
 
             const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
             const percentagem = Math.round((quantidadeEfetiva / limiteMeta) * 100);
+            const corBarra = obterCorPorPercentagem(percentagem);
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
                     <span>${nomeItem} (Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
-                    <span style="color: var(--primary-green);">${percentagem}%</span>
+                    <span style="color: ${corBarra};">${percentagem}%</span>
                 </div>
                 <div class="chart-bar-bg">
-                    <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
+                    <div class="chart-bar-fill" style="width: ${percentagem}%; background-color: ${corBarra};"></div>
                 </div>
             `;
             container.appendChild(itemDiv);
@@ -556,16 +572,17 @@
 
             // O gráfico calcula a percentagem em relação à meta de 75%
             const progressoVisual = Math.min(Math.max(Math.round((percentagemAtual / metaPercentagem) * 100), 0), 100);
+            const corBarra = obterCorPorPercentagem(progressoVisual);
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'chart-bar-item';
             itemDiv.innerHTML = `
                 <div class="chart-bar-info">
                     <span>${nomeItem} (Média: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
-                    <span style="color: var(--primary-green);">${progressoVisual}% da Meta</span>
+                    <span style="color: ${corBarra};">${progressoVisual}% da Meta</span>
                 </div>
                 <div class="chart-bar-bg">
-                    <div class="chart-bar-fill" style="width: ${progressoVisual}%;"></div>
+                    <div class="chart-bar-fill" style="width: ${progressoVisual}%; background-color: ${corBarra};"></div>
                 </div>
             `;
             container.appendChild(itemDiv);
@@ -701,7 +718,6 @@
             let countTurmasMat = 0;
 
             turmasLista.forEach(turma => {
-                // Português (Meta 2) - Lendo de percPort ou campos numéricos equivalentes
                 let valPort = turma.percPort || turma.portugues || turma.porcentagemPortugues || turma.portuguesBomMBom;
                 if (valPort !== undefined && valPort !== null) {
                     let numPort = parseFloat(String(valPort).replace('%', '').trim());
@@ -711,7 +727,6 @@
                     }
                 }
 
-                // Matemática (Meta 3) - Lendo de percMat ou campos numéricos equivalentes
                 let valMat = turma.percMat || turma.matematica || turma.porcentagemMatematica || turma.matematicaBomMBom;
                 if (valMat !== undefined && valMat !== null) {
                     let numMat = parseFloat(String(valMat).replace('%', '').trim());
@@ -726,7 +741,6 @@
             const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
             const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
 
-            // Renderizar as três barras baseadas em percentagens com meta até 75%
             renderizarProgressoMetaGantt('chartGanttObj2', 'Objetivo 2', mediaObj2, 75);
             renderizarProgressoMetaGantt('chartGanttMeta2', 'Meta 2 (Português)', mediaMeta2, 75);
             renderizarProgressoMetaGantt('chartGanttMeta3', 'Meta 3 (Matemática)', mediaMeta3, 75);
