@@ -157,6 +157,22 @@
             background-color: var(--primary-green-hover);
         }
 
+        /* Cartão de Filtros */
+        .filter-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
         /* Cartão da Tabela */
         .table-card {
             background-color: var(--card-bg);
@@ -378,6 +394,7 @@
             .btn-voltar-menu { padding: 6px 12px; font-size: 12px; }
             .header-actions { width: auto; }
             .btn-top-action { width: auto; }
+            .filter-grid { grid-template-columns: 1fr 1fr; }
             .checkbox-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; padding: 12px; }
             .form-footer { flex-direction: row; justify-content: flex-end; }
             .main-container { margin: 15px auto; padding: 0 10px; }
@@ -412,6 +429,34 @@
                 </div>
                 <div class="header-actions">
                     <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Novo Registo</button>
+                </div>
+            </div>
+
+            <!-- Barra de Filtros -->
+            <div class="filter-card">
+                <div style="font-size: 13px; font-weight: 600; color: var(--primary-green); margin-bottom: 8px;">🔍 Filtrar Registos</div>
+                <div class="filter-grid">
+                    <div>
+                        <label for="filtroTurma" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #374151;">Filtrar por Turma</label>
+                        <select id="filtroTurma" onchange="aplicarFiltros()" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff;">
+                            <option value="">Todas as Turmas</option>
+                            <option value="1ºA">1ºA</option>
+                            <option value="1ºB">1ºB</option>
+                            <option value="2ºA">2ºA</option>
+                            <option value="2ºB">2ºB</option>
+                            <option value="3ºA">3ºA</option>
+                            <option value="3ºB">3ºB</option>
+                            <option value="4ºA">4ºA</option>
+                            <option value="4ºB">4ºB</option>
+                            <option value="Abelhinhas">Abelhinhas</option>
+                            <option value="Arco-Íris">Arco-Íris</option>
+                            <option value="Flores">Flores</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filtroResponsavel" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #374151;">Filtrar por Responsável</label>
+                        <input type="text" id="filtroResponsavel" oninput="aplicarFiltros()" placeholder="Nome do responsável..." style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff; box-sizing: border-box;">
+                    </div>
                 </div>
             </div>
 
@@ -612,7 +657,7 @@
             }
         }
 
-        function carregarRegistos() {
+        function carregarRegistos(filtroTurmaVal = '', filtroRespVal = '') {
             const tbody = document.getElementById('caaTableBody');
             if (!tbody) return;
             tbody.innerHTML = '';
@@ -624,7 +669,19 @@
                 return;
             }
 
-            const registosInvertidos = [...registos].reverse();
+            // Filtragem combinada por turma e responsável
+            const registosFiltrados = registos.filter(reg => {
+                const matchTurma = !filtroTurmaVal || (reg.turmas && reg.turmas.includes(filtroTurmaVal));
+                const matchResp = !filtroRespVal || (reg.responsaveis && reg.responsaveis.toLowerCase().includes(filtroRespVal.toLowerCase()));
+                return matchTurma && matchResp;
+            });
+
+            if (registosFiltrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #6b7280; font-size: 12px;">Nenhum registo corresponde aos filtros aplicados.</td></tr>`;
+                return;
+            }
+
+            const registosInvertidos = [...registosFiltrados].reverse();
 
             registosInvertidos.forEach((reg) => {
                 const indexReal = registos.findIndex(r => r.numero_atividade === reg.numero_atividade);
@@ -650,6 +707,12 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function aplicarFiltros() {
+            const turmaVal = document.getElementById('filtroTurma').value;
+            const respVal = document.getElementById('filtroResponsavel').value;
+            carregarRegistos(turmaVal, respVal);
         }
 
         function abrirFormularioCriacao() {
@@ -810,7 +873,7 @@
             mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo?', '⚠️', () => {
                 registos.splice(index, 1);
                 localStorage.setItem('registosCAA', JSON.stringify(registos));
-                carregarRegistos();
+                aplicarFiltros();
             });
         }
 
@@ -845,7 +908,7 @@
 
             localStorage.setItem('registosCAA', JSON.stringify(registos));
             fecharFormulario();
-            carregarRegistos();
+            aplicarFiltros();
         });
 
         carregarRegistos();
