@@ -569,6 +569,8 @@
                     inputs.forEach(el => el.disabled = false);
                     document.getElementById('modalAvNomeAtividade').readOnly = true;
                     document.getElementById('modalAvTipoAtividade').readOnly = true;
+                    // Bloqueia o campo do ano letivo no formulário de edição
+                    document.getElementById('modalAvAnoLetivo').disabled = true;
                     saveBtn.style.display = 'inline-block';
                 }
             }
@@ -620,7 +622,8 @@
                     av.numeroAtividade = numeroAtividade;
                     av.tituloAtividade = nomeAtividade || av.tituloAtividade;
                     av.tipoAtividade = tipoAtividade || av.tipoAtividade;
-                    av.anoLetivo = document.getElementById('modalAvAnoLetivo').value;
+                    // Mantém o ano letivo anterior ao editar, garantindo que não se altera indevidamente
+                    av.anoLetivo = av.anoLetivo || document.getElementById('modalAvAnoLetivo').value;
                     av.docenteAluno = document.getElementById('modalAvDocenteAluno').value;
                     av.pertinencia = document.getElementById('modalAvPertinencia').value;
                     av.dinamica = document.getElementById('modalAvDinamica').value;
