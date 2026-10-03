@@ -160,6 +160,11 @@
             background-color: var(--primary-green-hover);
         }
 
+        /* Barra de filtro com padding reforçado no topo */
+        .filter-card-wrapper {
+            padding-top: 6px;
+        }
+
         .filter-container input {
             width: 100%;
             padding: 10px 14px;
@@ -217,15 +222,13 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação Apenas com Ícones (Tamanho e Cores exatas de nova-atividade.html)[cite: 2] */
+        /* Botões de Ação com SVG Brancos */
         .btn-action {
             width: 36px;
             height: 36px;
             border-radius: 6px;
-            font-size: 15px;
             border: none;
             cursor: pointer;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -233,13 +236,19 @@
             transition: opacity 0.2s;
         }
 
+        .btn-action svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+
         .btn-action:hover {
             opacity: 0.85;
         }
 
-        .btn-view { background-color: #0ea5e9; color: white; }
-        .btn-edit { background-color: #f59e0b; color: white; }
-        .btn-delete { background-color: #dc2626; color: white; }
+        .btn-view { background-color: #0ea5e9; }
+        .btn-edit { background-color: #f59e0b; }
+        .btn-delete { background-color: #dc2626; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
         .form-card {
@@ -318,6 +327,7 @@
             .section-header-card p { font-size: 14px; }
             .header-actions { width: auto; }
             .btn-top-action { padding: 10px 18px; flex: unset; }
+            .filter-card-wrapper { padding-top: 10px; }
             .filter-container input { max-width: 300px; }
             th { padding: 16px 20px; font-size: 13px; }
             td { padding: 18px 20px; font-size: 14px; }
@@ -355,7 +365,7 @@
                 </div>
             </div>
 
-            <div class="section-header-card" style="padding: 14px 16px; margin-bottom: 16px;">
+            <div class="section-header-card filter-card-wrapper">
                 <div class="filter-container" style="width: 100%;">
                     <input type="text" id="filtroResponsavel" placeholder="🔍 Filtrar por responsável..." oninput="carregarRequisicoes()">
                 </div>
@@ -499,9 +509,15 @@
                     <td>${req.area || 'N/A'}</td>
                     <td style="font-weight: 600;">${req.equipamento}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verRequisicao(${indexReal})" title="Ver">🔍</button>
-                        <button class="btn-action btn-edit" onclick="editarRequisicao(${indexReal})" title="Editar">✏️</button>
-                        <button class="btn-action btn-delete" onclick="eliminarRequisicao(${indexReal})" title="Apagar">🗑️</button>
+                        <button class="btn-action btn-view" onclick="verRequisicao(${indexReal})" title="Ver">
+                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </button>
+                        <button class="btn-action btn-edit" onclick="editarRequisicao(${indexReal})" title="Editar">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button class="btn-action btn-delete" onclick="eliminarRequisicao(${indexReal})" title="Apagar">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
