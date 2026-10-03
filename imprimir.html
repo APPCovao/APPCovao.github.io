@@ -8,7 +8,8 @@
         :root {
             --primary-green: #16a34a;
             --text-main: #1f2937;
-            --border-color: #d1d5db;
+            --border-color: #bbf7d0;
+            --bg-card: #f9fafb;
         }
 
         body {
@@ -23,10 +24,11 @@
         .print-container {
             max-width: 800px;
             margin: 0 auto;
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--border-color);
             padding: 30px;
-            border-radius: 8px;
+            border-radius: 12px;
             background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .print-header {
@@ -39,7 +41,7 @@
         }
 
         .print-header .logo-area img {
-            height: 50px;
+            height: 45px;
             object-fit: contain;
         }
 
@@ -56,27 +58,26 @@
             color: #4b5563;
         }
 
+        /* Estilo original restaurado para as caixas de informação */
         .section-block {
-            margin-bottom: 15px;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 12px;
-        }
-
-        .section-block:last-child {
-            border-bottom: none;
+            background-color: var(--bg-card);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
         }
 
         .label-title {
             font-weight: 700;
-            font-size: 12px;
-            color: #4b5563;
+            font-size: 11px;
+            color: var(--primary-green);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             letter-spacing: 0.5px;
         }
 
         .value-content {
-            font-size: 14px;
+            font-size: 13px;
             color: #111827;
         }
 
@@ -127,6 +128,12 @@
                 border: none;
                 padding: 0;
                 max-width: 100%;
+                box-shadow: none;
+            }
+            .section-block {
+                background-color: #ffffff !important;
+                border: 1px solid #d1d5db;
+                break-inside: avoid;
             }
         }
     </style>
@@ -145,34 +152,34 @@
             </div>
         </div>
 
-        <div class="grid-2 section-block">
-            <div>
+        <div class="grid-2">
+            <div class="section-block">
                 <div class="label-title">Número da Atividade</div>
                 <div class="value-content" id="printNumAtividade">-</div>
             </div>
-            <div>
+            <div class="section-block">
                 <div class="label-title">Nome da Atividade</div>
                 <div class="value-content" id="printNomeAtividade">-</div>
             </div>
         </div>
 
-        <div class="grid-2 section-block">
-            <div>
+        <div class="grid-2">
+            <div class="section-block">
                 <div class="label-title">Ano Letivo</div>
                 <div class="value-content" id="printAnoLetivo">-</div>
             </div>
-            <div>
+            <div class="section-block">
                 <div class="label-title">Tipo de Atividade</div>
                 <div class="value-content" id="printTipoAtividade">-</div>
             </div>
         </div>
 
-        <div class="grid-2 section-block">
-            <div>
+        <div class="grid-2">
+            <div class="section-block">
                 <div class="label-title">Integra o PAA?</div>
                 <div class="value-content" id="printPaa">-</div>
             </div>
-            <div>
+            <div class="section-block">
                 <div class="label-title">Integra o PEE?</div>
                 <div class="value-content" id="printPee">-</div>
             </div>
@@ -227,7 +234,6 @@
                 document.getElementById('printSugestoes').innerText = reg.sugestoesRecolhidas || '-';
                 document.getElementById('printResumo').innerText = reg.resumoConclusoes || '-';
 
-                // Atualiza dinamicamente o subtítulo do cabeçalho para exibir "Relatório da atividade: [Nome]"
                 document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
 
                 let htmlListas = '';
@@ -251,7 +257,6 @@
             }
         }
 
-        // Abertura automática da caixa de impressão para PDF
         window.onload = function() {
             setTimeout(() => {
                 window.print();
