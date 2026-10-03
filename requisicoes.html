@@ -160,9 +160,13 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Barra de filtro com padding reforçado no topo */
-        .filter-card-wrapper {
-            padding-top: 6px;
+        /* Cartão de filtro separado e independente */
+        .filter-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .filter-container input {
@@ -320,14 +324,14 @@
             .navbar .nav-right { font-size: 14px; gap: 20px; }
             .navbar .nav-right span { max-width: 200px; }
             .btn-voltar-menu { font-size: 13px; padding: 6px 14px; }
-            .main-container { margin: 30px auto; padding: 0 20px; gap: 25px; }
+            .main-container { margin: 30px auto; padding: 0 20px; gap: 20px; }
             .section-header-card { padding: 24px 30px; flex-direction: row; justify-content: space-between; align-items: center; }
             .section-header-top { gap: 6px; }
             .section-header-card h1 { font-size: 24px; }
             .section-header-card p { font-size: 14px; }
             .header-actions { width: auto; }
             .btn-top-action { padding: 10px 18px; flex: unset; }
-            .filter-card-wrapper { padding-top: 10px; }
+            .filter-card { padding: 20px 30px; }
             .filter-container input { max-width: 300px; }
             th { padding: 16px 20px; font-size: 13px; }
             td { padding: 18px 20px; font-size: 14px; }
@@ -354,7 +358,7 @@
     <div class="main-container">
         
         <!-- Vista Principal: Tabela -->
-        <div id="vistaTabela">
+        <div id="vistaTabela" style="display: flex; flex-direction: column; gap: 16px;">
             <div class="section-header-card">
                 <div class="section-header-top">
                     <h1>Requisições e Equipamentos</h1>
@@ -365,7 +369,8 @@
                 </div>
             </div>
 
-            <div class="section-header-card filter-card-wrapper">
+            <!-- Secção de Filtro Separada -->
+            <div class="filter-card">
                 <div class="filter-container" style="width: 100%;">
                     <input type="text" id="filtroResponsavel" placeholder="🔍 Filtrar por responsável..." oninput="carregarRequisicoes()">
                 </div>
@@ -549,7 +554,7 @@
 
         function fecharFormulario() {
             document.getElementById('vistaFormulario').style.display = 'none';
-            document.getElementById('vistaTabela').style.display = 'block';
+            document.getElementById('vistaTabela').style.display = 'flex';
         }
 
         document.getElementById('requisicaoForm').addEventListener('submit', (e) => {
