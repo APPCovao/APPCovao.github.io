@@ -617,12 +617,34 @@
             container.appendChild(itemDiv);
         }
 
-        // Nova função específica para Objetivo 3 e Meta 4 (com base no total de requisições e limite de 126)
         function renderizarProgressoRequisicoesGantt(containerId, quantidadeAtual, limiteMeta = 126) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
             const percentagem = Math.min(Math.round((quantidadeAtual / limiteMeta) * 100), 100);
+            const corBarra = obterCorPorPercentagem(percentagem);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-bar-item';
+            itemDiv.innerHTML = `
+                <div class="chart-bar-info">
+                    <span>(Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
+                    <span style="color: ${corBarra};">${percentagem}%</span>
+                </div>
+                <div class="chart-bar-bg">
+                    <div class="chart-bar-fill" style="width: ${percentagem}%; background-color: ${corBarra};"></div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        }
+
+        // Função específica para Meta 5 (limite 2) e Meta 6 (limite 6) lidas de registar_objetivos
+        function renderizarProgressoPersonalizadoGantt(containerId, quantidadeAtual, limiteMeta) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
+            const percentagem = Math.round((quantidadeEfetiva / limiteMeta) * 100);
             const corBarra = obterCorPorPercentagem(percentagem);
 
             const itemDiv = document.createElement('div');
@@ -803,10 +825,63 @@
             renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
             renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
 
-            // Inicializações vazias / placeholders para Objetivo 4, Meta 5 e Meta 6
-            renderizarProgressoGantt('chartGanttObj4', 0, 6);
-            renderizarProgressoGantt('chartGanttMeta5', 0, 6);
-            renderizarProgressoGantt('chartGanttMeta6', 0, 6);
+            // ==========================================
+            // Meta 5, Meta 6 e Objetivo 4 (Lido de registar_objetivos.html)
+            // ==========================================
+            let contagemMeta5 = 0;
+            let contagemMeta6 = 0;
+
+            const registarObjetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || JSON.parse(localStorage.getItem('restar_objetivos')) || [];
+
+            registarObjetivosLista.forEach(item => {
+                // Verificar Meta 5
+                const camposMeta5 = [item.metas, item.meta, item.metasSelecionadas];
+                camposMeta5.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(m => {
+                            if (limparNomeCurto(m).toLowerCase().includes('meta 5') || String(m).includes('5')) {
+                                contagemMeta5++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        if (val.toLowerCase().includes('meta 5')) {
+                            contagemMeta5++;
+                        }
+                    }
+                });
+                if (item.meta5 === true || item.meta5 === 'true' || item.meta5 === 'Sim') {
+                    contagemMeta5++;
+                }
+
+                // Verificar Meta 6
+                const camposMeta6 = [item.metas, item.meta, item.metasSelecionadas];
+                camposMeta6.forEach(val => {
+                    if (Array.isArray(val)) {
+                        val.forEach(m => {
+                            if (limparNomeCurto(m).toLowerCase().includes('meta 6') || String(m).includes('6')) {
+                                contagemMeta6++;
+                            }
+                        });
+                    } else if (typeof val === 'string' && val.trim() !== '') {
+                        if (val.toLowerCase().includes('meta 6')) {
+                            contagemMeta6++;
+                        }
+                    }
+                });
+                if (item.meta6 === true || item.meta6 === 'true' || item.meta6 === 'Sim') {
+                    contagemMeta6++;
+                }
+            });
+
+            // Percentagem individual de cada meta face aos seus limites (Meta 5 = 2, Meta 6 = 6)
+            const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
+            const percMeta6 = Math.min(Math.round((contagemMeta6 / 6) * 100), 100);
+            // Objetivo 4 = Junção (média) das percentagens da Meta 5 e Meta 6
+            const percObj4 = Math.round((percMeta5 + percMeta6) / 2);
+
+            renderizarProgressoPersonalizadoGantt('chartGanttMeta5', contagemMeta5, 2);
+            renderizarProgressoPersonalizadoGantt('chartGanttMeta6', contagemMeta6, 6);
+            renderizarProgressoMetaGantt('chartGanttObj4', percObj4, 100);
 
             // ==========================================
             // Restantes Gráficos
