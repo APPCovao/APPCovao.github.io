@@ -131,7 +131,6 @@
 
         .btn-top-action:hover { background-color: #0f172a; }
 
-        /* Barra de filtros otimizada */
         .filters-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -327,6 +326,8 @@
             width: 100%;
             text-align: center;
             box-sizing: border-box;
+            text-decoration: none;
+            display: inline-block;
         }
         .btn-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-cancel:hover { background-color: #cbd5e1; }
@@ -354,58 +355,20 @@
             box-sizing: border-box;
         }
 
-        /* MEDIA QUERIES RIGOROSAS PARA TELEMÓVEL VERTICAL */
         @media (max-width: 768px) {
-            body {
-                font-size: 14px;
-            }
-            .navbar {
-                padding: 0.6rem 0.8rem;
-            }
-            .navbar .brand span {
-                display: none; /* Oculta texto da marca para poupar espaço precioso */
-            }
-            .navbar .user-info {
-                gap: 8px;
-                font-size: 11px;
-            }
-            .navbar .user-info span {
-                max-width: 95px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .main-container {
-                margin: 10px 6px;
-                padding: 0;
-            }
-            .section-header-card {
-                padding: 12px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .section-header-card h1 {
-                font-size: 18px;
-            }
-            .section-header-card p {
-                font-size: 12px;
-            }
-            .filters-card {
-                grid-template-columns: 1fr; /* Força os filtros a ficarem um abaixo do outro em coluna */
-                padding: 12px;
-                gap: 10px;
-            }
-            .form-row-grid {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-            .form-section-card {
-                padding: 12px;
-            }
-            th, td {
-                padding: 10px 8px;
-                font-size: 12px;
-            }
+            body { font-size: 14px; }
+            .navbar { padding: 0.6rem 0.8rem; }
+            .navbar .brand span { display: none; }
+            .navbar .user-info { gap: 8px; font-size: 11px; }
+            .navbar .user-info span { max-width: 95px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .main-container { margin: 10px 6px; padding: 0; }
+            .section-header-card { padding: 12px; flex-direction: column; align-items: stretch; }
+            .section-header-card h1 { font-size: 18px; }
+            .section-header-card p { font-size: 12px; }
+            .filters-card { grid-template-columns: 1fr; padding: 12px; gap: 10px; }
+            .form-row-grid { grid-template-columns: 1fr; gap: 0; }
+            .form-section-card { padding: 12px; }
+            th, td { padding: 10px 8px; font-size: 12px; }
         }
     </style>
 </head>
@@ -557,6 +520,8 @@
 
                 <div class="form-buttons">
                     <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaAvaliarAtividade()">Voltar / Cancelar</button>
+                    <!-- BOTÃO DE IMPRIMIR INTEGRADO -->
+                    <a href="#" id="btnImprimirRegisto" class="btn-form-action" style="background-color: #0284c7; color: white; display: none;">🖨️ Imprimir Registo</a>
                     <button type="submit" id="btnSalvarForm" class="btn-form-action" style="background-color: #16a34a; color: white;">Guardar</button>
                 </div>
             </form>
@@ -596,11 +561,9 @@
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             tbody.innerHTML = '';
 
-            // Obter valores dos filtros específicos
             const filtroNumAtvVal = (document.getElementById('filtroNumeroAtividade').value || '').toLowerCase().trim();
             const filtroCriadorVal = (document.getElementById('filtroCriador').value || '').toLowerCase().trim();
 
-            // Filtrar registos com base nos campos solicitados
             const registosFiltrados = registos.filter(reg => {
                 let atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
                 const numAtividade = String(reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '')).toLowerCase();
@@ -756,6 +719,7 @@
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const inputs = document.querySelectorAll('#objetivoForm input:not([type="hidden"]), #objetivoForm select, #objetivoForm textarea');
             const saveBtn = document.getElementById('btnSalvarForm');
+            const btnImprimir = document.getElementById('btnImprimirRegisto');
 
             if (modo === 'criar') {
                 document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
@@ -769,6 +733,7 @@
                 document.getElementById('modalObjMedia').disabled = true;
                 document.getElementById('modalObjSugestoes').disabled = true;
                 saveBtn.style.display = 'inline-block';
+                btnImprimir.style.display = 'none';
             } else {
                 const reg = registos.find(r => r.id == id);
                 if (!reg) return;
@@ -795,6 +760,8 @@
                     document.getElementById('formTitulo').innerText = 'Consultar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = true);
                     saveBtn.style.display = 'none';
+                    btnImprimir.style.display = 'inline-block';
+                    btnImprimir.href = `imprimir.html?id=${reg.id}`;
                 } else {
                     document.getElementById('formTitulo').innerText = 'Editar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = false);
@@ -804,6 +771,7 @@
                     document.getElementById('modalObjMedia').disabled = true;
                     document.getElementById('modalObjSugestoes').disabled = true;
                     saveBtn.style.display = 'inline-block';
+                    btnImprimir.style.display = 'none';
                 }
             }
 
@@ -811,6 +779,7 @@
         }
 
         function voltarParaAvaliarAtividade() {
+            document.getElementById('btnImprimirRegisto').style.display = 'none';
             window.location.href = 'avaliar-atividade.html';
         }
 
@@ -867,6 +836,7 @@
 
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
             
+            document.getElementById('btnImprimirRegisto').style.display = 'none';
             document.getElementById('formularioCard').style.display = 'none';
             document.getElementById('listagemHeaderCard').style.display = 'flex';
             document.getElementById('listagemFiltersCard').style.display = 'grid';
