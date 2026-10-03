@@ -20,30 +20,33 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
         /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 1rem;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .navbar .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .navbar .brand img {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             object-fit: contain;
             border-radius: 4px;
         }
@@ -51,8 +54,8 @@
         .navbar .nav-right {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-size: 14px;
+            gap: 12px;
+            font-size: 13px;
         }
 
         .navbar .nav-right span {
@@ -63,15 +66,15 @@
             background-color: #2563eb;
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: background 0.2s;
         }
 
@@ -82,8 +85,11 @@
         /* Contentor Principal */
         .main-container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 15px auto;
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         /* Cartão de Cabeçalho da Secção */
@@ -91,29 +97,44 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 24px 30px;
+            padding: 18px 20px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
+            align-items: flex-start;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .section-header-card {
+                flex-direction: row;
+                align-items: center;
+            }
         }
 
         .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 22px;
+            margin: 0 0 4px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: #4b5563;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .header-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .header-actions {
+                width: auto;
+            }
         }
 
         /* Botões do Topo */
@@ -121,16 +142,24 @@
             background-color: #1e293b;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
             transition: background 0.2s;
             text-decoration: none;
+            flex: 1;
+        }
+
+        @media (min-width: 640px) {
+            .btn-top-action {
+                flex: unset;
+            }
         }
 
         .btn-top-action:hover {
@@ -150,7 +179,7 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            overflow: hidden;
+            overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
@@ -158,13 +187,14 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            min-width: 500px;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 16px 20px;
-            font-size: 13px;
+            padding: 14px 16px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.5px;
             border-bottom: 2px solid var(--border-color);
@@ -172,8 +202,8 @@
         }
 
         td {
-            padding: 18px 20px;
-            font-size: 14px;
+            padding: 14px 16px;
+            font-size: 13px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
         }
@@ -186,46 +216,62 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela */
+        /* Botões de Ação na Tabela com Ícones SVG Brancos */
         .btn-action {
-            padding: 6px 14px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             border: none;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
-            margin-right: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-right: 3px;
             transition: opacity 0.2s;
+            color: white;
+        }
+
+        .btn-action svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
         }
 
         .btn-action:hover {
             opacity: 0.85;
         }
 
-        .btn-ver { background-color: #0d9488; color: white; }
-        .btn-editar { background-color: #047857; color: white; }
-        .btn-apagar { background-color: #dc2626; color: white; }
+        .btn-ver { background-color: #0d9488; }
+        .btn-editar { background-color: #047857; }
+        .btn-apagar { background-color: #dc2626; }
 
         /* Formulário Estilizado */
         .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
+        @media (min-width: 640px) {
+            .form-card {
+                padding: 30px;
+            }
+        }
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 6px;
+            font-size: 13px;
             color: #374151;
         }
 
@@ -237,7 +283,7 @@
         input[type="number"],
         select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 10px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 14px;
@@ -262,20 +308,27 @@
         .calc-display {
             background-color: #f8fafc;
             border: 1px dashed #cbd5e1;
-            padding: 10px 14px;
+            padding: 10px 12px;
             border-radius: 6px;
             font-weight: bold;
             color: var(--primary-green);
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .form-footer {
             display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 30px;
+            flex-direction: column-reverse;
+            gap: 10px;
+            margin-top: 25px;
             border-top: 1px solid #e5e7eb;
-            padding-top: 20px;
+            padding-top: 15px;
+        }
+
+        @media (min-width: 640px) {
+            .form-footer {
+                flex-direction: row;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
@@ -288,7 +341,7 @@
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
-            <span>Olá, <strong id="userNameDisplay">Administrador</strong></span>
+            <span><strong id="userNameDisplay">Administrador</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
@@ -303,7 +356,6 @@
                     <p>Consulte, edite ou crie novos registos de aproveitamento (Português e Matemática).</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-top-action" onclick="window.location.href='dashboard.html'">← Voltar</button>
                     <button class="btn-top-action btn-top-primary" onclick="abrirFormularioCriacao()">+ Novo Registo</button>
                 </div>
             </div>
@@ -314,11 +366,9 @@
                         <tr>
                             <th>Turma</th>
                             <th>Nº Alunos</th>
-                            <th>Português (Nº Alunos)</th>
                             <th>Português (%)</th>
-                            <th>Matemática (Nº Alunos)</th>
                             <th>Matemática (%)</th>
-                            <th style="width: 220px; text-align: right;">Ações</th>
+                            <th style="width: 170px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaTurmasBody">
@@ -330,12 +380,12 @@
 
         <!-- Vista de Formulário (Oculto por defeito) -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 5px 0; font-size: 22px;">Registar Dados da Turma</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 14px;">EB1/PE do Covão e Vargens – Estatísticas de Turma (Português e Matemática)</p>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 4px 0; font-size: 20px;">Registar Dados da Turma</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 13px;">EB1/PE do Covão e Vargens – Estatísticas de Turma</p>
                 </div>
-                <button class="btn-top-action" onclick="fecharFormulario()">← Voltar</button>
+                <button class="btn-top-action" onclick="fecharFormulario()" style="background-color: #6b7280; width: auto;">← Voltar</button>
             </div>
 
             <form id="turmaForm">
@@ -393,7 +443,7 @@
                 </div>
 
                 <div class="form-footer">
-                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Voltar / Fechar</button>
+                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Cancelar</button>
                     <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar Registo da Turma</button>
                 </div>
             </form>
@@ -401,20 +451,22 @@
     </div>
 
     <!-- Popup Personalizado -->
-    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
-        <div style="background: white; padding: 2rem; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
-            <div id="popupIcon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏫</div>
-            <h3 id="popupTitle" style="margin: 0 0 10px 0; color: var(--primary-green);">Aviso</h3>
-            <p id="popupMessage" style="margin: 0 0 20px 0; color: #1f2937; line-height: 1.5;"></p>
-            <div id="popupButtons" style="display: flex; justify-content: center; gap: 10px;">
-                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>
+    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000; padding: 15px; box-sizing: border-box;">
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 380px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 2.2rem; margin-bottom: 0.5rem;">🏫</div>
+            <h3 id="popupTitle" style="margin: 0 0 8px 0; color: var(--primary-green); font-size: 18px;">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 16px 0; color: #1f2937; line-height: 1.4; font-size: 13px;"></p>
+            <div id="popupButtons" style="display: flex; justify-content: center; gap: 8px;">
+                <button onclick="fecharPopup()" style="background-color: var(--primary-green); color: white; padding: 0.4rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">OK</button>
             </div>
         </div>
     </div>
 
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
-        document.getElementById('userNameDisplay').innerText = currentUser.name || currentUser.nome || 'Administrador';
+        const fullName = currentUser.name || currentUser.nome || 'Administrador';
+        const firstName = fullName.trim().split(' ')[0];
+        document.getElementById('userNameDisplay').innerText = firstName;
 
         function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫', onConfirm = null) {
             document.getElementById('popupTitle').innerText = titulo;
@@ -425,8 +477,8 @@
             
             if (onConfirm) {
                 btnContainer.innerHTML = `
-                    <button id="popupCancelBtn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
-                    <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Sim, Apagar</button>
+                    <button id="popupCancelBtn" style="background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">Cancelar</button>
+                    <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">Sim, Apagar</button>
                 `;
                 document.getElementById('customPopup').style.display = 'flex';
 
@@ -439,7 +491,7 @@
                     onConfirm();
                 };
             } else {
-                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">OK</button>`;
+                btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.4rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
 
                 document.getElementById('popupOkBtn').onclick = () => {
@@ -498,7 +550,7 @@
             }
 
             if (turmas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #6b7280;">Ainda não existem turmas registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #6b7280;">Ainda não existem turmas registadas.</td></tr>`;
                 return;
             }
 
@@ -509,16 +561,20 @@
                 tr.innerHTML = `
                     <td><strong>${t.nomeTurma}</strong></td>
                     <td>${t.totalAlunos}</td>
-                    <td>${t.bonsPort}</td>
                     <td>${t.percPort}</td>
-                    <td>${t.bonsMat}</td>
                     <td>${t.percMat}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})">Ver</button>
+                        <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})" title="Ver">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        </button>
                         ${temPermissao ? `
-                            <button class="btn-action btn-editar" onclick="editarRegisto(${indexReal})">Editar</button>
-                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})">Apagar</button>
-                        ` : '<span style="color: #9ca3af; font-size: 0.85rem;">🔒 Bloqueado</span>'}
+                            <button class="btn-action btn-editar" onclick="editarRegisto(${indexReal})" title="Editar">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})" title="Apagar">
+                                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        ` : '<span style="color: #9ca3af; font-size: 0.8rem;">🔒 Bloqueado</span>'}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -558,7 +614,7 @@
             document.getElementById('bonsMat').value = t.bonsMat;
             
             calcularPercentagens();
-            ajustarModoFormulario(true); // Bloqueia todos os campos
+            ajustarModoFormulario(true);
 
             document.getElementById('formTitle').innerText = 'Visualizar Registo da Turma';
             document.getElementById('vistaTabela').style.display = 'none';
@@ -575,7 +631,7 @@
                 return;
             }
 
-            ajustarModoFormulario(false); // Liberta os campos para edição
+            ajustarModoFormulario(false);
             document.getElementById('editIndex').value = index;
             document.getElementById('nomeTurma').value = t.nomeTurma;
             document.getElementById('anoLetivo').value = t.anoLetivo;
