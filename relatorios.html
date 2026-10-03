@@ -554,7 +554,7 @@
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
-            // O gráfico fica completo (100% da barra) quando atinge a meta de 75%
+            // O gráfico calcula a percentagem em relação à meta de 75%
             const progressoVisual = Math.min(Math.max(Math.round((percentagemAtual / metaPercentagem) * 100), 0), 100);
 
             const itemDiv = document.createElement('div');
@@ -691,31 +691,8 @@
             renderizarProgressoGantt('chartGanttMeta1', 'Meta 1', contagemMeta1, 6);
 
             // ==========================================
-            // Lógica para Objetivo 2, Meta 2 (Português) e Meta 3 (Matemática)
+            // Lógica para Meta 2 (Português), Meta 3 (Matemática) e Objetivo 2 (Média de ambos)
             // ==========================================
-            let contagemObj2 = 0;
-            todasFontesAnalise.forEach(item => {
-                const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
-                camposObj.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(o => {
-                            if (limparNomeCurto(o).toLowerCase() === 'objetivo 2' || limparNomeCurto(o).toLowerCase() === 'obj 2' || String(o).includes('2')) {
-                                contagemObj2++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        if (val.toLowerCase().includes('objetivo 2') || val.toLowerCase().includes('obj 2')) {
-                            contagemObj2++;
-                        }
-                    }
-                });
-                if (item.objetivo2 === true || item.objetivo2 === 'true' || item.objetivo2 === 'Sim' || item.obj2 === true) {
-                    contagemObj2++;
-                }
-            });
-            renderizarProgressoGantt('chartGanttObj2', 'Objetivo 2', contagemObj2, 6);
-
-            // Cálculo das Médias das Percentagens (Meta 2 - Português | Meta 3 - Matemática)
             const turmasLista = JSON.parse(localStorage.getItem('turmas')) || [];
             
             let somaPercentagensPort = 0;
@@ -724,42 +701,33 @@
             let countTurmasMat = 0;
 
             turmasLista.forEach(turma => {
-                // Português (Meta 2)
-                let valPort = turma.portugues || turma.porcentagemPortugues || turma.percPort || turma.portuguesBomMBom;
-                if (valPort !== undefined && valPort !== null && !isNaN(valPort)) {
-                    somaPercentagensPort += parseFloat(valPort);
-                    countTurmasPort++;
-                } else if (turma.alunos && Array.isArray(turma.alunos) && turma.alunos.length > 0) {
-                    let alunosBomMBomPort = 0;
-                    turma.alunos.forEach(aluno => {
-                        let m = String(aluno.portugues || aluno.mencaoPort || aluno.mencaoPortugues || '').toLowerCase();
-                        if (m.includes('bom') || m.includes('muito bom')) alunosBomMBomPort++;
-                    });
-                    let perc = (alunosBomMBomPort / turma.alunos.length) * 100;
-                    somaPercentagensPort += perc;
-                    countTurmasPort++;
+                // Português (Meta 2) - Lendo de percPort ou campos numéricos equivalentes
+                let valPort = turma.percPort || turma.portugues || turma.porcentagemPortugues || turma.portuguesBomMBom;
+                if (valPort !== undefined && valPort !== null) {
+                    let numPort = parseFloat(String(valPort).replace('%', '').trim());
+                    if (!isNaN(numPort)) {
+                        somaPercentagensPort += numPort;
+                        countTurmasPort++;
+                    }
                 }
 
-                // Matemática (Meta 3)
-                let valMat = turma.matematica || turma.porcentagemMatematica || turma.percMat || turma.matematicaBomMBom;
-                if (valMat !== undefined && valMat !== null && !isNaN(valMat)) {
-                    somaPercentagensMat += parseFloat(valMat);
-                    countTurmasMat++;
-                } else if (turma.alunos && Array.isArray(turma.alunos) && turma.alunos.length > 0) {
-                    let alunosBomMBomMat = 0;
-                    turma.alunos.forEach(aluno => {
-                        let m = String(aluno.matematica || aluno.mencaoMat || aluno.mencaoMatematica || '').toLowerCase();
-                        if (m.includes('bom') || m.includes('muito bom')) alunosBomMBomMat++;
-                    });
-                    let perc = (alunosBomMBomMat / turma.alunos.length) * 100;
-                    somaPercentagensMat += perc;
-                    countTurmasMat++;
+                // Matemática (Meta 3) - Lendo de percMat ou campos numéricos equivalentes
+                let valMat = turma.percMat || turma.matematica || turma.porcentagemMatematica || turma.matematicaBomMBom;
+                if (valMat !== undefined && valMat !== null) {
+                    let numMat = parseFloat(String(valMat).replace('%', '').trim());
+                    if (!isNaN(numMat)) {
+                        somaPercentagensMat += numMat;
+                        countTurmasMat++;
+                    }
                 }
             });
 
             const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
             const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
+            const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
 
+            // Renderizar as três barras baseadas em percentagens com meta até 75%
+            renderizarProgressoMetaGantt('chartGanttObj2', 'Objetivo 2', mediaObj2, 75);
             renderizarProgressoMetaGantt('chartGanttMeta2', 'Meta 2 (Português)', mediaMeta2, 75);
             renderizarProgressoMetaGantt('chartGanttMeta3', 'Meta 3 (Matemática)', mediaMeta3, 75);
 
