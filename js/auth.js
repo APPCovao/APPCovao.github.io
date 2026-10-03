@@ -17,30 +17,26 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     }
 }
 
-// 1. Inicializar ou atualizar utilizadores predefinidos (com campos de aprovação)
+// 1. Inicializar ou forçar a atualização dos utilizadores predefinidos com acesso total
 const defaultUsers = [
     { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
     { id: 2, name: 'Luís Araújo', email: 'luis.araujo@edu.madeira.gov.pt', password: '1abc234araujo', isAdmin: true, aprovado: true },
     { id: 3, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
 ];
 
-if (!localStorage.getItem('users')) {
-    localStorage.setItem('users', JSON.stringify(defaultUsers));
-} else {
-    // Garante que os utilizadores predefinidos existem e estão atualizados no localStorage existente
-    let currentUsers = JSON.parse(localStorage.getItem('users')) || [];
-    defaultUsers.forEach(defUser => {
-        const index = currentUsers.findIndex(u => u.email.toLowerCase() === defUser.email.toLowerCase());
-        if (index === -1) {
-            currentUsers.push(defUser);
-        } else {
-            // Atualiza propriedades essenciais dos admins predefinidos caso já existam
-            currentUsers[index].isAdmin = defUser.isAdmin;
-            currentUsers[index].aprovado = defUser.aprovado;
-        }
-    });
-    localStorage.setItem('users', JSON.stringify(currentUsers));
-}
+// Garante que os utilizadores predefinidos existem e estão atualizados no localStorage
+let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+defaultUsers.forEach(defUser => {
+    const index = storedUsers.findIndex(u => u.email.toLowerCase() === defUser.email.toLowerCase());
+    if (index === -1) {
+        storedUsers.push(defUser);
+    } else {
+        storedUsers[index].password = defUser.password;
+        storedUsers[index].isAdmin = defUser.isAdmin;
+        storedUsers[index].aprovado = defUser.aprovado;
+    }
+});
+localStorage.setItem('users', JSON.stringify(storedUsers));
 
 // 2. Injetar Modal Personalizado de forma segura
 if (!document.getElementById('globalCustomModal')) {
@@ -125,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (found) {
-                // Validação correta de Administrador (incluindo o Luís Araújo e contas admin)
                 const emailLower = found.email.toLowerCase();
+                // Identifica se é administrador (incluindo explicitamente o Luís Araújo)
                 const isAdmin = found.isAdmin === true || found.role === 'admin' || found.tipo === 'admin' || emailLower.includes('admin') || emailLower === 'luis.araujo@edu.madeira.gov.pt';
                 const estaAprovado = found.aprovado === true || found.status === 'aprovado' || found.ativo === true;
 
@@ -161,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const passVal = inputs[2].value.trim();
 
             if (!nameVal || !emailVal || !passVal) {
-                mostrarPopup('Atenção', 'Por favor, preencha todos os campos.', '⚠️');
+                mostrarPopup('Atenção', 'Por favor, preencha todos os campos.', '⚠️️');
                 return;
             }
 
