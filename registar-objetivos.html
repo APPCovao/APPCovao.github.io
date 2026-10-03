@@ -164,16 +164,23 @@
         tr:hover td { background-color: #fafaf9; }
 
         .btn-action {
-            padding: 6px 14px;
+            padding: 6px 8px;
             border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 12px;
             border: none;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             margin-right: 4px;
             transition: opacity 0.2s;
+            vertical-align: middle;
+        }
+        .btn-action svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
         }
         .btn-action:hover { opacity: 0.85; }
         .btn-view { background-color: #0ea5e9; color: white; }
@@ -267,7 +274,6 @@
         .btn-cancel { background-color: #e2e8f0; color: #334155; }
         .btn-cancel:hover { background-color: #cbd5e1; }
 
-        /* Modal simples apenas para apagar registo */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -299,21 +305,19 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <!-- Botão Voltar da barra superior da listagem aponta para atividades.html -->
+            <!-- Botão Voltar da barra superior aponta para atividades.html -->
             <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar</a>
         </div>
     </nav>
 
     <div class="main-container">
-        <!-- CABEÇALHO DA LISTAGEM -->
+        <!-- CABEÇALHO DA LISTAGEM (Sem o segundo botão voltar) -->
         <div id="listagemHeaderCard" class="section-header-card">
             <div>
                 <h1>Objetivos e Avaliações Globais</h1>
                 <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
             </div>
             <div class="header-actions">
-                <!-- Botão Voltar do cabeçalho da listagem aponta para atividades.html -->
-                <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
                 <button type="button" class="btn-top-action" style="background-color: #16a34a;" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
             </div>
         </div>
@@ -333,7 +337,7 @@
             </table>
         </div>
 
-        <!-- SECÇÃO DO FORMULÁRIO (Substitui os popups, abrindo diretamente na página) -->
+        <!-- SECÇÃO DO FORMULÁRIO -->
         <div id="formularioCard" class="form-section-card">
             <h2 id="formTitulo" style="color: #16a34a; margin-top: 0;">Registo de Objetivos e Avaliação Global</h2>
             <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">Associe a atividade a múltiplos objetivos e metas do PEE, PAA e consolide as avaliações.</p>
@@ -491,9 +495,15 @@
                     <td style="font-weight: 600;">${tituloAtividade}</td>
                     <td>${criadorNome}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="mostrarFormulario(${idReal}, 'ver')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario(${idReal}, 'editar')">Editar</button>
-                        <button class="btn-action btn-delete" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal})">Apagar</button>
+                        <button class="btn-action btn-view" title="Ver" onclick="mostrarFormulario(${idReal}, 'ver')">
+                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </button>
+                        <button class="btn-action btn-edit" title="Editar" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario(${idReal}, 'editar')">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button class="btn-action btn-delete" title="Apagar" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal})">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -721,7 +731,6 @@
 
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
             
-            // Após guardar, volta para a tabela da listagem interna
             document.getElementById('formularioCard').style.display = 'none';
             document.getElementById('listagemHeaderCard').style.display = 'flex';
             document.getElementById('listagemTableCard').style.display = 'block';
