@@ -26,7 +26,7 @@
 
         .navbar {
             background-color: #14532d;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 1rem;
             color: white;
             display: flex;
             justify-content: space-between;
@@ -37,14 +37,14 @@
         .navbar .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
         .navbar .brand img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             border-radius: 4px;
         }
@@ -52,27 +52,31 @@
         .navbar .nav-right {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-size: 14px;
+            gap: 10px;
+            font-size: 12px;
         }
 
         .navbar .nav-right span {
             color: #dcfce7;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .btn-voltar-menu {
             background-color: #2563eb;
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: background 0.2s;
         }
 
@@ -82,95 +86,79 @@
 
         .main-container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 15px auto;
+            padding: 0 10px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 16px;
+            box-sizing: border-box;
         }
 
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 24px 30px;
+            padding: 16px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 18px;
+            margin: 0 0 4px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .btn-top-action {
-            background-color: #1e293b;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-top-action:hover {
-            background-color: #0f172a;
+            font-size: 12px;
         }
 
         .theme-section {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 14px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 14px;
         }
 
         .theme-section-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             border-bottom: 2px solid #f0fdf4;
             padding-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .theme-section h2 {
             color: var(--primary-green);
-            font-size: 20px;
+            font-size: 16px;
             margin: 0;
         }
 
         .filter-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            width: 100%;
         }
 
         .filter-container input {
-            padding: 6px 12px;
+            padding: 6px 10px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .filter-container input:focus {
@@ -180,35 +168,37 @@
         .table-responsive {
             width: 100%;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            white-space: nowrap;
         }
 
         th {
-            padding: 12px 16px;
+            padding: 10px 12px;
             background-color: #f8fafc;
             color: var(--primary-green);
             font-weight: 600;
             border-bottom: 2px solid var(--border-color);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         td {
-            padding: 14px 16px;
+            padding: 12px;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-main);
         }
 
         .btn-action {
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
             border: none;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: background 0.2s;
@@ -217,7 +207,7 @@
         .btn-toggle {
             background-color: #e0f2fe;
             color: #0369a1;
-            margin-right: 8px;
+            margin-right: 4px;
         }
 
         .btn-toggle:hover {
@@ -236,13 +226,16 @@
         .btn-delete-all {
             background-color: #dc2626;
             color: white;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 6px;
             border: none;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
         }
 
         .btn-delete-all:hover {
@@ -264,6 +257,8 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.25s ease;
+            padding: 15px;
+            box-sizing: border-box;
         }
 
         .modal-overlay.active {
@@ -273,14 +268,15 @@
 
         .modal-card {
             background: white;
-            padding: 24px 30px;
+            padding: 20px;
             border-radius: var(--radius);
-            max-width: 420px;
-            width: 90%;
+            max-width: 400px;
+            width: 100%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             text-align: center;
             transform: scale(0.95);
             transition: transform 0.25s ease;
+            box-sizing: border-box;
         }
 
         .modal-overlay.active .modal-card {
@@ -288,38 +284,39 @@
         }
 
         .modal-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
+            font-size: 32px;
+            margin-bottom: 10px;
         }
 
         .modal-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .modal-message {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-light);
-            margin-bottom: 20px;
-            line-height: 1.5;
+            margin-bottom: 16px;
+            line-height: 1.4;
         }
 
         .modal-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
         }
 
         .modal-btn {
-            padding: 8px 18px;
+            padding: 8px 14px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             border: none;
             transition: background 0.2s;
+            flex: 1;
         }
 
         .modal-btn-cancel {
@@ -339,6 +336,30 @@
             color: white;
         }
         .modal-btn-ok:hover { background-color: var(--primary-green-hover); }
+
+        /* Media queries para tablets e computadores */
+        @media (min-width: 640px) {
+            .navbar { padding: 0.8rem 1.5rem; }
+            .navbar .brand { font-size: 1.1rem; }
+            .navbar .nav-right { font-size: 14px; gap: 15px; }
+            .navbar .nav-right span { max-width: 180px; }
+            .btn-voltar-menu { font-size: 13px; padding: 6px 14px; }
+            .main-container { margin: 25px auto; padding: 0 15px; gap: 24px; }
+            .section-header-card { flex-direction: row; justify-content: space-between; align-items: center; padding: 20px; }
+            .section-header-card h1 { font-size: 20px; }
+            .section-header-card p { font-size: 14px; }
+            .theme-section { padding: 20px; }
+            .theme-section-header { flex-direction: row; align-items: center; }
+            .theme-section h2 { font-size: 18px; }
+            .filter-container { width: auto; }
+            .filter-container input { width: auto; }
+            .btn-delete-all { width: auto; }
+            th { padding: 12px 16px; font-size: 14px; }
+            td { padding: 14px 16px; font-size: 14px; }
+            .modal-card { padding: 24px 30px; }
+            .modal-title { font-size: 18px; }
+            .modal-message { font-size: 14px; }
+        }
     </style>
 </head>
 <body>
@@ -349,7 +370,7 @@
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
-            <span><strong id="userNameDisplay">Administrador</strong></span>
+            <span><strong id="userNameDisplay">Admin</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
@@ -361,9 +382,6 @@
             <div>
                 <h1>Painel de Administração</h1>
                 <p>Gestão centralizada de utilizadores e registos de atividades.</p>
-            </div>
-            <div>
-                <a href="dashboard.html" class="btn-top-action">← Voltar</a>
             </div>
         </div>
 
@@ -391,12 +409,12 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Gestão de Atividades</h2>
-                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; width: 100%;">
                     <div class="filter-container">
-                        <label for="filterNumero" style="font-size: 13px; font-weight: 600; color: var(--text-light);">Filtrar Nº:</label>
-                        <input type="text" id="filterNumero" placeholder="Ex: 1, 2..." oninput="carregarAtividades()">
+                        <label for="filterNumero" style="font-size: 12px; font-weight: 600; color: var(--text-light); white-space: nowrap;">Nº:</label>
+                        <input type="text" id="filterNumero" placeholder="Filtrar..." oninput="carregarAtividades()">
                     </div>
-                    <button class="btn-delete-all" onclick="confirmarApagarTodas()">🗑️ Apagar Todas as Atividades</button>
+                    <button class="btn-delete-all" onclick="confirmarApagarTodas()">🗑️ Apagar Todas</button>
                 </div>
             </div>
 
@@ -431,7 +449,6 @@
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
     <script>
         // Restringir acesso apenas a admins
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -440,9 +457,8 @@
                 window.location.href = 'dashboard.html';
             });
         } else {
-            // Obter o nome e isolar apenas o primeiro nome (se não for Administrador)
             let nomeCompleto = currentUser.name || currentUser.nome || 'Administrador';
-            let primeiroNome = nomeCompleto === 'Administrador' ? 'Administrador' : nomeCompleto.split(' ')[0];
+            let primeiroNome = nomeCompleto === 'Administrador' ? 'Admin' : nomeCompleto.split(' ')[0];
             document.getElementById('userNameDisplay').innerText = primeiroNome;
         }
 
@@ -503,7 +519,7 @@
 
             users.forEach((u, index) => {
                 const tr = document.createElement('tr');
-                const isAdm = u.isAdmin ? '<span style="color: var(--primary-green); font-weight: bold;">Administrador</span>' : '<span style="color: var(--text-light);">Utilizador Padrão</span>';
+                const isAdm = u.isAdmin ? '<span style="color: var(--primary-green); font-weight: bold;">Admin</span>' : '<span style="color: var(--text-light);">Padrão</span>';
 
                 tr.innerHTML = `
                     <td>${u.name || u.nome || 'Sem Nome'}</td>
@@ -511,7 +527,7 @@
                     <td>${isAdm}</td>
                     <td style="text-align: right;">
                         <button class="btn-action btn-toggle" onclick="alternarAdmin(${index})">
-                            ${u.isAdmin ? 'Remover Admin' : 'Tornar Admin'}
+                            ${u.isAdmin ? 'Remover' : 'Tornar'}
                         </button>
                         <button class="btn-action btn-delete" onclick="eliminarUtilizador(${index})">Eliminar</button>
                     </td>
@@ -577,9 +593,9 @@
                 const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Geral';
 
                 tr.innerHTML = `
-                    <td><strong>#${numAtv}</strong></td>
+                    <td><strong>${numAtv}</strong></td>
                     <td>${titulo}</td>
-                    <td><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${tipo}</span></td>
+                    <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${tipo}</span></td>
                     <td style="text-align: right;">
                         <button class="btn-action btn-delete" onclick="confirmarEliminarAtividade(${originalIndex}, '${numAtv}')">Eliminar</button>
                     </td>
@@ -591,7 +607,7 @@
         function confirmarEliminarAtividade(index, numAtv) {
             mostrarConfirmacao(
                 'Eliminar Atividade', 
-                `Tem a certeza que pretende eliminar a Atividade #${numAtv}? Esta ação irá apagar também automaticamente todas as avaliações e registos de objetivos associados a este número.`, 
+                `Tem a certeza que pretende eliminar a Atividade ${numAtv}? Esta ação irá apagar também automaticamente todas as avaliações e registos de objetivos associados.`, 
                 () => {
                     let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
                     
@@ -609,14 +625,14 @@
                     atividades.splice(index, 1);
                     localStorage.setItem('atividades', JSON.stringify(atividades));
 
-                    // 2. Apagar avaliações correspondentes em chaves comuns
+                    // 2. Apagar avaliações correspondentes
                     ['avaliacoesAtividades', 'atividadesAvaliadas'].forEach(chaveStorage => {
                         let listaAv = JSON.parse(localStorage.getItem(chaveStorage)) || [];
                         listaAv = listaAv.filter(item => {
                             const idAv = item.idAtividade !== undefined ? item.idAtividade :
-                                                   (item.numeroAtividade !== undefined ? item.numeroAtividade :
-                                                   (item.atividadeId !== undefined ? item.atividadeId :
-                                                   (item.numero !== undefined ? item.numero : item.id)));
+                                                       (item.numeroAtividade !== undefined ? item.numeroAtividade :
+                                                       (item.atividadeId !== undefined ? item.atividadeId :
+                                                       (item.numero !== undefined ? item.numero : item.id)));
                             return !numerosPossiveisAlvo.includes(idAv);
                         });
                         localStorage.setItem(chaveStorage, JSON.stringify(listaAv));
@@ -626,15 +642,15 @@
                     let objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
                     objetivosLista = objetivosLista.filter(item => {
                         const idObj = item.numero !== undefined ? item.numero : 
-                                                (item.id !== undefined ? item.id : 
-                                                (item.numeroAtividade !== undefined ? item.numeroAtividade : 
-                                                (item.atividadeId !== undefined ? item.atividadeId : null)));
+                                                      (item.id !== undefined ? item.id : 
+                                                      (item.numeroAtividade !== undefined ? item.numeroAtividade : 
+                                                      (item.atividadeId !== undefined ? item.atividadeId : null)));
                         return !numerosPossiveisAlvo.includes(idObj);
                     });
                     localStorage.setItem('registosObjetivosAtividades', JSON.stringify(objetivosLista));
 
                     carregarAtividades();
-                    mostrarAlerta('Sucesso', `Atividade #${numAtv} e respetivos registos associados eliminados com sucesso!`);
+                    mostrarAlerta('Sucesso', `Atividade ${numAtv} e respetivos registos associados eliminados com sucesso!`);
                 }
             );
         }
