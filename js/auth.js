@@ -1,7 +1,6 @@
 console.log("auth.js carregado com sucesso!");
 
 // PROTEÇÃO CONTRA ACESSO DIRETO POR LINK
-// Se a página atual NÃO for a página de login (index.html) e não houver utilizador logado, redireciona logo para o index.
 const paginaAtual = window.location.pathname.split('/').pop();
 if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     const usuarioLogado = JSON.parse(localStorage.getItem('currentUser'));
@@ -10,14 +9,23 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     }
 }
 
-// 1. Inicializar utilizadores predefinidos
-if (!localStorage.getItem('users')) {
-    const defaultUsers = [
-        { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true },
-        { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false }
-    ];
-    localStorage.setItem('users', JSON.stringify(defaultUsers));
-}
+// 1. Inicializar utilizadores predefinidos com aprovação ativa
+let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+const defaultUsers = [
+    { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
+    { id: 2, name: 'João Utilizador', email: 'user@registos.com', password: '123', isAdmin: false, aprovado: true }
+];
+
+defaultUsers.forEach(defUser => {
+    const exists = storedUsers.find(u => u.email.toLowerCase() === defUser.email.toLowerCase());
+    if (!exists) {
+        storedUsers.push(defUser);
+    } else if (defUser.isAdmin) {
+        exists.isAdmin = true;
+        exists.aprovado = true;
+    }
+});
+localStorage.setItem('users', JSON.stringify(storedUsers));
 
 // 2. Injetar Modal Personalizado de forma segura
 if (!document.getElementById('globalCustomModal')) {
@@ -102,6 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (found) {
+                // Verificar se a conta está aprovada (Administradores entram sempre)
+                if (!found.isAdmin && found.aprovado !== true) {
+                    mostrarPopup('Conta Pendente', 'A sua conta encontra-se pendente de aprovação por um administrador.', '⏳');
+                    return;
+                }
+
                 localStorage.setItem('currentUser', JSON.stringify(found));
                 window.location.href = 'dashboard.html';
             } else {
@@ -132,19 +146,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Novo utilizador criado fica pendente de aprovação
             const novoUtilizador = {
                 id: Date.now(),
                 name: nameVal,
                 email: emailVal,
                 password: passVal,
-                isAdmin: false
+                isAdmin: false,
+                aprovado: false
             };
 
             users.push(novoUtilizador);
             localStorage.setItem('users', JSON.stringify(users));
             registerForm.reset();
 
-            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! Podes fazer login.', '🎉', () => {
+            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! O acesso ficará disponível após a aprovação de um administrador.', '🎉', () => {
                 const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container');
                 const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container');
                 if (registerScreen) registerScreen.style.display = 'none';
