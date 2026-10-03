@@ -258,6 +258,7 @@
         }
 
         .chart-bar-fill {
+            background: var(--primary-green);
             height: 100%;
             border-radius: 6px;
             transition: width 0.6s ease;
@@ -497,21 +498,22 @@
         const firstName = fullName.trim().split(' ')[0];
         document.getElementById('userNameDisplay').innerText = firstName;
 
-        // Função auxiliar para determinar a cor com base na percentagem atingida
+        // Função para determinar a cor personalizada com base na percentagem (utilizada apenas na Secção 3)
         function obterCorPorPercentagem(percentagem) {
             if (percentagem <= 49) {
                 return '#dc2626'; // Vermelho
             } else if (percentagem <= 69) {
                 return '#ea580c'; // Laranja
             } else if (percentagem <= 90) {
-                return '#ca8a04'; // Amarelo escuro / dourado (legível)
+                return '#ca8a04'; // Amarelo
             } else if (percentagem <= 99) {
                 return '#4ade80'; // Verde claro
             } else {
-                return '#15803d'; // Verde padrão (100% ou mais)
+                return '#15803d'; // Verde padrão (100%)
             }
         }
 
+        // Gráficos normais (mantêm o verde padrão)
         function renderizarGraficoBarras(containerId, dadosObjeto) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -527,23 +529,23 @@
             chaves.forEach(chave => {
                 const quantidade = dadosObjeto[chave];
                 const percentagem = Math.round((quantidade / maxValor) * 100);
-                const corBarra = obterCorPorPercentagem(percentagem);
 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'chart-bar-item';
                 itemDiv.innerHTML = `
                     <div class="chart-bar-info">
                         <span>${chave}</span>
-                        <span style="color: ${corBarra};">${quantidade}</span>
+                        <span style="color: var(--primary-green);">${quantidade}</span>
                     </div>
                     <div class="chart-bar-bg">
-                        <div class="chart-bar-fill" style="width: ${percentagem}%; background-color: ${corBarra};"></div>
+                        <div class="chart-bar-fill" style="width: ${percentagem}%;"></div>
                     </div>
                 `;
                 container.appendChild(itemDiv);
             });
         }
 
+        // Gráficos de Gantt da Secção 3 (aplicam a alteração dinâmica de cores)
         function renderizarProgressoGantt(containerId, nomeItem, quantidadeAtual, limiteMeta = 6) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -570,7 +572,6 @@
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
-            // O gráfico calcula a percentagem em relação à meta de 75%
             const progressoVisual = Math.min(Math.max(Math.round((percentagemAtual / metaPercentagem) * 100), 0), 100);
             const corBarra = obterCorPorPercentagem(progressoVisual);
 
