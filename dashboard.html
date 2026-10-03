@@ -128,16 +128,17 @@
             width: 100%;
         }
 
-        .btn-primary {
-            background-color: var(--color-primary);
+        /* Botão Admin Laranja */
+        .btn-admin {
+            background-color: #f97316;
             color: white;
         }
 
-        .btn-primary:hover {
-            background-color: var(--color-primary-hover);
+        .btn-admin:hover {
+            background-color: #ea580c;
         }
 
-        /* Grelha de Módulos (Menu Cards) otimizada para vertical */
+        /* Grelha de Módulos (Menu Cards) */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -157,11 +158,20 @@
             text-decoration: none;
             color: var(--text-main);
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-            transition: transform 0.15s, box-shadow 0.15s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
 
+        /* Efeito ao passar por cima (Hover) */
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            background-color: #fafafa;
+        }
+
+        /* Efeito ao clicar (Active) */
         .menu-card:active {
-            transform: scale(0.98);
+            transform: scale(0.97) translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .menu-card .icon {
@@ -226,8 +236,8 @@
                 <h2>Painel Principal</h2>
                 <p style="color: var(--text-light); font-size: 13px;">Gestão centralizada de registos e atividades</p>
             </div>
-            <!-- Botão de Admin condicional -->
-            <a href="admin.html" id="adminHeaderBtn" class="btn btn-primary" style="width: auto; padding: 8px 14px; display: none; font-size: 12px;">⚙️ Painel Admin</a>
+            <!-- Botão de Admin condicional (Laranja) -->
+            <a href="admin.html" id="adminHeaderBtn" class="btn btn-admin" style="width: auto; padding: 8px 14px; display: none; font-size: 12px;">⚙️ Painel Admin</a>
         </div>
 
         <h3 style="margin-bottom: 12px; color: var(--color-primary); margin-top: 20px; font-size: 16px;">Módulos do Sistema</h3>
@@ -300,7 +310,6 @@
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            // Apanhar apenas o primeiro nome
             const nomeCompleto = currentUser.name || currentUser.nome || 'Utilizador';
             const primeiroNome = nomeCompleto.trim().split(' ')[0];
             document.getElementById('welcomeName').innerText = primeiroNome;
