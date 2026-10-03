@@ -299,7 +299,8 @@
         </div>
         <div class="user-info">
             <span>Olá, <strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅️️ Menu</a>
+            <!-- Botão Voltar da barra superior da listagem aponta para atividades.html -->
+            <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar</a>
         </div>
     </nav>
 
@@ -311,6 +312,7 @@
                 <p>Consulta de associações a objetivos, metas PEE/PAA e avaliações globais.</p>
             </div>
             <div class="header-actions">
+                <!-- Botão Voltar do cabeçalho da listagem aponta para atividades.html -->
                 <a href="atividades.html" class="btn-top-action">⬅️ Voltar</a>
                 <button type="button" class="btn-top-action" style="background-color: #16a34a;" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
             </div>
@@ -427,7 +429,8 @@
                 </div>
 
                 <div class="form-buttons">
-                    <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaTabela()">Voltar / Cancelar</button>
+                    <!-- Botão cancelar/voltar dentro do formulário aponta para avaliar-atividade.html -->
+                    <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaAvaliarAtividade()">Voltar / Cancelar</button>
                     <button type="submit" id="btnSalvarForm" class="btn-form-action" style="background-color: #16a34a; color: white;">Guardar</button>
                 </div>
             </form>
@@ -660,11 +663,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function voltarParaTabela() {
-            document.getElementById('formularioCard').style.display = 'none';
-            document.getElementById('listagemHeaderCard').style.display = 'flex';
-            document.getElementById('listagemTableCard').style.display = 'block';
-            carregarObjetivos();
+        // Função de redirecionamento para avaliar-atividade.html ao sair do formulário
+        function voltarParaAvaliarAtividade() {
+            window.location.href = 'avaliar-atividade.html';
         }
 
         function salvarRegistoObjetivo(e) {
@@ -719,7 +720,12 @@
             }
 
             localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-            voltarParaTabela();
+            
+            // Após guardar, volta para a tabela da listagem interna
+            document.getElementById('formularioCard').style.display = 'none';
+            document.getElementById('listagemHeaderCard').style.display = 'flex';
+            document.getElementById('listagemTableCard').style.display = 'block';
+            carregarObjetivos();
         }
 
         let idParaApagar = null;
