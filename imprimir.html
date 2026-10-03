@@ -3,168 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imprimir Registo de Objetivos</title>
+    <title>Relatório da Atividade - EB1/PE do Covão e Vargem</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #1f2937;
-            margin: 0;
-            padding: 30px;
-            background-color: #ffffff;
+        :root {
+            --primary-green: #16a34a;
+            --text-main: #1f2937;
+            --border-color: #d1d5db;
         }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+            line-height: 1.5;
+        }
+
         .print-container {
             max-width: 800px;
             margin: 0 auto;
-            border: 2px solid #16a34a;
-            border-radius: 12px;
-            padding: 40px;
-        }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #bbf7d0;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        .header h1 { color: #16a34a; margin: 0 0 5px 0; font-size: 22px; }
-        .header p { color: #4b5563; margin: 0; font-size: 14px; }
-        .box-detalhe {
-            background-color: #f0fdf4;
-            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
             border-radius: 8px;
-            border: 1px solid #bbf7d0;
-            margin-bottom: 12px;
+            background: #fff;
         }
-        .box-detalhe strong { color: #16a34a; display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
-        .footer-print {
-            margin-top: 40px;
+
+        .print-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .btn-imprimir {
+
+        .print-header .logo-area img {
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .print-header .school-info h2 {
+            color: var(--primary-green);
+            font-size: 18px;
+            margin: 0 0 4px 0;
+        }
+
+        .print-header .school-info p {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .section-block {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 12px;
+        }
+
+        .section-block:last-child {
+            border-bottom: none;
+        }
+
+        .label-title {
+            font-weight: 700;
+            font-size: 12px;
+            color: #4b5563;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .value-content {
+            font-size: 14px;
+            color: #111827;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
+
+        li {
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .no-print {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-print {
             background-color: #16a34a;
             color: white;
             border: none;
             padding: 10px 20px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
             border-radius: 6px;
             cursor: pointer;
         }
+
+        .btn-print:hover {
+            background-color: #15803d;
+        }
+
         @media print {
-            .no-print { display: none; }
-            body { padding: 0; }
-            .print-container { border: none; padding: 0; }
+            .no-print {
+                display: none;
+            }
+            body {
+                padding: 0;
+            }
+            .print-container {
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="print-container">
-        <div class="header">
-            <h1>Registos Covão</h1>
-            <p>Relatório de Objetivos e Avaliação Global de Atividade</p>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div class="box-detalhe">
-                <strong>Nº da Atividade</strong>
-                <span id="printNumAtiv">-</span>
+        <!-- CABEÇALHO COM LOGÓTIPO E ESCOLA -->
+        <div class="print-header">
+            <div class="school-info">
+                <h2>EB1/PE do Covão e Vargem</h2>
+                <p id="printTituloCabecalho">Relatório da Atividade</p>
             </div>
-            <div class="box-detalhe">
-                <strong>Ano Letivo</strong>
-                <span id="printAnoLetivo">-</span>
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Logótipo EB1/PE Covão e Vargem" onerror="this.style.display='none'">
             </div>
         </div>
 
-        <div class="box-detalhe" style="margin-bottom: 15px;">
-            <strong>Nome da Atividade</strong>
-            <span id="printNomeAtiv" style="font-size: 16px; font-weight: 600;">-</span>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div class="box-detalhe">
-                <strong>Integra o PAA? / PEE?</strong>
-                P.A.A.: <span id="printPaa">-</span> | P.E.E.: <span id="printPee">-</span>
+        <div class="grid-2 section-block">
+            <div>
+                <div class="label-title">Número da Atividade</div>
+                <div class="value-content" id="printNumAtividade">-</div>
             </div>
-            <div class="box-detalhe">
-                <strong>Tipo de Atividade</strong>
-                <span id="printTipo">-</span>
+            <div>
+                <div class="label-title">Nome da Atividade</div>
+                <div class="value-content" id="printNomeAtividade">-</div>
             </div>
         </div>
 
-        <div class="box-detalhe" style="margin-bottom: 15px;">
-            <strong>Objetivos e Metas do PEE Abrangidos</strong>
-            <ul id="printMetas" style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;"></ul>
+        <div class="grid-2 section-block">
+            <div>
+                <div class="label-title">Ano Letivo</div>
+                <div class="value-content" id="printAnoLetivo">-</div>
+            </div>
+            <div>
+                <div class="label-title">Tipo de Atividade</div>
+                <div class="value-content" id="printTipoAtividade">-</div>
+            </div>
         </div>
 
-        <div class="box-detalhe" style="margin-bottom: 15px;">
-            <strong>Média Geral das Avaliações</strong>
-            <span id="printMedia">-</span>
+        <div class="grid-2 section-block">
+            <div>
+                <div class="label-title">Integra o PAA?</div>
+                <div class="value-content" id="printPaa">-</div>
+            </div>
+            <div>
+                <div class="label-title">Integra o PEE?</div>
+                <div class="value-content" id="printPee">-</div>
+            </div>
         </div>
 
-        <div class="box-detalhe" style="margin-bottom: 15px;">
-            <strong>Sugestões Recolhidas</strong>
-            <p id="printSugestoes" style="margin: 4px 0 0 0; white-space: pre-line;"></p>
+        <div class="section-block">
+            <div class="label-title">Objetivos e Metas do PEE Selecionados</div>
+            <div class="value-content" id="printObjetivosMetas">
+                <em style="color: #6b7280;">Nenhum registo selecionado.</em>
+            </div>
         </div>
 
-        <div class="box-detalhe" style="margin-bottom: 15px;">
-            <strong>Resumo / Conclusões</strong>
-            <p id="printResumo" style="margin: 4px 0 0 0; white-space: pre-line;"></p>
+        <div class="section-block">
+            <div class="label-title">Média Geral das Avaliações</div>
+            <div class="value-content" id="printMedia">-</div>
         </div>
 
-        <div style="text-align: right; font-size: 12px; color: #6b7280; margin-top: 15px;">
-            Registado por: <span id="printCriador">-</span>
+        <div class="section-block">
+            <div class="label-title">Sugestões Recolhidas</div>
+            <div class="value-content" id="printSugestoes" style="white-space: pre-line;">-</div>
         </div>
 
-        <div class="footer-print no-print">
-            <a href="javascript:history.back()" style="color: #4b5563; text-decoration: none; font-weight: 600;">← Voltar</a>
-            <button class="btn-imprimir" onclick="window.print()">Imprimir Página</button>
+        <div class="section-block">
+            <div class="label-title">Resumo / Conclusões da Atividade</div>
+            <div class="value-content" id="printResumo" style="white-space: pre-line;">-</div>
+        </div>
+
+        <div class="no-print">
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+            <button class="btn-print" style="background-color: #64748b; margin-left: 10px;" onclick="window.close()">Fechar Janela</button>
         </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const idRegisto = urlParams.get('id');
+        const registoId = urlParams.get('id');
 
-        const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-        
-        // Procura rigorosa do ID convertendo para string
-        let reg = registos.find(r => String(r.id) === String(idRegisto));
+        if (registoId) {
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            const reg = registos.find(r => r.id == registoId);
 
-        // Fallback robusto: se não encontrar o ID específico, seleciona o último registo guardado para prevenir erros
-        if (!reg && registos.length > 0) {
-            reg = registos[registos.length - 1];
-        }
+            if (reg) {
+                const nomeAtividade = reg.nomeAtividade || 'Atividade sem nome';
+                
+                document.getElementById('printNumAtividade').innerText = reg.numeroAtividade || '-';
+                document.getElementById('printNomeAtividade').innerText = nomeAtividade;
+                document.getElementById('printAnoLetivo').innerText = reg.anoLetivo || '-';
+                document.getElementById('printTipoAtividade').innerText = reg.tipoAtividade || '-';
+                document.getElementById('printPaa').innerText = reg.integraPaa || '-';
+                document.getElementById('printPee').innerText = reg.integraPee || '-';
+                document.getElementById('printMedia').innerText = reg.mediaGeral || '-';
+                document.getElementById('printSugestoes').innerText = reg.sugestoesRecolhidas || '-';
+                document.getElementById('printResumo').innerText = reg.resumoConclusoes || '-';
 
-        if (reg) {
-            document.getElementById('printNumAtiv').innerText = reg.numeroAtividade || 'N/D';
-            document.getElementById('printAnoLetivo').innerText = reg.anoLetivo || 'N/D';
-            document.getElementById('printNomeAtiv').innerText = reg.nomeAtividade || 'N/D';
-            document.getElementById('printPaa').innerText = reg.integraPaa || 'N/D';
-            document.getElementById('printPee').innerText = reg.integraPee || 'N/D';
-            document.getElementById('printTipo').innerText = reg.tipoAtividade || 'N/D';
-            document.getElementById('printMedia').innerText = reg.mediaGeral || 'N/D';
-            document.getElementById('printSugestoes').innerText = reg.sugestoesRecolhidas || 'N/D';
-            document.getElementById('printResumo').innerText = reg.resumoConclusoes || 'N/D';
-            document.getElementById('printCriador').innerText = reg.criadorNome || 'Sistema';
+                // Atualiza dinamicamente o subtítulo do cabeçalho para exibir "Relatório da atividade: [Nome]"
+                document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
 
-            const listaMetas = document.getElementById('printMetas');
-            let combinados = [...(reg.objetivosSelecionados || []), ...(reg.metasSelecionadas || [])];
-            if (combinados.length > 0) {
-                combinados.forEach(m => {
-                    const li = document.createElement('li');
-                    li.innerText = m;
-                    listaMetas.appendChild(li);
-                });
+                let htmlListas = '';
+                if ((reg.objetivosSelecionados && reg.objetivosSelecionados.length > 0) || (reg.metasSelecionadas && reg.metasSelecionadas.length > 0)) {
+                    htmlListas += '<ul>';
+                    if (reg.objetivosSelecionados) {
+                        reg.objetivosSelecionados.forEach(obj => {
+                            htmlListas += `<li><strong>${obj}</strong></li>`;
+                        });
+                    }
+                    if (reg.metasSelecionadas) {
+                        reg.metasSelecionadas.forEach(meta => {
+                            htmlListas += `<li style="margin-left: 15px; list-style-type: circle; color: #4b5563;">${meta}</li>`;
+                        });
+                    }
+                    htmlListas += '</ul>';
+                    document.getElementById('printObjetivosMetas').innerHTML = htmlListas;
+                }
             } else {
-                const li = document.createElement('li');
-                li.innerText = 'Nenhum objetivo ou meta selecionada.';
-                listaMetas.appendChild(li);
+                alert('Registo não encontrado.');
             }
-        } else {
-            alert('Ainda não existem registos guardados no sistema.');
         }
+
+        // Abertura automática da caixa de impressão para PDF
+        window.onload = function() {
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        };
     </script>
 </body>
 </html>
