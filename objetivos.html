@@ -22,24 +22,27 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
         .navbar {
             background-color: #14532d;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 1.5rem;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .navbar .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
         .navbar .brand img {
@@ -52,7 +55,7 @@
         .navbar .nav-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             font-size: 14px;
         }
 
@@ -74,6 +77,7 @@
             align-items: center;
             gap: 6px;
             transition: background 0.2s;
+            white-space: nowrap;
         }
 
         .btn-voltar-menu:hover {
@@ -82,54 +86,31 @@
 
         .main-container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 15px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
         }
 
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 24px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .section-header-card h1 {
             color: var(--primary-green);
-            font-size: 26px;
+            font-size: 22px;
             margin: 0 0 6px 0;
         }
 
         .section-header-card p {
             margin: 0;
             color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .btn-top-action {
-            background-color: #1e293b;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-top-action:hover {
-            background-color: #0f172a;
+            font-size: 13px;
         }
 
         /* Estrutura por Temas (Secções Principais) */
@@ -137,32 +118,33 @@
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 18px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .theme-section h2 {
             color: var(--primary-green);
-            font-size: 20px;
+            font-size: 17px;
             margin: 0 0 4px 0;
             border-bottom: 2px solid #f0fdf4;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
+            line-height: 1.4;
         }
 
         .objective-body {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .meta-box {
             background: #fdfdfd;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.02);
             border-left: 5px solid #0d9488;
         }
@@ -170,18 +152,19 @@
         .meta-title {
             font-weight: 700;
             color: #0d9488;
-            font-size: 1.05rem;
-            margin-bottom: 8px;
+            font-size: 1rem;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .meta-description {
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
             font-weight: 500;
             color: var(--text-main);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
 
         .actions-list {
@@ -190,24 +173,81 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .actions-list li {
             position: relative;
-            padding-left: 1.5rem;
-            font-size: 0.95rem;
+            padding-left: 1.2rem;
+            font-size: 0.9rem;
             color: var(--text-light);
+            line-height: 1.35;
         }
 
         .actions-list li::before {
             content: "•";
             position: absolute;
-            left: 0.25rem;
+            left: 0.2rem;
             color: var(--primary-green);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             line-height: 1;
+        }
+
+        /* Otimizações Responsivas para Telemóveis */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.6rem 1rem;
+            }
+
+            .navbar .brand {
+                font-size: 0.95rem;
+            }
+
+            .navbar .brand img {
+                width: 26px;
+                height: 26px;
+            }
+
+            .navbar .nav-right {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            .btn-voltar-menu {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+
+            .main-container {
+                margin: 15px 10px;
+                padding: 0;
+                gap: 15px;
+            }
+
+            .section-header-card {
+                padding: 15px;
+            }
+
+            .section-header-card h1 {
+                font-size: 19px;
+            }
+
+            .theme-section {
+                padding: 14px;
+            }
+
+            .theme-section h2 {
+                font-size: 15px;
+            }
+
+            .meta-box {
+                padding: 12px;
+            }
+
+            .meta-description, .actions-list li {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -226,15 +266,10 @@
 
     <div class="main-container">
         
-        <!-- Cabeçalho Principal -->
+        <!-- Cabeçalho Principal (Botão voltar removido do corpo) -->
         <div class="section-header-card">
-            <div>
-                <h1>Objetivos e Metas Pedagógicas</h1>
-                <p>Consulta dos objetivos estratégicos, metas e respetivas ações planeadas.</p>
-            </div>
-            <div>
-                <a href="dashboard.html" class="btn-top-action">← Voltar</a>
-            </div>
+            <h1>Objetivos e Metas Pedagógicas</h1>
+            <p>Consulta dos objetivos estratégicos, metas e respetivas ações planeadas.</p>
         </div>
 
         <!-- OBJETIVO 1 -->
@@ -333,13 +368,17 @@
 
     </div>
 
+    <script src="js/auth.js"></script>
     <script>
-        // Verificar autenticação
+        // Verificar autenticação e preencher o nome do utilizador logado
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('userNameSpan').innerText = currentUser.name || currentUser.nome || 'Utilizador';
+            const spanNome = document.getElementById('userNameSpan');
+            if(spanNome) {
+                spanNome.innerText = currentUser.name || currentUser.nome || 'Utilizador';
+            }
         }
     </script>
 </body>
