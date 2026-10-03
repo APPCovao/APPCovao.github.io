@@ -434,6 +434,7 @@
                 <div class="form-group">
                     <label>Número da Atividade <span class="required">*</span></label>
                     <input type="text" id="modalObjNumAtividade" placeholder="Ex: 1, 2, 3..." required oninput="aoMudarNumeroAtividade(this.value)">
+                    <small id="erroDuplicadoMsg" style="color: #dc2626; font-weight: 600; display: none; margin-top: 4px;"></small>
                 </div>
 
                 <div class="form-group">
@@ -611,14 +612,42 @@
             });
         }
 
+        function verificarAtividadeDuplicada(numStr, idAtual = null) {
+            if (!numStr) return false;
+            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            
+            // Procura se já existe algum registo com o mesmo número de atividade (ignorando o próprio ID se estivermos a editar)
+            const duplicado = registos.find(r => String(r.numeroAtividade).trim() === String(numStr).trim() && (!idAtual || String(r.id) !== String(idAtual)));
+            return !!duplicado;
+        }
+
         function preencherDadosAutomaticosPorNumero(numInput) {
             const numStr = String(numInput || '').trim();
+            const editId = document.getElementById('editObjetivoId').value;
+            const erroMsg = document.getElementById('erroDuplicadoMsg');
+            const saveBtn = document.getElementById('btnSalvarForm');
+
             if (!numStr) {
                 document.getElementById('modalObjNomeAtividade').value = '';
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
                 document.getElementById('modalObjMedia').value = '';
+                erroMsg.style.display = 'none';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
                 return null;
+            }
+
+            // Validação de duplicados (apenas se for criar novo ou alterar o número ao editar)
+            if (verificarAtividadeDuplicada(numStr, editId)) {
+                erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
+                erroMsg.style.display = 'block';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+            } else {
+                erroMsg.style.display = 'none';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
             }
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
@@ -702,11 +731,15 @@
             document.getElementById('listagemFiltersCard').style.display = 'none';
             document.getElementById('listagemTableCard').style.display = 'none';
             document.getElementById('formularioCard').style.display = 'block';
+            document.getElementById('erroDuplicadoMsg').style.display = 'none';
 
             const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const inputs = document.querySelectorAll('#objetivoForm input:not([type="hidden"]), #objetivoForm select, #objetivoForm textarea');
             const saveBtn = document.getElementById('btnSalvarForm');
             const btnImprimir = document.getElementById('btnImprimirRegisto');
+
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = '1';
 
             if (modo === 'criar') {
                 document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
@@ -781,6 +814,14 @@
         function salvarRegistoObjetivo(e) {
             e.preventDefault();
             const id = document.getElementById('editObjetivoId').value;
+            const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
+
+            // Validação final de segurança contra duplicados antes de gravar
+            if (verificarAtividadeDuplicada(numAtvInput, id)) {
+                alert(`Erro: Já existe um relatório de objetivos guardado para a atividade nº ${numAtvInput}. Não são permitidos duplicados.`);
+                return;
+            }
+
             let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
 
             let objsSel = [];
@@ -789,7 +830,6 @@
             let metasSel = [];
             document.querySelectorAll('#objetivoForm input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
 
-            const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
 
