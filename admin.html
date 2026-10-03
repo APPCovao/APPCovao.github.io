@@ -204,24 +204,25 @@
             transition: background 0.2s;
         }
 
+        .btn-approve {
+            background-color: #dcfce7;
+            color: #15803d;
+            margin-right: 4px;
+        }
+        .btn-approve:hover { background-color: #bbf7d0; }
+
         .btn-toggle {
             background-color: #e0f2fe;
             color: #0369a1;
             margin-right: 4px;
         }
-
-        .btn-toggle:hover {
-            background-color: #bae6fd;
-        }
+        .btn-toggle:hover { background-color: #bae6fd; }
 
         .btn-delete {
             background-color: #fee2e2;
             color: #dc2626;
         }
-
-        .btn-delete:hover {
-            background-color: #fecaca;
-        }
+        .btn-delete:hover { background-color: #fecaca; }
 
         .btn-delete-all {
             background-color: #dc2626;
@@ -237,18 +238,12 @@
             box-sizing: border-box;
             text-align: center;
         }
+        .btn-delete-all:hover { background-color: #b91c1c; }
 
-        .btn-delete-all:hover {
-            background-color: #b91c1c;
-        }
-
-        /* --- POPUPS PERSONALIZADOS (MODAL) --- */
+        /* --- MODAIS --- */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
@@ -260,12 +255,7 @@
             padding: 15px;
             box-sizing: border-box;
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
+        .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-card {
             background: white;
             padding: 20px;
@@ -278,76 +268,26 @@
             transition: transform 0.25s ease;
             box-sizing: border-box;
         }
-
-        .modal-overlay.active .modal-card {
-            transform: scale(1);
-        }
-
-        .modal-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .modal-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 6px;
-        }
-
-        .modal-message {
-            font-size: 13px;
-            color: var(--text-light);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: background 0.2s;
-            flex: 1;
-        }
-
-        .modal-btn-cancel {
-            background-color: #f1f5f9;
-            color: var(--text-light);
-        }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { font-size: 32px; margin-bottom: 10px; }
+        .modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .modal-message { font-size: 13px; color: var(--text-light); margin-bottom: 16px; line-height: 1.4; }
+        .modal-buttons { display: flex; gap: 8px; justify-content: center; }
+        .modal-btn { padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s; flex: 1; }
+        .modal-btn-cancel { background-color: #f1f5f9; color: var(--text-light); }
         .modal-btn-cancel:hover { background-color: #e2e8f0; }
-
-        .modal-btn-confirm {
-            background-color: #dc2626;
-            color: white;
-        }
+        .modal-btn-confirm { background-color: #dc2626; color: white; }
         .modal-btn-confirm:hover { background-color: #b91c1c; }
-
-        .modal-btn-ok {
-            background-color: var(--primary-green);
-            color: white;
-        }
+        .modal-btn-ok { background-color: var(--primary-green); color: white; }
         .modal-btn-ok:hover { background-color: var(--primary-green-hover); }
 
-        /* Media queries para tablets e computadores */
         @media (min-width: 640px) {
             .navbar { padding: 0.8rem 1.5rem; }
             .navbar .brand { font-size: 1.1rem; }
             .navbar .nav-right { font-size: 14px; gap: 15px; }
-            .navbar .nav-right span { max-width: 180px; }
             .btn-voltar-menu { font-size: 13px; padding: 6px 14px; }
             .main-container { margin: 25px auto; padding: 0 15px; gap: 24px; }
             .section-header-card { flex-direction: row; justify-content: space-between; align-items: center; padding: 20px; }
-            .section-header-card h1 { font-size: 20px; }
-            .section-header-card p { font-size: 14px; }
             .theme-section { padding: 20px; }
             .theme-section-header { flex-direction: row; align-items: center; }
             .theme-section h2 { font-size: 18px; }
@@ -356,9 +296,6 @@
             .btn-delete-all { width: auto; }
             th { padding: 12px 16px; font-size: 14px; }
             td { padding: 14px 16px; font-size: 14px; }
-            .modal-card { padding: 24px 30px; }
-            .modal-title { font-size: 18px; }
-            .modal-message { font-size: 14px; }
         }
     </style>
 </head>
@@ -377,29 +314,28 @@
 
     <div class="main-container">
         
-        <!-- Cabeçalho Principal -->
         <div class="section-header-card">
             <div>
                 <h1>Painel de Administração</h1>
-                <p>Gestão centralizada de utilizadores e registos de atividades.</p>
+                <p>Gestão centralizada de utilizadores, aprovações e registos de atividades.</p>
             </div>
         </div>
 
         <!-- 1. Secção de Utilizadores -->
         <div class="theme-section">
-            <h2>Gestão de Utilizadores e Permissões</h2>
+            <h2>Gestão de Utilizadores e Aprovações</h2>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>Utilizador</th>
                             <th>Email</th>
-                            <th>Função</th>
+                            <th>Estado / Permissão</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
-                        <!-- Preenchido dinamicamente via JS -->
+                        <!-- Preenchido via JS -->
                     </tbody>
                 </table>
             </div>
@@ -429,7 +365,7 @@
                         </tr>
                     </thead>
                     <tbody id="activitiesTableBody">
-                        <!-- Preenchido dinamicamente via JS -->
+                        <!-- Preenchido via JS -->
                     </tbody>
                 </table>
             </div>
@@ -437,20 +373,17 @@
 
     </div>
 
-    <!-- POPUP PERSONALIZADO (MODAL) -->
+    <!-- MODAL -->
     <div id="customModal" class="modal-overlay">
         <div class="modal-card">
             <div id="modalIcon" class="modal-icon">⚠️</div>
             <div id="modalTitle" class="modal-title">Confirmação</div>
-            <div id="modalMessage" class="modal-message">Mensagem de aviso aqui...</div>
-            <div id="modalButtons" class="modal-buttons">
-                <!-- Botões geridos dinamicamente -->
-            </div>
+            <div id="modalMessage" class="modal-message">Mensagem...</div>
+            <div id="modalButtons" class="modal-buttons"></div>
         </div>
     </div>
 
     <script>
-        // Restringir acesso apenas a admins
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser || !currentUser.isAdmin) {
             mostrarAlerta('Acesso Restrito', 'Esta página é de acesso exclusivo a administradores!', () => {
@@ -462,7 +395,6 @@
             document.getElementById('userNameDisplay').innerText = primeiroNome;
         }
 
-        // --- SISTEMA DE POPUPS PERSONALIZADOS ---
         function mostrarAlerta(titulo, mensagem, callbackOnClose = null) {
             const overlay = document.getElementById('customModal');
             document.getElementById('modalIcon').innerText = 'ℹ️';
@@ -471,7 +403,6 @@
             
             const btnContainer = document.getElementById('modalButtons');
             btnContainer.innerHTML = `<button class="modal-btn modal-btn-ok" id="modalOkBtn">OK</button>`;
-            
             overlay.classList.add('active');
 
             document.getElementById('modalOkBtn').onclick = () => {
@@ -489,22 +420,18 @@
             const btnContainer = document.getElementById('modalButtons');
             btnContainer.innerHTML = `
                 <button class="modal-btn modal-btn-cancel" id="modalCancelBtn">Cancelar</button>
-                <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Sim, Apagar</button>
+                <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Sim</button>
             `;
-            
             overlay.classList.add('active');
 
-            document.getElementById('modalCancelBtn').onclick = () => {
-                overlay.classList.remove('active');
-            };
-
+            document.getElementById('modalCancelBtn').onclick = () => overlay.classList.remove('active');
             document.getElementById('modalConfirmBtn').onclick = () => {
                 overlay.classList.remove('active');
                 onConfirm();
             };
         }
 
-        // --- GESTÃO DE UTILIZADORES ---
+        // --- GESTÃO DE UTILIZADORES & APROVAÇÕES ---
         function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
             if (!tbody) return;
@@ -512,23 +439,18 @@
 
             let users = JSON.parse(localStorage.getItem('users')) || [];
 
-            if (users.length === 0 && currentUser) {
-                users.push(currentUser);
-                localStorage.setItem('users', JSON.stringify(users));
-            }
-
             users.forEach((u, index) => {
                 const tr = document.createElement('tr');
                 const isAdm = u.isAdmin ? '<span style="color: var(--primary-green); font-weight: bold;">Admin</span>' : '<span style="color: var(--text-light);">Padrão</span>';
+                const statusAprovacao = u.aprovado ? '<span style="color: #15803d; font-weight: 600;">Aprovado</span>' : '<span style="color: #d97706; font-weight: 600;">Pendente</span>';
 
                 tr.innerHTML = `
                     <td>${u.name || u.nome || 'Sem Nome'}</td>
                     <td style="color: var(--text-light);">${u.email}</td>
-                    <td>${isAdm}</td>
-                    <td style="text-align: right;">
-                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${index})">
-                            ${u.isAdmin ? 'Remover' : 'Tornar'}
-                        </button>
+                    <td>${isAdm} | ${statusAprovacao}</td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        ${!u.aprovado ? `<button class="btn-action btn-approve" onclick="aprovarUtilizador(${index})">Aprovar</button>` : ''}
+                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${index})">${u.isAdmin ? 'Remover Admin' : 'Tornar Admin'}</button>
                         <button class="btn-action btn-delete" onclick="eliminarUtilizador(${index})">Eliminar</button>
                     </td>
                 `;
@@ -536,14 +458,20 @@
             });
         }
 
+        function aprovarUtilizador(index) {
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users[index].aprovado = true;
+            localStorage.setItem('users', JSON.stringify(users));
+            carregarUtilizadores();
+            mostrarAlerta('Sucesso', 'Utilizador aprovado com sucesso!');
+        }
+
         function alternarAdmin(index) {
             let users = JSON.parse(localStorage.getItem('users')) || [];
-            
             if (users[index].email === currentUser.email) {
-                mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões de administrador.');
+                mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões.');
                 return;
             }
-
             users[index].isAdmin = !users[index].isAdmin;
             localStorage.setItem('users', JSON.stringify(users));
             carregarUtilizadores();
@@ -551,12 +479,10 @@
 
         function eliminarUtilizador(index) {
             let users = JSON.parse(localStorage.getItem('users')) || [];
-
             if (users[index].email === currentUser.email) {
                 mostrarAlerta('Aviso', 'Não pode eliminar a sua própria conta ativa.');
                 return;
             }
-
             mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', () => {
                 users.splice(index, 1);
                 localStorage.setItem('users', JSON.stringify(users));
@@ -565,7 +491,7 @@
             });
         }
 
-        // --- GESTÃO DE ATIVIDADES & ELIMINAÇÃO EM CADEIA ---
+        // --- GESTÃO DE ATIVIDADES ---
         function carregarAtividades() {
             const tbody = document.getElementById('activitiesTableBody');
             if (!tbody) return;
@@ -605,79 +531,23 @@
         }
 
         function confirmarEliminarAtividade(index, numAtv) {
-            mostrarConfirmacao(
-                'Eliminar Atividade', 
-                `Tem a certeza que pretende eliminar a Atividade ${numAtv}? Esta ação irá apagar também automaticamente todas as avaliações e registos de objetivos associados.`, 
-                () => {
-                    let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                    
-                    const atvAlvo = atividades[index];
-                    if (!atvAlvo) return;
-                    
-                    const numerosPossiveisAlvo = [
-                        atvAlvo.numero, 
-                        atvAlvo.id, 
-                        atvAlvo.numeroAtividade, 
-                        atvAlvo.atividadeId
-                    ].filter(val => val !== undefined && val !== null);
-
-                    // 1. Remover a atividade
-                    atividades.splice(index, 1);
-                    localStorage.setItem('atividades', JSON.stringify(atividades));
-
-                    // 2. Apagar avaliações correspondentes
-                    ['avaliacoesAtividades', 'atividadesAvaliadas'].forEach(chaveStorage => {
-                        let listaAv = JSON.parse(localStorage.getItem(chaveStorage)) || [];
-                        listaAv = listaAv.filter(item => {
-                            const idAv = item.idAtividade !== undefined ? item.idAtividade :
-                                                       (item.numeroAtividade !== undefined ? item.numeroAtividade :
-                                                       (item.atividadeId !== undefined ? item.atividadeId :
-                                                       (item.numero !== undefined ? item.numero : item.id)));
-                            return !numerosPossiveisAlvo.includes(idAv);
-                        });
-                        localStorage.setItem(chaveStorage, JSON.stringify(listaAv));
-                    });
-
-                    // 3. Apagar registos de objetivos correspondentes
-                    let objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-                    objetivosLista = objetivosLista.filter(item => {
-                        const idObj = item.numero !== undefined ? item.numero : 
-                                                      (item.id !== undefined ? item.id : 
-                                                      (item.numeroAtividade !== undefined ? item.numeroAtividade : 
-                                                      (item.atividadeId !== undefined ? item.atividadeId : null)));
-                        return !numerosPossiveisAlvo.includes(idObj);
-                    });
-                    localStorage.setItem('registosObjetivosAtividades', JSON.stringify(objetivosLista));
-
-                    carregarAtividades();
-                    mostrarAlerta('Sucesso', `Atividade ${numAtv} e respetivos registos associados eliminados com sucesso!`);
-                }
-            );
+            mostrarConfirmacao('Eliminar Atividade', `Tem a certeza que pretende eliminar a Atividade ${numAtv}?`, () => {
+                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                atividades.splice(index, 1);
+                localStorage.setItem('atividades', JSON.stringify(atividades));
+                carregarAtividades();
+                mostrarAlerta('Sucesso', 'Atividade eliminada com sucesso!');
+            });
         }
 
         function confirmarApagarTodas() {
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            if (atividades.length === 0) {
-                mostrarAlerta('Aviso', 'Não existem atividades para apagar.');
-                return;
-            }
-
-            mostrarConfirmacao(
-                'Apagar Todas as Atividades', 
-                'ATENÇÃO: Tem a certeza absoluta que pretende eliminar TODAS as atividades, bem como todas as respetivas avaliações e registos de objetivos associados? Esta ação é irreversível!', 
-                () => {
-                    localStorage.removeItem('atividades');
-                    localStorage.removeItem('avaliacoesAtividades');
-                    localStorage.removeItem('atividadesAvaliadas');
-                    localStorage.removeItem('registosObjetivosAtividades');
-
-                    carregarAtividades();
-                    mostrarAlerta('Sucesso', 'Todas as atividades e registos conexos foram apagados com sucesso.');
-                }
-            );
+            mostrarConfirmacao('Apagar Tudo', 'Tem a certeza que pretende eliminar todas as atividades?', () => {
+                localStorage.removeItem('atividades');
+                carregarAtividades();
+                mostrarAlerta('Sucesso', 'Todas as atividades foram apagadas.');
+            });
         }
 
-        // Inicializar painel
         carregarUtilizadores();
         carregarAtividades();
     </script>
