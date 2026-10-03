@@ -14,7 +14,7 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html' && paginaAtual !== 'dashb
             const emailUser = (usuarioLogado.email || '').toLowerCase();
             const eDominioMadeira = emailUser.endsWith('@edu.madeira.gov.pt');
 
-            // Se NÃO for do domínio @edu.madeira.gov.pt, só pode aceder a 'avaliar-atividade.html' (ou variantes)
+            // Se NÃO for do domínio @edu.madeira.gov.pt, só pode aceder a 'avaliar-atividade.html'
             if (!eDominioMadeira) {
                 const paginasPermitidas = ['avaliar-atividade.html', 'avaliar_atividades.html'];
                 if (!paginasPermitidas.includes(paginaAtual)) {
@@ -25,12 +25,9 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html' && paginaAtual !== 'dashb
     }
 }
 
-// 1. Inicializar utilizadores predefinidos com aprovação ativa
+// 1. Inicializar utilizadores (sem utilizadores predefinidos antigos)
 let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-const defaultUsers = [
-    { id: 1, name: 'Administrador Covão', email: 'admin@registos.com', password: '123', isAdmin: true, aprovado: true },
-    { id: 2, name: 'João Utilizador', email: 'user@edu.madeira.gov.pt', password: '123', isAdmin: false, aprovado: true }
-];
+const defaultUsers = []; 
 
 defaultUsers.forEach(defUser => {
     const exists = storedUsers.find(u => u.email.toLowerCase() === defUser.email.toLowerCase());
@@ -134,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 localStorage.setItem('currentUser', JSON.stringify(found));
 
-                // Redirecionamento inteligente pós-login baseado no domínio
+                // Redirecionamento baseado no domínio e permissões
                 if (!found.isAdmin && !found.email.toLowerCase().endsWith('@edu.madeira.gov.pt')) {
                     window.location.href = 'avaliar-atividade.html';
                 } else {
@@ -174,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: emailVal,
                 password: passVal,
                 isAdmin: false,
-                aprovado: false
+                aprovado: false // Fica pendente até aprovação do admin
             };
 
             users.push(novoUtilizador);
