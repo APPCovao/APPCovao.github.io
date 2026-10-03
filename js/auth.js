@@ -1,12 +1,19 @@
 console.log("auth.js carregado com sucesso!");
 
-// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK
-// Se a página atual NÃO for a página de login (index.html) e não houver utilizador logado, redireciona logo para o index.
+// PROTEÇÃO CONTRA ACESSO DIRETO POR LINK E RESTRIÇÃO DE DOMÍNIO
 const paginaAtual = window.location.pathname.split('/').pop();
 if (paginaAtual !== '' && paginaAtual !== 'index.html') {
     const usuarioLogado = JSON.parse(localStorage.getItem('currentUser'));
     if (!usuarioLogado) {
         window.location.href = 'index.html';
+    } else {
+        const email = usuarioLogado.email ? usuarioLogado.email.toLowerCase() : '';
+        const isDominioOficial = email.endsWith('@edu.madeira.gov.pt');
+        
+        // Se NÃO for do domínio oficial e NÃO estiver na página de avaliação, redireciona-o para lá
+        if (!isDominioOficial && paginaAtual !== 'avaliar-atividade.html') {
+            window.location.href = 'avaliar-atividade.html';
+        }
     }
 }
 
@@ -103,7 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (found) {
                 localStorage.setItem('currentUser', JSON.stringify(found));
-                window.location.href = 'dashboard.html';
+                
+                // Redirecionamento inteligente após o login
+                const userEmail = found.email.toLowerCase();
+                if (userEmail.endsWith('@edu.madeira.gov.pt')) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'avaliar-atividade.html';
+                }
             } else {
                 mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
             }
