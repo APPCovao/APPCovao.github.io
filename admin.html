@@ -383,6 +383,9 @@
         </div>
     </div>
 
+    <!-- Supabase SDK e Cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser || !currentUser.isAdmin) {
@@ -431,61 +434,104 @@
             };
         }
 
-        // --- GESTÃO DE UTILIZADORES & APROVAÇÕES ---
-        function carregarUtilizadores() {
+        // --- GESTÃO DE UTILIZADORES & APROVAÇÕES (SUPABASE) ---
+        async function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
             if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar utilizadores...</td></tr>`;
+
+            const { data: users, error } = await _supabase
+                .from('users')
+                .select('*')
+                .order('id', { ascending: true });
+
             tbody.innerHTML = '';
 
-            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (error) {
+                console.error('Erro ao carregar utilizadores:', error);
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 20px;">Erro ao carregar utilizadores do Supabase.</td></tr>`;
+                return;
+            }
 
-            users.forEach((u, index) => {
+            if (!users || users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhum utilizador encontrado.</td></tr>`;
+                return;
+            }
+
+            users.forEach((u) => {
                 const tr = document.createElement('tr');
-                const isAdm = u.isAdmin ? '<span style="color: var(--primary-green); font-weight: bold;">Admin</span>' : '<span style="color: var(--text-light);">Padrão</span>';
+                const isAdm = u.is_admin ? '<span style="color: var(--primary-green); font-weight: bold;">Admin</span>' : '<span style="color: var(--text-light);">Padrão</span>';
                 const statusAprovacao = u.aprovado ? '<span style="color: #15803d; font-weight: 600;">Aprovado</span>' : '<span style="color: #d97706; font-weight: 600;">Pendente</span>';
 
                 tr.innerHTML = `
-                    <td>${u.name || u.nome || 'Sem Nome'}</td>
+                    <td>${u.name || 'Sem Nome'}</td>
                     <td style="color: var(--text-light);">${u.email}</td>
                     <td>${isAdm} | ${statusAprovacao}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        ${!u.aprovado ? `<button class="btn-action btn-approve" onclick="aprovarUtilizador(${index})">Aprovar</button>` : ''}
-                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${index})">${u.isAdmin ? 'Remover Admin' : 'Tornar Admin'}</button>
-                        <button class="btn-action btn-delete" onclick="eliminarUtilizador(${index})">Eliminar</button>
+                        ${!u.aprovado ? `<button class="btn-action btn-approve" onclick="aprovarUtilizador(${u.id})">Aprovar</button>` : ''}
+                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${u.id}, ${u.is_admin}, '${u.email}')">${u.is_admin ? 'Remover Admin' : 'Tornar Admin'}</button>
+                        <button class="btn-action btn-delete" onclick="eliminarUtilizador(${u.id}, '${u.email}')">Eliminar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function aprovarUtilizador(index) {
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            users[index].aprovado = true;
-            localStorage.setItem('users', JSON.stringify(users));
+        async function aprovarUtilizador(id) {
+            const { error } = await _supabase
+                .from('users')
+                .update({ aprovado: true })
+                .eq('id', id);
+
+            if (error) {
+                mostrarAlerta('Erro', 'Não foi possível aprovar o utilizador.');
+                console.error(error);
+                return;
+            }
+
             carregarUtilizadores();
             mostrarAlerta('Sucesso', 'Utilizador aprovado com sucesso!');
         }
 
-        function alternarAdmin(index) {
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users[index].email === currentUser.email) {
+        async function alternarAdmin(id, isAdminAtual, emailUtilizador) {
+            if (emailUtilizador === currentUser.email) {
                 mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões.');
                 return;
             }
-            users[index].isAdmin = !users[index].isAdmin;
-            localStorage.setItem('users', JSON.stringify(users));
+
+            const novoEstado = !isAdminAtual;
+            const { error } = await _supabase
+                .from('users')
+                .update({ is_admin: novoEstado })
+                .eq('id', id);
+
+            if (error) {
+                mostrarAlerta('Erro', 'Não foi possível alterar as permissões.');
+                console.error(error);
+                return;
+            }
+
             carregarUtilizadores();
         }
 
-        function eliminarUtilizador(index) {
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users[index].email === currentUser.email) {
+        async function eliminarUtilizador(id, emailUtilizador) {
+            if (emailUtilizador === currentUser.email) {
                 mostrarAlerta('Aviso', 'Não pode eliminar a sua própria conta ativa.');
                 return;
             }
-            mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', () => {
-                users.splice(index, 1);
-                localStorage.setItem('users', JSON.stringify(users));
+
+            mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', async () => {
+                const { error } = await _supabase
+                    .from('users')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    mostrarAlerta('Erro', 'Não foi possível eliminar o utilizador.');
+                    console.error(error);
+                    return;
+                }
+
                 carregarUtilizadores();
                 mostrarAlerta('Sucesso', 'Utilizador eliminado com sucesso.');
             });
