@@ -441,17 +441,17 @@
 
                 <div class="form-group">
                     <label>Nome da Atividade</label>
-                    <input type="text" id="modalObjNomeAtividade" readonly placeholder="Preenchimento automático">
+                    <input type="text" id="modalObjNomeAtividade" placeholder="Preenchimento automático ou manual">
                 </div>
 
                 <div class="form-row-grid">
                     <div class="form-group">
                         <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" readonly placeholder="Preenchimento automático">
+                        <input type="text" id="modalObjAnoLetivo" placeholder="Preenchimento automático ou manual">
                     </div>
                     <div class="form-group">
                         <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" readonly placeholder="Preenchimento automático">
+                        <input type="text" id="modalObjTipo" placeholder="Preenchimento automático ou manual">
                     </div>
                 </div>
 
@@ -663,6 +663,9 @@
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
                 document.getElementById('modalObjMedia').value = '';
+                document.getElementById('modalObjNomeAtividade').readOnly = false;
+                document.getElementById('modalObjAnoLetivo').readOnly = false;
+                document.getElementById('modalObjTipo').readOnly = false;
                 erroMsg.style.display = 'none';
                 saveBtn.disabled = false;
                 saveBtn.style.opacity = '1';
@@ -681,21 +684,44 @@
                 saveBtn.style.opacity = '1';
             }
 
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
+            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            let atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
+
+            if (!atv) {
+                try {
+                    const { data: atvSupabase } = await supabaseClient
+                        .from('atividades')
+                        .select('*')
+                        .eq('numero', numStr)
+                        .maybeSingle();
+                    
+                    if (atvSupabase) {
+                        atv = atvSupabase;
+                    }
+                } catch (err) {
+                    console.log('Tabela de atividades externa não consultada ou não existente.');
+                }
+            }
 
             if (atv) {
-                document.getElementById('modalObjNomeAtividade').value = atv.titulo || '';
-                document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || '';
-                document.getElementById('modalObjTipo').value = atv.tipo || '';
+                document.getElementById('modalObjNomeAtividade').value = atv.titulo || atv.nome_atividade || '';
+                document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || atv.ano_letivo || '';
+                document.getElementById('modalObjTipo').value = atv.tipo || atv.tipo_atividade || '';
+                document.getElementById('modalObjNomeAtividade').readOnly = true;
+                document.getElementById('modalObjAnoLetivo').readOnly = true;
+                document.getElementById('modalObjTipo').readOnly = true;
 
-                calcularMediaESugestoes(atv.id, atv.numero);
+                calcularMediaESugestoes(atv.id || atv.numero, atv.numero);
                 return atv;
             } else {
-                document.getElementById('modalObjNomeAtividade').value = 'Atividade não encontrada';
+                // Se não encontrar, destranca os campos para inserção manual sem bloquear
+                document.getElementById('modalObjNomeAtividade').value = '';
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
-                document.getElementById('modalObjMedia').value = 'N/A';
+                document.getElementById('modalObjNomeAtividade').readOnly = false;
+                document.getElementById('modalObjAnoLetivo').readOnly = false;
+                document.getElementById('modalObjTipo').readOnly = false;
+                document.getElementById('modalObjMedia').value = 'Sem registo prévio encontrado';
                 return null;
             }
         }
@@ -780,15 +806,11 @@
                 document.getElementById('modalObjResponsavel').value = nomeUtilizador;
 
                 inputs.forEach(el => el.disabled = false);
-                document.getElementById('modalObjNomeAtividade').disabled = true;
-                document.getElementById('modalObjAnoLetivo').disabled = true;
-                document.getElementById('modalObjTipo').disabled = true;
                 document.getElementById('modalObjMedia').disabled = true;
                 document.getElementById('modalObjResponsavel').disabled = true;
                 saveBtn.style.display = 'inline-block';
                 btnImprimir.style.display = 'none';
             } else {
-                // Obter registo específico do Supabase
                 const { data: reg, error } = await supabaseClient
                     .from('registos_objetivos_atividades')
                     .select('*')
@@ -828,9 +850,6 @@
                 } else {
                     document.getElementById('formTitulo').innerText = 'Editar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = false);
-                    document.getElementById('modalObjNomeAtividade').disabled = true;
-                    document.getElementById('modalObjAnoLetivo').disabled = true;
-                    document.getElementById('modalObjTipo').disabled = true;
                     document.getElementById('modalObjMedia').disabled = true;
                     document.getElementById('modalObjResponsavel').disabled = true;
                     saveBtn.style.display = 'inline-block';
