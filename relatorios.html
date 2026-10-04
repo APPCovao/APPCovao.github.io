@@ -417,7 +417,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 2, Meta 2 e Meta 3 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 2</h4>
@@ -435,7 +434,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 3 e Meta 4 na mesma linha (2 colunas) -->
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 3</h4>
@@ -448,7 +446,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 4, Meta 5 e Meta 6 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 4</h4>
@@ -499,9 +496,14 @@
 
     </div>
 
-    <!-- Script de Configuração e Conexão Supabase -->
-    <script src="supabase-config.js"></script>
     <script>
+        // CONFIGURAÇÃO DO SUPABASE PREENCHIDA COM OS DADOS FORNECIDOS
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        
+        // Inicializar cliente do Supabase
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Nome de utilizador guardado em localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
@@ -656,7 +658,7 @@
 
         async function carregarRelatorios() {
             try {
-                // Buscar dados das tabelas do Supabase em paralelo
+                // Buscar dados de todas as tabelas do Supabase em paralelo
                 const [
                     { data: requisicoesLista, error: errReq },
                     { data: atividadesLista, error: errAtv },
@@ -664,18 +666,18 @@
                     { data: objetivosLista, error: errObj },
                     { data: turmasLista, error: errTurmas }
                 ] = await Promise.all([
-                    window.supabaseClient.from('requisicoes').select('*'),
-                    window.supabaseClient.from('atividades').select('*'),
-                    window.supabaseClient.from('avaliacoes_atividades').select('*'),
-                    window.supabaseClient.from('registos_objetivos_atividades').select('*'),
-                    window.supabaseClient.from('turmas').select('*')
+                    supabaseClient.from('requisicoes').select('*'),
+                    supabaseClient.from('atividades').select('*'),
+                    supabaseClient.from('avaliacoes_atividades').select('*'),
+                    supabaseClient.from('registos_objetivos_atividades').select('*'),
+                    supabaseClient.from('turmas').select('*')
                 ]);
 
-                if (errReq) console.error("Erro ao carregar requisições:", errReq);
-                if (errAtv) console.error("Erro ao carregar atividades:", errAtv);
-                if (errAv) console.error("Erro ao carregar avaliacoes_atividades:", errAv);
-                if (errObj) console.error("Erro ao carregar registos_objetivos_atividades:", errObj);
-                if (errTurmas) console.error("Erro ao carregar turmas:", errTurmas);
+                if (errReq) console.error("Erro requisições:", errReq);
+                if (errAtv) console.error("Erro atividades:", errAtv);
+                if (errAv) console.error("Erro avaliacoes_atividades:", errAv);
+                if (errObj) console.error("Erro registos_objetivos_atividades:", errObj);
+                if (errTurmas) console.error("Erro turmas:", errTurmas);
 
                 const requisicoes = requisicoesLista || [];
                 const atividades = atividadesLista || [];
