@@ -3,57 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registos Covão - Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Gestão de Projetos - Supabase</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
-    <div class="navbar">
-        <div class="brand">
-            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span>Registos Covão</span>
+<body class="bg-gray-50 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-md">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Registo de Projetos (com Compressão)</h1>
+
+        <!-- Formulário de Registo -->
+        <form id="project-form" class="space-y-4 mb-8">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Título do Projeto</label>
+                <input type="text" id="titulo" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Descrição</label>
+                <textarea id="descricao" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Imagem 1</label>
+                    <input type="file" id="img1" accept="image/*" class="mt-1 block w-full text-sm text-gray-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Imagem 2</label>
+                    <input type="file" id="img2" accept="image/*" class="mt-1 block w-full text-sm text-gray-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Imagem 3</label>
+                    <input type="file" id="img3" accept="image/*" class="mt-1 block w-full text-sm text-gray-500">
+                </div>
+            </div>
+            <button type="submit" id="btn-submit" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition">Guardar Projeto</button>
+        </form>
+
+        <hr class="my-8">
+
+        <!-- Lista de Projetos -->
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Projetos Registados</h2>
+        <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Os projetos serão carregados aqui dinamicamente -->
         </div>
     </div>
 
-    <div class="container auth-wrapper">
-        <!-- ECRÃ DE LOGIN -->
-        <div id="loginScreen" class="auth-card">
-            <h2 style="color: var(--color-primary); margin-bottom: 1.5rem; text-align: center;">Bem-vindo</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email</label>
-                   <input type="email" id="email" required placeholder="o.teu.email@exemplo.com">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" required placeholder="Sua password">
-                </div>
-                <button type="submit" class="btn btn-primary">ENTRAR</button>
-            </form>
-            <button id="showRegister" class="btn btn-secondary">Criar Nova Conta</button>
-        </div>
+    <script>
+        // Configuração do Supabase
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-'; 
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        <!-- ECRÃ DE CRIAR CONTA -->
-        <div id="registerScreen" class="auth-card" style="display: none;">
-            <h2 style="color: var(--color-primary); margin-bottom: 1.5rem; text-align: center;">Criar Conta</h2>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" required>
-                </div>
-                <button type="submit" class="btn btn-primary">CRIAR CONTA</button>
-            </form>
-            <button id="backToLogin" class="btn btn-secondary">Voltar ao Login</button>
-        </div>
-    </div>
+        // Função de compressão de imagem no navegador (máx 1200px, qualidade 0.8)
+        async function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const MAX_WIDTH = 1200;
+                        const MAX_HEIGHT = 1200;
 
-    <script src="js/auth.js"></script>
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            resolve(new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            }));
+                        }, 'image/jpeg', 0.8);
+                    };
+                    img.onerror = (error) => reject(error);
+                };
+                reader.onerror = (error) => reject(error);
+            });
+        }
+
+        // Função para carregar projetos do Supabase
+        async function fetchProjects() {
+            const { data, error } = await supabaseClient.from('projetos').select('*').order('created_at', { ascending: false });
+            if (error) {
+                console.error('Erro ao carregar:', error.message);
+                return;
+            }
+            const container = document.getElementById('projects-list');
+            container.innerHTML = data.map(p => `
+                <div class="border p-4 rounded-lg shadow-sm bg-white">
+                    <h3 class="font-bold text-lg">${p.titulo}</h3>
+                    <p class="text-gray-600 text-sm mb-2">${p.descricao || ''}</p>
+                    <div class="flex gap-2 mt-2">
+                        ${p.imagem_1 ? `<img src="${p.imagem_1}" class="w-20 h-20 object-cover rounded">` : ''}
+                        ${p.imagem_2 ? `<img src="${p.imagem_2}" class="w-20 h-20 object-cover rounded">` : ''}
+                        ${p.imagem_3 ? `<img src="${p.imagem_3}" class="w-20 h-20 object-cover rounded">` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Submissão do formulário
+        document.getElementById('project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = true;
+            btn.textContent = 'A guardar...';
+
+            try {
+                const titulo = document.getElementById('titulo').value;
+                const descricao = document.getElementById('descricao').value;
+                
+                let imageUrls = ['', '', ''];
+                const imageInputs = [
+                    document.getElementById('img1').files[0],
+                    document.getElementById('img2').files[0],
+                    document.getElementById('img3').files[0]
+                ];
+
+                for (let i = 0; i < imageInputs.length; i++) {
+                    if (imageInputs[i]) {
+                        // Comprimir imagem antes do upload
+                        const compressedFile = await compressImage(imageInputs[i]);
+                        const fileName = `${Date.now()}_${i}_${compressedFile.name}`;
+                        
+                        // Upload para o bucket do Supabase
+                        const { data, error } = await supabaseClient.storage
+                            .from('projetos-imagens')
+                            .upload(fileName, compressedFile);
+
+                        if (error) throw error;
+
+                        // Obter URL pública da imagem
+                        const { data: publicURLData } = supabaseClient.storage
+                            .from('projetos-imagens')
+                            .getPublicUrl(fileName);
+
+                        imageUrls[i] = publicURLData.publicUrl;
+                    }
+                }
+
+                // Inserir registo na tabela projetos
+                const { error: dbError } = await supabaseClient.from('projetos').insert([{
+                    titulo,
+                    descricao,
+                    imagem_1: imageUrls[0],
+                    imagem_2: imageUrls[1],
+                    imagem_3: imageUrls[2]
+                }]);
+
+                if (dbError) throw dbError;
+
+                alert('Projeto guardado com sucesso!');
+                document.getElementById('project-form').reset();
+                fetchProjects();
+            } catch (err) {
+                alert('Erro ao guardar projeto: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Guardar Projeto';
+            }
+        });
+
+        // Inicializar listagem
+        fetchProjects();
+    </script>
 </body>
 </html>
