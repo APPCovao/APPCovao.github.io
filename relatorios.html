@@ -750,7 +750,6 @@
 
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
-                let contagemMeta4 = 0;
                 let contagemMeta5 = 0;
                 let contagemMeta6 = 0;
 
@@ -801,14 +800,12 @@
                             }
 
                             if (txtLower.includes('meta 1') || txtLower === '1') contagemMeta1++;
-                            if (txtLower.includes('meta 4') || txtLower === '4') contagemMeta4++;
                             if (txtLower.includes('meta 5') || txtLower === '5') contagemMeta5++;
                             if (txtLower.includes('meta 6') || txtLower === '6') contagemMeta6++;
                         });
                     });
 
                     if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') contagemMeta1++;
-                    if (item.meta4 === true || item.meta4 === 'true' || item.meta4 === 'Sim') contagemMeta4++;
                     if (item.meta5 === true || item.meta5 === 'true' || item.meta5 === 'Sim') contagemMeta5++;
                     if (item.meta6 === true || item.meta6 === 'true' || item.meta6 === 'Sim') contagemMeta6++;
                 });
@@ -823,23 +820,21 @@
                 let countTurmasMat = 0;
 
                 turmas.forEach(turma => {
-                    // Tenta todas as variações possíveis para Português
                     let valPort = turma.percPort || turma.perc_port || turma.portugues || turma.porcentagemPortugues || turma.porcentagem_portugues || turma.portuguesBomMBom || turma.nivel_portugues;
                     if (valPort !== undefined && valPort !== null && valPort !== '') {
                         let numPort = parseFloat(String(valPort).replace('%', '').trim());
                         if (!isNaN(numPort)) {
-                            if (numPort <= 1) numPort = numPort * 100; // Converte decimal para percentagem se necessário
+                            if (numPort <= 1) numPort = numPort * 100;
                             somaPercentagensPort += numPort;
                             countTurmasPort++;
                         }
                     }
 
-                    // Tenta todas as variações possíveis para Matemática
                     let valMat = turma.percMat || turma.perc_mat || turma.matematica || turma.porcentagemMatematica || turma.porcentagem_matematica || turma.matematicaBomMBom || turma.nivel_matematica;
                     if (valMat !== undefined && valMat !== null && valMat !== '') {
                         let numMat = parseFloat(String(valMat).replace('%', '').trim());
                         if (!isNaN(numMat)) {
-                            if (numMat <= 1) numMat = numMat * 100; // Converte decimal para percentagem se necessário
+                            if (numMat <= 1) numMat = numMat * 100;
                             somaPercentagensMat += numMat;
                             countTurmasMat++;
                         }
@@ -857,8 +852,8 @@
                 const totalRequisicoesCount = reqs.length;
                 renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
                 
-                // Meta 4 agora usa a contagem correta recolhida das metas selecionadas
-                renderizarProgressoGantt('chartGanttMeta4', contagemMeta4, 6);
+                // Meta 4 ligada novamente ao total de requisições
+                renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
 
                 const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
                 const percMeta6 = Math.min(Math.round((contagemMeta6 / 6) * 100), 100);
