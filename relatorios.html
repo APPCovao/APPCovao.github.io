@@ -653,6 +653,25 @@
             return str;
         }
 
+        // Função auxiliar robusta para extrair elementos de campos que podem ser Array, String JSON ou String normal
+        function extrairItensLista(campo) {
+            if (!campo) return [];
+            if (Array.isArray(campo)) return campo;
+            if (typeof campo === 'string') {
+                let limpo = campo.trim();
+                // Se vier como string JSON "[...]"
+                if (limpo.startsWith('[') && limpo.endsWith(']')) {
+                    try {
+                        const parsed = JSON.parse(limpo);
+                        if (Array.isArray(parsed)) return parsed;
+                    } catch (e) {}
+                }
+                // Se vier separado por vírgulas ou quebras de linha
+                return limpo.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+            }
+            return [];
+        }
+
         async function carregarRelatorios() {
             try {
                 const [
@@ -708,68 +727,88 @@
 
                 document.getElementById('statObjetivos').innerText = contarUnicos(objs);
 
-                // --- LEITURA CORRETA DAS COLUNAS PAA E PEE (Secção 3) ---
+                // --- SECÇÃO 3: Leitura Correta de PAA e PEE (agora aceita Arrays jsonb ou strings) ---
                 let contadorPaaObjetivos = 0;
                 let contadorPeeObjetivos = 0;
 
                 const todasFontesParaPaaPee = [...objs, ...atvs];
                 todasFontesParaPaaPee.forEach(item => {
-                    // Mapeamento correto para as colunas do Supabase: integra_paa e integra_pee[cite: 10]
+                    // Trata integra_paa
                     const valPaa = item.integra_paa !== undefined ? item.integra_paa : (item.paa || item.fazPartePaa || item.noPaa || item.integraPaa || item.integraPAA || '');
-                    if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
+                    const listaPaa = extrairItensLista(valPaa);
+                    const temPaaSim = listaPaa.some(v => String(v).toLowerCase().trim() === 'sim' || v === true);
+                    if (temPaaSim || String(valPaa).toLowerCase().trim() === 'sim' || valPaa === true) {
                         contadorPaaObjetivos++;
                     }
 
+                    // Trata integra_pee
                     const valPee = item.integra_pee !== undefined ? item.integra_pee : (item.pee || item.fazPartePee || item.noPee || item.integraPee || item.integraPEE || '');
-                    if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
+                    const listaPee = extrairItensLista(valPee);
+                    const temPeeSim = listaPee.some(v => String(v).toLowerCase().trim() === 'sim' || v === true);
+                    if (temPeeSim || String(valPee).toLowerCase().trim() === 'sim' || valPee === true) {
                         contadorPeeObjetivos++;
                     }
                 });
 
                 document.getElementById('statPaa').innerText = contadorPaaObjetivos;
                 document.getElementById('statPee').innerText = contadorPeeObjetivos;
-                // --------------------------------------------------------
+                // -----------------------------------------------------------------------------------
 
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
                 let contagemMeta5 = 0;
                 let contagemMeta6 = 0;
 
+                let contagemObjetivos = {};
+                let contagemMetas = {};
+                let totalObjSel = 0;
+                let totalMetasSel = 0;
+
                 const todasFontesAnalise = [...objs, ...atvs];
 
                 todasFontesAnalise.forEach(item => {
-                    // Mapeamento correto das colunas jsonb do Supabase: objetivos_selecionados e metas_selecionadas[cite: 9]
+                    // Processar Objetivos (suporta arrays jsonb em objetivos_selecionados)
                     const camposObj = [item.objetivos_selecionados, item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObj.forEach(val => {
-                        if (Array.isArray(val)) {
-                            val.forEach(o => {
-                                let txt = limparNomeCurto(o).toLowerCase();
-                                if (txt.includes('objetivo 1') || txt.includes('obj 1') || txt === '1') contagemObj1++;
-                            });
-                        } else if (typeof val === 'string' && val.trim() !== '') {
-                            if (val.toLowerCase().includes('objetivo 1') || val.toLowerCase().includes('obj 1')) contagemObj1++;
-                        }
+                        const lista = extrairItensLista(val);
+                        lista.forEach(o => {
+                            let txtOriginal = String(o);
+                            let txtLower = txtOriginal.toLowerCase();
+                            let nomeCurto = limparNomeCurto(txtOriginal);
+
+                            if (nomeCurto) {
+                                contagemObjetivos[nomeCurto] = (contagemObjetivos[nomeCurto] || 0) + 1;
+                                totalObjSel++;
+                            }
+
+                            if (txtLower.includes('objetivo 1') || txtLower.includes('obj 1') || txtLower === '1') {
+                                contagemObj1++;
+                            }
+                        });
                     });
 
                     if (item.objetivo1 === true || item.objetivo1 === 'true' || item.objetivo1 === 'Sim' || item.obj1 === true) {
                         contagemObj1++;
                     }
 
+                    // Processar Metas (suporta arrays jsonb em metas_selecionadas)
                     const camposMeta = [item.metas_selecionadas, item.metas, item.meta, item.metasSelecionadas];
                     camposMeta.forEach(val => {
-                        if (Array.isArray(val)) {
-                            val.forEach(m => {
-                                let txt = limparNomeCurto(m).toLowerCase();
-                                if (txt.includes('meta 1') || txt === '1') contagemMeta1++;
-                                if (txt.includes('meta 5') || txt === '5') contagemMeta5++;
-                                if (txt.includes('meta 6') || txt === '6') contagemMeta6++;
-                            });
-                        } else if (typeof val === 'string' && val.trim() !== '') {
-                            let tLow = val.toLowerCase();
-                            if (tLow.includes('meta 1')) contagemMeta1++;
-                            if (tLow.includes('meta 5')) contagemMeta5++;
-                            if (tLow.includes('meta 6')) contagemMeta6++;
-                        }
+                        const lista = extrairItensLista(val);
+                        lista.forEach(m => {
+                            let txtOriginal = String(m);
+                            let txtLower = txtOriginal.toLowerCase();
+                            let nomeCurto = limparNomeCurto(txtOriginal);
+
+                            if (nomeCurto) {
+                                contagemMetas[nomeCurto] = (contagemMetas[nomeCurto] || 0) + 1;
+                                totalMetasSel++;
+                            }
+
+                            if (txtLower.includes('meta 1') || txtLower === '1') contagemMeta1++;
+                            if (txtLower.includes('meta 5') || txtLower === '5') contagemMeta5++;
+                            if (txtLower.includes('meta 6') || txtLower === '6') contagemMeta6++;
+                        });
                     });
 
                     if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') contagemMeta1++;
@@ -833,73 +872,6 @@
 
                 document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
                 renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
-
-                let contagemObjetivos = {};
-                let contagemMetas = {};
-                let totalObjSel = 0;
-                let totalMetasSel = 0;
-
-                todasFontesAnalise.forEach(item => {
-                    const camposObjPossiveis = [item.objetivos_selecionados, item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
-                    camposObjPossiveis.forEach(val => {
-                        if (Array.isArray(val)) {
-                            val.forEach(o => {
-                                let nome = limparNomeCurto(o);
-                                if (nome) {
-                                    contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
-                                    totalObjSel++;
-                                }
-                            });
-                        } else if (typeof val === 'string' && val.trim() !== '') {
-                            val.split(',').forEach(o => {
-                                let nome = limparNomeCurto(o);
-                                if (nome) {
-                                    contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
-                                    totalObjSel++;
-                                }
-                            });
-                        }
-                    });
-
-                    Object.keys(item).forEach(chave => {
-                        const chaveLower = chave.toLowerCase();
-                        if ((chaveLower.includes('obj') || chaveLower.includes('objetivo')) && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
-                            let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
-                            contagemObjetivos[nomeFormatado] = (contagemObjetivos[nomeFormatado] || 0) + 1;
-                            totalObjSel++;
-                        }
-                    });
-
-                    const camposMetaPossiveis = [item.metas_selecionadas, item.metas, item.meta, item.metasSelecionadas];
-                    camposMetaPossiveis.forEach(val => {
-                        if (Array.isArray(val)) {
-                            val.forEach(m => {
-                                let nome = limparNomeCurto(m);
-                                if (nome) {
-                                    contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
-                                    totalMetasSel++;
-                                }
-                            });
-                        } else if (typeof val === 'string' && val.trim() !== '') {
-                            val.split(',').forEach(m => {
-                                let nome = limparNomeCurto(m);
-                                if (nome) {
-                                    contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
-                                    totalMetasSel++;
-                                }
-                            });
-                        }
-                    });
-
-                    Object.keys(item).forEach(chave => {
-                        const chaveLower = chave.toLowerCase();
-                        if (chaveLower.includes('meta') && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
-                            let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
-                            contagemMetas[nomeFormatado] = (contagemMetas[nomeFormatado] || 0) + 1;
-                            totalMetasSel++;
-                        }
-                    });
-                });
 
                 document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
                 document.getElementById('statTotalMetasSel').innerText = totalMetasSel;
