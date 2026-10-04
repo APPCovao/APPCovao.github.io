@@ -440,7 +440,7 @@
             if (!tbody) return;
             tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar utilizadores...</td></tr>`;
 
-            const { data: users, error } = await _supabase
+            const { data: users, error } = await supabase
                 .from('users')
                 .select('*')
                 .order('id', { ascending: true });
@@ -478,7 +478,7 @@
         }
 
         async function aprovarUtilizador(id) {
-            const { error } = await _supabase
+            const { error } = await supabase
                 .from('users')
                 .update({ aprovado: true })
                 .eq('id', id);
@@ -500,7 +500,7 @@
             }
 
             const novoEstado = !isAdminAtual;
-            const { error } = await _supabase
+            const { error } = await supabase
                 .from('users')
                 .update({ is_admin: novoEstado })
                 .eq('id', id);
@@ -521,7 +521,7 @@
             }
 
             mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', async () => {
-                const { error } = await _supabase
+                const { error } = await supabase
                     .from('users')
                     .delete()
                     .eq('id', id);
