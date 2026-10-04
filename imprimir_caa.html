@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Atividade CAA - EB1/PE do Covão e Vargem</title>
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
             --primary-green: #15803d;
@@ -187,7 +191,7 @@
             <div class="value-content" id="printAtividade" style="font-size: 16px; font-weight: 700; color: #14532d;">-</div>
         </div>
 
-        <!-- DATA DA ATIVIDADE (OCUPA AGORA A LINHA INTEIRA OU DESTACADA) -->
+        <!-- DATA DA ATIVIDADE -->
         <div class="section-block">
             <div class="label-title">Data da Atividade</div>
             <div class="value-content" id="printData">-</div>
@@ -250,40 +254,56 @@
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const index = urlParams.get('index');
+        // CONFIGURAÇÃO SUPABASE
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        if (index !== null) {
-            const registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
+        async function carregarDadosImpressao() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
 
-            if (reg) {
-                document.getElementById('printAtividade').innerText = reg.atividade || '-';
-                document.getElementById('printData').innerText = reg.data_atividade || '-';
-                document.getElementById('printAluno').innerText = reg.nome_aluno || '-';
-                document.getElementById('printTurmas').innerText = reg.turmas || '-';
-                document.getElementById('printObjetivos').innerText = reg.objetivos || '-';
-                document.getElementById('printDescricao').innerText = reg.descricao_atividade || '-';
-                document.getElementById('printAvaliacao').innerText = reg.formas_avaliacao || '-';
-                document.getElementById('printArticulacao').innerText = reg.articulacao || '-';
-                document.getElementById('printObservacoes').innerText = reg.observacoes || '-';
-                document.getElementById('printResponsaveis').innerText = reg.responsaveis || '-';
+            if (!id) {
+                alert('ID do registo não especificado.');
+                return;
+            }
 
-                if (reg.imagens && reg.imagens.length > 0) {
-                    document.getElementById('seccaoFotos').style.display = 'block';
-                    const fotosContainer = document.getElementById('printFotosContainer');
-                    fotosContainer.innerHTML = '';
-                    reg.imagens.forEach(src => {
-                        const div = document.createElement('div');
-                        div.className = 'photo-item';
-                        div.innerHTML = `<img src="${src}">`;
-                        fotosContainer.appendChild(div);
-                    });
-                }
-            } else {
+            const { data: reg, error } = await supabaseClient
+                .from('registos_caa')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error || !reg) {
                 alert('Registo não encontrado.');
+                return;
+            }
+
+            document.getElementById('printAtividade').innerText = reg.atividade || '-';
+            document.getElementById('printData').innerText = reg.data_atividade || '-';
+            document.getElementById('printAluno').innerText = reg.nome_aluno || '-';
+            document.getElementById('printTurmas').innerText = reg.turmas || '-';
+            document.getElementById('printObjetivos').innerText = reg.objetivos || '-';
+            document.getElementById('printDescricao').innerText = reg.descricao_atividade || '-';
+            document.getElementById('printAvaliacao').innerText = reg.formas_avaliacao || '-';
+            document.getElementById('printArticulacao').innerText = reg.articulacao || '-';
+            document.getElementById('printObservacoes').innerText = reg.observacoes || '-';
+            document.getElementById('printResponsaveis').innerText = reg.responsaveis || '-';
+
+            if (reg.imagens && Array.isArray(reg.imagens) && reg.imagens.length > 0) {
+                document.getElementById('seccaoFotos').style.display = 'block';
+                const fotosContainer = document.getElementById('printFotosContainer');
+                fotosContainer.innerHTML = '';
+                reg.imagens.forEach(src => {
+                    const div = document.createElement('div');
+                    div.className = 'photo-item';
+                    div.innerHTML = `<img src="${src}">`;
+                    fotosContainer.appendChild(div);
+                });
             }
         }
+
+        carregarDadosImpressao();
     </script>
 </body>
 </html>
