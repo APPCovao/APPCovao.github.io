@@ -497,14 +497,14 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO SUPABASE PREENCHIDA COM OS DADOS FORNECIDOS
+        // CONFIGURAÇÃO DO SUPABASE
         const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
         
         // Inicializar cliente do Supabase
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Nome de utilizador guardado em localStorage
+        // Nome de utilizador guardado em localStorage ou tabela users
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
         const firstName = fullName.trim().split(' ')[0];
@@ -658,19 +658,25 @@
 
         async function carregarRelatorios() {
             try {
-                // Buscar dados de todas as tabelas do Supabase em paralelo
+                // Buscar dados de TODAS as tabelas do Supabase em paralelo
                 const [
                     { data: requisicoesLista, error: errReq },
                     { data: atividadesLista, error: errAtv },
                     { data: avaliadasLista, error: errAv },
                     { data: objetivosLista, error: errObj },
-                    { data: turmasLista, error: errTurmas }
+                    { data: turmasLista, error: errTurmas },
+                    { data: projetosLista, error: errProj },
+                    { data: regCaaLista, error: errCaa },
+                    { data: usersLista, error: errUsers }
                 ] = await Promise.all([
                     supabaseClient.from('requisicoes').select('*'),
                     supabaseClient.from('atividades').select('*'),
                     supabaseClient.from('avaliacoes_atividades').select('*'),
                     supabaseClient.from('registos_objetivos_atividades').select('*'),
-                    supabaseClient.from('turmas').select('*')
+                    supabaseClient.from('turmas').select('*'),
+                    supabaseClient.from('projetos').select('*'),
+                    supabaseClient.from('registos_caa').select('*'),
+                    supabaseClient.from('users').select('*')
                 ]);
 
                 if (errReq) console.error("Erro requisições:", errReq);
@@ -678,12 +684,18 @@
                 if (errAv) console.error("Erro avaliacoes_atividades:", errAv);
                 if (errObj) console.error("Erro registos_objetivos_atividades:", errObj);
                 if (errTurmas) console.error("Erro turmas:", errTurmas);
+                if (errProj) console.error("Erro projetos:", errProj);
+                if (errCaa) console.error("Erro registos_caa:", errCaa);
+                if (errUsers) console.error("Erro users:", errUsers);
 
                 const requisicoes = requisicoesLista || [];
                 const atividades = atividadesLista || [];
                 const avaliadas = avaliadasLista || [];
                 const objetivos = objetivosLista || [];
                 const turmas = turmasLista || [];
+                const projetos = projetosLista || [];
+                const registosCaa = regCaaLista || [];
+                const users = usersLista || [];
 
                 document.getElementById('statRequisicoes').innerText = requisicoes.length;
 
@@ -699,7 +711,8 @@
                     return idsUnicos.size;
                 }
 
-                const totalAtividadesUnicas = contarUnicos(atividades);
+                // Soma total de atividades incluindo também projetos ou registos_caa se aplicável
+                const totalAtividadesUnicas = contarUnicos(atividades) + contarUnicos(projetos) + contarUnicos(registosCaa);
                 document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
 
                 const idsAtividadesAvaliadasUnicas = new Set(
@@ -717,7 +730,8 @@
                 let contadorPaaObjetivos = 0;
                 let contadorPeeObjetivos = 0;
 
-                objetivos.forEach(obj => {
+                const todasFontesPAA = [...objetivos, ...atividades, ...projetos, ...registosCaa];
+                todasFontesPAA.forEach(obj => {
                     const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
                     if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                         contadorPaaObjetivos++;
@@ -735,7 +749,7 @@
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
 
-                const todasFontesAnalise = [...objetivos, ...atividades];
+                const todasFontesAnalise = [...objetivos, ...atividades, ...projetos, ...registosCaa];
 
                 todasFontesAnalise.forEach(item => {
                     const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
@@ -820,7 +834,7 @@
                 let contagemMeta5 = 0;
                 let contagemMeta6 = 0;
 
-                objetivos.forEach(item => {
+                todasFontesAnalise.forEach(item => {
                     const camposMeta5 = [item.metas, item.meta, item.metasSelecionadas];
                     camposMeta5.forEach(val => {
                         if (Array.isArray(val)) {
@@ -867,7 +881,7 @@
                 renderizarProgressoMetaGantt('chartGanttObj4', percObj4, 100);
 
                 let contagemTipos = {};
-                atividades.forEach(atv => {
+                todasFontesAnalise.forEach(atv => {
                     const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
                     contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
                 });
@@ -880,9 +894,7 @@
                 let totalObjSel = 0;
                 let totalMetasSel = 0;
 
-                const todasFontes = [...objetivos, ...atividades];
-
-                todasFontes.forEach(item => {
+                todasFontesAnalise.forEach(item => {
                     const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObjPossiveis.forEach(val => {
                         if (Array.isArray(val)) {
