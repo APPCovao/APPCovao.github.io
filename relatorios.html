@@ -417,6 +417,7 @@
                 </div>
             </div>
 
+            <!-- Objetivo 2, Meta 2 e Meta 3 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 2</h4>
@@ -434,6 +435,7 @@
                 </div>
             </div>
 
+            <!-- Objetivo 3 e Meta 4 na mesma linha (2 colunas) -->
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 3</h4>
@@ -446,6 +448,7 @@
                 </div>
             </div>
 
+            <!-- Objetivo 4, Meta 5 e Meta 6 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 4</h4>
@@ -497,14 +500,12 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO SUPABASE
+        // Configuração do Supabase
         const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
-        
-        // Inicializar cliente do Supabase
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Nome de utilizador guardado em localStorage
+        // Identificar o utilizador logado (Mantido via localStorage por conveniência de sessão ou tabela users)
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
         const firstName = fullName.trim().split(' ')[0];
@@ -658,38 +659,32 @@
 
         async function carregarRelatorios() {
             try {
-                // Apenas as 6 tabelas exatas indicadas pelo utilizador
+                // Buscar dados em paralelo das tabelas do Supabase
                 const [
                     { data: requisicoesLista, error: errReq },
                     { data: atividadesLista, error: errAtv },
                     { data: avaliadasLista, error: errAv },
                     { data: objetivosLista, error: errObj },
-                    { data: turmasLista, error: errTurmas },
-                    { data: projetosLista, error: errProj }
+                    { data: turmasLista, error: errTurmas }
                 ] = await Promise.all([
                     supabaseClient.from('requisicoes').select('*'),
                     supabaseClient.from('atividades').select('*'),
                     supabaseClient.from('avaliacoes_atividades').select('*'),
                     supabaseClient.from('registos_objetivos_atividades').select('*'),
-                    supabaseClient.from('turmas').select('*'),
-                    supabaseClient.from('projetos').select('*')
+                    supabaseClient.from('turmas').select('*')
                 ]);
 
-                if (errReq) console.error("Erro requisições:", errReq);
-                if (errAtv) console.error("Erro atividades:", errAtv);
-                if (errAv) console.error("Erro avaliacoes_atividades:", errAv);
-                if (errObj) console.error("Erro registos_objetivos_atividades:", errObj);
-                if (errTurmas) console.error("Erro turmas:", errTurmas);
-                if (errProj) console.error("Erro projetos:", errProj);
+                if (errReq || errAtv || errAv || errObj || errTurmas) {
+                    console.error("Erro ao carregar dados do Supabase:", { errReq, errAtv, errAv, errObj, errTurmas });
+                }
 
-                const requisicoes = requisicoesLista || [];
-                const atividades = atividadesLista || [];
-                const avaliadas = avaliadasLista || [];
-                const objetivos = objetivosLista || [];
+                const reqs = requisicoesLista || [];
+                const atvs = atividadesLista || [];
+                const avs = avaliadasLista || [];
+                const objs = objetivosLista || [];
                 const turmas = turmasLista || [];
-                const projetos = projetosLista || [];
 
-                document.getElementById('statRequisicoes').innerText = requisicoes.length;
+                document.getElementById('statRequisicoes').innerText = reqs.length;
 
                 function contarUnicos(lista) {
                     const idsUnicos = new Set(
@@ -703,12 +698,11 @@
                     return idsUnicos.size;
                 }
 
-                // Soma total de atividades combinando atividades e projetos
-                const totalAtividadesUnicas = contarUnicos(atividades) + contarUnicos(projetos);
+                const totalAtividadesUnicas = contarUnicos(atvs);
                 document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
-
+                
                 const idsAtividadesAvaliadasUnicas = new Set(
-                    avaliadas.map(item => {
+                    avs.map(item => {
                         return item.idAtividade !== undefined ? item.idAtividade :
                                (item.numeroAtividade !== undefined ? item.numeroAtividade :
                                (item.atividadeId !== undefined ? item.atividadeId :
@@ -717,13 +711,12 @@
                 );
                 document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
 
-                document.getElementById('statObjetivos').innerText = contarUnicos(objetivos);
+                document.getElementById('statObjetivos').innerText = contarUnicos(objs);
 
                 let contadorPaaObjetivos = 0;
                 let contadorPeeObjetivos = 0;
 
-                const todasFontesPAA = [...objetivos, ...atividades, ...projetos];
-                todasFontesPAA.forEach(obj => {
+                objs.forEach(obj => {
                     const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
                     if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                         contadorPaaObjetivos++;
@@ -741,7 +734,7 @@
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
 
-                const todasFontesAnalise = [...objetivos, ...atividades, ...projetos];
+                const todasFontesAnalise = [...objs, ...atvs];
 
                 todasFontesAnalise.forEach(item => {
                     const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
@@ -819,14 +812,14 @@
                 renderizarProgressoMetaGantt('chartGanttMeta2', mediaMeta2, 75);
                 renderizarProgressoMetaGantt('chartGanttMeta3', mediaMeta3, 75);
 
-                const totalRequisicoesCount = requisicoes.length;
+                const totalRequisicoesCount = reqs.length;
                 renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
                 renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
 
                 let contagemMeta5 = 0;
                 let contagemMeta6 = 0;
 
-                todasFontesAnalise.forEach(item => {
+                objs.forEach(item => {
                     const camposMeta5 = [item.metas, item.meta, item.metasSelecionadas];
                     camposMeta5.forEach(val => {
                         if (Array.isArray(val)) {
@@ -873,7 +866,7 @@
                 renderizarProgressoMetaGantt('chartGanttObj4', percObj4, 100);
 
                 let contagemTipos = {};
-                todasFontesAnalise.forEach(atv => {
+                atvs.forEach(atv => {
                     const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
                     contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
                 });
@@ -886,7 +879,9 @@
                 let totalObjSel = 0;
                 let totalMetasSel = 0;
 
-                todasFontesAnalise.forEach(item => {
+                const todasFontes = [...objs, ...atvs];
+
+                todasFontes.forEach(item => {
                     const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObjPossiveis.forEach(val => {
                         if (Array.isArray(val)) {
@@ -956,7 +951,7 @@
                 let contagemAreas = {};
                 let contagemEquipamentos = {};
 
-                requisicoes.forEach(req => {
+                reqs.forEach(req => {
                     const area = req.area || 'Outras';
                     const equipamento = req.equipamento || 'Outro';
 
@@ -967,8 +962,8 @@
                 renderizarGraficoBarras('chartAreas', contagemAreas);
                 renderizarGraficoBarras('chartEquipamentos', contagemEquipamentos);
 
-            } catch (error) {
-                console.error("Erro geral ao carregar relatórios do Supabase:", error);
+            } catch (err) {
+                console.error("Erro crítico ao carregar relatórios via Supabase:", err);
             }
         }
 
