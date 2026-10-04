@@ -504,7 +504,7 @@
         // Inicializar cliente do Supabase
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Nome de utilizador guardado em localStorage ou tabela users
+        // Nome de utilizador guardado em localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
         const firstName = fullName.trim().split(' ')[0];
@@ -658,25 +658,21 @@
 
         async function carregarRelatorios() {
             try {
-                // Buscar dados de TODAS as tabelas do Supabase em paralelo
+                // Apenas as 6 tabelas exatas indicadas pelo utilizador
                 const [
                     { data: requisicoesLista, error: errReq },
                     { data: atividadesLista, error: errAtv },
                     { data: avaliadasLista, error: errAv },
                     { data: objetivosLista, error: errObj },
                     { data: turmasLista, error: errTurmas },
-                    { data: projetosLista, error: errProj },
-                    { data: regCaaLista, error: errCaa },
-                    { data: usersLista, error: errUsers }
+                    { data: projetosLista, error: errProj }
                 ] = await Promise.all([
                     supabaseClient.from('requisicoes').select('*'),
                     supabaseClient.from('atividades').select('*'),
                     supabaseClient.from('avaliacoes_atividades').select('*'),
                     supabaseClient.from('registos_objetivos_atividades').select('*'),
                     supabaseClient.from('turmas').select('*'),
-                    supabaseClient.from('projetos').select('*'),
-                    supabaseClient.from('registos_caa').select('*'),
-                    supabaseClient.from('users').select('*')
+                    supabaseClient.from('projetos').select('*')
                 ]);
 
                 if (errReq) console.error("Erro requisições:", errReq);
@@ -685,8 +681,6 @@
                 if (errObj) console.error("Erro registos_objetivos_atividades:", errObj);
                 if (errTurmas) console.error("Erro turmas:", errTurmas);
                 if (errProj) console.error("Erro projetos:", errProj);
-                if (errCaa) console.error("Erro registos_caa:", errCaa);
-                if (errUsers) console.error("Erro users:", errUsers);
 
                 const requisicoes = requisicoesLista || [];
                 const atividades = atividadesLista || [];
@@ -694,8 +688,6 @@
                 const objetivos = objetivosLista || [];
                 const turmas = turmasLista || [];
                 const projetos = projetosLista || [];
-                const registosCaa = regCaaLista || [];
-                const users = usersLista || [];
 
                 document.getElementById('statRequisicoes').innerText = requisicoes.length;
 
@@ -711,8 +703,8 @@
                     return idsUnicos.size;
                 }
 
-                // Soma total de atividades incluindo também projetos ou registos_caa se aplicável
-                const totalAtividadesUnicas = contarUnicos(atividades) + contarUnicos(projetos) + contarUnicos(registosCaa);
+                // Soma total de atividades combinando atividades e projetos
+                const totalAtividadesUnicas = contarUnicos(atividades) + contarUnicos(projetos);
                 document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
 
                 const idsAtividadesAvaliadasUnicas = new Set(
@@ -730,7 +722,7 @@
                 let contadorPaaObjetivos = 0;
                 let contadorPeeObjetivos = 0;
 
-                const todasFontesPAA = [...objetivos, ...atividades, ...projetos, ...registosCaa];
+                const todasFontesPAA = [...objetivos, ...atividades, ...projetos];
                 todasFontesPAA.forEach(obj => {
                     const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
                     if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
@@ -749,7 +741,7 @@
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
 
-                const todasFontesAnalise = [...objetivos, ...atividades, ...projetos, ...registosCaa];
+                const todasFontesAnalise = [...objetivos, ...atividades, ...projetos];
 
                 todasFontesAnalise.forEach(item => {
                     const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
