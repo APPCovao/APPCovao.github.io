@@ -49,6 +49,12 @@
         }
         .btn-voltar-menu:hover { background-color: #1d4ed8; }
 
+        .btn-sair {
+            background-color: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-sair:hover { background-color: #b91c1c; }
+
         .main-container { max-width: 1100px; margin: 20px auto; padding: 0 12px; }
 
         .section-header-card {
@@ -144,7 +150,10 @@
         </div>
         <div class="user-info">
             <span><strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅ Voltar</a>
+            <!-- Botão Voltar (aparece por defeito ou conforme a tua lógica) -->
+            <a href="atividades.html" id="btnVoltarMenu" class="btn-voltar-menu">⬅ Voltar</a>
+            <!-- Botão Sair (inicialmente oculto, gerido por JS) -->
+            <a href="index.html" id="btnSair" class="btn-sair" style="display: none;">🚪 Sair</a>
         </div>
     </nav>
 
@@ -257,6 +266,20 @@
             window.location.href = 'index.html';
         } else {
             document.getElementById('userNameSpan').innerText = (currentUser.name || currentUser.email || 'Utilizador').split(' ')[0];
+
+            // Validação do domínio para exibir o botão Sair e ocultar o botão Voltar (se pretendido)
+            const userEmail = (currentUser.email || '').toLowerCase();
+            const isEduMadeira = userEmail.endsWith('@edu.madeira.gov.pt');
+
+            if (!isEduMadeira) {
+                // Se NÃO tem o domínio @edu.madeira.gov.pt, mostra "Sair" e oculta "Voltar" (opcional)
+                document.getElementById('btnSair').style.display = 'inline-flex';
+                document.getElementById('btnVoltarMenu').style.display = 'none';
+            } else {
+                // Se TEM o domínio, esconde o botão "Sair" e mantém o "Voltar"
+                document.getElementById('btnSair').style.display = 'none';
+                document.getElementById('btnVoltarMenu').style.display = 'inline-flex';
+            }
         }
 
         function isAdminUser(user) {
