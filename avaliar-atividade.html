@@ -119,6 +119,10 @@
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
         textarea { resize: vertical; min-height: 90px; }
 
+        input:disabled, select:disabled, textarea:disabled, input[readonly] {
+            background-color: #e5e7eb !important; color: #1f2937 !important; font-weight: 600 !important; cursor: not-allowed; border-color: #d1d5db !important;
+        }
+
         .modal-buttons { display: flex; flex-direction: column-reverse; gap: 10px; margin-top: 20px; border-top: 1px solid #e5e7eb; padding-top: 16px; }
         @media (min-width: 500px) {
             .modal-buttons { flex-direction: row; justify-content: flex-end; }
@@ -126,8 +130,9 @@
         }
         .grid-scores { display: grid; grid-template-columns: 1fr; gap: 15px; }
 
-        .btn-modal { padding: 10px 18px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; font-size: 14px; }
+        .btn-modal { padding: 10px 18px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; text-align: center; }
         .btn-modal-cancel { background-color: #e2e8f0; color: #334155; }
+        .btn-modal-cancel:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -188,6 +193,7 @@
                     <label>Ano Letivo <span class="required">*</span></label>
                     <select id="modalAvAnoLetivo" required>
                         <option value="">Selecione o ano letivo</option>
+                        <option value="2023/2024">2023/2024</option>
                         <option value="2024/2025">2024/2025</option>
                         <option value="2025/2026">2025/2026</option>
                         <option value="2026/2027">2026/2027</option>
@@ -230,7 +236,7 @@
                     <textarea id="modalAvComentario"></textarea>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="voltarParaAvaliarAtividade()">Voltar / Cancelar</button>
+                    <a href="avaliar-atividade.html" class="btn-modal btn-modal-cancel">Voltar / Cancelar</a>
                     <button type="submit" id="modalAvSaveBtn" class="btn-modal" style="background-color: var(--color-accent); color: white;">Guardar Alterações</button>
                 </div>
             </form>
@@ -243,103 +249,188 @@
             <div style="font-size: 2.2rem; margin-bottom: 0.4rem; color: #10b981;">✅</div>
             <h3 style="color: var(--color-accent); margin-top: 0;">Sucesso</h3>
             <p id="successPopupText" style="color: var(--text-light); font-size: 13px;">Avaliação guardada!</p>
-            <button type="button" class="btn-modal" style="background-color: var(--color-accent); color: white; width: 100%;" onclick="fecharSuccessPopup()">OK</button>
+            <a href="avaliar-atividade.html" class="btn-modal" style="background-color: var(--color-accent); color: white; width: 100%; text-decoration: none; display: inline-block;">OK</a>
         </div>
     </div>
 
+    <!-- Supabase SDK e Cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
     <script src="js/auth.js"></script>
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(currentUser) {
+        if(!currentUser) {
+            window.location.href = 'index.html';
+        } else {
             document.getElementById('userNameSpan').innerText = (currentUser.name || currentUser.email || 'Utilizador').split(' ')[0];
         }
 
         function isAdminUser(user) {
-            return user && (user.isAdmin === true || user.role === 'admin');
+            if (!user) return false;
+            return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        function preencherDadosAtividadePorNumero(numero) {
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const att = atividades.find(a => a.numero == numero || a.id == numero);
+        let cacheAtividades = [];
+        let cacheAvaliacoes = [];
+
+        async function preencherDadosAtividadePorNumero(numero) {
+            const client = getSupabase();
+            if (!client) return;
+
+            if (cacheAtividades.length === 0) {
+                const { data } = await client.from('atividades').select('*');
+                cacheAtividades = data || [];
+            }
+
+            const att = cacheAtividades.find(a => a.numero == numero || a.id == numero);
             if (att) {
-                document.getElementById('modalAvNomeAtividade').value = att.titulo || att.nome || '';
-                document.getElementById('modalAvTipoAtividade').value = att.tipo || att.tipoAtividade || '';
+                document.getElementById('modalAvNomeAtividade').value = att.titulo || '';
+                document.getElementById('modalAvTipoAtividade').value = att.tipo || '';
             } else {
                 document.getElementById('modalAvNomeAtividade').value = '';
                 document.getElementById('modalAvTipoAtividade').value = '';
             }
         }
 
-        function carregarAvaliacoes() {
+        async function carregarAvaliacoes() {
             const tbody = document.getElementById('avaliadasTableBody');
-            const chave = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 'atividadesAvaliadas';
-            const avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">A carregar avaliações...</td></tr>`;
+
+            const client = getSupabase();
+            if (!client) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 2rem;">Erro de ligação ao Supabase.</td></tr>`;
+                return;
+            }
+
+            // Carrega atividades e avaliações em simultâneo
+            const [resAv, resAtt] = await Promise.all([
+                client.from('avaliacoes_atividades').select('*').order('id', { ascending: false }),
+                client.from('atividades').select('*')
+            ]);
+
+            if (resAv.error) {
+                console.error('Erro ao carregar avaliações:', resAv.error);
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar avaliações da base de dados.</td></tr>`;
+                return;
+            }
+
+            cacheAvaliacoes = resAv.data || [];
+            cacheAtividades = resAtt.data || [];
             tbody.innerHTML = '';
 
-            if (avaliadas.length === 0) {
+            if (cacheAvaliacoes.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem atividades avaliadas.</td></tr>`;
                 return;
             }
 
             const userIsAdmin = isAdminUser(currentUser);
-            ([...avaliadas].reverse()).forEach((av, index) => {
-                const idReal = av.id !== undefined ? av.id : index;
-                const podeModificar = userIsAdmin || (av.criadorId === currentUser.id);
-                let attCorresp = atividades.find(a => (av.atividadeId && a.id == av.atividadeId) || (av.numeroAtividade && (a.numero == av.numeroAtividade || a.id == av.numeroAtividade)));
-                const numAtv = av.numeroAtividade || (attCorresp ? (attCorresp.numero || attCorresp.id) : '-');
-                const tituloAtv = av.tituloAtividade || (attCorresp ? attCorresp.titulo : 'Atividade Avaliada');
+            cacheAvaliacoes.forEach(av => {
+                const criadorId = av.criador_id || av.criadorId;
+                const podeModificar = userIsAdmin || (criadorId === currentUser.id);
+                
+                const numAtv = av.numero_atividade || av.numeroAtividade || '-';
+                const tituloAtv = av.titulo_atividade || av.tituloAtividade || 'Atividade Avaliada';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--color-accent);">${numAtv}</td>
                     <td style="font-weight: 600;">${tituloAtv}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="mostrarFormularioAvaliacao('${idReal}', 'ver')">Ver</button>
-                        <button class="btn-action btn-edit" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormularioAvaliacao('${idReal}', 'editar')">Editar</button>
+                        <button class="btn-action btn-view" title="Ver" onclick="mostrarFormularioAvaliacao('${av.id}', 'ver')">
+                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </button>
+                        <button class="btn-action btn-edit" title="Editar" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormularioAvaliacao('${av.id}', 'editar')">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function mostrarFormularioAvaliacao(id, modo) {
+        async function mostrarFormularioAvaliacao(id, modo) {
             document.getElementById('listHeaderCard').style.display = 'none';
             document.getElementById('listTableCard').style.display = 'none';
             document.getElementById('avaliacaoFormCard').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
+            const inputs = document.querySelectorAll('#avaliacaoFormElement input:not([type="hidden"]), #avaliacaoFormElement select, #avaliacaoFormElement textarea');
+            const saveBtn = document.getElementById('modalAvSaveBtn');
+            const form = document.getElementById('avaliacaoFormElement');
+            form.reset();
+
             if (modo === 'criar') {
                 document.getElementById('formAvaliacaoTitle').innerText = 'Criar Nova Avaliação';
                 document.getElementById('editAvaliacaoId').value = '';
-                document.getElementById('avaliacaoFormElement').reset();
+                inputs.forEach(el => el.disabled = false);
+                document.getElementById('modalAvNomeAtividade').disabled = true;
+                document.getElementById('modalAvTipoAtividade').disabled = true;
+                saveBtn.style.display = 'inline-block';
+            } else {
+                const av = cacheAvaliacoes.find(a => a.id == id);
+                if (av) {
+                    document.getElementById('editAvaliacaoId').value = av.id;
+                    document.getElementById('modalAvNumeroAtividade').value = av.numero_atividade || av.numeroAtividade || '';
+                    document.getElementById('modalAvNomeAtividade').value = av.titulo_atividade || av.tituloAtividade || '';
+                    document.getElementById('modalAvTipoAtividade').value = av.tipo_atividade || av.tipoAtividade || '';
+                    document.getElementById('modalAvAnoLetivo').value = av.ano_letivo || av.anoLetivo || '';
+                    document.getElementById('modalAvDocenteAluno').value = av.funcao || av.funcoes || '';
+                    document.getElementById('modalAvPertinencia').value = av.pertinencia || '';
+                    document.getElementById('modalAvDinamica').value = av.dinamica || '';
+                    document.getElementById('modalAvInteresse').value = av.interesse || '';
+                    document.getElementById('modalAvComentario').value = av.comentario || av.sugestoes || '';
+                }
+
+                if (modo === 'ver') {
+                    document.getElementById('formAvaliacaoTitle').innerText = 'Consultar Avaliação';
+                    inputs.forEach(el => el.disabled = true);
+                    saveBtn.style.display = 'none';
+                } else {
+                    document.getElementById('formAvaliacaoTitle').innerText = 'Editar Avaliação';
+                    inputs.forEach(el => el.disabled = false);
+                    document.getElementById('modalAvNomeAtividade').disabled = true;
+                    document.getElementById('modalAvTipoAtividade').disabled = true;
+                    saveBtn.style.display = 'inline-block';
+                }
             }
         }
 
-        function voltarParaAvaliarAtividade() {
-            window.location.href = 'avaliar-atividade.html';
-        }
-
-        function salvarFormularioAvaliacao(e) {
+        async function salvarFormularioAvaliacao(e) {
             e.preventDefault();
-            const chave = 'avaliacoesAtividades';
-            let avaliadas = JSON.parse(localStorage.getItem(chave)) || [];
-            
-            avaliadas.push({
-                id: Date.now(),
-                criadorId: currentUser.id,
-                numeroAtividade: document.getElementById('modalAvNumeroAtividade').value,
-                tituloAtividade: document.getElementById('modalAvNomeAtividade').value || 'Atividade',
-                anoLetivo: document.getElementById('modalAvAnoLetivo').value,
-                pertinencia: document.getElementById('modalAvPertinencia').value
-            });
+            const idEdit = document.getElementById('editAvaliacaoId').value;
+            const client = getSupabase();
 
-            localStorage.setItem(chave, JSON.stringify(avaliadas));
-            window.location.href = 'avaliar-atividade.html';
-        }
+            const dadosAvaliacao = {
+                numero_atividade: parseInt(document.getElementById('modalAvNumeroAtividade').value) || 0,
+                titulo_atividade: document.getElementById('modalAvNomeAtividade').value,
+                tipo_atividade: document.getElementById('modalAvTipoAtividade').value,
+                ano_letivo: document.getElementById('modalAvAnoLetivo').value,
+                funcao: document.getElementById('modalAvDocenteAluno').value,
+                pertinencia: parseInt(document.getElementById('modalAvPertinencia').value) || 0,
+                dinamica: parseInt(document.getElementById('modalAvDinamica').value) || 0,
+                interesse: parseInt(document.getElementById('modalAvInteresse').value) || 0,
+                comentario: document.getElementById('modalAvComentario').value,
+                criador_id: currentUser.id,
+                criador_nome: currentUser.name || currentUser.email
+            };
 
-        function fecharSuccessPopup() {
-            document.getElementById('successPopupModal').style.display = 'none';
+            let error = null;
+            if (idEdit === '' || idEdit === null) {
+                const res = await client.from('avaliacoes_atividades').insert([dadosAvaliacao]);
+                error = res.error;
+            } else {
+                const res = await client.from('avaliacoes_atividades').update(dadosAvaliacao).eq('id', idEdit);
+                error = res.error;
+            }
+
+            if (error) {
+                console.error('Erro ao guardar avaliação:', error);
+                alert('Erro ao guardar a avaliação no Supabase.');
+                return;
+            }
+
+            document.getElementById('successPopupText').innerText = 'A avaliação foi guardada com sucesso!';
+            document.getElementById('successPopupModal').style.display = 'flex';
         }
 
         carregarAvaliacoes();
