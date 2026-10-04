@@ -3,219 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imprimir Registo - Objetivos e Avaliações Globais</title>
+    <title>Relatório da Atividade - EB1/PE do Covão e Vargem</title>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-green: #16a34a;
             --text-main: #1f2937;
-            --border-color: #d1d5db;
+            --border-color: #bbf7d0;
+            --bg-card: #f9fafb;
         }
 
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffffff;
             color: var(--text-main);
             margin: 0;
             padding: 20px;
-            box-sizing: border-box;
+            background-color: #ffffff;
+            line-height: 1.5;
         }
 
         .print-container {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            box-sizing: border-box;
+            border: 2px solid var(--border-color);
+            padding: 30px;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .no-print {
+        .print-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .btn-action {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-action:hover { background-color: #1d4ed8; }
-        .btn-print { background-color: #16a34a; }
-        .btn-print:hover { background-color: #15803d; }
-
-        h1 {
-            color: #14532d;
-            font-size: 20px;
-            text-align: center;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 13px;
-            color: #4b5563;
+            border-bottom: 3px solid var(--primary-green);
+            padding-bottom: 20px;
             margin-bottom: 25px;
         }
 
-        .print-grid {
+        .print-header .logo-area img {
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .print-header .school-info h2 {
+            color: var(--primary-green);
+            font-size: 22px;
+            margin: 0 0 6px 0;
+        }
+
+        .print-header .school-info p {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .section-block {
+            background-color: var(--bg-card);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .label-title {
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--primary-green);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .value-content {
+            font-size: 13px;
+            color: #111827;
+        }
+
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .print-group {
-            margin-bottom: 15px;
-        }
-
-        .print-group.full-width {
-            grid-column: span 2;
-        }
-
-        .print-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: #374151;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .print-value {
-            font-size: 14px;
-            padding: 8px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background-color: #f9fafb;
-            min-height: 20px;
-            box-sizing: border-box;
-        }
-
-        .print-value.textarea-box {
-            white-space: pre-wrap;
-            min-height: 70px;
-        }
-
-        .section-box {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-            background-color: #f9fafb;
-        }
-
-        .section-box h3 {
-            margin: 0 0 10px 0;
-            font-size: 13px;
-            color: #14532d;
-            text-transform: uppercase;
         }
 
         ul {
-            margin: 0;
-            padding-left: 20px;
-            font-size: 13px;
+            margin: 5px 0 0 20px;
+            padding: 0;
         }
 
         li {
-            margin-bottom: 4px;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .no-print {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-print {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-print:hover {
+            background-color: #15803d;
+        }
+
+        .btn-back {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-back:hover {
+            background-color: #475569;
         }
 
         @media print {
-            .no-print { display: none !important; }
-            body { padding: 0; background-color: white; }
-            .print-container { max-width: 100%; padding: 0; }
-            .print-value, .section-box { background-color: transparent !important; border-color: #9ca3af !important; }
+            .no-print {
+                display: none;
+            }
+            body {
+                padding: 0;
+            }
+            .print-container {
+                border: none;
+                padding: 0;
+                max-width: 100%;
+                box-shadow: none;
+            }
+            .section-block {
+                background-color: #ffffff !important;
+                border: 1px solid #d1d5db;
+                break-inside: avoid;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="print-container">
-        <!-- BARRA DE AÇÕES (Não sai na impressão) -->
+        <!-- CABEÇALHO -->
+        <div class="print-header">
+            <div class="school-info">
+                <h2>EB1/PE do Covão e Vargem</h2>
+                <p id="printTituloCabecalho">Relatório da Atividade</p>
+            </div>
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Logótipo EB1/PE Covão e Vargem" onerror="this.style.display='none'">
+            </div>
+        </div>
+
+        <!-- NOME DA ATIVIDADE EM DESTAQUE -->
+        <div class="section-block" style="background-color: #f0fdf4; border-color: var(--border-color);">
+            <div class="label-title">Nome da Atividade</div>
+            <div class="value-content" id="printNomeAtividade" style="font-size: 16px; font-weight: 700; color: #14532d;">-</div>
+        </div>
+
+        <div class="grid-2">
+            <div class="section-block">
+                <div class="label-title">Ano Letivo</div>
+                <div class="value-content" id="printAnoLetivo">-</div>
+            </div>
+            <div class="section-block">
+                <div class="label-title">Tipo de Atividade</div>
+                <div class="value-content" id="printTipoAtividade">-</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="section-block">
+                <div class="label-title">Responsável (Registo Inicial)</div>
+                <div class="value-content" id="printResponsavelTopo">-</div>
+            </div>
+            <div class="section-block">
+                <div class="label-title">Integra o PAA?</div>
+                <div class="value-content" id="printPaa">-</div>
+            </div>
+        </div>
+
+        <div class="section-block">
+            <div class="label-title">Integra o PEE?</div>
+            <div class="value-content" id="printPee">-</div>
+        </div>
+
+        <div class="section-block">
+            <div class="label-title">Objetivos e Metas do PEE Selecionados</div>
+            <div class="value-content" id="printObjetivosMetas">
+                <em style="color: #6b7280;">Nenhum registo selecionado.</em>
+            </div>
+        </div>
+
+        <div class="section-block">
+            <div class="label-title">Média Geral das Avaliações</div>
+            <div class="value-content" id="printMedia">-</div>
+        </div>
+
+        <div class="section-block">
+            <div class="label-title">Resumo / Conclusões da Atividade</div>
+            <div class="value-content" id="printResumo" style="white-space: pre-line;">-</div>
+        </div>
+
+        <!-- CAMPO RESPONSÁVEL ENCOSTADO À DIREITA NO FIM DO DOCUMENTO -->
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin: 20px 0; padding: 10px 0;">
+            <span style="font-weight: 700; font-size: 12px; color: var(--primary-green); text-transform: uppercase; letter-spacing: 0.5px;">Responsável:</span>
+            <span class="value-content" id="printResponsavelFim" style="font-weight: 600; border-bottom: 1px solid #d1d5db; padding: 2px 10px; min-width: 200px; text-align: right;">-</span>
+        </div>
+
+        <!-- BOTÕES DE AÇÃO (NÃO APARECEM NA IMPRESSÃO) -->
         <div class="no-print">
-            <a href="registos-objetivos.html" class="btn-action">⬅ Voltar</a>
-            <button type="button" class="btn-action btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-        </div>
-
-        <h1>Registo de Objetivos e Avaliação Global</h1>
-        <div class="subtitle">Registos Covão - Relatório de Atividade</div>
-
-        <div class="print-grid">
-            <div class="print-group">
-                <span class="print-label">Número da Atividade</span>
-                <div id="valNumero" class="print-value">-</div>
-            </div>
-            <div class="print-group">
-                <span class="print-label">Ano Letivo</span>
-                <div id="valAnoLetivo" class="print-value">-</div>
-            </div>
-        </div>
-
-        <div class="print-group full-width">
-            <span class="print-label">Nome da Atividade</span>
-            <div id="valNomeAtividade" class="print-value">-</div>
-        </div>
-
-        <div class="print-grid">
-            <div class="print-group">
-                <span class="print-label">Tipo de Atividade</span>
-                <div id="valTipo" class="print-value">-</div>
-            </div>
-            <div class="print-group">
-                <span class="print-label">Média Geral das Avaliações</span>
-                <div id="valMedia" class="print-value">-</div>
-            </div>
-        </div>
-
-        <div class="print-grid">
-            <div class="print-group">
-                <span class="print-label">Integra o PAA?</span>
-                <div id="valPaa" class="print-value">-</div>
-            </div>
-            <div class="print-group">
-                <span class="print-label">Integra o PEE?</span>
-                <div id="valPee" class="print-value">-</div>
-            </div>
-        </div>
-
-        <div class="section-box">
-            <h3>Objetivos e Metas do PEE Abrangidos</h3>
-            <ul id="listaObjetivosMetas">
-                <li>A carregar...</li>
-            </ul>
-        </div>
-
-        <div class="print-group full-width">
-            <span class="print-label">Resumo / Conclusões da Atividade</span>
-            <div id="valResumo" class="print-value textarea-box">-</div>
-        </div>
-
-        <div class="print-grid" style="margin-top: 25px;">
-            <div class="print-group">
-                <span class="print-label">Responsável</span>
-                <div id="valResponsavel" class="print-value">-</div>
-            </div>
-            <div class="print-group">
-                <span class="print-label">Data de Impressão</span>
-                <div id="valDataImpressao" class="print-value">-</div>
-            </div>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+            <a href="registos-objetivos.html" class="btn-back">← Voltar a Registos</a>
         </div>
     </div>
 
@@ -226,13 +241,8 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function carregarDadosImpressao() {
-            // Obter o ID do URL (ex: imprimir.html?id=123)
             const urlParams = new URLSearchParams(window.location.search);
             const registoId = urlParams.get('id');
-
-            // Data atual de impressão
-            const hoje = new Date().toLocaleDateString('pt-PT');
-            document.getElementById('valDataImpressao').innerText = hoje;
 
             if (!registoId) {
                 alert('Nenhum ID de registo especificado para impressão.');
@@ -252,38 +262,40 @@
                 return;
             }
 
-            // Preencher os campos HTML com os dados obtidos
-            document.getElementById('valNumero').innerText = reg.numero_atividade || '-';
-            document.getElementById('valAnoLetivo').innerText = reg.ano_letivo || '-';
-            document.getElementById('valNomeAtividade').innerText = reg.nome_atividade || '-';
-            document.getElementById('valTipo').innerText = reg.tipo_atividade || '-';
-            document.getElementById('valMedia').innerText = reg.media_geral || '-';
-            document.getElementById('valPaa').innerText = reg.integra_paa || '-';
-            document.getElementById('valPee').innerText = reg.integra_pee || '-';
-            document.getElementById('valResumo').innerText = reg.resumo_conclusoes || '-';
-            document.getElementById('valResponsavel').innerText = reg.responsavel || reg.criador_nome || '-';
+            const nomeAtividade = reg.nome_atividade || 'Atividade sem nome';
+            const responsavelNome = reg.responsavel || reg.criador_nome || '-';
+            
+            document.getElementById('printNomeAtividade').innerText = nomeAtividade;
+            document.getElementById('printAnoLetivo').innerText = reg.ano_letivo || '-';
+            document.getElementById('printTipoAtividade').innerText = reg.tipo_atividade || '-';
+            document.getElementById('printResponsavelTopo').innerText = responsavelNome;
+            document.getElementById('printResponsavelFim').innerText = responsavelNome;
+            document.getElementById('printPaa').innerText = reg.integra_paa || '-';
+            document.getElementById('printPee').innerText = reg.integra_pee || '-';
+            document.getElementById('printMedia').innerText = reg.media_geral || '-';
+            document.getElementById('printResumo').innerText = reg.resumo_conclusoes || '-';
 
-            // Montar a lista de objetivos e metas selecionados
-            const listaUl = document.getElementById('listaObjetivosMetas');
-            listaUl.innerHTML = '';
+            document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
 
+            let htmlListas = '';
             const objetivos = reg.objetivos_selecionados || [];
             const metas = reg.metas_selecionadas || [];
 
-            const todosItens = [...objetivos, ...metas];
-
-            if (todosItens.length === 0) {
-                listaUl.innerHTML = '<li>Nenhum objetivo ou meta associado.</li>';
-            } else {
-                todosItens.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerText = item;
-                    listaUl.appendChild(li);
+            if (objetivos.length > 0 || metas.length > 0) {
+                htmlListas += '<ul>';
+                objetivos.forEach(obj => {
+                    htmlListas += `<li><strong>${obj}</strong></li>`;
                 });
+                metas.forEach(meta => {
+                    htmlListas += `<li style="margin-left: 15px; list-style-type: circle; color: #4b5563;">${meta}</li>`;
+                });
+                htmlListas += '</ul>';
+                document.getElementById('printObjetivosMetas').innerHTML = htmlListas;
+            } else {
+                document.getElementById('printObjetivosMetas').innerHTML = '<em style="color: #6b7280;">Nenhum registo selecionado.</em>';
             }
         }
 
-        // Executar o carregamento assim que a página abrir
         carregarDadosImpressao();
     </script>
 </body>
