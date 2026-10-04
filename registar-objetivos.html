@@ -508,7 +508,7 @@
 
                 <div class="form-group">
                     <label>Média Geral das Avaliações (Pertinência, Dinâmica e Interesse)</label>
-                    <input type="text" id="modalObjMedia" readonly placeholder="Calculado automaticamente a partir das avaliações">
+                    <input type="text" id="modalObjMedia" readonly placeholder="Calculado automaticamente a partir das avaliações do Supabase">
                 </div>
 
                 <div class="form-group">
@@ -711,41 +711,62 @@
                 document.getElementById('modalObjAnoLetivo').readOnly = true;
                 document.getElementById('modalObjTipo').readOnly = true;
 
-                calcularMediaESugestoes(atv.id || atv.numero, atv.numero);
+                await calcularMediaESugestoes(atv.id || atv.numero, atv.numero);
                 return atv;
             } else {
-                // Se não encontrar, destranca os campos para inserção manual sem bloquear
                 document.getElementById('modalObjNomeAtividade').value = '';
                 document.getElementById('modalObjAnoLetivo').value = '';
                 document.getElementById('modalObjTipo').value = '';
                 document.getElementById('modalObjNomeAtividade').readOnly = false;
                 document.getElementById('modalObjAnoLetivo').readOnly = false;
                 document.getElementById('modalObjTipo').readOnly = false;
-                document.getElementById('modalObjMedia').value = 'Sem registo prévio encontrado';
+                
+                await calcularMediaESugestoes(null, numStr);
                 return null;
             }
         }
 
-        function calcularMediaESugestoes(atvId, atvNumero) {
-            const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
-            const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-            const av3 = JSON.parse(localStorage.getItem('avaliacoes')) || [];
-            const av4 = JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
-            
-            const todasAvaliacoes = [...av1, ...av2, ...av3, ...av4];
+        // Função atualizada para consultar diretamente a tabela 'avaliacoes_atividades' no Supabase
+        async function calcularMediaESugestoes(atvId, atvNumero) {
+            const numStr = String(atvNumero || '').trim();
+            let todasAvaliacoes = [];
+
+            // 1. Consultar a tabela 'avaliacoes_atividades' no Supabase
+            try {
+                const { data: avSupabase, error } = await supabaseClient
+                    .from('avaliacoes_atividades')
+                    .select('*');
+                
+                if (error) {
+                    console.error('Erro ao consultar avaliações no Supabase:', error.message);
+                } else if (avSupabase && Array.isArray(avSupabase)) {
+                    todasAvaliacoes = avSupabase;
+                }
+            } catch (err) {
+                console.error('Erro de conexão ao aceder ao Supabase para avaliações:', err);
+            }
+
+            // 2. Fallback para o localStorage caso o Supabase falhe ou esteja vazio
+            if (todasAvaliacoes.length === 0) {
+                const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
+                const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+                const av3 = JSON.parse(localStorage.getItem('avaliacoes')) || [];
+                const av4 = JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
+                todasAvaliacoes = [...av1, ...av2, ...av3, ...av4];
+            }
             
             const avaliacoesDaAtividade = todasAvaliacoes.filter(av => {
-                const avIdAtv = String(av.atividadeId || av.idAtividade || av.id_atividade || av.atividade_id || av.id || '').trim();
-                const avNumAtv = String(av.numeroAtividade || av.numero_atividade || av.numero || '').trim();
+                const avIdAtv = String(av.atividade_id || av.atividadeId || av.idAtividade || av.id_atividade || av.id || '').trim();
+                const avNumAtv = String(av.numero_atividade || av.numeroAtividade || av.numeroAtv || av.numero || '').trim();
 
                 const matchId = atvId && avIdAtv && avIdAtv === String(atvId).trim();
-                const matchNum = atvNumero && avNumAtv && avNumAtv === String(atvNumero).trim();
+                const matchNum = numStr && avNumAtv && avNumAtv === numStr;
 
                 return matchId || matchNum;
             });
 
             if (avaliacoesDaAtividade.length === 0) {
-                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
+                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas para esta atividade';
                 return;
             }
 
@@ -755,9 +776,9 @@
             let totalValidas = 0;
 
             avaliacoesDaAtividade.forEach(av => {
-                const p = parseFloat(av.pertinencia || av.notaPertinencia || av.p || av.nota_pertinencia || 0);
-                const d = parseFloat(av.dinamica || av.notaDinamica || av.d || av.nota_dinamica || 0);
-                const i = parseFloat(av.interesse || av.notaInteresse || av.int || av.nota_interesse || 0);
+                const p = parseFloat(av.pertinencia || av.nota_pertinencia || av.notaPertinencia || av.p || av.grauPertinencia || 0);
+                const d = parseFloat(av.dinamica || av.nota_dinamica || av.notaDinamica || av.d || av.grauDinamica || 0);
+                const i = parseFloat(av.interesse || av.nota_interesse || av.notaInteresse || av.int || av.grauInteresse || 0);
 
                 if (!isNaN(p) || !isNaN(d) || !isNaN(i)) {
                     somaPertinencia += (isNaN(p) ? 0 : p);
@@ -775,7 +796,7 @@
                 
                 document.getElementById('modalObjMedia').value = `Média Global: ${mediaGlobal.toFixed(2)} / 5 (Pertinência: ${mediaP.toFixed(1)} | Dinâmica: ${mediaD.toFixed(1)} | Interesse: ${mediaI.toFixed(1)}) — ${totalValidas} avaliação(ões)`;
             } else {
-                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas.';
+                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas nas avaliações';
             }
         }
 
