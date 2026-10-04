@@ -1,4 +1,4 @@
-console.log("auth.js carregado com sucesso!");
+console.log("auth.js (Supabase) carregado com sucesso!");
 
 // PROTEÇÃO CONTRA ACESSO DIRETO POR LINK E RESTRIÇÃO POR DOMÍNIO
 const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
@@ -9,12 +9,10 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html' && paginaAtual !== 'dashb
     if (!usuarioLogado) {
         window.location.href = 'index.html';
     } else {
-        // Verificar restrições de domínio para utilizadores não administradores
         if (!usuarioLogado.isAdmin) {
             const emailUser = (usuarioLogado.email || '').toLowerCase();
             const eDominioMadeira = emailUser.endsWith('@edu.madeira.gov.pt');
 
-            // Se NÃO for do domínio @edu.madeira.gov.pt, só pode aceder a 'avaliar-atividade.html'
             if (!eDominioMadeira) {
                 const paginasPermitidas = ['avaliar-atividade.html', 'avaliar_atividades.html'];
                 if (!paginasPermitidas.includes(paginaAtual)) {
@@ -25,22 +23,7 @@ if (paginaAtual !== '' && paginaAtual !== 'index.html' && paginaAtual !== 'dashb
     }
 }
 
-// 1. Inicializar utilizadores (sem utilizadores predefinidos antigos)
-let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-const defaultUsers = []; 
-
-defaultUsers.forEach(defUser => {
-    const exists = storedUsers.find(u => u.email.toLowerCase() === defUser.email.toLowerCase());
-    if (!exists) {
-        storedUsers.push(defUser);
-    } else if (defUser.isAdmin) {
-        exists.isAdmin = true;
-        exists.aprovado = true;
-    }
-});
-localStorage.setItem('users', JSON.stringify(storedUsers));
-
-// 2. Injetar Modal Personalizado de forma segura
+// Injetar Modal Personalizado de forma segura
 if (!document.getElementById('globalCustomModal')) {
     const modalDiv = document.createElement('div');
     modalDiv.id = 'globalCustomModal';
@@ -81,7 +64,7 @@ function fecharModalGlobal() {
     }
 }
 
-// 3. Gestão de cliques universal (Botões de transição)
+// Gestão de cliques universal (Botões de transição entre login e registo)
 document.addEventListener('click', (e) => {
     const target = e.target.closest('button, a, [role="button"], div');
     if (!target) return;
@@ -102,13 +85,13 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 4. Gestão de Submissão de Formulários
+// Gestão de Submissão de Formulários com Supabase
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
 
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const emailInput = loginForm.querySelector('input[type="email"]') || loginForm.querySelectorAll('input')[0];
@@ -118,33 +101,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const email = emailInput.value.trim();
             const password = passInput.value.trim();
-            const users = JSON.parse(localStorage.getItem('users')) || [];
 
-            const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-            
-            if (found) {
-                // Verificar se a conta está aprovada
-                if (!found.isAdmin && found.aprovado !== true) {
+            const sb = getSupabase();
+            if (!sb) {
+                mostrarPopup('Erro de Conexão', 'Erro ao ligar ao Supabase.', '⚠️');
+                return;
+            }
+
+            try {
+                const { data: users, error } = await sb
+                    .from('users')
+                    .select('*')
+                    .ilike('email', email)
+                    .eq('password', password);
+
+                if (error || !users || users.length === 0) {
+                    mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
+                    return;
+                }
+
+                const found = users[0];
+
+                if (!found.is_admin && found.aprovado !== true) {
                     mostrarPopup('Conta Pendente', 'A sua conta encontra-se pendente de aprovação por um administrador.', '⏳');
                     return;
                 }
 
-                localStorage.setItem('currentUser', JSON.stringify(found));
+                // Guardar o utilizador logado no localStorage para manter a compatibilidade rápida com as outras páginas
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: found.id,
+                    name: found.name,
+                    email: found.email,
+                    isAdmin: found.is_admin,
+                    aprovado: found.aprovado
+                }));
 
-                // Redirecionamento baseado no domínio e permissões
-                if (!found.isAdmin && !found.email.toLowerCase().endsWith('@edu.madeira.gov.pt')) {
+                if (!found.is_admin && !found.email.toLowerCase().endsWith('@edu.madeira.gov.pt')) {
                     window.location.href = 'avaliar-atividade.html';
                 } else {
                     window.location.href = 'dashboard.html';
                 }
-            } else {
-                mostrarPopup('Erro de Autenticação', 'Email ou password incorretos!', '⚠️');
+            } catch (err) {
+                console.error(err);
+                mostrarPopup('Erro', 'Ocorreu um erro ao processar o login.', '⚠️');
             }
         });
     }
 
     if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const inputs = registerForm.querySelectorAll('input');
@@ -159,31 +164,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users.some(u => u.email.toLowerCase() === emailVal)) {
-                mostrarPopup('Conta Existente', 'Já existe uma conta com este email!', 'ℹ️');
+            const sb = getSupabase();
+            if (!sb) {
+                mostrarPopup('Erro de Conexão', 'Erro ao ligar ao Supabase.', '⚠️');
                 return;
             }
 
-            const novoUtilizador = {
-                id: Date.now(),
-                name: nameVal,
-                email: emailVal,
-                password: passVal,
-                isAdmin: false,
-                aprovado: false // Fica pendente até aprovação do admin
-            };
+            try {
+                // Verificar se já existe
+                const { data: existing } = await sb
+                    .from('users')
+                    .select('id')
+                    .ilike('email', emailVal);
 
-            users.push(novoUtilizador);
-            localStorage.setItem('users', JSON.stringify(users));
-            registerForm.reset();
+                if (existing && existing.length > 0) {
+                    mostrarPopup('Conta Existente', 'Já existe uma conta com este email!', 'ℹ️');
+                    return;
+                }
 
-            mostrarPopup('Conta Criada!', 'Conta registada com sucesso! O acesso ficará disponível após a aprovação de um administrador.', '🎉', () => {
-                const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container');
-                const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container');
-                if (registerScreen) registerScreen.style.display = 'none';
-                if (loginScreen) loginScreen.style.display = 'block';
-            });
+                const novoUtilizador = {
+                    name: nameVal,
+                    email: emailVal,
+                    password: passVal,
+                    is_admin: false,
+                    aprovado: false
+                };
+
+                const { error } = await sb.from('users').insert([novoUtilizador]);
+
+                if (error) {
+                    throw error;
+                }
+
+                registerForm.reset();
+
+                mostrarPopup('Conta Criada!', 'Conta registada com sucesso! O acesso ficará disponível após a aprovação de um administrador.', '🎉', () => {
+                    const loginScreen = document.getElementById('loginScreen') || document.querySelector('.login-container');
+                    const registerScreen = document.getElementById('registerScreen') || document.querySelector('.register-container');
+                    if (registerScreen) registerScreen.style.display = 'none';
+                    if (loginScreen) loginScreen.style.display = 'block';
+                });
+            } catch (err) {
+                console.error(err);
+                mostrarPopup('Erro', 'Ocorreu um erro ao criar a conta.', '⚠️');
+            }
         });
     }
 });
