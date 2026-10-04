@@ -843,7 +843,14 @@
 
                 const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
                 const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
-                const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
+                
+                // Regra nova para o Objetivo 2: Só atinge 100% se a Meta 2 E a Meta 3 tiverem ambas atingido 100% (ou mais)
+                let mediaObj2;
+                if (mediaMeta2 >= 75 && mediaMeta3 >= 75) {
+                    mediaObj2 = 75; // Equivalente a 100% da meta de referência (75%)
+                } else {
+                    mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
+                }
 
                 renderizarProgressoMetaGantt('chartGanttObj2', mediaObj2, 75);
                 renderizarProgressoMetaGantt('chartGanttMeta2', mediaMeta2, 75);
@@ -851,8 +858,6 @@
 
                 const totalRequisicoesCount = reqs.length;
                 renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
-                
-                // Meta 4 ligada novamente ao total de requisições
                 renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
 
                 const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
