@@ -417,7 +417,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 2, Meta 2 e Meta 3 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 2</h4>
@@ -435,7 +434,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 3 e Meta 4 na mesma linha (2 colunas) -->
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 3</h4>
@@ -448,7 +446,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 4, Meta 5 e Meta 6 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 4</h4>
@@ -505,7 +502,6 @@
         const SUPABASE_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Identificar o utilizador logado (Mantido via localStorage por conveniência de sessão ou tabela users)
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
         const firstName = fullName.trim().split(' ')[0];
@@ -513,15 +509,15 @@
 
         function obterCorPorPercentagem(percentagem) {
             if (percentagem <= 49) {
-                return '#dc2626'; // Vermelho
+                return '#dc2626';
             } else if (percentagem <= 69) {
-                return '#ea580c'; // Laranja
+                return '#ea580c';
             } else if (percentagem <= 90) {
-                return '#ca8a04'; // Amarelo
+                return '#ca8a04';
             } else if (percentagem <= 99) {
-                return '#4ade80'; // Verde claro
+                return '#4ade80';
             } else {
-                return '#15803d'; // Verde padrão (100%)
+                return '#15803d';
             }
         }
 
@@ -659,7 +655,6 @@
 
         async function carregarRelatorios() {
             try {
-                // Buscar dados em paralelo das tabelas do Supabase
                 const [
                     { data: requisicoesLista, error: errReq },
                     { data: atividadesLista, error: errAtv },
@@ -675,7 +670,7 @@
                 ]);
 
                 if (errReq || errAtv || errAv || errObj || errTurmas) {
-                    console.error("Erro ao carregar dados do Supabase:", { errReq, errAtv, errAv, errObj, errTurmas });
+                    console.error("Aviso ao carregar algumas tabelas:", { errReq, errAtv, errAv, errObj, errTurmas });
                 }
 
                 const reqs = requisicoesLista || [];
@@ -731,24 +726,25 @@
                 document.getElementById('statPaa').innerText = contadorPaaObjetivos;
                 document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
+                // Análise robusta de Objetivos e Metas em TODAS as fontes combinadas (objs e atvs)
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
+                let contagemMeta5 = 0;
+                let contagemMeta6 = 0;
 
                 const todasFontesAnalise = [...objs, ...atvs];
 
                 todasFontesAnalise.forEach(item => {
+                    // Verificar por texto e campos diretos
                     const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObj.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(o => {
-                                if (limparNomeCurto(o).toLowerCase() === 'objetivo 1' || limparNomeCurto(o).toLowerCase() === 'obj 1' || String(o).includes('1')) {
-                                    contagemObj1++;
-                                }
+                                let txt = limparNomeCurto(o).toLowerCase();
+                                if (txt.includes('objetivo 1') || txt.includes('obj 1') || txt === '1') contagemObj1++;
                             });
                         } else if (typeof val === 'string' && val.trim() !== '') {
-                            if (val.toLowerCase().includes('objetivo 1') || val.toLowerCase().includes('obj 1')) {
-                                contagemObj1++;
-                            }
+                            if (val.toLowerCase().includes('objetivo 1') || val.toLowerCase().includes('obj 1')) contagemObj1++;
                         }
                     });
 
@@ -760,20 +756,22 @@
                     camposMeta.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(m => {
-                                if (limparNomeCurto(m).toLowerCase() === 'meta 1' || String(m).includes('1')) {
-                                    contagemMeta1++;
-                                }
+                                let txt = limparNomeCurto(m).toLowerCase();
+                                if (txt.includes('meta 1') || txt === '1') contagemMeta1++;
+                                if (txt.includes('meta 5') || txt === '5') contagemMeta5++;
+                                if (txt.includes('meta 6') || txt === '6') contagemMeta6++;
                             });
                         } else if (typeof val === 'string' && val.trim() !== '') {
-                            if (val.toLowerCase().includes('meta 1')) {
-                                contagemMeta1++;
-                            }
+                            let tLow = val.toLowerCase();
+                            if (tLow.includes('meta 1')) contagemMeta1++;
+                            if (tLow.includes('meta 5')) contagemMeta5++;
+                            if (tLow.includes('meta 6')) contagemMeta6++;
                         }
                     });
 
-                    if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') {
-                        contagemMeta1++;
-                    }
+                    if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') contagemMeta1++;
+                    if (item.meta5 === true || item.meta5 === 'true' || item.meta5 === 'Sim') contagemMeta5++;
+                    if (item.meta6 === true || item.meta6 === 'true' || item.meta6 === 'Sim') contagemMeta6++;
                 });
 
                 renderizarProgressoGantt('chartGanttObj1', contagemObj1, 6);
@@ -816,47 +814,6 @@
                 renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
                 renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
 
-                let contagemMeta5 = 0;
-                let contagemMeta6 = 0;
-
-                objs.forEach(item => {
-                    const camposMeta5 = [item.metas, item.meta, item.metasSelecionadas];
-                    camposMeta5.forEach(val => {
-                        if (Array.isArray(val)) {
-                            val.forEach(m => {
-                                if (limparNomeCurto(m).toLowerCase().includes('meta 5') || String(m).includes('5')) {
-                                    contagemMeta5++;
-                                }
-                            });
-                        } else if (typeof val === 'string' && val.trim() !== '') {
-                            if (val.toLowerCase().includes('meta 5')) {
-                                contagemMeta5++;
-                            }
-                        }
-                    });
-                    if (item.meta5 === true || item.meta5 === 'true' || item.meta5 === 'Sim') {
-                        contagemMeta5++;
-                    }
-
-                    const camposMeta6 = [item.metas, item.meta, item.metasSelecionadas];
-                    camposMeta6.forEach(val => {
-                        if (Array.isArray(val)) {
-                            val.forEach(m => {
-                                if (limparNomeCurto(m).toLowerCase().includes('meta 6') || String(m).includes('6')) {
-                                    contagemMeta6++;
-                                }
-                            });
-                        } else if (typeof val === 'string' && val.trim() !== '') {
-                            if (val.toLowerCase().includes('meta 6')) {
-                                contagemMeta6++;
-                            }
-                        }
-                    });
-                    if (item.meta6 === true || item.meta6 === 'true' || item.meta6 === 'Sim') {
-                        contagemMeta6++;
-                    }
-                });
-
                 const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
                 const percMeta6 = Math.min(Math.round((contagemMeta6 / 6) * 100), 100);
                 const percObj4 = Math.round((percMeta5 + percMeta6) / 2);
@@ -879,9 +836,7 @@
                 let totalObjSel = 0;
                 let totalMetasSel = 0;
 
-                const todasFontes = [...objs, ...atvs];
-
-                todasFontes.forEach(item => {
+                todasFontesAnalise.forEach(item => {
                     const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObjPossiveis.forEach(val => {
                         if (Array.isArray(val)) {
