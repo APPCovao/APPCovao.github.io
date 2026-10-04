@@ -440,7 +440,13 @@
             if (!tbody) return;
             tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar utilizadores...</td></tr>`;
 
-            const { data: users, error } = await _supabase
+            const client = getSupabase();
+            if (!client) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 20px;">Erro: Cliente Supabase não inicializado.</td></tr>`;
+                return;
+            }
+
+            const { data: users, error } = await client
                 .from('users')
                 .select('*')
                 .order('id', { ascending: true });
@@ -478,7 +484,8 @@
         }
 
         async function aprovarUtilizador(id) {
-            const { error } = await _supabase
+            const client = getSupabase();
+            const { error } = await client
                 .from('users')
                 .update({ aprovado: true })
                 .eq('id', id);
@@ -500,7 +507,8 @@
             }
 
             const novoEstado = !isAdminAtual;
-            const { error } = await _supabase
+            const client = getSupabase();
+            const { error } = await client
                 .from('users')
                 .update({ is_admin: novoEstado })
                 .eq('id', id);
@@ -521,7 +529,8 @@
             }
 
             mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', async () => {
-                const { error } = await _supabase
+                const client = getSupabase();
+                const { error } = await client
                     .from('users')
                     .delete()
                     .eq('id', id);
