@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAA - Centro de Apoio à Aprendizagem</title>
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
             --primary-green: #15803d;
@@ -23,7 +27,6 @@
             -webkit-text-size-adjust: 100%;
         }
 
-        /* Barra de Navegação Superior */
         .navbar {
             background-color: #14532d;
             padding: 0.7rem 1rem;
@@ -84,7 +87,6 @@
             background-color: #1d4ed8;
         }
 
-        /* Contentor Principal */
         .main-container {
             max-width: 1200px;
             margin: 10px auto;
@@ -92,7 +94,6 @@
             box-sizing: border-box;
         }
 
-        /* Cartão de Cabeçalho da Secção */
         .section-header-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -125,7 +126,6 @@
             width: 100%;
         }
 
-        /* Botões do Topo */
         .btn-top-action {
             background-color: #1e293b;
             color: white;
@@ -157,7 +157,6 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Cartão de Filtros */
         .filter-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -173,7 +172,6 @@
             gap: 8px;
         }
 
-        /* Cartão da Tabela */
         .table-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -215,7 +213,6 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela com Ícones */
         .btn-action {
             padding: 6px 8px;
             border-radius: 6px;
@@ -245,7 +242,6 @@
         .btn-editar { background-color: #f59e0b; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
-        /* Formulário Estilizado */
         .form-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -406,7 +402,6 @@
 </head>
 <body>
 
-    <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
             <img src="imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\'><path d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'></path><polyline points=\'9 22 9 12 15 12 15 22\'></polyline></svg>'">
@@ -420,7 +415,6 @@
 
     <div class="main-container">
         
-        <!-- Vista Principal: Tabela e Cabeçalho -->
         <div id="vistaTabela">
             <div class="section-header-card">
                 <div>
@@ -432,13 +426,12 @@
                 </div>
             </div>
 
-            <!-- Barra de Filtros -->
             <div class="filter-card">
                 <div style="font-size: 13px; font-weight: 600; color: var(--primary-green); margin-bottom: 8px;">🔍 Filtrar Registos</div>
                 <div class="filter-grid">
                     <div>
                         <label for="filtroTurma" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #374151;">Filtrar por Turma</label>
-                        <select id="filtroTurma" onchange="aplicarFiltros()" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff;">
+                        <select id="filtroTurma" onchange="carregarRegistos()" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff;">
                             <option value="">Todas as Turmas</option>
                             <option value="1ºA">1ºA</option>
                             <option value="1ºB">1ºB</option>
@@ -455,7 +448,7 @@
                     </div>
                     <div>
                         <label for="filtroResponsavel" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #374151;">Filtrar por Responsável</label>
-                        <input type="text" id="filtroResponsavel" oninput="aplicarFiltros()" placeholder="Nome do responsável..." style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff; box-sizing: border-box;">
+                        <input type="text" id="filtroResponsavel" oninput="carregarRegistos()" placeholder="Nome do responsável..." style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff; box-sizing: border-box;">
                     </div>
                 </div>
             </div>
@@ -470,13 +463,12 @@
                         </tr>
                     </thead>
                     <tbody id="caaTableBody">
-                        <!-- Dados injetados por JavaScript -->
+                        <!-- Injetado por JS -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Vista de Formulário (Oculto por defeito) -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
                 <div>
@@ -487,7 +479,7 @@
             </div>
 
             <form id="caaForm">
-                <input type="hidden" id="editIndex" value="">
+                <input type="hidden" id="editId" value="">
 
                 <div class="form-group">
                     <label for="numero_atividade">1. Nº da Atividade <span class="required">*</span></label>
@@ -564,7 +556,7 @@
                 <div class="form-group" id="seccaoImagensUpload">
                     <label>12. Registo Fotográfico:</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias</p>
+                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias (Comprimidas Automaticamente)</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
@@ -579,7 +571,7 @@
         </div>
     </div>
 
-    <!-- Popup Personalizado -->
+    <!-- Popup -->
     <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000; padding: 1rem; box-sizing: border-box;">
         <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
             <div id="popupIcon" style="font-size: 1.8rem; margin-bottom: 0.4rem;">🏫</div>
@@ -592,25 +584,25 @@
     </div>
 
     <script>
-        let imagensGuardadas = [];
+        // CONFIGURAÇÃO SUPABASE COM AS CREDENCIAIS FORNECIDAS
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let imagensGuardadas = []; 
 
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
-        
         const nomeCompleto = currentUser.name || currentUser.nome || 'Administrador';
-        const primeiroNome = nomeCompleto.trim().split(' ')[0];
-        document.getElementById('userNameDisplay').innerText = primeiroNome;
+        document.getElementById('userNameDisplay').innerText = nomeCompleto.trim().split(' ')[0];
 
         function updateCounter(element, counterId) {
-            const currentLength = element.value.length;
-            const maxLength = element.getAttribute('maxlength');
-            document.getElementById(counterId).innerText = `${currentLength} / ${maxLength} carateres`;
+            document.getElementById(counterId).innerText = `${element.value.length} / ${element.getAttribute('maxlength')} carateres`;
         }
 
         function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫', onConfirm = null) {
             document.getElementById('popupTitle').innerText = titulo;
             document.getElementById('popupMessage').innerText = mensagem;
             document.getElementById('popupIcon').innerText = icone;
-            
             const btnContainer = document.getElementById('popupButtons');
             
             if (onConfirm) {
@@ -619,11 +611,7 @@
                     <button id="popupConfirmBtn" style="background-color: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; flex: 1;">Apagar</button>
                 `;
                 document.getElementById('customPopup').style.display = 'flex';
-
-                document.getElementById('popupCancelBtn').onclick = () => {
-                    document.getElementById('customPopup').style.display = 'none';
-                };
-
+                document.getElementById('popupCancelBtn').onclick = () => document.getElementById('customPopup').style.display = 'none';
                 document.getElementById('popupConfirmBtn').onclick = () => {
                     document.getElementById('customPopup').style.display = 'none';
                     onConfirm();
@@ -631,10 +619,7 @@
             } else {
                 btnContainer.innerHTML = `<button id="popupOkBtn" style="background-color: #15803d; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; width: 100%;">OK</button>`;
                 document.getElementById('customPopup').style.display = 'flex';
-
-                document.getElementById('popupOkBtn').onclick = () => {
-                    document.getElementById('customPopup').style.display = 'none';
-                };
+                document.getElementById('popupOkBtn').onclick = () => document.getElementById('customPopup').style.display = 'none';
             }
         }
 
@@ -642,64 +627,112 @@
             document.getElementById('customPopup').style.display = 'none';
         }
 
-        function handleFiles(files) {
+        // COMPRESSÃO DE IMAGENS NO CLIENTE
+        function comprimirImagem(file, maxWidth = 1024, maxHeight = 1024, quality = 0.7) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            resolve(blob);
+                        }, 'image/jpeg', quality);
+                    };
+                };
+            });
+        }
+
+        async function handleFiles(files) {
             const previewContainer = document.getElementById('imagePreviewContainer');
             for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagensGuardadas.push(e.target.result);
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${e.target.result}">`;
-                    previewContainer.appendChild(wrapper);
-                }
-                reader.readAsDataURL(file);
+                const blobComprimido = await comprimirImagem(file);
+                const urlLocal = URL.createObjectURL(blobComprimido);
+                
+                imagensGuardadas.push({
+                    tipo: 'novo',
+                    blob: blobComprimido,
+                    url: urlLocal
+                });
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-preview-item';
+                wrapper.innerHTML = `<img src="${urlLocal}">`;
+                previewContainer.appendChild(wrapper);
             }
         }
 
-        function carregarRegistos(filtroTurmaVal = '', filtroRespVal = '') {
+        async function carregarRegistos() {
             const tbody = document.getElementById('caaTableBody');
             if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #6b7280; font-size: 12px;">A carregar dados...</td></tr>`;
+
+            const turmaVal = document.getElementById('filtroTurma').value;
+            const respVal = document.getElementById('filtroResponsavel').value.toLowerCase().trim();
+
+            const { data: registos, error } = await supabaseClient
+                .from('registos_caa')
+                .select('*')
+                .order('numero_atividade', { ascending: false });
+
+            if (error) {
+                console.error('Erro ao carregar:', error);
+                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #dc2626; font-size: 12px;">Erro ao ligar ao Supabase. Verifique se a tabela 'registos_caa' foi criada.</td></tr>`;
+                return;
+            }
+
+            let filtrados = registos || [];
+            if (turmaVal) {
+                filtrados = filtrados.filter(r => r.turmas && r.turmas.includes(turmaVal));
+            }
+            if (respVal) {
+                filtrados = filtrados.filter(r => r.responsaveis && r.responsaveis.toLowerCase().includes(respVal));
+            }
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #6b7280; font-size: 12px;">Sem registos encontrados.</td></tr>`;
+                return;
+            }
+
             tbody.innerHTML = '';
-
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-
-            if (registos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #6b7280; font-size: 12px;">Sem registos guardados.</td></tr>`;
-                return;
-            }
-
-            // Filtragem combinada por turma e responsável
-            const registosFiltrados = registos.filter(reg => {
-                const matchTurma = !filtroTurmaVal || (reg.turmas && reg.turmas.includes(filtroTurmaVal));
-                const matchResp = !filtroRespVal || (reg.responsaveis && reg.responsaveis.toLowerCase().includes(filtroRespVal.toLowerCase()));
-                return matchTurma && matchResp;
-            });
-
-            if (registosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="padding: 1.2rem; text-align: center; color: #6b7280; font-size: 12px;">Nenhum registo corresponde aos filtros aplicados.</td></tr>`;
-                return;
-            }
-
-            const registosInvertidos = [...registosFiltrados].reverse();
-
-            registosInvertidos.forEach((reg) => {
-                const indexReal = registos.findIndex(r => r.numero_atividade === reg.numero_atividade);
+            filtrados.forEach((reg) => {
                 const tr = document.createElement('tr');
-                const temPermissao = currentUser.isAdmin || reg.userEmail === currentUser.email;
+                const temPermissao = currentUser.isAdmin || reg.user_email === currentUser.email;
 
                 tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary-green);">${reg.numero_atividade || (indexReal + 1)}</td>
+                    <td style="font-weight: 700; color: var(--primary-green);">${reg.numero_atividade}</td>
                     <td style="font-weight: 600;">${reg.atividade}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-ver" title="Ver" onclick="verRegisto(${indexReal})">
+                        <button class="btn-action btn-ver" title="Ver" onclick="verRegisto('${reg.id}')">
                             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         </button>
                         ${temPermissao ? `
-                            <button class="btn-action btn-editar" title="Editar" onclick="editarRegisto(${indexReal})">
+                            <button class="btn-action btn-editar" title="Editar" onclick="editarRegisto('${reg.id}')">
                                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                             </button>
-                            <button class="btn-action btn-apagar" title="Apagar" onclick="eliminarRegisto(${indexReal})">
+                            <button class="btn-action btn-apagar" title="Apagar" onclick="eliminarRegisto('${reg.id}')">
                                 <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                             </button>
                         ` : ''}
@@ -709,14 +742,8 @@
             });
         }
 
-        function aplicarFiltros() {
-            const turmaVal = document.getElementById('filtroTurma').value;
-            const respVal = document.getElementById('filtroResponsavel').value;
-            carregarRegistos(turmaVal, respVal);
-        }
-
-        function abrirFormularioCriacao() {
-            document.getElementById('editIndex').value = '';
+        async function abrirFormularioCriacao() {
+            document.getElementById('editId').value = '';
             document.getElementById('caaForm').reset();
             document.getElementById('imagePreviewContainer').innerHTML = '';
             imagensGuardadas = [];
@@ -724,19 +751,15 @@
 
             ajustarModoFormulario(false);
 
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
+            const { data } = await supabaseClient.from('registos_caa').select('numero_atividade');
             let proximoNumero = 1;
-            if (registos.length > 0) {
-                const numeros = registos.map(r => parseInt(r.numero_atividade) || 0);
+            if (data && data.length > 0) {
+                const numeros = data.map(r => r.numero_atividade || 0);
                 proximoNumero = Math.max(...numeros) + 1;
             }
             
-            const campoNum = document.getElementById('numero_atividade');
-            campoNum.value = proximoNumero;
-            campoNum.readOnly = true;
-            
-            const nomeResponsavel = currentUser.name || currentUser.nome || currentUser.email;
-            document.getElementById('responsaveis').value = nomeResponsavel;
+            document.getElementById('numero_atividade').value = proximoNumero;
+            document.getElementById('responsaveis').value = currentUser.name || currentUser.nome || currentUser.email;
 
             document.getElementById('formTitle').innerText = 'Novo Registo de Atividade';
             document.getElementById('vistaTabela').style.display = 'none';
@@ -752,84 +775,56 @@
             imagensGuardadas = [];
         }
 
-        function ajustarModoFormulario(isSomenteLeitura, index = '') {
+        function ajustarModoFormulario(isSomenteLeitura, id = '') {
             const inputs = document.querySelectorAll('#caaForm input, #caaForm textarea');
-            inputs.forEach(el => {
-                if (el.id !== 'editIndex') {
-                    el.readOnly = isSomenteLeitura;
-                }
-            });
+            inputs.forEach(el => { if (el.id !== 'editId') el.readOnly = isSomenteLeitura; });
 
-            const checkboxes = document.querySelectorAll('#caaForm input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                cb.disabled = isSomenteLeitura;
-            });
-
+            document.querySelectorAll('#caaForm input[type="checkbox"]').forEach(cb => cb.disabled = isSomenteLeitura);
             document.getElementById('boxUploadFicheiro').style.display = isSomenteLeitura ? 'none' : 'block';
             document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-flex';
             
             const btnPrint = document.getElementById('btnPrintForm');
             if (isSomenteLeitura) {
                 btnPrint.style.display = 'inline-flex';
-                btnPrint.href = `imprimir_caa.html?index=${index}`;
+                btnPrint.href = `imprimir_caa.html?id=${id}`;
             } else {
                 btnPrint.style.display = 'none';
             }
         }
 
-        function verRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
-            if (!reg) return;
+        async function verRegisto(id) {
+            const { data: reg, error } = await supabaseClient.from('registos_caa').select('*').eq('id', id).single();
+            if (error || !reg) { alert('Erro ao carregar registo.'); return; }
 
-            document.getElementById('editIndex').value = index;
-            document.getElementById('numero_atividade').value = reg.numero_atividade;
-            document.getElementById('data_atividade').value = reg.data_atividade;
-            document.getElementById('nome_aluno').value = reg.nome_aluno;
-            document.getElementById('atividade').value = reg.atividade;
-            document.getElementById('objetivos').value = reg.objetivos;
-            document.getElementById('descricao_atividade').value = reg.descricao_atividade;
-            document.getElementById('formas_avaliacao').value = reg.formas_avaliacao;
-            document.getElementById('articulacao').value = reg.articulacao;
-            document.getElementById('responsaveis').value = reg.responsaveis;
-            document.getElementById('observacoes').value = reg.observacoes;
-
-            ajustarModoFormulario(true, index);
-
-            const turmasArray = reg.turmas ? reg.turmas.split(', ') : [];
-            document.querySelectorAll('input[name="turma"]').forEach(cb => {
-                cb.checked = turmasArray.includes(cb.value);
-            });
-
-            imagensGuardadas = reg.imagens || [];
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            previewContainer.innerHTML = '';
-            imagensGuardadas.forEach(src => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'image-preview-item';
-                wrapper.innerHTML = `<img src="${src}">`;
-                previewContainer.appendChild(wrapper);
-            });
-
+            preencherFormularioComDados(reg);
+            ajustarModoFormulario(true, id);
             document.getElementById('formTitle').innerText = 'Consultar Registo';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function editarRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
+        async function editarRegisto(id) {
+            const { data: reg, error } = await supabaseClient.from('registos_caa').select('*').eq('id', id).single();
+            if (error || !reg) { alert('Erro ao carregar registo.'); return; }
 
-            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
+            if (!currentUser.isAdmin && reg.user_email !== currentUser.email) {
                 mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar este registo.', '🔒');
                 return;
             }
 
             ajustarModoFormulario(false);
-            document.getElementById('editIndex').value = index;
-            document.getElementById('numero_atividade').value = reg.numero_atividade;
+            preencherFormularioComDados(reg);
             document.getElementById('numero_atividade').readOnly = true;
+            document.getElementById('formTitle').innerText = 'Editar Registo';
+            document.getElementById('vistaTabela').style.display = 'none';
+            document.getElementById('vistaFormulario').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function preencherFormularioComDados(reg) {
+            document.getElementById('editId').value = reg.id;
+            document.getElementById('numero_atividade').value = reg.numero_atividade;
             document.getElementById('data_atividade').value = reg.data_atividade;
             document.getElementById('nome_aluno').value = reg.nome_aluno;
             document.getElementById('atividade').value = reg.atividade;
@@ -845,46 +840,60 @@
                 cb.checked = turmasArray.includes(cb.value);
             });
 
-            imagensGuardadas = reg.imagens || [];
+            imagensGuardadas = [];
             const previewContainer = document.getElementById('imagePreviewContainer');
             previewContainer.innerHTML = '';
-            imagensGuardadas.forEach(src => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'image-preview-item';
-                wrapper.innerHTML = `<img src="${src}">`;
-                previewContainer.appendChild(wrapper);
-            });
-
-            document.getElementById('formTitle').innerText = 'Editar Registo';
-            document.getElementById('vistaTabela').style.display = 'none';
-            document.getElementById('vistaFormulario').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function eliminarRegisto(index) {
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const reg = registos[index];
-
-            if (!currentUser.isAdmin && reg.userEmail !== currentUser.email) {
-                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para apagar este registo.', '🔒');
-                return;
+            
+            if (reg.imagens && Array.isArray(reg.imagens)) {
+                reg.imagens.forEach(urlImg => {
+                    imagensGuardadas.push({ tipo: 'existente', url: urlImg });
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-preview-item';
+                    wrapper.innerHTML = `<img src="${urlImg}">`;
+                    previewContainer.appendChild(wrapper);
+                });
             }
+        }
 
-            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo?', '⚠️', () => {
-                registos.splice(index, 1);
-                localStorage.setItem('registosCAA', JSON.stringify(registos));
-                aplicarFiltros();
+        async function eliminarRegisto(id) {
+            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo?', '⚠️', async () => {
+                const { error } = await supabaseClient.from('registos_caa').delete().eq('id', id);
+                if (error) {
+                    alert('Erro ao eliminar: ' + error.message);
+                    return;
+                }
+                carregarRegistos();
             });
         }
 
-        document.getElementById('caaForm').addEventListener('submit', (e) => {
+        document.getElementById('caaForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            let registos = JSON.parse(localStorage.getItem('registosCAA')) || [];
-            const index = document.getElementById('editIndex').value;
+            const id = document.getElementById('editId').value;
+            
+            let urlsImagensFinais = [];
+            
+            for (let imgObj of imagensGuardadas) {
+                if (imgObj.tipo === 'existente') {
+                    urlsImagensFinais.push(imgObj.url);
+                } else if (imgObj.tipo === 'novo') {
+                    const nomeFicheiro = `caa_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+                    const { error: uploadError } = await supabaseClient.storage
+                        .from('caa-imagens')
+                        .upload(nomeFicheiro, imgObj.blob, { contentType: 'image/jpeg' });
+
+                    if (!uploadError) {
+                        const { data: urlData } = supabaseClient.storage
+                            .from('caa-imagens')
+                            .getPublicUrl(nomeFicheiro);
+                        
+                        urlsImagensFinais.push(urlData.publicUrl);
+                    }
+                }
+            }
 
             const turmasSelecionadas = Array.from(document.querySelectorAll('input[name="turma"]:checked')).map(cb => cb.value).join(', ');
 
-            const novoRegisto = {
+            const dadosRegisto = {
                 numero_atividade: parseInt(document.getElementById('numero_atividade').value),
                 data_atividade: document.getElementById('data_atividade').value,
                 nome_aluno: document.getElementById('nome_aluno').value.trim(),
@@ -896,19 +905,26 @@
                 articulacao: document.getElementById('articulacao').value.trim(),
                 responsaveis: document.getElementById('responsaveis').value.trim(),
                 observacoes: document.getElementById('observacoes').value.trim(),
-                imagens: imagensGuardadas,
-                userEmail: currentUser.email
+                imagens: urlsImagensFinais,
+                user_email: currentUser.email
             };
 
-            if (index === "") {
-                registos.push(novoRegisto);
+            let error;
+            if (id === "") {
+                const res = await supabaseClient.from('registos_caa').insert([dadosRegisto]);
+                error = res.error;
             } else {
-                registos[index] = novoRegisto;
+                const res = await supabaseClient.from('registos_caa').update(dadosRegisto).eq('id', id);
+                error = res.error;
             }
 
-            localStorage.setItem('registosCAA', JSON.stringify(registos));
+            if (error) {
+                alert('Erro ao guardar: ' + error.message);
+                return;
+            }
+
             fecharFormulario();
-            aplicarFiltros();
+            carregarRegistos();
         });
 
         carregarRegistos();
