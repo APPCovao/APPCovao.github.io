@@ -160,7 +160,6 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Cartão de filtro separado e independente */
         .filter-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -226,7 +225,6 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação com SVG Brancos */
         .btn-action {
             width: 36px;
             height: 36px;
@@ -253,7 +251,6 @@
         .btn-view { background-color: #0ea5e9; }
         .btn-edit { background-color: #f59e0b; }
         .btn-delete { background-color: #dc2626; }
-        .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
         .form-card {
             background-color: var(--card-bg);
@@ -317,7 +314,6 @@
             flex: 1;
         }
 
-        /* Ajustes para Ecrãs Maiores (Desktop / Tablets) */
         @media (min-width: 640px) {
             .navbar { padding: 0.8rem 2rem; }
             .navbar .brand { font-size: 1.1rem; }
@@ -369,7 +365,7 @@
                 </div>
             </div>
 
-            <!-- Secção de Filtro Separada -->
+            <!-- Secção de Filtro -->
             <div class="filter-card">
                 <div class="filter-container" style="width: 100%;">
                     <input type="text" id="filtroResponsavel" placeholder="🔍 Filtrar por responsável..." oninput="carregarRequisicoes()">
@@ -473,10 +469,11 @@
     </div>
 
     <script>
+        // Inicialização da Tabela / Base de dados local se não existir
         if (!localStorage.getItem('requisicoes')) {
             const dadosIniciais = [
-                { numero_requisicao: 1, area: 'Matemática', equipamento: 'Surface', responsavel: 'Administrador Covão', quantidade: 1 },
-                { numero_requisicao: 2, area: 'Português', equipamento: 'Tablets portáteis', responsavel: 'Administrador Covão', quantidade: 5 }
+                { numero_requisicao: 1, area: 'Matemática', equipamento: 'Surface', responsavel: 'Administrador Covão', quantidade: 1, anoLetivo: '2025/2026', data: '2026-03-25' },
+                { numero_requisicao: 2, area: 'Português', equipamento: 'Tablets portáteis', responsavel: 'Administrador Covão', quantidade: 5, anoLetivo: '2025/2026', data: '2026-03-25' }
             ];
             localStorage.setItem('requisicoes', JSON.stringify(dadosIniciais));
         }
@@ -623,6 +620,7 @@
             }
         }
 
+        // Executa o carregamento inicial da tabela ao abrir a página
         carregarRequisicoes();
     </script>
 </body>
