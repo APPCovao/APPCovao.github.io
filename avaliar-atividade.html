@@ -190,14 +190,8 @@
                     <input type="text" id="modalAvTipoAtividade" readonly>
                 </div>
                 <div class="form-group">
-                    <label>Ano Letivo <span class="required">*</span></label>
-                    <select id="modalAvAnoLetivo" required>
-                        <option value="">Selecione o ano letivo</option>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                        <option value="2025/2026">2025/2026</option>
-                        <option value="2026/2027">2026/2027</option>
-                    </select>
+                    <label>Ano Letivo</label>
+                    <input type="text" id="modalAvAnoLetivo" readonly>
                 </div>
                 <div class="form-group">
                     <label>Funções <span class="required">*</span></label>
@@ -286,9 +280,11 @@
             if (att) {
                 document.getElementById('modalAvNomeAtividade').value = att.titulo || '';
                 document.getElementById('modalAvTipoAtividade').value = att.tipo || '';
+                document.getElementById('modalAvAnoLetivo').value = att.ano_letivo || att.anoLetivo || '';
             } else {
                 document.getElementById('modalAvNomeAtividade').value = '';
                 document.getElementById('modalAvTipoAtividade').value = '';
+                document.getElementById('modalAvAnoLetivo').value = '';
             }
         }
 
@@ -367,6 +363,7 @@
                 inputs.forEach(el => el.disabled = false);
                 document.getElementById('modalAvNomeAtividade').disabled = true;
                 document.getElementById('modalAvTipoAtividade').disabled = true;
+                document.getElementById('modalAvAnoLetivo').disabled = true;
                 saveBtn.style.display = 'inline-block';
             } else {
                 const av = cacheAvaliacoes.find(a => a.id == id);
@@ -392,6 +389,7 @@
                     inputs.forEach(el => el.disabled = false);
                     document.getElementById('modalAvNomeAtividade').disabled = true;
                     document.getElementById('modalAvTipoAtividade').disabled = true;
+                    document.getElementById('modalAvAnoLetivo').disabled = true;
                     saveBtn.style.display = 'inline-block';
                 }
             }
