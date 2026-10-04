@@ -3,138 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios e Indicadores - Agrupamento</title>
+    <title>Relatórios e Estatísticas - Registos Covão</title>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-green: #15803d;
-            --dark-green: #166534;
-            --light-green: #f0fdf4;
-            --border-green: #bbf7d0;
-            --text-main: #1f2937;
-            --text-light: #6b7280;
-            --bg-body: #f8fafc;
+            --primary-green-hover: #166534;
+            --bg-page: #f0fdf4;
             --card-bg: #ffffff;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --text-main: #1f2937;
+            --border-color: #bbf7d0;
         }
 
         body {
-            background-color: var(--bg-body);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
             color: var(--text-main);
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
+        .navbar {
+            background-color: #14532d;
+            padding: 0.8rem 1rem;
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--card-bg);
-            padding: 20px 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        header h1 {
-            color: var(--dark-green);
-            font-size: 24px;
-        }
-
-        .user-info {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .user-info span {
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .navbar .brand img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .navbar .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        .navbar .nav-right span {
+            color: #dcfce7;
+        }
+
+        .btn-voltar-menu {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar-menu:hover {
+            background-color: #1d4ed8;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 15px auto;
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-header-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-header-card h1 {
             color: var(--primary-green);
+            font-size: 22px;
+            margin: 0 0 4px 0;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+        .section-header-card p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 13px;
         }
 
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
+        .theme-section {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid var(--primary-green);
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .card h3 {
-            font-size: 15px;
-            color: var(--text-light);
-            margin-bottom: 10px;
-        }
-
-        .card .value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--dark-green);
-        }
-
-        .section-title {
+        .theme-section h2 {
+            color: var(--primary-green);
             font-size: 18px;
-            color: var(--dark-green);
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid var(--border-green);
+            margin: 0 0 4px 0;
+            border-bottom: 2px solid #f0fdf4;
+            padding-bottom: 8px;
         }
 
-        .charts-grid {
+        .theme-section .theme-desc {
+            color: #4b5563;
+            font-size: 12px;
+            margin: 0 0 15px 0;
+        }
+
+        .stats-grid-3 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
         }
 
-        .chart-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        .stats-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
 
-        .chart-card h4 {
-            font-size: 16px;
-            color: var(--text-main);
-            margin-bottom: 15px;
+        @media (max-width: 768px) {
+            .stats-grid-3, .stats-grid-2, .reports-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        .stat-main-card {
+            background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-main-card.alt1 { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); }
+        .stat-main-card.alt2 { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+        .stat-main-card.alt3 { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+        .stat-main-card.alt4 { background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%); }
+        .stat-main-card.alt5 { background: linear-gradient(135deg, #b45309 0%, #92400e 100%); }
+        .stat-main-card.alt6 { background: linear-gradient(135deg, #475569 0%, #334155 100%); }
+        .stat-main-card.alt7 { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+
+        .stat-main-card h3 {
+            margin: 0 0 4px 0;
+            font-size: 13px;
+            color: #dcfce7;
+            font-weight: 500;
+        }
+
+        .stat-main-card .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .stat-main-card .stat-icon {
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .report-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .report-box h4 {
+            color: var(--primary-green);
+            font-size: 15px;
+            margin: 0 0 10px 0;
+        }
+
+        .report-box p {
+            font-size: 12px;
+            color: #4b5563;
+            margin: 0 0 10px 0;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .chart-bar-item {
-            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .chart-bar-info {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 4px;
+            font-size: 12px;
             font-weight: 600;
+            color: var(--text-main);
+            word-break: break-word;
         }
 
         .chart-bar-bg {
-            background: #e5e7eb;
+            background: #f3f4f6;
             border-radius: 6px;
             height: 12px;
-            overflow: hidden;
             width: 100%;
+            overflow: hidden;
         }
 
         .chart-bar-fill {
@@ -147,112 +261,265 @@
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Painel de Relatórios e Indicadores</h1>
-            <div class="user-info">
-                Bem-vindo, <span id="userNameDisplay">Carregando...</span>
-            </div>
-        </header>
+    <nav class="navbar">
+        <div class="brand">
+            <img src="imagens/logo.png" alt="Logo Registos Covão">
+            <span>Registos Covão</span>
+        </div>
+        <div class="nav-right">
+            <span><strong id="userNameDisplay">Administrador Covão</strong></span>
+            <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
+        </div>
+    </nav>
 
-        <!-- Cartões de Estatísticas Principais -->
-        <div class="stats-grid">
-            <div class="card">
-                <h3>Atividades Realizadas</h3>
-                <div class="value" id="statAtividades">0</div>
-            </div>
-            <div class="card">
-                <h3>Atividades Avaliadas</h3>
-                <div class="value" id="statAvaliadas">0</div>
-            </div>
-            <div class="card">
-                <h3>Objetivos Registados</h3>
-                <div class="value" id="statObjetivos">0</div>
-            </div>
-            <div class="card">
-                <h3>Requisições Totais</h3>
-                <div class="value" id="statRequisicoes">0</div>
+    <div class="main-container">
+        
+        <!-- Cabeçalho -->
+        <div class="section-header-card">
+            <div>
+                <h1>Relatórios e Estatísticas</h1>
+                <p>Análise detalhada organizada por temas.</p>
             </div>
         </div>
 
-        <h2 class="section-title">Indicadores PAA / PEE</h2>
-        <div class="stats-grid">
-            <div class="card">
-                <h3>Atividades no PAA</h3>
-                <div class="value" id="statPaa">0</div>
-            </div>
-            <div class="card">
-                <h3>Atividades no PEE</h3>
-                <div class="value" id="statPee">0</div>
+        <!-- 1. Atividades Realizadas -->
+        <div class="theme-section">
+            <h2>1. Atividades Realizadas</h2>
+            <p class="theme-desc">Resumo quantitativo das atividades globais, avaliações efetuadas e objetivos registados.</p>
+            
+            <div class="stats-grid-3">
+                <div class="stat-main-card alt1">
+                    <div>
+                        <h3>Número de Atividades</h3>
+                        <p id="statAtividades" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">📋</div>
+                </div>
+
+                <div class="stat-main-card alt2">
+                    <div>
+                        <h3>Atividades Avaliadas</h3>
+                        <p id="statAvaliadas" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">⭐</div>
+                </div>
+
+                <div class="stat-main-card alt3">
+                    <div>
+                        <h3>Objetivos Registados</h3>
+                        <p id="statObjetivos" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🎯</div>
+                </div>
             </div>
         </div>
 
-        <!-- Grelha de Gráficos e Barras de Progresso -->
-        <h2 class="section-title">Análise de Objetivos, Metas e Tipos</h2>
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h4>Progresso Objetivo 1</h4>
-                <div id="chartGanttObj1"></div>
+        <!-- 2. Tipo de Atividade -->
+        <div class="theme-section">
+            <h2>2. Tipo de Atividade</h2>
+            <p class="theme-desc">Distribuição e análise do volume de registos por tipologia de atividade.</p>
+            
+            <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 15px;">
+                <div class="stat-main-card alt6">
+                    <div>
+                        <h3>Total de Atividades</h3>
+                        <p id="statTotalTipos" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🏷</div>
+                </div>
             </div>
-            <div class="chart-card">
-                <h4>Progresso Meta 1</h4>
-                <div id="chartGanttMeta1"></div>
-            </div>
-            <div class="chart-card">
-                <h4>Tipos de Atividade</h4>
-                <div id="chartTiposAtividade"></div>
-            </div>
-            <div class="chart-card">
-                <h4>Objetivos Selecionados</h4>
-                <div id="chartObjetivos"></div>
+
+            <div class="reports-grid" style="grid-template-columns: 1fr;">
+                <div class="report-box">
+                    <h4>Distribuição por Tipo de Atividade</h4>
+                    <p>Contagem de atividades agrupadas por categoria/tipo.</p>
+                    <div id="chartTiposAtividade" class="chart-container"></div>
+                </div>
             </div>
         </div>
 
-        <h2 class="section-title">Indicadores de Turmas e Requisições</h2>
-        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-            <div class="card">
-                <h3>Total Tipos</h3>
-                <div class="value" id="statTotalTipos">0</div>
-            </div>
-            <div class="card">
-                <h3>Total Objetivos Sel.</h3>
-                <div class="value" id="statTotalObjetivosSel">0</div>
-            </div>
-            <div class="card">
-                <h3>Total Metas Sel.</h3>
-                <div class="value" id="statTotalMetasSel">0</div>
+        <!-- 3. Atividades PAA/PEE -->
+        <div class="theme-section">
+            <h2>3. Atividades PAA/PEE</h2>
+            <p class="theme-desc">Acompanhamento da integração de objetivos nos planos PAA e PEE.</p>
+            
+            <div class="stats-grid-2">
+                <div class="stat-main-card alt4">
+                    <div>
+                        <h3>PAA</h3>
+                        <p id="statPaa" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">📅</div>
+                </div>
+
+                <div class="stat-main-card alt5">
+                    <div>
+                        <h3>PEE</h3>
+                        <p id="statPee" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🏫</div>
+                </div>
             </div>
         </div>
 
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h4>Requisições por Área</h4>
-                <div id="chartAreas"></div>
+        <!-- 4. Objetivos e Metas -->
+        <div class="theme-section">
+            <h2>4. Objetivos e Metas</h2>
+            <p class="theme-desc">Análise da seleção de objetivos e metas.</p>
+            
+            <div class="stats-grid-2" style="margin-bottom: 15px;">
+                <div class="stat-main-card alt7">
+                    <div>
+                        <h3>Total de Objetivos Selecionados</h3>
+                        <p id="statTotalObjetivosSel" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🎯</div>
+                </div>
+
+                <div class="stat-main-card alt3">
+                    <div>
+                        <h3>Total de Metas Selecionadas</h3>
+                        <p id="statTotalMetasSel" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">📈</div>
+                </div>
             </div>
-            <div class="chart-card">
-                <h4>Requisições por Equipamento</h4>
-                <div id="chartEquipamentos"></div>
+
+            <div class="reports-grid">
+                <div class="report-box">
+                    <h4>Seleção por Objetivo</h4>
+                    <p>Contagem de ocorrências por cada objetivo selecionado.</p>
+                    <div id="chartObjetivos" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Seleção por Meta</h4>
+                    <p>Contagem de ocorrências por cada meta selecionada.</p>
+                    <div id="chartMetas" class="chart-container"></div>
+                </div>
             </div>
         </div>
+
+        <!-- 5. Cumprimento dos objetivos e metas -->
+        <div class="theme-section">
+            <h2>5. Cumprimento dos objetivos e metas</h2>
+            <p class="theme-desc">Acompanhamento do progresso para os Objetivos e Metas.</p>
+            
+            <div class="reports-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="report-box">
+                    <h4>Objetivo 1</h4>
+                    <div id="chartGanttObj1" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 1</h4>
+                    <div id="chartGanttMeta1" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Objetivo 2, Meta 2 e Meta 3 na mesma linha (3 colunas) -->
+            <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
+                <div class="report-box">
+                    <h4>Objetivo 2</h4>
+                    <div id="chartGanttObj2" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 2 (Português)</h4>
+                    <div id="chartGanttMeta2" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 3 (Matemática)</h4>
+                    <div id="chartGanttMeta3" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Objetivo 3 e Meta 4 na mesma linha (2 colunas) -->
+            <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
+                <div class="report-box">
+                    <h4>Objetivo 3</h4>
+                    <div id="chartGanttObj3" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 4</h4>
+                    <div id="chartGanttMeta4" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Objetivo 4, Meta 5 e Meta 6 na mesma linha (3 colunas) -->
+            <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
+                <div class="report-box">
+                    <h4>Objetivo 4</h4>
+                    <div id="chartGanttObj4" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 5</h4>
+                    <div id="chartGanttMeta5" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Meta 6</h4>
+                    <div id="chartGanttMeta6" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Requisições -->
+        <div class="theme-section">
+            <h2>6. Requisições</h2>
+            <p class="theme-desc">Análise geral do volume de requisições de materiais e respetiva distribuição.</p>
+            
+            <div class="stats-grid-3" style="grid-template-columns: 1fr; margin-bottom: 15px;">
+                <div class="stat-main-card">
+                    <div>
+                        <h3>Total de Requisições</h3>
+                        <p id="statRequisicoes" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">📦</div>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-box">
+                    <h4>Requisições por Área</h4>
+                    <p>Volume de pedidos divididos pelas áreas letivas.</p>
+                    <div id="chartAreas" class="chart-container"></div>
+                </div>
+
+                <div class="report-box">
+                    <h4>Requisições por Equipamento</h4>
+                    <p>Materiais e dispositivos mais requisitados.</p>
+                    <div id="chartEquipamentos" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Script de Configuração e Conexão Supabase -->
+    <script src="supabase-config.js"></script>
     <script>
-        // CONFIGURAÇÃO DO SUPABASE
-        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        // Nome de utilizador guardado em localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
         const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
         const firstName = fullName.trim().split(' ')[0];
         document.getElementById('userNameDisplay').innerText = firstName;
 
         function obterCorPorPercentagem(percentagem) {
-            if (percentagem <= 49) return '#dc2626';
-            if (percentagem <= 69) return '#ea580c';
-            if (percentagem <= 90) return '#ca8a04';
-            if (percentagem <= 99) return '#4ade80';
-            return '#15803d';
+            if (percentagem <= 49) {
+                return '#dc2626'; // Vermelho
+            } else if (percentagem <= 69) {
+                return '#ea580c'; // Laranja
+            } else if (percentagem <= 90) {
+                return '#ca8a04'; // Amarelo
+            } else if (percentagem <= 99) {
+                return '#4ade80'; // Verde claro
+            } else {
+                return '#15803d'; // Verde padrão (100%)
+            }
         }
 
         function renderizarGraficoBarras(containerId, dadosObjeto) {
@@ -308,9 +575,74 @@
             container.appendChild(itemDiv);
         }
 
+        function renderizarProgressoMetaGantt(containerId, percentagemAtual, metaPercentagem = 75) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const progressoVisual = Math.min(Math.max(Math.round((percentagemAtual / metaPercentagem) * 100), 0), 100);
+            const corBarra = obterCorPorPercentagem(progressoVisual);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-bar-item';
+            itemDiv.innerHTML = `
+                <div class="chart-bar-info">
+                    <span>(Média: ${percentagemAtual}% / Meta: ${metaPercentagem}%)</span>
+                    <span style="color: ${corBarra}; font-size: 14px; font-weight: 800;">${progressoVisual}%</span>
+                </div>
+                <div class="chart-bar-bg">
+                    <div class="chart-bar-fill" style="width: ${progressoVisual}%; background-color: ${corBarra};"></div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        }
+
+        function renderizarProgressoRequisicoesGantt(containerId, quantidadeAtual, limiteMeta = 126) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const percentagem = Math.min(Math.round((quantidadeAtual / limiteMeta) * 100), 100);
+            const corBarra = obterCorPorPercentagem(percentagem);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-bar-item';
+            itemDiv.innerHTML = `
+                <div class="chart-bar-info">
+                    <span>(Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
+                    <span style="color: ${corBarra}; font-size: 14px; font-weight: 800;">${percentagem}%</span>
+                </div>
+                <div class="chart-bar-bg">
+                    <div class="chart-bar-fill" style="width: ${percentagem}%; background-color: ${corBarra};"></div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        }
+
+        function renderizarProgressoPersonalizadoGantt(containerId, quantidadeAtual, limiteMeta) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
+            const percentagem = Math.round((quantidadeEfetiva / limiteMeta) * 100);
+            const corBarra = obterCorPorPercentagem(percentagem);
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-bar-item';
+            itemDiv.innerHTML = `
+                <div class="chart-bar-info">
+                    <span>(Atual: ${quantidadeAtual} / Meta: ${limiteMeta})</span>
+                    <span style="color: ${corBarra}; font-size: 14px; font-weight: 800;">${percentagem}%</span>
+                </div>
+                <div class="chart-bar-bg">
+                    <div class="chart-bar-fill" style="width: ${percentagem}%; background-color: ${corBarra};"></div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        }
+
         function limparNomeCurto(texto) {
             if (!texto) return '';
             let str = String(texto).trim();
+            
             if (str.includes(':')) {
                 str = str.split(':')[0].trim();
             } else if (str.includes(' - ')) {
@@ -318,45 +650,78 @@
             } else if (str.includes(' – ')) {
                 str = str.split(' – ')[0].trim();
             }
+            
             return str;
         }
 
-        async function carregarRelatoriosDoSupabase() {
+        async function carregarRelatorios() {
             try {
-                const resAtv = await supabaseClient.from('atividades').select('*');
-                const atividades = resAtv.data || [];
+                // Buscar dados das tabelas do Supabase em paralelo
+                const [
+                    { data: requisicoesLista, error: errReq },
+                    { data: atividadesLista, error: errAtv },
+                    { data: avaliadasLista, error: errAv },
+                    { data: objetivosLista, error: errObj },
+                    { data: turmasLista, error: errTurmas }
+                ] = await Promise.all([
+                    window.supabaseClient.from('requisicoes').select('*'),
+                    window.supabaseClient.from('atividades').select('*'),
+                    window.supabaseClient.from('avaliacoes_atividades').select('*'),
+                    window.supabaseClient.from('registos_objetivos_atividades').select('*'),
+                    window.supabaseClient.from('turmas').select('*')
+                ]);
 
-                const resAv = await supabaseClient.from('avaliacoes_atividades').select('*');
-                const avaliacoes = resAv.data || [];
+                if (errReq) console.error("Erro ao carregar requisições:", errReq);
+                if (errAtv) console.error("Erro ao carregar atividades:", errAtv);
+                if (errAv) console.error("Erro ao carregar avaliacoes_atividades:", errAv);
+                if (errObj) console.error("Erro ao carregar registos_objetivos_atividades:", errObj);
+                if (errTurmas) console.error("Erro ao carregar turmas:", errTurmas);
 
-                // Correção aplicada: nome exato da tabela na BD
-                let objetivos = [];
-                const resObj = await supabaseClient.from('registos_objetivos_atividades').select('*');
-                if (!resObj.error && resObj.data) {
-                    objetivos = resObj.data;
-                }
-
-                const resTurmas = await supabaseClient.from('turmas').select('*');
-                const turmas = resTurmas.data || [];
-
-                const resReq = await supabaseClient.from('requisicoes').select('*');
-                const requisicoes = resReq.data || [];
+                const requisicoes = requisicoesLista || [];
+                const atividades = atividadesLista || [];
+                const avaliadas = avaliadasLista || [];
+                const objetivos = objetivosLista || [];
+                const turmas = turmasLista || [];
 
                 document.getElementById('statRequisicoes').innerText = requisicoes.length;
-                document.getElementById('statAtividades').innerText = atividades.length;
-                document.getElementById('statAvaliadas').innerText = avaliacoes.length;
-                document.getElementById('statObjetivos').innerText = objetivos.length > 0 ? objetivos.length : atividades.length;
+
+                function contarUnicos(lista) {
+                    const idsUnicos = new Set(
+                        lista.map(item => {
+                            return item.numero !== undefined ? item.numero : 
+                                   (item.id !== undefined ? item.id : 
+                                   (item.numeroAtividade !== undefined ? item.numeroAtividade : 
+                                   (item.atividadeId !== undefined ? item.atividadeId : item.titulo)));
+                        })
+                    );
+                    return idsUnicos.size;
+                }
+
+                const totalAtividadesUnicas = contarUnicos(atividades);
+                document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
+
+                const idsAtividadesAvaliadasUnicas = new Set(
+                    avaliadas.map(item => {
+                        return item.idAtividade !== undefined ? item.idAtividade :
+                               (item.numeroAtividade !== undefined ? item.numeroAtividade :
+                               (item.atividadeId !== undefined ? item.atividadeId :
+                               (item.numero !== undefined ? item.numero : item.id)));
+                    })
+                );
+                document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
+
+                document.getElementById('statObjetivos').innerText = contarUnicos(objetivos);
 
                 let contadorPaaObjetivos = 0;
                 let contadorPeeObjetivos = 0;
 
-                const fontePaaPee = objetivos.length > 0 ? objetivos : atividades;
-                fontePaaPee.forEach(item => {
-                    const valPaa = item.paa || item.faz_parte_paa || item.no_paa || item.integra_paa || '';
+                objetivos.forEach(obj => {
+                    const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
                     if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                         contadorPaaObjetivos++;
                     }
-                    const valPee = item.pee || item.faz_parte_pee || item.no_pee || item.integra_pee || '';
+
+                    const valPee = obj.pee || obj.fazPartePee || obj.noPee || obj.integraPee || obj.integraPEE || '';
                     if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
                         contadorPeeObjetivos++;
                     }
@@ -367,82 +732,228 @@
 
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
+
                 const todasFontesAnalise = [...objetivos, ...atividades];
 
                 todasFontesAnalise.forEach(item => {
-                    const camposObj = [item.objetivos, item.obj, item.objetivo_seleccionado, item.objetivo];
+                    const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObj.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(o => {
-                                if (limparNomeCurto(o).toLowerCase().includes('objetivo 1') || String(o).includes('1')) contagemObj1++;
+                                if (limparNomeCurto(o).toLowerCase() === 'objetivo 1' || limparNomeCurto(o).toLowerCase() === 'obj 1' || String(o).includes('1')) {
+                                    contagemObj1++;
+                                }
                             });
-                        } else if (typeof val === 'string' && val.toLowerCase().includes('objetivo 1')) {
-                            contagemObj1++;
+                        } else if (typeof val === 'string' && val.trim() !== '') {
+                            if (val.toLowerCase().includes('objetivo 1') || val.toLowerCase().includes('obj 1')) {
+                                contagemObj1++;
+                            }
                         }
                     });
 
-                    if (item.objetivo_1 === true || item.objetivo_1 === 'true' || item.objetivo_1 === 'Sim' || item.obj1 === true) {
+                    if (item.objetivo1 === true || item.objetivo1 === 'true' || item.objetivo1 === 'Sim' || item.obj1 === true) {
                         contagemObj1++;
                     }
 
-                    const camposMeta = [item.metas, item.meta, item.metas_selecionadas];
+                    const camposMeta = [item.metas, item.meta, item.metasSelecionadas];
                     camposMeta.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(m => {
-                                if (limparNomeCurto(m).toLowerCase().includes('meta 1') || String(m).includes('1')) contagemMeta1++;
+                                if (limparNomeCurto(m).toLowerCase() === 'meta 1' || String(m).includes('1')) {
+                                    contagemMeta1++;
+                                }
                             });
-                        } else if (typeof val === 'string' && val.toLowerCase().includes('meta 1')) {
-                            contagemMeta1++;
+                        } else if (typeof val === 'string' && val.trim() !== '') {
+                            if (val.toLowerCase().includes('meta 1')) {
+                                contagemMeta1++;
+                            }
                         }
                     });
 
-                    if (item.meta_1 === true || item.meta_1 === 'true' || item.meta_1 === 'Sim') {
+                    if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') {
                         contagemMeta1++;
                     }
                 });
 
-                if (atividades.length > 0 && contagemObj1 === 0) contagemObj1 = 1;
-                if (atividades.length > 0 && contagemMeta1 === 0) contagemMeta1 = 1;
-
                 renderizarProgressoGantt('chartGanttObj1', contagemObj1, 6);
                 renderizarProgressoGantt('chartGanttMeta1', contagemMeta1, 6);
+                
+                let somaPercentagensPort = 0;
+                let somaPercentagensMat = 0;
+                let countTurmasPort = 0;
+                let countTurmasMat = 0;
 
-                let contagemTipos = {};
-                atividades.forEach(atv => {
-                    const tipo = atv.tipo || atv.tipo_atividade || atv.categoria || 'Não Especificado';
-                    contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
-                });
-                document.getElementById('statTotalTipos').innerText = atividades.length;
-                renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
+                turmas.forEach(turma => {
+                    let valPort = turma.percPort || turma.portugues || turma.porcentagemPortugues || turma.portuguesBomMBom;
+                    if (valPort !== undefined && valPort !== null) {
+                        let numPort = parseFloat(String(valPort).replace('%', '').trim());
+                        if (!isNaN(numPort)) {
+                            somaPercentagensPort += numPort;
+                            countTurmasPort++;
+                        }
+                    }
 
-                let contagemObjetivos = {};
-                let totalObjSel = 0;
-                let totalMetasSel = 0;
-
-                todasFontesAnalise.forEach(item => {
-                    const objVal = item.objetivos || item.obj || [];
-                    if (Array.isArray(objVal)) {
-                        objVal.forEach(o => {
-                            let nome = limparNomeCurto(o);
-                            if (nome) { contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1; totalObjSel++; }
-                        });
+                    let valMat = turma.percMat || turma.matematica || turma.porcentagemMatematica || turma.matematicaBomMBom;
+                    if (valMat !== undefined && valMat !== null) {
+                        let numMat = parseFloat(String(valMat).replace('%', '').trim());
+                        if (!isNaN(numMat)) {
+                            somaPercentagensMat += numMat;
+                            countTurmasMat++;
+                        }
                     }
                 });
 
-                if (totalObjSel === 0 && atividades.length > 0) {
-                    contagemObjetivos['Objetivo 1'] = 1;
-                    totalObjSel = 1;
-                }
+                const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
+                const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
+                const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
+
+                renderizarProgressoMetaGantt('chartGanttObj2', mediaObj2, 75);
+                renderizarProgressoMetaGantt('chartGanttMeta2', mediaMeta2, 75);
+                renderizarProgressoMetaGantt('chartGanttMeta3', mediaMeta3, 75);
+
+                const totalRequisicoesCount = requisicoes.length;
+                renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
+                renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
+
+                let contagemMeta5 = 0;
+                let contagemMeta6 = 0;
+
+                objetivos.forEach(item => {
+                    const camposMeta5 = [item.metas, item.meta, item.metasSelecionadas];
+                    camposMeta5.forEach(val => {
+                        if (Array.isArray(val)) {
+                            val.forEach(m => {
+                                if (limparNomeCurto(m).toLowerCase().includes('meta 5') || String(m).includes('5')) {
+                                    contagemMeta5++;
+                                }
+                            });
+                        } else if (typeof val === 'string' && val.trim() !== '') {
+                            if (val.toLowerCase().includes('meta 5')) {
+                                contagemMeta5++;
+                            }
+                        }
+                    });
+                    if (item.meta5 === true || item.meta5 === 'true' || item.meta5 === 'Sim') {
+                        contagemMeta5++;
+                    }
+
+                    const camposMeta6 = [item.metas, item.meta, item.metasSelecionadas];
+                    camposMeta6.forEach(val => {
+                        if (Array.isArray(val)) {
+                            val.forEach(m => {
+                                if (limparNomeCurto(m).toLowerCase().includes('meta 6') || String(m).includes('6')) {
+                                    contagemMeta6++;
+                                }
+                            });
+                        } else if (typeof val === 'string' && val.trim() !== '') {
+                            if (val.toLowerCase().includes('meta 6')) {
+                                contagemMeta6++;
+                            }
+                        }
+                    });
+                    if (item.meta6 === true || item.meta6 === 'true' || item.meta6 === 'Sim') {
+                        contagemMeta6++;
+                    }
+                });
+
+                const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
+                const percMeta6 = Math.min(Math.round((contagemMeta6 / 6) * 100), 100);
+                const percObj4 = Math.round((percMeta5 + percMeta6) / 2);
+
+                renderizarProgressoPersonalizadoGantt('chartGanttMeta5', contagemMeta5, 2);
+                renderizarProgressoPersonalizadoGantt('chartGanttMeta6', contagemMeta6, 6);
+                renderizarProgressoMetaGantt('chartGanttObj4', percObj4, 100);
+
+                let contagemTipos = {};
+                atividades.forEach(atv => {
+                    const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
+                    contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
+                });
+
+                document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
+                renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
+
+                let contagemObjetivos = {};
+                let contagemMetas = {};
+                let totalObjSel = 0;
+                let totalMetasSel = 0;
+
+                const todasFontes = [...objetivos, ...atividades];
+
+                todasFontes.forEach(item => {
+                    const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
+                    camposObjPossiveis.forEach(val => {
+                        if (Array.isArray(val)) {
+                            val.forEach(o => {
+                                let nome = limparNomeCurto(o);
+                                if (nome) {
+                                    contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
+                                    totalObjSel++;
+                                }
+                            });
+                        } else if (typeof val === 'string' && val.trim() !== '') {
+                            val.split(',').forEach(o => {
+                                let nome = limparNomeCurto(o);
+                                if (nome) {
+                                    contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
+                                    totalObjSel++;
+                                }
+                            });
+                        }
+                    });
+
+                    Object.keys(item).forEach(chave => {
+                        const chaveLower = chave.toLowerCase();
+                        if ((chaveLower.includes('obj') || chaveLower.includes('objetivo')) && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
+                            let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
+                            contagemObjetivos[nomeFormatado] = (contagemObjetivos[nomeFormatado] || 0) + 1;
+                            totalObjSel++;
+                        }
+                    });
+
+                    const camposMetaPossiveis = [item.metas, item.meta, item.metasSelecionadas];
+                    camposMetaPossiveis.forEach(val => {
+                        if (Array.isArray(val)) {
+                            val.forEach(m => {
+                                let nome = limparNomeCurto(m);
+                                if (nome) {
+                                    contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
+                                    totalMetasSel++;
+                                }
+                            });
+                        } else if (typeof val === 'string' && val.trim() !== '') {
+                            val.split(',').forEach(m => {
+                                let nome = limparNomeCurto(m);
+                                if (nome) {
+                                    contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
+                                    totalMetasSel++;
+                                }
+                            });
+                        }
+                    });
+
+                    Object.keys(item).forEach(chave => {
+                        const chaveLower = chave.toLowerCase();
+                        if (chaveLower.includes('meta') && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
+                            let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
+                            contagemMetas[nomeFormatado] = (contagemMetas[nomeFormatado] || 0) + 1;
+                            totalMetasSel++;
+                        }
+                    });
+                });
 
                 document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
                 document.getElementById('statTotalMetasSel').innerText = totalMetasSel;
                 renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
+                renderizarGraficoBarras('chartMetas', contagemMetas);
 
                 let contagemAreas = {};
                 let contagemEquipamentos = {};
+
                 requisicoes.forEach(req => {
                     const area = req.area || 'Outras';
-                    const equipamento = req.equipamento || req.material || 'Outro';
+                    const equipamento = req.equipamento || 'Outro';
+
                     contagemAreas[area] = (contagemAreas[area] || 0) + 1;
                     contagemEquipamentos[equipamento] = (contagemEquipamentos[equipamento] || 0) + 1;
                 });
@@ -450,12 +961,12 @@
                 renderizarGraficoBarras('chartAreas', contagemAreas);
                 renderizarGraficoBarras('chartEquipamentos', contagemEquipamentos);
 
-            } catch (err) {
-                console.error("Erro ao carregar dados do Supabase para relatórios:", err);
+            } catch (error) {
+                console.error("Erro geral ao carregar relatórios do Supabase:", error);
             }
         }
 
-        carregarRelatoriosDoSupabase();
+        carregarRelatorios();
     </script>
 </body>
 </html>
