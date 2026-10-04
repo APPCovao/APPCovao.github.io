@@ -708,16 +708,19 @@
 
                 document.getElementById('statObjetivos').innerText = contarUnicos(objs);
 
+                // --- LEITURA CORRETA DAS COLUNAS PAA E PEE (Secção 3) ---
                 let contadorPaaObjetivos = 0;
                 let contadorPeeObjetivos = 0;
 
-                objs.forEach(obj => {
-                    const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
+                const todasFontesParaPaaPee = [...objs, ...atvs];
+                todasFontesParaPaaPee.forEach(item => {
+                    // Mapeamento correto para as colunas do Supabase: integra_paa e integra_pee[cite: 10]
+                    const valPaa = item.integra_paa !== undefined ? item.integra_paa : (item.paa || item.fazPartePaa || item.noPaa || item.integraPaa || item.integraPAA || '');
                     if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                         contadorPaaObjetivos++;
                     }
 
-                    const valPee = obj.pee || obj.fazPartePee || obj.noPee || obj.integraPee || obj.integraPEE || '';
+                    const valPee = item.integra_pee !== undefined ? item.integra_pee : (item.pee || item.fazPartePee || item.noPee || item.integraPee || item.integraPEE || '');
                     if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
                         contadorPeeObjetivos++;
                     }
@@ -725,6 +728,7 @@
 
                 document.getElementById('statPaa').innerText = contadorPaaObjetivos;
                 document.getElementById('statPee').innerText = contadorPeeObjetivos;
+                // --------------------------------------------------------
 
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
