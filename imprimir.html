@@ -188,15 +188,10 @@
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="section-block">
-                <div class="label-title">Responsável (Registo Inicial)</div>
-                <div class="value-content" id="printResponsavelTopo">-</div>
-            </div>
-            <div class="section-block">
-                <div class="label-title">Integra o PAA?</div>
-                <div class="value-content" id="printPaa">-</div>
-            </div>
+        <!-- CAMPO ÚNICO PARA PAA -->
+        <div class="section-block">
+            <div class="label-title">Integra o PAA?</div>
+            <div class="value-content" id="printPaa">-</div>
         </div>
 
         <div class="section-block">
@@ -268,7 +263,6 @@
             document.getElementById('printNomeAtividade').innerText = nomeAtividade;
             document.getElementById('printAnoLetivo').innerText = reg.ano_letivo || '-';
             document.getElementById('printTipoAtividade').innerText = reg.tipo_atividade || '-';
-            document.getElementById('printResponsavelTopo').innerText = responsavelNome;
             document.getElementById('printResponsavelFim').innerText = responsavelNome;
             document.getElementById('printPaa').innerText = reg.integra_paa || '-';
             document.getElementById('printPee').innerText = reg.integra_pee || '-';
