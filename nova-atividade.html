@@ -350,7 +350,7 @@
         </div>
         <div class="user-info">
             <span><strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅️ Voltar</a>
+            <a href="dashboard.html" class="btn-voltar-menu">⬅️ Voltar</a>
         </div>
     </nav>
 
@@ -459,7 +459,9 @@
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
+    <!-- Supabase SDK e Cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
     <script>
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser) {
@@ -481,11 +483,12 @@
             carregarAtividades();
         }
 
-        function mudarParaFormulario(modo, id = null) {
+        let cacheAtividades = [];
+
+        async function mudarParaFormulario(modo, id = null) {
             document.getElementById('seccaoListagem').classList.remove('active');
             document.getElementById('seccaoFormulario').classList.add('active');
 
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const inputs = document.querySelectorAll('#atividadeFormModal input:not([type="hidden"]), #atividadeFormModal select');
             const saveBtn = document.getElementById('modalSaveBtn');
             const form = document.getElementById('atividadeFormModal');
@@ -494,18 +497,18 @@
             if (modo === 'criar') {
                 document.getElementById('modalTitle').innerText = 'Criar Nova Atividade';
                 document.getElementById('editAtividadeId').value = '';
-                const proximoNum = atividades.length > 0 ? Math.max(...atividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
+                const proximoNum = cacheAtividades.length > 0 ? Math.max(...cacheAtividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
                 document.getElementById('modalNumAtividade').value = proximoNum;
                 inputs.forEach(el => el.disabled = false);
                 document.getElementById('modalNumAtividade').disabled = true;
                 saveBtn.style.display = 'inline-block';
             } else {
-                const ativ = atividades.find(a => a.id == id);
+                const ativ = cacheAtividades.find(a => a.id == id);
                 if (ativ) {
                     document.getElementById('editAtividadeId').value = ativ.id;
                     document.getElementById('modalNumAtividade').value = ativ.numero || ativ.id;
                     document.getElementById('modalNomeAtividade').value = ativ.titulo || '';
-                    document.getElementById('modalAnoLetivo').value = ativ.anoLetivo || '2025/2026';
+                    document.getElementById('modalAnoLetivo').value = ativ.ano_letivo || ativ.anoLetivo || '2025/2026';
                     document.getElementById('modalTipoAtividade').value = ativ.tipo || 'Atividade';
                 }
 
@@ -522,16 +525,35 @@
             }
         }
 
-        function carregarAtividades() {
+        async function carregarAtividades() {
             const tbody = document.getElementById('atividadesTableBody');
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">A carregar atividades...</td></tr>`;
+
+            const client = getSupabase();
+            if (!client) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 2rem;">Erro de ligação ao Supabase.</td></tr>`;
+                return;
+            }
+
+            const { data: atividades, error } = await client
+                .from('atividades')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Erro ao carregar atividades:', error);
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar atividades da base de dados.</td></tr>`;
+                return;
+            }
+
+            cacheAtividades = atividades || [];
 
             const filtroNumVal = document.getElementById('filtroNumero').value.trim().toLowerCase();
             const filtroCriadorVal = document.getElementById('filtroCriador').value.trim().toLowerCase();
 
-            const atividadesFiltradas = atividades.filter(ativ => {
+            const atividadesFiltradas = cacheAtividades.filter(ativ => {
                 const numStr = String(ativ.numero || ativ.id || '').toLowerCase();
-                const criadorStr = String(ativ.criadorNome || '').toLowerCase();
+                const criadorStr = String(ativ.criador_nome || ativ.criadorNome || '').toLowerCase();
 
                 const matchNum = filtroNumVal === '' || numStr.includes(filtroNumVal);
                 const matchCriador = filtroCriadorVal === '' || criadorStr.includes(filtroCriadorVal);
@@ -547,8 +569,9 @@
             }
 
             const userIsAdmin = isAdminUser(currentUser);
-            ([...atividadesFiltradas].reverse()).forEach(ativ => {
-                const podeModificar = userIsAdmin || (ativ.criadorId === currentUser.id);
+            atividadesFiltradas.forEach(ativ => {
+                const criadorId = ativ.criador_id || ativ.criadorId;
+                const podeModificar = userIsAdmin || (criadorId === currentUser.id);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary-green);">${ativ.numero || ativ.id || '-'}</td>
@@ -569,39 +592,57 @@
             });
         }
 
-        function salvarAtividade(e) {
+        async function salvarAtividade(e) {
             e.preventDefault();
             const idEdit = document.getElementById('editAtividadeId').value;
-            let listaAtividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const client = getSupabase();
             let mensagemPopup = '';
 
+            const titulo = document.getElementById('modalNomeAtividade').value;
+            const anoLetivo = document.getElementById('modalAnoLetivo').value;
+            const tipo = document.getElementById('modalTipoAtividade').value;
+
             if (idEdit === '' || idEdit === null) {
-                const novoId = Date.now();
-                const proximoNum = listaAtividades.length > 0 ? Math.max(...listaAtividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
+                const proximoNum = cacheAtividades.length > 0 ? Math.max(...cacheAtividades.map(a => Number(a.numero) || Number(a.id) || 0)) + 1 : 1;
                 
                 const novaAtiv = {
-                    id: novoId,
                     numero: proximoNum,
-                    titulo: document.getElementById('modalNomeAtividade').value,
-                    anoLetivo: document.getElementById('modalAnoLetivo').value,
-                    tipo: document.getElementById('modalTipoAtividade').value,
-                    criadorId: currentUser.id,
-                    criadorNome: currentUser.name || currentUser.email
+                    titulo: titulo,
+                    ano_letivo: anoLetivo,
+                    tipo: tipo,
+                    criador_id: currentUser.id,
+                    criador_nome: currentUser.name || currentUser.email
                 };
-                listaAtividades.push(novaAtiv);
+
+                const { error } = await client.from('atividades').insert([novaAtiv]);
+                if (error) {
+                    console.error('Erro ao criar atividade:', error);
+                    alert('Erro ao guardar atividade no Supabase.');
+                    return;
+                }
                 mensagemPopup = `A atividade nº ${proximoNum} foi criada com sucesso!`;
             } else {
-                let ativ = listaAtividades.find(a => a.id == idEdit);
-                if (ativ) {
-                    ativ.titulo = document.getElementById('modalNomeAtividade').value;
-                    ativ.anoLetivo = document.getElementById('modalAnoLetivo').value;
-                    ativ.tipo = document.getElementById('modalTipoAtividade').value;
-                    mensagemPopup = `A atividade nº ${ativ.numero || ativ.id} foi atualizada com sucesso!`;
+                const dadosAtualizados = {
+                    titulo: titulo,
+                    ano_letivo: anoLetivo,
+                    tipo: tipo
+                };
+
+                const { error } = await client
+                    .from('atividades')
+                    .update(dadosAtualizados)
+                    .eq('id', idEdit);
+
+                if (error) {
+                    console.error('Erro ao atualizar atividade:', error);
+                    alert('Erro ao atualizar atividade no Supabase.');
+                    return;
                 }
+                const ativEncontrada = cacheAtividades.find(a => a.id == idEdit);
+                const numAtv = ativEncontrada ? (ativEncontrada.numero || ativEncontrada.id) : idEdit;
+                mensagemPopup = `A atividade nº ${numAtv} foi atualizada com sucesso!`;
             }
 
-            localStorage.setItem('atividades', JSON.stringify(listaAtividades));
-            
             document.getElementById('successModalText').innerText = mensagemPopup;
             document.getElementById('successModal').style.display = 'flex';
         }
@@ -616,11 +657,20 @@
             document.getElementById('confirmModal').style.display = 'none';
         }
 
-        document.getElementById('btnConfirmDelete').onclick = function() {
+        document.getElementById('btnConfirmDelete').onclick = async function() {
             if (idParaApagar !== null) {
-                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                atividades = atividades.filter(a => a.id != idParaApagar);
-                localStorage.setItem('atividades', JSON.stringify(atividades));
+                const client = getSupabase();
+                const { error } = await client
+                    .from('atividades')
+                    .delete()
+                    .eq('id', idParaApagar);
+
+                if (error) {
+                    console.error('Erro ao apagar atividade:', error);
+                    alert('Não foi possível apagar a atividade.');
+                    return;
+                }
+
                 carregarAtividades();
                 fecharConfirmarApagar();
             }
