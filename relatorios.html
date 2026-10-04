@@ -844,12 +844,21 @@
                 const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
                 const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
                 
-                // Regra nova para o Objetivo 2: Só atinge 100% se a Meta 2 E a Meta 3 tiverem ambas atingido 100% (ou mais)
+                // CÁLCULO CORRIGIDO DO OBJETIVO 2:
+                // Calcula a percentagem de conclusão de cada meta face à meta de referência (75%).
+                // Ex: Se a média for 75, atinge 100% daquela meta.
+                let progressoMeta2Relativo = Math.min(Math.max(Math.round((mediaMeta2 / 75) * 100), 0), 100);
+                let progressoMeta3Relativo = Math.min(Math.max(Math.round((mediaMeta3 / 75) * 100), 0), 100);
+
+                // O Objetivo 2 só atinge 100% se AMBAS as metas tiverem atingido 100%. 
+                // Caso contrário, reflete a média combinada das duas metas (ou a dependência real).
                 let mediaObj2;
-                if (mediaMeta2 >= 75 && mediaMeta3 >= 75) {
-                    mediaObj2 = 75; // Equivalente a 100% da meta de referência (75%)
+                if (progressoMeta2Relativo === 100 && progressoMeta3Relativo === 100) {
+                    mediaObj2 = 75; // 100% da meta de 75%
                 } else {
-                    mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
+                    // Média aritmética real entre as duas metas para o Objetivo 2 refletir fielmente o estado de ambas
+                    const mediaPorcentagensMetas = (progressoMeta2Relativo + progressoMeta3Relativo) / 2;
+                    mediaObj2 = Math.round((mediaPorcentagensMetas * 75) / 100);
                 }
 
                 renderizarProgressoMetaGantt('chartGanttObj2', mediaObj2, 75);
