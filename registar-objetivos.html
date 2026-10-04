@@ -507,7 +507,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Média Geral das Avaliações (Pertinência, Dinâmica e Interesse)</label>
+                    <label>Média Geral das Avaliações</label>
                     <input type="text" id="modalObjMedia" readonly placeholder="Calculado automaticamente a partir das avaliações do Supabase">
                 </div>
 
@@ -726,12 +726,11 @@
             }
         }
 
-        // Função atualizada para consultar diretamente a tabela 'avaliacoes_atividades' no Supabase
+        // Função ajustada para mostrar APENAS a média global com uma casa decimal (sem a contagem de avaliações)
         async function calcularMediaESugestoes(atvId, atvNumero) {
             const numStr = String(atvNumero || '').trim();
             let todasAvaliacoes = [];
 
-            // 1. Consultar a tabela 'avaliacoes_atividades' no Supabase
             try {
                 const { data: avSupabase, error } = await supabaseClient
                     .from('avaliacoes_atividades')
@@ -746,7 +745,6 @@
                 console.error('Erro de conexão ao aceder ao Supabase para avaliações:', err);
             }
 
-            // 2. Fallback para o localStorage caso o Supabase falhe ou esteja vazio
             if (todasAvaliacoes.length === 0) {
                 const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
                 const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
@@ -766,7 +764,7 @@
             });
 
             if (avaliacoesDaAtividade.length === 0) {
-                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas para esta atividade';
+                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
                 return;
             }
 
@@ -794,9 +792,10 @@
                 const mediaI = somaInteresse / totalValidas;
                 const mediaGlobal = (mediaP + mediaD + mediaI) / 3;
                 
-                document.getElementById('modalObjMedia').value = `Média Global: ${mediaGlobal.toFixed(2)} / 5 (Pertinência: ${mediaP.toFixed(1)} | Dinâmica: ${mediaD.toFixed(1)} | Interesse: ${mediaI.toFixed(1)}) — ${totalValidas} avaliação(ões)`;
+                // Média global com apenas 1 casa decimal e sem o texto de contagem
+                document.getElementById('modalObjMedia').value = `${mediaGlobal.toFixed(1)} / 5`;
             } else {
-                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas nas avaliações';
+                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas';
             }
         }
 
