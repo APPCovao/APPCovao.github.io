@@ -726,7 +726,6 @@
                 document.getElementById('statPaa').innerText = contadorPaaObjetivos;
                 document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-                // Análise robusta de Objetivos e Metas em TODAS as fontes combinadas (objs e atvs)
                 let contagemObj1 = 0;
                 let contagemMeta1 = 0;
                 let contagemMeta5 = 0;
@@ -735,8 +734,8 @@
                 const todasFontesAnalise = [...objs, ...atvs];
 
                 todasFontesAnalise.forEach(item => {
-                    // Verificar por texto e campos diretos
-                    const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
+                    // Mapeamento correto das colunas jsonb do Supabase: objetivos_selecionados e metas_selecionadas[cite: 9]
+                    const camposObj = [item.objetivos_selecionados, item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObj.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(o => {
@@ -752,7 +751,7 @@
                         contagemObj1++;
                     }
 
-                    const camposMeta = [item.metas, item.meta, item.metasSelecionadas];
+                    const camposMeta = [item.metas_selecionadas, item.metas, item.meta, item.metasSelecionadas];
                     camposMeta.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(m => {
@@ -837,7 +836,7 @@
                 let totalMetasSel = 0;
 
                 todasFontesAnalise.forEach(item => {
-                    const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
+                    const camposObjPossiveis = [item.objetivos_selecionados, item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
                     camposObjPossiveis.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(o => {
@@ -867,7 +866,7 @@
                         }
                     });
 
-                    const camposMetaPossiveis = [item.metas, item.meta, item.metasSelecionadas];
+                    const camposMetaPossiveis = [item.metas_selecionadas, item.metas, item.meta, item.metasSelecionadas];
                     camposMetaPossiveis.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(m => {
