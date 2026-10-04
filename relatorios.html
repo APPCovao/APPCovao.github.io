@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios e Estatísticas - EB1/PE do Covão e Vargem</title>
+    <title>Relatórios e Estatísticas - Registos Covão</title>
     
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -265,11 +265,11 @@
 
     <nav class="navbar">
         <div class="brand">
-            <img src="imagens/logo.png" alt="Logo EB1/PE Covão e Vargem" onerror="this.style.display='none'">
-            <span>EB1/PE do Covão e Vargem</span>
+            <img src="imagens/logo.png" alt="Logo Registos Covão" onerror="this.style.display='none'">
+            <span>Registos Covão</span>
         </div>
         <div class="nav-right">
-            <span><strong id="userNameDisplay">Administrador</strong></span>
+            <span><strong id="userNameDisplay">Administrador Covão</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
@@ -280,7 +280,7 @@
         <div class="section-header-card">
             <div>
                 <h1>Relatórios e Estatísticas</h1>
-                <p>Análise detalhada organizada por temas (Dados sincronizados com o Supabase).</p>
+                <p>Análise detalhada organizada por temas (Sincronizado com Supabase).</p>
             </div>
         </div>
 
@@ -499,15 +499,15 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO SUPABASE
+        // CONFIGURAÇÃO DO SUPABASE (A mesma usada nas outras páginas)
         const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Nome do utilizador autenticado ou guardado localmente
-        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador' };
-        const fullName = currentUser.name || currentUser.nome || 'Administrador';
-        document.getElementById('userNameDisplay').innerText = fullName.trim().split(' ')[0];
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
+        const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
+        const firstName = fullName.trim().split(' ')[0];
+        document.getElementById('userNameDisplay').innerText = firstName;
 
         function obterCorPorPercentagem(percentagem) {
             if (percentagem <= 49) return '#dc2626';
@@ -658,8 +658,8 @@
                     { data: requisicoesLista, error: errReq }
                 ] = await Promise.all([
                     supabaseClient.from('atividades').select('*'),
-                    supabaseClient.from('avaliacoes_atividades').select('*'), // Ajuste o nome da tabela se diferir na vossa base de dados
-                    supabaseClient.from('registos_objetivos').select('*'),     // Ajuste o nome da tabela se diferir na vossa base de dados
+                    supabaseClient.from('avaliacoes_atividades').select('*'),
+                    supabaseClient.from('registos_objetivos').select('*'),
                     supabaseClient.from('turmas').select('*'),
                     supabaseClient.from('requisicoes').select('*')
                 ]);
@@ -683,11 +683,11 @@
                 let contadorPeeObjetivos = 0;
 
                 objetivos.forEach(obj => {
-                    const valPaa = obj.paa || obj.faz_parte_paa || obj.integra_paa || '';
+                    const valPaa = obj.paa || obj.faz_parte_paa || obj.no_paa || obj.integra_paa || '';
                     if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
                         contadorPaaObjetivos++;
                     }
-                    const valPee = obj.pee || obj.faz_parte_pee || obj.integra_pee || '';
+                    const valPee = obj.pee || obj.faz_parte_pee || obj.no_pee || obj.integra_pee || '';
                     if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
                         contadorPeeObjetivos++;
                     }
@@ -702,7 +702,7 @@
                 const todasFontesAnalise = [...objetivos, ...atividades];
 
                 todasFontesAnalise.forEach(item => {
-                    const camposObj = [item.objetivos, item.obj, item.objetivo_seleccionado];
+                    const camposObj = [item.objetivos, item.obj, item.objetivo_seleccionado, item.objetivo];
                     camposObj.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(o => {
@@ -713,7 +713,11 @@
                         }
                     });
 
-                    const camposMeta = [item.metas, item.meta];
+                    if (item.objetivo_1 === true || item.objetivo_1 === 'true' || item.objetivo_1 === 'Sim' || item.obj1 === true) {
+                        contagemObj1++;
+                    }
+
+                    const camposMeta = [item.metas, item.meta, item.metas_selecionadas];
                     camposMeta.forEach(val => {
                         if (Array.isArray(val)) {
                             val.forEach(m => {
@@ -723,6 +727,10 @@
                             contagemMeta1++;
                         }
                     });
+
+                    if (item.meta_1 === true || item.meta_1 === 'true' || item.meta_1 === 'Sim') {
+                        contagemMeta1++;
+                    }
                 });
 
                 renderizarProgressoGantt('chartGanttObj1', contagemObj1, 6);
@@ -735,12 +743,12 @@
                 let countTurmasMat = 0;
 
                 turmas.forEach(turma => {
-                    let valPort = turma.perc_port || turma.portugues;
+                    let valPort = turma.perc_port || turma.portugues || turma.percPort;
                     if (valPort !== undefined && valPort !== null) {
                         let numPort = parseFloat(String(valPort).replace('%', '').trim());
                         if (!isNaN(numPort)) { somaPercentagensPort += numPort; countTurmasPort++; }
                     }
-                    let valMat = turma.perc_mat || turma.matematica;
+                    let valMat = turma.perc_mat || turma.matematica || turma.percMat;
                     if (valMat !== undefined && valMat !== null) {
                         let numMat = parseFloat(String(valMat).replace('%', '').trim());
                         if (!isNaN(numMat)) { somaPercentagensMat += numMat; countTurmasMat++; }
