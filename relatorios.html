@@ -521,14 +521,25 @@
             }
         }
 
-        function renderizarGraficoBarras(containerId, dadosObjeto) {
+        function renderizarGraficoBarras(containerId, dadosObjeto, ordenarNumericamente = false) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
-            const chaves = Object.keys(dadosObjeto);
+            let chaves = Object.keys(dadosObjeto);
             if (chaves.length === 0) {
                 container.innerHTML = `<p style="color: #6b7280; font-size: 12px; text-align: center; padding: 15px;">Sem dados registados para este relatório.</p>`;
                 return;
+            }
+
+            if (ordenarNumericamente) {
+                chaves.sort((a, b) => {
+                    const numA = parseInt(a.replace(/\D/g, '')) || 0;
+                    const numB = parseInt(b.replace(/\D/g, '')) || 0;
+                    if (numA !== numB) return numA - numB;
+                    return a.localeCompare(b);
+                });
+            } else {
+                chaves.sort();
             }
 
             const maxValor = Math.max(...Object.values(dadosObjeto), 1);
@@ -844,19 +855,13 @@
                 const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
                 const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
                 
-                // CÁLCULO CORRIGIDO DO OBJETIVO 2:
-                // Calcula a percentagem de conclusão de cada meta face à meta de referência (75%).
-                // Ex: Se a média for 75, atinge 100% daquela meta.
                 let progressoMeta2Relativo = Math.min(Math.max(Math.round((mediaMeta2 / 75) * 100), 0), 100);
                 let progressoMeta3Relativo = Math.min(Math.max(Math.round((mediaMeta3 / 75) * 100), 0), 100);
 
-                // O Objetivo 2 só atinge 100% se AMBAS as metas tiverem atingido 100%. 
-                // Caso contrário, reflete a média combinada das duas metas (ou a dependência real).
                 let mediaObj2;
                 if (progressoMeta2Relativo === 100 && progressoMeta3Relativo === 100) {
-                    mediaObj2 = 75; // 100% da meta de 75%
+                    mediaObj2 = 75; 
                 } else {
-                    // Média aritmética real entre as duas metas para o Objetivo 2 refletir fielmente o estado de ambas
                     const mediaPorcentagensMetas = (progressoMeta2Relativo + progressoMeta3Relativo) / 2;
                     mediaObj2 = Math.round((mediaPorcentagensMetas * 75) / 100);
                 }
@@ -888,8 +893,10 @@
 
                 document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
                 document.getElementById('statTotalMetasSel').innerText = totalMetasSel;
-                renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
-                renderizarGraficoBarras('chartMetas', contagemMetas);
+                renderizarGraficoBarras('chartObjetivos', contagemObjetivos, true);
+                
+                // ORDENAÇÃO NUMÉRICA APLICADA NAS METAS (Meta 1 em cima, Meta 6 em baixo)
+                renderizarGraficoBarras('chartMetas', contagemMetas, true);
 
                 let contagemAreas = {};
                 let contagemEquipamentos = {};
@@ -914,3 +921,4 @@
     </script>
 </body>
 </html>
+        }
