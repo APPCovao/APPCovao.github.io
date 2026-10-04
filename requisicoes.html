@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requisições e Equipamentos - Registos Covão</title>
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
             --primary-green: #15803d;
@@ -399,7 +403,7 @@
             </div>
 
             <form id="requisicaoForm">
-                <input type="hidden" id="editIndex" value="">
+                <input type="hidden" id="editId" value="">
 
                 <div class="form-group">
                     <label for="numero_requisicao">Nº da Requisição <span class="required">*</span></label>
@@ -469,41 +473,44 @@
     </div>
 
     <script>
-        // Inicialização da Tabela / Base de dados local se não existir
-        if (!localStorage.getItem('requisicoes')) {
-            const dadosIniciais = [
-                { numero_requisicao: 1, area: 'Matemática', equipamento: 'Surface', responsavel: 'Administrador Covão', quantidade: 1, anoLetivo: '2025/2026', data: '2026-03-25' },
-                { numero_requisicao: 2, area: 'Português', equipamento: 'Tablets portáteis', responsavel: 'Administrador Covão', quantidade: 5, anoLetivo: '2025/2026', data: '2026-03-25' }
-            ];
-            localStorage.setItem('requisicoes', JSON.stringify(dadosIniciais));
-        }
+        // CONFIGURAÇÃO DO SUPABASE
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão', email: 'admin@covao.pt' };
         let nomeCompletoUser = currentUser.name || currentUser.nome || currentUser.email || 'Administrador Covão';
         let primeiroNomeUser = nomeCompletoUser.includes('@') ? nomeCompletoUser.split('@')[0] : nomeCompletoUser.split(' ')[0];
         document.getElementById('userNameDisplay').innerText = primeiroNomeUser;
 
-        function carregarRequisicoes() {
+        async function carregarRequisicoes() {
             const tbody = document.getElementById('requisicoesTableBody');
-            tbody.innerHTML = '';
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 2rem;">A carregar dados...</td></tr>`;
 
-            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
             const termoFiltro = document.getElementById('filtroResponsavel').value.toLowerCase().trim();
 
-            if (termoFiltro) {
-                requisicoes = requisicoes.filter(r => (r.responsavel || '').toLowerCase().includes(termoFiltro));
+            let query = supabaseClient.from('requisicoes').select('*').order('numero_requisicao', { ascending: false });
+
+            const { data: requisicoes, error } = await query;
+
+            if (error) {
+                console.error('Erro ao carregar do Supabase:', error);
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar dados da base de dados.</td></tr>`;
+                return;
             }
 
-            if (requisicoes.length === 0) {
+            let dadosFiltrados = requisicoes || [];
+            if (termoFiltro) {
+                dadosFiltrados = dadosFiltrados.filter(r => (r.responsavel || '').toLowerCase().includes(termoFiltro));
+            }
+
+            if (dadosFiltrados.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 2rem;">Sem registos encontrados.</td></tr>`;
                 return;
             }
 
-            const requisicoesInvertidas = [...requisicoes].reverse();
-
-            requisicoesInvertidas.forEach((req) => {
-                let allReqs = JSON.parse(localStorage.getItem('requisicoes')) || [];
-                const indexReal = allReqs.findIndex(r => r.numero_requisicao === req.numero_requisicao);
+            tbody.innerHTML = '';
+            dadosFiltrados.forEach((req) => {
                 const tr = document.createElement('tr');
 
                 tr.innerHTML = `
@@ -511,13 +518,13 @@
                     <td>${req.area || 'N/A'}</td>
                     <td style="font-weight: 600;">${req.equipamento}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" onclick="verRequisicao(${indexReal})" title="Ver">
+                        <button class="btn-action btn-view" onclick="verRequisicao('${req.id}')" title="Ver">
                             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         </button>
-                        <button class="btn-action btn-edit" onclick="editarRequisicao(${indexReal})" title="Editar">
+                        <button class="btn-action btn-edit" onclick="editarRequisicao('${req.id}')" title="Editar">
                             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                         </button>
-                        <button class="btn-action btn-delete" onclick="eliminarRequisicao(${indexReal})" title="Apagar">
+                        <button class="btn-action btn-delete" onclick="eliminarRequisicao('${req.id}')" title="Apagar">
                             <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                         </button>
                     </td>
@@ -526,14 +533,18 @@
             });
         }
 
-        function abrirFormularioCriacao() {
-            document.getElementById('editIndex').value = '';
+        async function abrirFormularioCriacao() {
+            document.getElementById('editId').value = '';
             document.getElementById('requisicaoForm').reset();
             document.getElementById('dataReq').valueAsDate = new Date();
 
-            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            let proximoNumero = requisicoes.length > 0 ? Math.max(...requisicoes.map(r => r.numero_requisicao || 0)) + 1 : 1;
-            
+            const { data, error } = await supabaseClient.from('requisicoes').select('numero_requisicao');
+            let proximoNumero = 1;
+            if (data && data.length > 0) {
+                const numeros = data.map(r => r.numero_requisicao || 0);
+                proximoNumero = Math.max(...numeros) + 1;
+            }
+
             document.getElementById('numero_requisicao').value = proximoNumero;
             document.getElementById('respReq').value = currentUser.name || currentUser.nome || 'Administrador Covão';
 
@@ -554,48 +565,56 @@
             document.getElementById('vistaTabela').style.display = 'flex';
         }
 
-        document.getElementById('requisicaoForm').addEventListener('submit', (e) => {
+        document.getElementById('requisicaoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            const index = document.getElementById('editIndex').value;
+            const id = document.getElementById('editId').value;
 
             const novaReq = {
                 numero_requisicao: parseInt(document.getElementById('numero_requisicao').value),
                 area: document.getElementById('areaReq').value,
                 equipamento: document.getElementById('equipamentoReq').value,
                 responsavel: document.getElementById('respReq').value.trim(),
-                anoLetivo: document.getElementById('anoLetivoReq').value,
+                ano_letivo: document.getElementById('anoLetivoReq').value,
                 data: document.getElementById('dataReq').value,
                 quantidade: parseInt(document.getElementById('qtdReq').value),
-                userEmail: currentUser.email || ''
+                user_email: currentUser.email || ''
             };
 
-            if (index === "") {
-                requisicoes.push(novaReq);
+            let error;
+            if (id === "") {
+                const res = await supabaseClient.from('requisicoes').insert([novaReq]);
+                error = res.error;
             } else {
-                requisicoes[index] = novaReq;
+                const res = await supabaseClient.from('requisicoes').update(novaReq).eq('id', id);
+                error = res.error;
             }
 
-            localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
+            if (error) {
+                alert('Erro ao guardar os dados: ' + error.message);
+                return;
+            }
+
             fecharFormulario();
             carregarRequisicoes();
         });
 
-        function verRequisicao(index) {
-            editarRequisicao(index, true);
+        async function verRequisicao(id) {
+            editarRequisicao(id, true);
         }
 
-        function editarRequisicao(index, apenasVer = false) {
-            let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            const req = requisicoes[index];
-            if (!req) return;
+        async function editarRequisicao(id, apenasVer = false) {
+            const { data: req, error } = await supabaseClient.from('requisicoes').select('*').eq('id', id).single();
+            if (error || !req) {
+                alert('Erro ao carregar registo.');
+                return;
+            }
 
-            document.getElementById('editIndex').value = index;
+            document.getElementById('editId').value = req.id;
             document.getElementById('numero_requisicao').value = req.numero_requisicao;
             document.getElementById('areaReq').value = req.area || '';
             document.getElementById('equipamentoReq').value = req.equipamento || '';
             document.getElementById('respReq').value = req.responsavel;
-            document.getElementById('anoLetivoReq').value = req.anoLetivo || '2025/2026';
+            document.getElementById('anoLetivoReq').value = req.ano_letivo || '2025/2026';
             document.getElementById('dataReq').value = req.data || new Date().toISOString().split('T')[0];
             document.getElementById('qtdReq').value = req.quantidade;
 
@@ -611,16 +630,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function eliminarRequisicao(index) {
+        async function eliminarRequisicao(id) {
             if (confirm('Tem a certeza que pretende eliminar este registo?')) {
-                let requisicoes = JSON.parse(localStorage.getItem('requisicoes')) || [];
-                requisicoes.splice(index, 1);
-                localStorage.setItem('requisicoes', JSON.stringify(requisicoes));
+                const { error } = await supabaseClient.from('requisicoes').delete().eq('id', id);
+                if (error) {
+                    alert('Erro ao eliminar: ' + error.message);
+                    return;
+                }
                 carregarRequisicoes();
             }
         }
 
-        // Executa o carregamento inicial da tabela ao abrir a página
         carregarRequisicoes();
     </script>
 </body>
