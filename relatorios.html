@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios e Estatísticas - Registos Covão</title>
+    <title>Relatórios e Estatísticas - EB1/PE do Covão e Vargem</title>
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
             --primary-green: #15803d;
@@ -261,11 +265,11 @@
 
     <nav class="navbar">
         <div class="brand">
-            <img src="imagens/logo.png" alt="Logo Registos Covão">
-            <span>Registos Covão</span>
+            <img src="imagens/logo.png" alt="Logo EB1/PE Covão e Vargem" onerror="this.style.display='none'">
+            <span>EB1/PE do Covão e Vargem</span>
         </div>
         <div class="nav-right">
-            <span><strong id="userNameDisplay">Administrador Covão</strong></span>
+            <span><strong id="userNameDisplay">Administrador</strong></span>
             <a href="dashboard.html" class="btn-voltar-menu">← Menu</a>
         </div>
     </nav>
@@ -276,7 +280,7 @@
         <div class="section-header-card">
             <div>
                 <h1>Relatórios e Estatísticas</h1>
-                <p>Análise detalhada organizada por temas.</p>
+                <p>Análise detalhada organizada por temas (Dados sincronizados com o Supabase).</p>
             </div>
         </div>
 
@@ -415,7 +419,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 2, Meta 2 e Meta 3 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 2</h4>
@@ -433,7 +436,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 3 e Meta 4 na mesma linha (2 colunas) -->
             <div class="reports-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 3</h4>
@@ -446,7 +448,6 @@
                 </div>
             </div>
 
-            <!-- Objetivo 4, Meta 5 e Meta 6 na mesma linha (3 colunas) -->
             <div class="reports-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 15px;">
                 <div class="report-box">
                     <h4>Objetivo 4</h4>
@@ -498,23 +499,22 @@
     </div>
 
     <script>
-        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador Covão' };
-        const fullName = currentUser.name || currentUser.nome || 'Administrador Covão';
-        const firstName = fullName.trim().split(' ')[0];
-        document.getElementById('userNameDisplay').innerText = firstName;
+        // CONFIGURAÇÃO SUPABASE
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Nome do utilizador autenticado ou guardado localmente
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador' };
+        const fullName = currentUser.name || currentUser.nome || 'Administrador';
+        document.getElementById('userNameDisplay').innerText = fullName.trim().split(' ')[0];
 
         function obterCorPorPercentagem(percentagem) {
-            if (percentagem <= 49) {
-                return '#dc2626'; // Vermelho
-            } else if (percentagem <= 69) {
-                return '#ea580c'; // Laranja
-            } else if (percentagem <= 90) {
-                return '#ca8a04'; // Amarelo
-            } else if (percentagem <= 99) {
-                return '#4ade80'; // Verde claro
-            } else {
-                return '#15803d'; // Verde padrão (100%)
-            }
+            if (percentagem <= 49) return '#dc2626';
+            if (percentagem <= 69) return '#ea580c';
+            if (percentagem <= 90) return '#ca8a04';
+            if (percentagem <= 99) return '#4ade80';
+            return '#15803d';
         }
 
         function renderizarGraficoBarras(containerId, dadosObjeto) {
@@ -637,7 +637,6 @@
         function limparNomeCurto(texto) {
             if (!texto) return '';
             let str = String(texto).trim();
-            
             if (str.includes(':')) {
                 str = str.split(':')[0].trim();
             } else if (str.includes(' - ')) {
@@ -645,302 +644,194 @@
             } else if (str.includes(' – ')) {
                 str = str.split(' – ')[0].trim();
             }
-            
             return str;
         }
 
-        function carregarRelatorios() {
-            const requisicoesLista = JSON.parse(localStorage.getItem('requisicoes')) || [];
-            document.getElementById('statRequisicoes').innerText = requisicoesLista.length;
+        async function carregarRelatoriosDoSupabase() {
+            try {
+                // Obter dados em paralelo das tabelas do Supabase
+                const [
+                    { data: atividadesLista, error: errAtv },
+                    { data: avaliadasLista, error: errAv },
+                    { data: objetivosLista, error: errObj },
+                    { data: turmasLista, error: errTurmas },
+                    { data: requisicoesLista, error: errReq }
+                ] = await Promise.all([
+                    supabaseClient.from('atividades').select('*'),
+                    supabaseClient.from('avaliacoes_atividades').select('*'), // Ajuste o nome da tabela se diferir na vossa base de dados
+                    supabaseClient.from('registos_objetivos').select('*'),     // Ajuste o nome da tabela se diferir na vossa base de dados
+                    supabaseClient.from('turmas').select('*'),
+                    supabaseClient.from('requisicoes').select('*')
+                ]);
 
-            function contarUnicos(lista) {
-                const idsUnicos = new Set(
-                    lista.map(item => {
-                        return item.numero !== undefined ? item.numero : 
-                               (item.id !== undefined ? item.id : 
-                               (item.numeroAtividade !== undefined ? item.numeroAtividade : 
-                               (item.atividadeId !== undefined ? item.atividadeId : item.titulo)));
-                    })
-                );
-                return idsUnicos.size;
-            }
+                const atividades = atividadesLista || [];
+                const avaliacoes = avaliadasLista || [];
+                const objetivos = objetivosLista || [];
+                const turmas = turmasLista || [];
+                const requisicoes = requisicoesLista || [];
 
-            const atividadesLista = JSON.parse(localStorage.getItem('atividades')) || [];
-            const totalAtividadesUnicas = contarUnicos(atividadesLista);
-            document.getElementById('statAtividades').innerText = totalAtividadesUnicas;
+                // 6. REQUISIÇÕES
+                document.getElementById('statRequisicoes').innerText = requisicoes.length;
 
-            const chaveAv = localStorage.getItem('avaliacoesAtividades') ? 'avaliacoesAtividades' : 
-                          (localStorage.getItem('atividadesAvaliadas') ? 'atividadesAvaliadas' : 'avaliacoesAtividades');
-            const avaliadasLista = JSON.parse(localStorage.getItem(chaveAv)) || [];
-            
-            const idsAtividadesAvaliadasUnicas = new Set(
-                avaliadasLista.map(item => {
-                    return item.idAtividade !== undefined ? item.idAtividade :
-                           (item.numeroAtividade !== undefined ? item.numeroAtividade :
-                           (item.atividadeId !== undefined ? item.atividadeId :
-                           (item.numero !== undefined ? item.numero : item.id)));
-                })
-            );
-            document.getElementById('statAvaliadas').innerText = idsAtividadesAvaliadasUnicas.size;
+                // 1. ATIVIDADES REALIZADAS
+                document.getElementById('statAtividades').innerText = atividades.length;
+                document.getElementById('statAvaliadas').innerText = avaliacoes.length;
+                document.getElementById('statObjetivos').innerText = objetivos.length;
 
-            const objetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || JSON.parse(localStorage.getItem('restar_objetivos')) || [];
-            document.getElementById('statObjetivos').innerText = contarUnicos(objetivosLista);
+                // 3. ATIVIDADES PAA/PEE
+                let contadorPaaObjetivos = 0;
+                let contadorPeeObjetivos = 0;
 
-            let contadorPaaObjetivos = 0;
-            let contadorPeeObjetivos = 0;
+                objetivos.forEach(obj => {
+                    const valPaa = obj.paa || obj.faz_parte_paa || obj.integra_paa || '';
+                    if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
+                        contadorPaaObjetivos++;
+                    }
+                    const valPee = obj.pee || obj.faz_parte_pee || obj.integra_pee || '';
+                    if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
+                        contadorPeeObjetivos++;
+                    }
+                });
 
-            objetivosLista.forEach(obj => {
-                const valPaa = obj.paa || obj.fazPartePaa || obj.noPaa || obj.integraPaa || obj.integraPAA || '';
-                if ((typeof valPaa === 'string' && valPaa.toLowerCase().trim() === 'sim') || valPaa === true) {
-                    contadorPaaObjetivos++;
-                }
+                document.getElementById('statPaa').innerText = contadorPaaObjetivos;
+                document.getElementById('statPee').innerText = contadorPeeObjetivos;
 
-                const valPee = obj.pee || obj.fazPartePee || obj.noPee || obj.integraPee || obj.integraPEE || '';
-                if ((typeof valPee === 'string' && valPee.toLowerCase().trim() === 'sim') || valPee === true) {
-                    contadorPeeObjetivos++;
-                }
-            });
+                // 5. CUMPRIMENTO DE OBJETIVOS E METAS
+                let contagemObj1 = 0;
+                let contagemMeta1 = 0;
+                const todasFontesAnalise = [...objetivos, ...atividades];
 
-            document.getElementById('statPaa').innerText = contadorPaaObjetivos;
-            document.getElementById('statPee').innerText = contadorPeeObjetivos;
-
-            let contagemObj1 = 0;
-            let contagemMeta1 = 0;
-
-            const todasFontesAnalise = [...objetivosLista, ...atividadesLista, ...(JSON.parse(localStorage.getItem('restar_objetivos')) || [])];
-
-            todasFontesAnalise.forEach(item => {
-                const camposObj = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
-                camposObj.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(o => {
-                            if (limparNomeCurto(o).toLowerCase() === 'objetivo 1' || limparNomeCurto(o).toLowerCase() === 'obj 1' || String(o).includes('1')) {
-                                contagemObj1++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        if (val.toLowerCase().includes('objetivo 1') || val.toLowerCase().includes('obj 1')) {
+                todasFontesAnalise.forEach(item => {
+                    const camposObj = [item.objetivos, item.obj, item.objetivo_seleccionado];
+                    camposObj.forEach(val => {
+                        if (Array.isArray(val)) {
+                            val.forEach(o => {
+                                if (limparNomeCurto(o).toLowerCase().includes('objetivo 1') || String(o).includes('1')) contagemObj1++;
+                            });
+                        } else if (typeof val === 'string' && val.toLowerCase().includes('objetivo 1')) {
                             contagemObj1++;
                         }
-                    }
-                });
+                    });
 
-                if (item.objetivo1 === true || item.objetivo1 === 'true' || item.objetivo1 === 'Sim' || item.obj1 === true) {
-                    contagemObj1++;
-                }
-
-                const camposMeta = [item.metas, item.meta, item.metasSelecionadas];
-                camposMeta.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(m => {
-                            if (limparNomeCurto(m).toLowerCase() === 'meta 1' || String(m).includes('1')) {
-                                contagemMeta1++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        if (val.toLowerCase().includes('meta 1')) {
+                    const camposMeta = [item.metas, item.meta];
+                    camposMeta.forEach(val => {
+                        if (Array.isArray(val)) {
+                            val.forEach(m => {
+                                if (limparNomeCurto(m).toLowerCase().includes('meta 1') || String(m).includes('1')) contagemMeta1++;
+                            });
+                        } else if (typeof val === 'string' && val.toLowerCase().includes('meta 1')) {
                             contagemMeta1++;
                         }
+                    });
+                });
+
+                renderizarProgressoGantt('chartGanttObj1', contagemObj1, 6);
+                renderizarProgressoGantt('chartGanttMeta1', contagemMeta1, 6);
+
+                // Médias das turmas (Meta 2 e Meta 3)
+                let somaPercentagensPort = 0;
+                let somaPercentagensMat = 0;
+                let countTurmasPort = 0;
+                let countTurmasMat = 0;
+
+                turmas.forEach(turma => {
+                    let valPort = turma.perc_port || turma.portugues;
+                    if (valPort !== undefined && valPort !== null) {
+                        let numPort = parseFloat(String(valPort).replace('%', '').trim());
+                        if (!isNaN(numPort)) { somaPercentagensPort += numPort; countTurmasPort++; }
+                    }
+                    let valMat = turma.perc_mat || turma.matematica;
+                    if (valMat !== undefined && valMat !== null) {
+                        let numMat = parseFloat(String(valMat).replace('%', '').trim());
+                        if (!isNaN(numMat)) { somaPercentagensMat += numMat; countTurmasMat++; }
                     }
                 });
 
-                if (item.meta1 === true || item.meta1 === 'true' || item.meta1 === 'Sim') {
-                    contagemMeta1++;
-                }
-            });
+                const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
+                const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
+                const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
 
-            renderizarProgressoGantt('chartGanttObj1', contagemObj1, 6);
-            renderizarProgressoGantt('chartGanttMeta1', contagemMeta1, 6);
+                renderizarProgressoMetaGantt('chartGanttObj2', mediaObj2, 75);
+                renderizarProgressoMetaGantt('chartGanttMeta2', mediaMeta2, 75);
+                renderizarProgressoMetaGantt('chartGanttMeta3', mediaMeta3, 75);
 
-            const turmasLista = JSON.parse(localStorage.getItem('turmas')) || [];
-            
-            let somaPercentagensPort = 0;
-            let somaPercentagensMat = 0;
-            let countTurmasPort = 0;
-            let countTurmasMat = 0;
+                renderizarProgressoRequisicoesGantt('chartGanttObj3', requisicoes.length, 126);
+                renderizarProgressoRequisicoesGantt('chartGanttMeta4', requisicoes.length, 126);
 
-            turmasLista.forEach(turma => {
-                let valPort = turma.percPort || turma.portugues || turma.porcentagemPortugues || turma.portuguesBomMBom;
-                if (valPort !== undefined && valPort !== null) {
-                    let numPort = parseFloat(String(valPort).replace('%', '').trim());
-                    if (!isNaN(numPort)) {
-                        somaPercentagensPort += numPort;
-                        countTurmasPort++;
-                    }
-                }
+                let contagemMeta5 = 0;
+                let contagemMeta6 = 0;
 
-                let valMat = turma.percMat || turma.matematica || turma.porcentagemMatematica || turma.matematicaBomMBom;
-                if (valMat !== undefined && valMat !== null) {
-                    let numMat = parseFloat(String(valMat).replace('%', '').trim());
-                    if (!isNaN(numMat)) {
-                        somaPercentagensMat += numMat;
-                        countTurmasMat++;
-                    }
-                }
-            });
-
-            const mediaMeta2 = countTurmasPort > 0 ? Math.round(somaPercentagensPort / countTurmasPort) : 0;
-            const mediaMeta3 = countTurmasMat > 0 ? Math.round(somaPercentagensMat / countTurmasMat) : 0;
-            const mediaObj2 = Math.round((mediaMeta2 + mediaMeta3) / 2);
-
-            renderizarProgressoMetaGantt('chartGanttObj2', mediaObj2, 75);
-            renderizarProgressoMetaGantt('chartGanttMeta2', mediaMeta2, 75);
-            renderizarProgressoMetaGantt('chartGanttMeta3', mediaMeta3, 75);
-
-            const totalRequisicoesCount = requisicoesLista.length;
-            renderizarProgressoRequisicoesGantt('chartGanttObj3', totalRequisicoesCount, 126);
-            renderizarProgressoRequisicoesGantt('chartGanttMeta4', totalRequisicoesCount, 126);
-
-            let contagemMeta5 = 0;
-            let contagemMeta6 = 0;
-
-            const registarObjetivosLista = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || JSON.parse(localStorage.getItem('restar_objetivos')) || [];
-
-            registarObjetivosLista.forEach(item => {
-                const camposMeta5 = [item.metas, item.meta, item.metasSelecionadas];
-                camposMeta5.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(m => {
-                            if (limparNomeCurto(m).toLowerCase().includes('meta 5') || String(m).includes('5')) {
-                                contagemMeta5++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        if (val.toLowerCase().includes('meta 5')) {
-                            contagemMeta5++;
-                        }
-                    }
+                objetivos.forEach(item => {
+                    const strMetas = JSON.stringify(item.metas || item.meta || '');
+                    if (strMetas.toLowerCase().includes('meta 5') || strMetas.includes('5')) contagemMeta5++;
+                    if (strMetas.toLowerCase().includes('meta 6') || strMetas.includes('6')) contagemMeta6++;
                 });
-                if (item.meta5 === true || item.meta5 === 'true' || item.meta5 === 'Sim') {
-                    contagemMeta5++;
-                }
 
-                const camposMeta6 = [item.metas, item.meta, item.metasSelecionadas];
-                camposMeta6.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(m => {
-                            if (limparNomeCurto(m).toLowerCase().includes('meta 6') || String(m).includes('6')) {
-                                contagemMeta6++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        if (val.toLowerCase().includes('meta 6')) {
-                            contagemMeta6++;
-                        }
-                    }
+                const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
+                const percMeta6 = Math.min(Math.round((contagemMeta6 / 6) * 100), 100);
+                const percObj4 = Math.round((percMeta5 + percMeta6) / 2);
+
+                renderizarProgressoPersonalizadoGantt('chartGanttMeta5', contagemMeta5, 2);
+                renderizarProgressoPersonalizadoGantt('chartGanttMeta6', contagemMeta6, 6);
+                renderizarProgressoMetaGantt('chartGanttObj4', percObj4, 100);
+
+                // 2. TIPO DE ATIVIDADE
+                let contagemTipos = {};
+                atividades.forEach(atv => {
+                    const tipo = atv.tipo || atv.tipo_atividade || atv.categoria || 'Não Especificado';
+                    contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
                 });
-                if (item.meta6 === true || item.meta6 === 'true' || item.meta6 === 'Sim') {
-                    contagemMeta6++;
-                }
-            });
+                document.getElementById('statTotalTipos').innerText = atividades.length;
+                renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
 
-            const percMeta5 = Math.min(Math.round((contagemMeta5 / 2) * 100), 100);
-            const percMeta6 = Math.min(Math.round((contagemMeta6 / 6) * 100), 100);
-            const percObj4 = Math.round((percMeta5 + percMeta6) / 2);
+                // 4. OBJETIVOS E METAS SELECIONADAS
+                let contagemObjetivos = {};
+                let contagemMetas = {};
+                let totalObjSel = 0;
+                let totalMetasSel = 0;
 
-            renderizarProgressoPersonalizadoGantt('chartGanttMeta5', contagemMeta5, 2);
-            renderizarProgressoPersonalizadoGantt('chartGanttMeta6', contagemMeta6, 6);
-            renderizarProgressoMetaGantt('chartGanttObj4', percObj4, 100);
-
-            let contagemTipos = {};
-            atividadesLista.forEach(atv => {
-                const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Não Especificado';
-                contagemTipos[tipo] = (contagemTipos[tipo] || 0) + 1;
-            });
-
-            document.getElementById('statTotalTipos').innerText = totalAtividadesUnicas;
-            renderizarGraficoBarras('chartTiposAtividade', contagemTipos);
-
-            let contagemObjetivos = {};
-            let contagemMetas = {};
-            let totalObjSel = 0;
-            let totalMetasSel = 0;
-
-            const todasFontes = [...objetivosLista, ...atividadesLista];
-
-            todasFontes.forEach(item => {
-                const camposObjPossiveis = [item.objetivos, item.obj, item.objetivoSeleccionado, item.objetivosSelecionados];
-                camposObjPossiveis.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(o => {
+                todasFontesAnalise.forEach(item => {
+                    const objVal = item.objetivos || item.obj || [];
+                    if (Array.isArray(objVal)) {
+                        objVal.forEach(o => {
                             let nome = limparNomeCurto(o);
-                            if (nome) {
-                                contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
-                                totalObjSel++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        val.split(',').forEach(o => {
-                            let nome = limparNomeCurto(o);
-                            if (nome) {
-                                contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1;
-                                totalObjSel++;
-                            }
+                            if (nome) { contagemObjetivos[nome] = (contagemObjetivos[nome] || 0) + 1; totalObjSel++; }
                         });
                     }
-                });
 
-                Object.keys(item).forEach(chave => {
-                    const chaveLower = chave.toLowerCase();
-                    if ((chaveLower.includes('obj') || chaveLower.includes('objetivo')) && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
-                        let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
-                        contagemObjetivos[nomeFormatado] = (contagemObjetivos[nomeFormatado] || 0) + 1;
-                        totalObjSel++;
-                    }
-                });
-
-                const camposMetaPossiveis = [item.metas, item.meta, item.metasSelecionadas];
-                camposMetaPossiveis.forEach(val => {
-                    if (Array.isArray(val)) {
-                        val.forEach(m => {
+                    const metaVal = item.metas || item.meta || [];
+                    if (Array.isArray(metaVal)) {
+                        metaVal.forEach(m => {
                             let nome = limparNomeCurto(m);
-                            if (nome) {
-                                contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
-                                totalMetasSel++;
-                            }
-                        });
-                    } else if (typeof val === 'string' && val.trim() !== '') {
-                        val.split(',').forEach(m => {
-                            let nome = limparNomeCurto(m);
-                            if (nome) {
-                                contagemMetas[nome] = (contagemMetas[nome] || 0) + 1;
-                                totalMetasSel++;
-                            }
+                            if (nome) { contagemMetas[nome] = (contagemMetas[nome] || 0) + 1; totalMetasSel++; }
                         });
                     }
                 });
 
-                Object.keys(item).forEach(chave => {
-                    const chaveLower = chave.toLowerCase();
-                    if (chaveLower.includes('meta') && (item[chave] === true || item[chave] === 'true' || item[chave] === 'Sim')) {
-                        let nomeFormatado = limparNomeCurto(chave.replace(/([a-z])([0-9])/i, '$1 $2').replace(/^./, str => str.toUpperCase()));
-                        contagemMetas[nomeFormatado] = (contagemMetas[nomeFormatado] || 0) + 1;
-                        totalMetasSel++;
-                    }
+                document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
+                document.getElementById('statTotalMetasSel').innerText = totalMetasSel;
+                renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
+                renderizarGraficoBarras('chartMetas', contagemMetas);
+
+                // 6. REQUISIÇÕES POR ÁREA E EQUIPAMENTO
+                let contagemAreas = {};
+                let contagemEquipamentos = {};
+                requisicoes.forEach(req => {
+                    const area = req.area || 'Outras';
+                    const equipamento = req.equipamento || req.material || 'Outro';
+                    contagemAreas[area] = (contagemAreas[area] || 0) + 1;
+                    contagemEquipamentos[equipamento] = (contagemEquipamentos[equipamento] || 0) + 1;
                 });
-            });
 
-            document.getElementById('statTotalObjetivosSel').innerText = totalObjSel;
-            document.getElementById('statTotalMetasSel').innerText = totalMetasSel;
-            renderizarGraficoBarras('chartObjetivos', contagemObjetivos);
-            renderizarGraficoBarras('chartMetas', contagemMetas);
+                renderizarGraficoBarras('chartAreas', contagemAreas);
+                renderizarGraficoBarras('chartEquipamentos', contagemEquipamentos);
 
-            let contagemAreas = {};
-            let contagemEquipamentos = {};
-
-            requisicoesLista.forEach(req => {
-                const area = req.area || 'Outras';
-                const equipamento = req.equipamento || 'Outro';
-
-                contagemAreas[area] = (contagemAreas[area] || 0) + 1;
-                contagemEquipamentos[equipamento] = (contagemEquipamentos[equipamento] || 0) + 1;
-            });
-
-            renderizarGraficoBarras('chartAreas', contagemAreas);
-            renderizarGraficoBarras('chartEquipamentos', contagemEquipamentos);
+            } catch (err) {
+                console.error("Erro ao carregar dados do Supabase para relatórios:", err);
+            }
         }
 
-        carregarRelatorios();
+        carregarRelatoriosDoSupabase();
     </script>
 </body>
 </html>
