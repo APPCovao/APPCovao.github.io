@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turmas - Registos Covão</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-green: #15803d;
@@ -337,7 +339,7 @@
     <!-- Barra Superior -->
     <nav class="navbar">
         <div class="brand">
-            <img src="imagens/logo.png" alt="Logo Registos Covão">
+            <img src="imagens/logo.png" alt="Logo Registos Covão" onerror="this.style.display='none'">
             <span>Registos Covão</span>
         </div>
         <div class="nav-right">
@@ -383,13 +385,13 @@
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 4px 0; font-size: 20px;">Registar Dados da Turma</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 13px;">EB1/PE do Covão e Vargens – Estatísticas de Turma</p>
+                    <p style="margin: 0; color: #4b5563; font-size: 13px;">EB1/PE do Covão e Vargem – Estatísticas de Turma</p>
                 </div>
                 <button class="btn-top-action" onclick="fecharFormulario()" style="background-color: #6b7280; width: auto;">← Voltar</button>
             </div>
 
             <form id="turmaForm">
-                <input type="hidden" id="editIndex" value="">
+                <input type="hidden" id="editId" value="">
 
                 <div class="form-group">
                     <label for="nomeTurma">1. Turma <span class="required">*</span></label>
@@ -463,6 +465,11 @@
     </div>
 
     <script>
+        // Inicialização do Supabase
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Administrador', email: 'admin@covao.pt', isAdmin: true };
         const fullName = currentUser.name || currentUser.nome || 'Administrador';
         const firstName = fullName.trim().split(' ')[0];
@@ -520,7 +527,7 @@
             document.getElementById('percPortDisplay').innerText = percPort + '%';
             document.getElementById('percMatDisplay').innerText = percMat + '%';
 
-            return { percPort, percMat };
+            return { percPort: percPort + '%', percMat: percMat + '%' };
         }
 
         document.getElementById('numAlunos').addEventListener('input', calcularPercentagens);
@@ -530,48 +537,53 @@
         function ajustarModoFormulario(isSomenteLeitura) {
             const inputs = document.querySelectorAll('#turmaForm input, #turmaForm select');
             inputs.forEach(el => {
-                if (el.id !== 'editIndex') {
+                if (el.id !== 'editId') {
                     el.disabled = isSomenteLeitura;
                 }
             });
             document.getElementById('btnSubmit').style.display = isSomenteLeitura ? 'none' : 'inline-flex';
         }
 
-        function carregarTurmas() {
+        async function carregarTurmas() {
             const tbody = document.getElementById('tabelaTurmasBody');
             if (!tbody) return;
-            tbody.innerHTML = '';
+            tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #6b7280;">A carregar turmas...</td></tr>`;
 
-            let turmas = [];
-            try {
-                turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-            } catch (err) {
-                turmas = [];
+            const { data: turmas, error } = await supabaseClient
+                .from('turmas')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Erro ao carregar turmas:', error);
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #dc2626;">Erro ao carregar dados da base de dados.</td></tr>`;
+                return;
             }
 
-            if (turmas.length === 0) {
+            if (!turmas || turmas.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #6b7280;">Ainda não existem turmas registadas.</td></tr>`;
                 return;
             }
 
-            turmas.forEach((t, indexReal) => {
+            tbody.innerHTML = '';
+            turmas.forEach((t) => {
                 const tr = document.createElement('tr');
-                const temPermissao = currentUser.isAdmin || t.userEmail === currentUser.email;
+                const temPermissao = currentUser.isAdmin || t.user_email === currentUser.email;
 
                 tr.innerHTML = `
-                    <td><strong>${t.nomeTurma}</strong></td>
-                    <td>${t.totalAlunos}</td>
-                    <td>${t.percPort}</td>
-                    <td>${t.percMat}</td>
+                    <td><strong>${t.nome_turma}</strong></td>
+                    <td>${t.total_alunos}</td>
+                    <td>${t.perc_port}</td>
+                    <td>${t.perc_mat}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-ver" onclick="verRegisto(${indexReal})" title="Ver">
+                        <button class="btn-action btn-ver" onclick="verRegisto(${t.id})" title="Ver">
                             <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                         </button>
                         ${temPermissao ? `
-                            <button class="btn-action btn-editar" onclick="editarRegisto(${indexReal})" title="Editar">
+                            <button class="btn-action btn-editar" onclick="editarRegisto(${t.id})" title="Editar">
                                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                             </button>
-                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${indexReal})" title="Apagar">
+                            <button class="btn-action btn-apagar" onclick="eliminarRegisto(${t.id})" title="Apagar">
                                 <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                             </button>
                         ` : '<span style="color: #9ca3af; font-size: 0.8rem;">🔒 Bloqueado</span>'}
@@ -582,7 +594,7 @@
         }
 
         function abrirFormularioCriacao() {
-            document.getElementById('editIndex').value = '';
+            document.getElementById('editId').value = '';
             document.getElementById('turmaForm').reset();
             document.getElementById('percPortDisplay').innerText = '0%';
             document.getElementById('percMatDisplay').innerText = '0%';
@@ -601,17 +613,24 @@
             document.getElementById('turmaForm').reset();
         }
 
-        function verRegisto(index) {
-            let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-            const t = turmas[index];
-            if (!t) return;
+        async function verRegisto(id) {
+            const { data: t, error } = await supabaseClient
+                .from('turmas')
+                .select('*')
+                .eq('id', id)
+                .single();
 
-            document.getElementById('editIndex').value = index;
-            document.getElementById('nomeTurma').value = t.nomeTurma;
-            document.getElementById('anoLetivo').value = t.anoLetivo;
-            document.getElementById('numAlunos').value = t.totalAlunos;
-            document.getElementById('bonsPort').value = t.bonsPort;
-            document.getElementById('bonsMat').value = t.bonsMat;
+            if (error || !t) {
+                mostrarPopupPersonalizado('Erro', 'Não foi possível carregar o registo.', '❌');
+                return;
+            }
+
+            document.getElementById('editId').value = t.id;
+            document.getElementById('nomeTurma').value = t.nome_turma;
+            document.getElementById('anoLetivo').value = t.ano_letivo;
+            document.getElementById('numAlunos').value = t.total_alunos;
+            document.getElementById('bonsPort').value = t.bons_port;
+            document.getElementById('bonsMat').value = t.bons_mat;
             
             calcularPercentagens();
             ajustarModoFormulario(true);
@@ -622,22 +641,30 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function editarRegisto(index) {
-            let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-            const t = turmas[index];
+        async function editarRegisto(id) {
+            const { data: t, error } = await supabaseClient
+                .from('turmas')
+                .select('*')
+                .eq('id', id)
+                .single();
 
-            if (!currentUser.isAdmin && t.userEmail !== currentUser.email) {
+            if (error || !t) {
+                mostrarPopupPersonalizado('Erro', 'Não foi possível carregar o registo.', '❌');
+                return;
+            }
+
+            if (!currentUser.isAdmin && t.user_email !== currentUser.email) {
                 mostrarPopupPersonalizado('Aviso', 'Não tens permissão para editar este registo.', '🔒');
                 return;
             }
 
             ajustarModoFormulario(false);
-            document.getElementById('editIndex').value = index;
-            document.getElementById('nomeTurma').value = t.nomeTurma;
-            document.getElementById('anoLetivo').value = t.anoLetivo;
-            document.getElementById('numAlunos').value = t.totalAlunos;
-            document.getElementById('bonsPort').value = t.bonsPort;
-            document.getElementById('bonsMat').value = t.bonsMat;
+            document.getElementById('editId').value = t.id;
+            document.getElementById('nomeTurma').value = t.nome_turma;
+            document.getElementById('anoLetivo').value = t.ano_letivo;
+            document.getElementById('numAlunos').value = t.total_alunos;
+            document.getElementById('bonsPort').value = t.bons_port;
+            document.getElementById('bonsMat').value = t.bons_mat;
 
             calcularPercentagens();
 
@@ -647,23 +674,22 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function eliminarRegisto(index) {
-            let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-            const t = turmas[index];
+        function eliminarRegisto(id) {
+            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo de turma?', '⚠️', async () => {
+                const { error } = await supabaseClient
+                    .from('turmas')
+                    .delete()
+                    .eq('id', id);
 
-            if (!currentUser.isAdmin && t.userEmail !== currentUser.email) {
-                mostrarPopupPersonalizado('Aviso', 'Não tens permissão para apagar este registo.', '🔒');
-                return;
-            }
-
-            mostrarPopupPersonalizado('Confirmar Eliminação', 'Tem a certeza absoluta que pretende apagar este registo de turma?', '⚠️', () => {
-                turmas.splice(index, 1);
-                localStorage.setItem('turmas', JSON.stringify(turmas));
-                carregarTurmas();
+                if (error) {
+                    mostrarPopupPersonalizado('Erro', 'Ocorreu um erro ao apagar o registo.', '❌');
+                } else {
+                    carregarTurmas();
+                }
             });
         }
 
-        document.getElementById('turmaForm').addEventListener('submit', function(e) {
+        document.getElementById('turmaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const totalAlunos = parseInt(document.getElementById('numAlunos').value);
@@ -676,36 +702,35 @@
             }
 
             const { percPort, percMat } = calcularPercentagens();
-            let turmas = [];
-            try {
-                turmas = JSON.parse(localStorage.getItem('turmas')) || [];
-            } catch (err) {
-                turmas = [];
-            }
+            const id = document.getElementById('editId').value;
 
-            const index = document.getElementById('editIndex').value;
-
-            const novaTurma = {
-                id: index !== "" ? turmas[index].id : Date.now(),
-                nomeTurma: document.getElementById('nomeTurma').value,
-                anoLetivo: document.getElementById('anoLetivo').value,
-                totalAlunos: totalAlunos,
-                bonsPort: bonsPort,
-                percPort: percPort + '%',
-                bonsMat: bonsMat,
-                percMat: percMat + '%',
-                registadoPor: currentUser.name || currentUser.nome || '',
-                userEmail: currentUser.email || '',
-                dataRegisto: index !== "" ? turmas[index].dataRegisto : new Date().toISOString().split('T')[0]
+            const dadosTurma = {
+                nome_turma: document.getElementById('nomeTurma').value,
+                ano_letivo: document.getElementById('anoLetivo').value,
+                total_alunos: totalAlunos,
+                bons_port: bonsPort,
+                perc_port: percPort,
+                bons_mat: bonsMat,
+                perc_mat: percMat,
+                registado_por: currentUser.name || currentUser.nome || '',
+                user_email: currentUser.email || ''
             };
-            
-            if (index === "") {
-                turmas.push(novaTurma);
+
+            let error;
+            if (id === "") {
+                const res = await supabaseClient.from('turmas').insert([dadosTurma]);
+                error = res.error;
             } else {
-                turmas[index] = novaTurma;
+                const res = await supabaseClient.from('turmas').update(dadosTurma).eq('id', id);
+                error = res.error;
             }
 
-            localStorage.setItem('turmas', JSON.stringify(turmas));
+            if (error) {
+                console.error('Erro ao guardar:', error);
+                mostrarPopupPersonalizado('Erro', 'Não foi possível guardar o registo na base de dados.', '❌');
+                return;
+            }
+
             fecharFormulario();
             carregarTurmas();
         });
