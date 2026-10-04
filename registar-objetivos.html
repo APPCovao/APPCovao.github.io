@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Objetivos e Avaliações Globais - Registos Covão</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-green: #16a34a;
@@ -544,6 +546,11 @@
 
     <script src="js/auth.js"></script>
     <script>
+        // Inicialização do Supabase com as tuas credenciais exatas
+        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(!currentUser) {
             window.location.href = 'index.html';
@@ -558,19 +565,32 @@
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
         }
 
-        function carregarObjetivos() {
+        async function carregarObjetivos() {
             const tbody = document.getElementById('objetivosTableBody');
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">A carregar registos...</td></tr>`;
+            
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            tbody.innerHTML = '';
 
+            // Buscar dados da tabela do Supabase
+            const { data: registos, error } = await supabaseClient
+                .from('registos_objetivos_atividades')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Erro ao carregar do Supabase:', error);
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar dados da base de dados.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
             const filtroNumAtvVal = (document.getElementById('filtroNumeroAtividade').value || '').toLowerCase().trim();
             const filtroCriadorVal = (document.getElementById('filtroCriador').value || '').toLowerCase().trim();
 
-            const registosFiltrados = registos.filter(reg => {
-                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-                const numAtividade = String(reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '')).toLowerCase();
-                const criadorNome = String(reg.criadorNome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : '')).toLowerCase();
+            const registosFiltrados = (registos || []).filter(reg => {
+                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividade_id || a.numero == reg.numero_atividade);
+                const numAtividade = String(reg.numero_atividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '')).toLowerCase();
+                const criadorNome = String(reg.criador_nome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : '')).toLowerCase();
 
                 const matchNum = !filtroNumAtvVal || numAtividade.includes(filtroNumAtvVal);
                 const matchCriador = !filtroCriadorVal || criadorNome.includes(filtroCriadorVal);
@@ -584,26 +604,26 @@
             }
 
             const userIsAdmin = isAdminUser(currentUser);
-            [...registosFiltrados].reverse().forEach(reg => {
+            registosFiltrados.forEach(reg => {
                 const idReal = reg.id;
-                const podeModificar = userIsAdmin || (reg.criadorId === currentUser.id);
+                const podeModificar = userIsAdmin || (reg.criador_id === currentUser.id);
 
-                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividadeId || a.numero == reg.numeroAtividade);
-                const numAtividade = reg.numeroAtividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-                const tituloAtividade = reg.nomeAtividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade');
+                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividade_id || a.numero == reg.numero_atividade);
+                const numAtividade = reg.numero_atividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
+                const tituloAtividade = reg.nome_atividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade');
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary-green);">${numAtividade}</td>
                     <td style="font-weight: 600;">${tituloAtividade}</td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" title="Ver" onclick="mostrarFormulario(${idReal}, 'ver')">
+                        <button class="btn-action btn-view" title="Ver" onclick="mostrarFormulario('${idReal}', 'ver')">
                             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         </button>
-                        <button class="btn-action btn-edit" title="Editar" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario(${idReal}, 'editar')">
+                        <button class="btn-action btn-edit" title="Editar" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario('${idReal}', 'editar')">
                             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                         </button>
-                        <button class="btn-action btn-delete" title="Apagar" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar(${idReal})">
+                        <button class="btn-action btn-delete" title="Apagar" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}')">
                             <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                         </button>
                     </td>
@@ -612,16 +632,27 @@
             });
         }
 
-        function verificarAtividadeDuplicada(numStr, idAtual = null) {
+        async function verificarAtividadeDuplicada(numStr, idAtual = null) {
             if (!numStr) return false;
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             
-            // Procura se já existe algum registo com o mesmo número de atividade (ignorando o próprio ID se estivermos a editar)
-            const duplicado = registos.find(r => String(r.numeroAtividade).trim() === String(numStr).trim() && (!idAtual || String(r.id) !== String(idAtual)));
-            return !!duplicado;
+            let query = supabaseClient
+                .from('registos_objetivos_atividades')
+                .select('id, numero_atividade')
+                .eq('numero_atividade', String(numStr).trim());
+            
+            if (idAtual) {
+                query = query.neq('id', idAtual);
+            }
+
+            const { data, error } = await query;
+            if (error) {
+                console.error('Erro ao verificar duplicados:', error);
+                return false;
+            }
+            return data && data.length > 0;
         }
 
-        function preencherDadosAutomaticosPorNumero(numInput) {
+        async function preencherDadosAutomaticosPorNumero(numInput) {
             const numStr = String(numInput || '').trim();
             const editId = document.getElementById('editObjetivoId').value;
             const erroMsg = document.getElementById('erroDuplicadoMsg');
@@ -638,8 +669,8 @@
                 return null;
             }
 
-            // Validação de duplicados (apenas se for criar novo ou alterar o número ao editar)
-            if (verificarAtividadeDuplicada(numStr, editId)) {
+            const isDuplicated = await verificarAtividadeDuplicada(numStr, editId);
+            if (isDuplicated) {
                 erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
                 erroMsg.style.display = 'block';
                 saveBtn.disabled = true;
@@ -726,14 +757,13 @@
             preencherDadosAutomaticosPorNumero(val);
         }
 
-        function mostrarFormulario(id, modo) {
+        async function mostrarFormulario(id, modo) {
             document.getElementById('listagemHeaderCard').style.display = 'none';
             document.getElementById('listagemFiltersCard').style.display = 'none';
             document.getElementById('listagemTableCard').style.display = 'none';
             document.getElementById('formularioCard').style.display = 'block';
             document.getElementById('erroDuplicadoMsg').style.display = 'none';
 
-            const registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
             const inputs = document.querySelectorAll('#objetivoForm input:not([type="hidden"]), #objetivoForm select, #objetivoForm textarea');
             const saveBtn = document.getElementById('btnSalvarForm');
             const btnImprimir = document.getElementById('btnImprimirRegisto');
@@ -746,7 +776,6 @@
                 document.getElementById('editObjetivoId').value = '';
                 document.getElementById('objetivoForm').reset();
                 
-                // Preenche o responsável automaticamente com o utilizador logado
                 const nomeUtilizador = currentUser ? (currentUser.name || currentUser.email || 'Utilizador') : '';
                 document.getElementById('modalObjResponsavel').value = nomeUtilizador;
 
@@ -759,25 +788,35 @@
                 saveBtn.style.display = 'inline-block';
                 btnImprimir.style.display = 'none';
             } else {
-                const reg = registos.find(r => r.id == id);
-                if (!reg) return;
+                // Obter registo específico do Supabase
+                const { data: reg, error } = await supabaseClient
+                    .from('registos_objetivos_atividades')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error || !reg) {
+                    alert('Erro ao carregar os dados para edição.');
+                    voltarParaListagem();
+                    return;
+                }
 
                 document.getElementById('editObjetivoId').value = reg.id;
-                document.getElementById('modalObjNumAtividade').value = reg.numeroAtividade || '';
-                document.getElementById('modalObjNomeAtividade').value = reg.nomeAtividade || '';
-                document.getElementById('modalObjAnoLetivo').value = reg.anoLetivo || '';
-                document.getElementById('modalObjTipo').value = reg.tipoAtividade || '';
-                document.getElementById('modalObjPaa').value = reg.integraPaa || '';
-                document.getElementById('modalObjPee').value = reg.integraPee || '';
-                document.getElementById('modalObjMedia').value = reg.mediaGeral || 'N/A';
-                document.getElementById('modalObjResumo').value = reg.resumoConclusoes || '';
-                document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criadorNome || '';
+                document.getElementById('modalObjNumAtividade').value = reg.numero_atividade || '';
+                document.getElementById('modalObjNomeAtividade').value = reg.nome_atividade || '';
+                document.getElementById('modalObjAnoLetivo').value = reg.ano_letivo || '';
+                document.getElementById('modalObjTipo').value = reg.tipo_atividade || '';
+                document.getElementById('modalObjPaa').value = reg.integra_paa || '';
+                document.getElementById('modalObjPee').value = reg.integra_pee || '';
+                document.getElementById('modalObjMedia').value = reg.media_geral || 'N/A';
+                document.getElementById('modalObjResumo').value = reg.resumo_conclusoes || '';
+                document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criador_nome || '';
 
                 document.querySelectorAll('#objetivoForm input[name="objCheck"]').forEach(chk => {
-                    chk.checked = reg.objetivosSelecionados && reg.objetivosSelecionados.includes(chk.value);
+                    chk.checked = reg.objetivos_selecionados && reg.objetivos_selecionados.includes(chk.value);
                 });
                 document.querySelectorAll('#objetivoForm input[name="metaCheck"]').forEach(chk => {
-                    chk.checked = reg.metasSelecionadas && reg.metasSelecionadas.includes(chk.value);
+                    chk.checked = reg.metas_selecionadas && reg.metas_selecionadas.includes(chk.value);
                 });
 
                 if (modo === 'ver') {
@@ -811,18 +850,16 @@
             carregarObjetivos();
         }
 
-        function salvarRegistoObjetivo(e) {
+        async function salvarRegistoObjetivo(e) {
             e.preventDefault();
             const id = document.getElementById('editObjetivoId').value;
             const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
 
-            // Validação final de segurança contra duplicados antes de gravar
-            if (verificarAtividadeDuplicada(numAtvInput, id)) {
+            const isDuplicated = await verificarAtividadeDuplicada(numAtvInput, id);
+            if (isDuplicated) {
                 alert(`Erro: Já existe um relatório de objetivos guardado para a atividade nº ${numAtvInput}. Não são permitidos duplicados.`);
                 return;
             }
-
-            let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
 
             let objsSel = [];
             document.querySelectorAll('#objetivoForm input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
@@ -835,43 +872,43 @@
 
             const responsavelVal = document.getElementById('modalObjResponsavel').value || (currentUser ? (currentUser.name || currentUser.email) : '');
 
-            if (id === '' || id === null) {
-                const novoRegisto = {
-                    id: Date.now(),
-                    atividadeId: atvEncontrada ? atvEncontrada.id : '',
-                    numeroAtividade: numAtvInput,
-                    nomeAtividade: document.getElementById('modalObjNomeAtividade').value,
-                    anoLetivo: document.getElementById('modalObjAnoLetivo').value,
-                    tipoAtividade: document.getElementById('modalObjTipo').value,
-                    integraPaa: document.getElementById('modalObjPaa').value,
-                    integraPee: document.getElementById('modalObjPee').value,
-                    objetivosSelecionados: objsSel,
-                    metasSelecionadas: metasSel,
-                    mediaGeral: document.getElementById('modalObjMedia').value,
-                    resumoConclusoes: document.getElementById('modalObjResumo').value,
-                    responsavel: responsavelVal,
-                    criadorId: currentUser.id,
-                    criadorNome: currentUser.name || currentUser.email
-                };
-                registos.push(novoRegisto);
+            const dadosRegisto = {
+                atividade_id: atvEncontrada ? String(atvEncontrada.id) : null,
+                numero_atividade: numAtvInput,
+                nome_atividade: document.getElementById('modalObjNomeAtividade').value,
+                ano_letivo: document.getElementById('modalObjAnoLetivo').value,
+                tipo_atividade: document.getElementById('modalObjTipo').value,
+                integra_paa: document.getElementById('modalObjPaa').value,
+                integra_pee: document.getElementById('modalObjPee').value,
+                objetivos_selecionados: objsSel,
+                metas_selecionadas: metasSel,
+                media_geral: document.getElementById('modalObjMedia').value,
+                resumo_conclusoes: document.getElementById('modalObjResumo').value,
+                responsavel: responsavelVal,
+                criador_id: String(currentUser.id),
+                criador_nome: currentUser.name || currentUser.email
+            };
+
+            let error;
+            if (!id || id === '') {
+                const { error: err } = await supabaseClient
+                    .from('registos_objetivos_atividades')
+                    .insert([dadosRegisto]);
+                error = err;
             } else {
-                let reg = registos.find(r => r.id == id);
-                if (reg) {
-                    reg.numeroAtividade = numAtvInput;
-                    reg.nomeAtividade = document.getElementById('modalObjNomeAtividade').value;
-                    reg.anoLetivo = document.getElementById('modalObjAnoLetivo').value;
-                    reg.tipoAtividade = document.getElementById('modalObjTipo').value;
-                    reg.integraPaa = document.getElementById('modalObjPaa').value;
-                    reg.integraPee = document.getElementById('modalObjPee').value;
-                    reg.mediaGeral = document.getElementById('modalObjMedia').value;
-                    reg.resumoConclusoes = document.getElementById('modalObjResumo').value;
-                    reg.responsavel = responsavelVal;
-                    reg.objetivosSelecionados = objsSel;
-                    reg.metasSelecionadas = metasSel;
-                }
+                const { error: err } = await supabaseClient
+                    .from('registos_objetivos_atividades')
+                    .update(dadosRegisto)
+                    .eq('id', id);
+                error = err;
             }
 
-            localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
+            if (error) {
+                console.error('Erro ao guardar no Supabase:', error);
+                alert('Ocorreu um erro ao guardar o registo na base de dados.');
+                return;
+            }
+
             voltarParaListagem();
         }
 
@@ -885,12 +922,19 @@
             document.getElementById('confirmModal').style.display = 'none';
         }
 
-        document.getElementById('btnConfirmDelete').onclick = function() {
+        document.getElementById('btnConfirmDelete').onclick = async function() {
             if (idParaApagar !== null) {
-                let registos = JSON.parse(localStorage.getItem('registosObjetivosAtividades')) || [];
-                registos = registos.filter(reg => reg.id !== idParaApagar);
-                localStorage.setItem('registosObjetivosAtividades', JSON.stringify(registos));
-                carregarObjetivos();
+                const { error } = await supabaseClient
+                    .from('registos_objetivos_atividades')
+                    .delete()
+                    .eq('id', idParaApagar);
+
+                if (error) {
+                    console.error('Erro ao apagar no Supabase:', error);
+                    alert('Erro ao apagar o registo.');
+                } else {
+                    carregarObjetivos();
+                }
                 fecharConfirmarApagar();
             }
         };
