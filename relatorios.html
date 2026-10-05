@@ -139,6 +139,12 @@
             margin: 0 0 15px 0;
         }
 
+        .stats-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
         .stats-grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -151,8 +157,14 @@
             gap: 12px;
         }
 
+        @media (max-width: 900px) {
+            .stats-grid-4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
         @media (max-width: 768px) {
-            .stats-grid-3, .stats-grid-2, .reports-grid {
+            .stats-grid-4, .stats-grid-3, .stats-grid-2, .reports-grid {
                 grid-template-columns: 1fr !important;
             }
         }
@@ -175,6 +187,7 @@
         .stat-main-card.alt5 { background: linear-gradient(135deg, #b45309 0%, #92400e 100%); }
         .stat-main-card.alt6 { background: linear-gradient(135deg, #475569 0%, #334155 100%); }
         .stat-main-card.alt7 { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .stat-main-card.alt8 { background: linear-gradient(135deg, #db2777 0%, #be185d 100%); }
 
         .stat-main-card h3 {
             margin: 0 0 4px 0;
@@ -285,15 +298,23 @@
         <!-- 1. Atividades Realizadas -->
         <div class="theme-section">
             <h2>1. Atividades Realizadas</h2>
-            <p class="theme-desc">Resumo quantitativo das atividades globais, avaliações efetuadas e Relatórios com os objetivos.</p>
+            <p class="theme-desc">Resumo quantitativo das atividades globais, registos do CAA, avaliações efetuadas e Relatórios com os objetivos.</p>
             
-            <div class="stats-grid-3">
+            <div class="stats-grid-4">
                 <div class="stat-main-card alt1">
                     <div>
                         <h3>Número de Atividades</h3>
                         <p id="statAtividades" class="stat-value">0</p>
                     </div>
                     <div class="stat-icon">📋</div>
+                </div>
+
+                <div class="stat-main-card alt8">
+                    <div>
+                        <h3>Registos do CAA</h3>
+                        <p id="statCaa" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-icon">🏫</div>
                 </div>
 
                 <div class="stat-main-card alt2">
@@ -687,17 +708,19 @@
                     { data: atividadesLista, error: errAtv },
                     { data: avaliadasLista, error: errAv },
                     { data: objetivosLista, error: errObj },
-                    { data: turmasLista, error: errTurmas }
+                    { data: turmasLista, error: errTurmas },
+                    { data: caaLista, error: errCaa }
                 ] = await Promise.all([
                     supabaseClient.from('requisicoes').select('*'),
                     supabaseClient.from('atividades').select('*'),
                     supabaseClient.from('avaliacoes_atividades').select('*'),
                     supabaseClient.from('registos_objetivos_atividades').select('*'),
-                    supabaseClient.from('turmas').select('*')
+                    supabaseClient.from('turmas').select('*'),
+                    supabaseClient.from('registos_caa').select('*')
                 ]);
 
-                if (errReq || errAtv || errAv || errObj || errTurmas) {
-                    console.error("Aviso ao carregar algumas tabelas:", { errReq, errAtv, errAv, errObj, errTurmas });
+                if (errReq || errAtv || errAv || errObj || errTurmas || errCaa) {
+                    console.error("Aviso ao carregar algumas tabelas:", { errReq, errAtv, errAv, errObj, errTurmas, errCaa });
                 }
 
                 const reqs = requisicoesLista || [];
@@ -705,8 +728,10 @@
                 const avs = avaliadasLista || [];
                 const objs = objetivosLista || [];
                 const turmas = turmasLista || [];
+                const caaRegs = caaLista || [];
 
                 document.getElementById('statRequisicoes').innerText = reqs.length;
+                document.getElementById('statCaa').innerText = caaRegs.length;
 
                 function contarUnicos(lista) {
                     const idsUnicos = new Set(
@@ -921,4 +946,3 @@
     </script>
 </body>
 </html>
-        }
