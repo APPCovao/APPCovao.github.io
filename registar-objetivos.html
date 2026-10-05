@@ -1093,9 +1093,9 @@
 
             let urlsImagensFinais = [];
             for (let imgObj of imagensGuardadas) {
-                if (imgObj.tipo === 'existente') {
+                if (imgObj.tipo === 'existente' && imgObj.url) {
                     urlsImagensFinais.push(imgObj.url);
-                } else if (imgObj.tipo === 'novo') {
+                } else if (imgObj.tipo === 'novo' && imgObj.blob) {
                     const nomeFicheiro = `obj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
                     
                     const { error: uploadError } = await supabaseClient.storage
@@ -1106,7 +1106,6 @@
                         console.error('Erro no upload para o Storage:', uploadError);
                         alert('Erro ao carregar a imagem para o storage: ' + uploadError.message);
                     } else {
-                        // Obtenção robusta do URL público
                         const { data: urlData } = supabaseClient.storage
                             .from('fotos_relatorios_objetivos')
                             .getPublicUrl(nomeFicheiro);
@@ -1129,6 +1128,9 @@
 
             const responsavelVal = document.getElementById('modalObjResponsavel').value || (currentUser ? (currentUser.name || currentUser.email) : '');
 
+            // Limpa o array para garantir que não entram nulos ou valores vazios incompatíveis com text[]
+            const imagensLimpas = urlsImagensFinais.filter(url => url && typeof url === 'string' && url.trim() !== '');
+
             const dadosRegisto = {
                 atividade_id: atvEncontrada ? String(atvEncontrada.id) : null,
                 numero_atividade: numAtvInput,
@@ -1141,7 +1143,7 @@
                 metas_selecionadas: metasSel,
                 media_geral: document.getElementById('modalObjMedia').value,
                 resumo_conclusoes: document.getElementById('modalObjResumo').value,
-                imagens: urlsImagensFinais,
+                imagens: imagensLimpas,
                 responsavel: responsavelVal,
                 criador_id: String(currentUser.id),
                 criador_nome: currentUser.name || currentUser.email
