@@ -391,7 +391,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Nº Avaliação</th>
+                            <th>Nº Atividade</th>
                             <th>Detalhes / Comentário</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
@@ -416,7 +416,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Nº / Atividade</th>
+                            <th>Nº Atividade</th>
                             <th>Tipo / Ano Letivo</th>
                             <th>Responsável</th>
                             <th style="text-align: right;">Ações</th>
@@ -442,7 +442,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Nº Registo</th>
+                            <th>Nº Atividade</th>
                             <th>Descrição / Informação</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
@@ -574,7 +574,6 @@
 
             for (let i = 0; i < linhas.length; i++) {
                 const textoLinha = linhas[i].textContent || linhas[i].innerText;
-                // Se a linha tiver a mensagem de "A carregar" ou "Nenhum registo", ignoramos o filtro
                 if (textoLinha.includes('A carregar') || textoLinha.includes('Nenhum registo')) continue;
                 
                 if (textoLinha.toLowerCase().indexOf(termoMinusculo) > -1) {
@@ -651,14 +650,14 @@
         }
 
         // --- FUNÇÃO AUXILIAR GENÉRICA DE CARREGAMENTO ---
-        async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb) {
+        async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb, orderByField = 'id') {
             const tbody = document.getElementById(elementId);
             if (!tbody) return;
             tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar...</td></tr>`;
 
             const client = getSupabase();
             if (!client) return;
-            const { data, error } = await client.from(nomeTabela).select('*').order('id', { ascending: false });
+            const { data, error } = await client.from(nomeTabela).select('*').order(orderByField, { ascending: false });
             tbody.innerHTML = '';
 
             if (error || !data || data.length === 0) {
@@ -673,49 +672,49 @@
             });
         }
 
-        // --- 2. ATIVIDADES (Nº da Atividade em 1º) ---
+        // --- 2. ATIVIDADES (coluna 'numero') ---
         function carregarAtividades() {
             carregarTabelaGenerica('atividades', 'atividadesTableBody', 3, (item) => `
-                <td><strong>Nº ${item.id}</strong></td>
+                <td><strong>Nº ${item.numero !== null && item.numero !== undefined ? item.numero : '-'}</strong></td>
                 <td>${item.nome || item.titulo || 'Atividade'} - <span style="color: var(--text-light);">${item.descricao || item.tipo || 'Sem detalhes'}</span></td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('atividades', ${item.id}, carregarAtividades)">Eliminar</button>
                 </td>
-            `);
+            `, 'numero');
         }
 
-        // --- 3. AVALIAÇÕES DE ATIVIDADES (Nº da Avaliação em 1º) ---
+        // --- 3. AVALIAÇÕES DE ATIVIDADES (coluna 'numero_atividade') ---
         function carregarAvaliacoesAtividades() {
             carregarTabelaGenerica('avaliacoes_atividades', 'avaliacoesTableBody', 3, (item) => `
-                <td><strong>Nº ${item.id}</strong></td>
+                <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
                 <td>${item.comentario || item.avaliacao || item.descricao || 'Sem avaliação'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('avaliacoes_atividades', ${item.id}, carregarAvaliacoesAtividades)">Eliminar</button>
                 </td>
-            `);
+            `, 'numero_atividade');
         }
 
-        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES (Nº / Atividade em 1º) ---
+        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES (coluna 'numero_atividade') ---
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
-                <td><strong>Nº ${reg.id}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
+                <td><strong>Nº ${reg.numero_atividade !== null && reg.numero_atividade !== undefined ? reg.numero_atividade : '-'}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
                 <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade || '-'}</span> | ${reg.ano_letivo || '-'}</td>
                 <td>${reg.responsavel || reg.criador_nome || '-'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_objetivos_atividades', ${reg.id}, carregarRegistarObjetivos)">Eliminar</button>
                 </td>
-            `);
+            `, 'numero_atividade');
         }
 
-        // --- 5. REGISTOS CAA (Nº Registo em 1º) ---
+        // --- 5. REGISTOS CAA (coluna 'numero_atividade') ---
         function carregarRegistosCaa() {
             carregarTabelaGenerica('registos_caa', 'registosCaaTableBody', 3, (item) => `
-                <td><strong>Nº ${item.id}</strong></td>
+                <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
                 <td>${item.descricao || item.titulo || 'Registo CAA'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_caa', ${item.id}, carregarRegistosCaa)">Eliminar</button>
                 </td>
-            `);
+            `, 'numero_atividade');
         }
 
         // --- 6. TURMAS (Nome da Turma em 1º) ---
@@ -726,18 +725,18 @@
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('turmas', ${item.id}, carregarTurmas)">Eliminar</button>
                 </td>
-            `);
+            `, 'id');
         }
 
-        // --- 7. REQUISIÇÕES (Nº Requisição em 1º) ---
+        // --- 7. REQUISIÇÕES (coluna 'numero_requisicao') ---
         function carregarRequisicoes() {
             carregarTabelaGenerica('requisicoes', 'requisicoesTableBody', 3, (item) => `
-                <td><strong>Nº ${item.id}</strong></td>
+                <td><strong>Nº ${item.numero_requisicao !== null && item.numero_requisicao !== undefined ? item.numero_requisicao : '-'}</strong></td>
                 <td>${item.equipamento || item.descricao || item.motivo || 'Requisição'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('requisicoes', ${item.id}, carregarRequisicoes)">Eliminar</button>
                 </td>
-            `);
+            `, 'numero_requisicao');
         }
 
         // --- FUNÇÕES GENÉRICAS DE ELIMINAÇÃO (ADMIN) ---
