@@ -157,6 +157,15 @@
             background-color: var(--primary-green-hover);
         }
 
+        /* Estilo específico para o botão Voltar no fundo (cinzento, sem seta) */
+        .btn-footer-voltar {
+            background-color: #6b7280;
+            color: white;
+        }
+        .btn-footer-voltar:hover {
+            background-color: #4b5563;
+        }
+
         .filter-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -373,7 +382,6 @@
             object-fit: cover;
         }
 
-        /* Botão para apagar imagem individual na pré-visualização */
         .btn-remove-img {
             position: absolute;
             top: 4px;
@@ -503,12 +511,9 @@
         </div>
 
         <div id="vistaFormulario" style="display: none;" class="form-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
-                <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 2px 0; font-size: 16px;">Registo de Atividades</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 11px;">EB1/PE do Covão e Vargem</p>
-                </div>
-                <button class="btn-top-action" style="width: auto; padding: 5px 10px; font-size: 11px;" onclick="fecharFormulario()">← Voltar</button>
+            <div style="border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;">
+                <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 2px 0; font-size: 16px;">Registo de Atividades</h1>
+                <p style="margin: 0; color: #4b5563; font-size: 11px;">EB1/PE do Covão e Vargem</p>
             </div>
 
             <form id="caaForm">
@@ -598,6 +603,7 @@
                 <div class="form-footer">
                     <a href="#" id="btnPrintForm" class="btn-top-action" style="background-color: #0ea5e9; display: none; text-decoration: none; text-align: center;">🖨️ Imprimir Relatório</a>
                     <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar</button>
+                    <button type="button" class="btn-top-action btn-footer-voltar" onclick="fecharFormulario()">Voltar</button>
                 </div>
             </form>
         </div>
@@ -727,7 +733,6 @@
                 wrapper.className = 'image-preview-item';
                 
                 let html = `<img src="${imgObj.url}">`;
-                // Só mostra o botão de apagar se não estiver em modo de somente leitura
                 if (!isSomenteLeitura) {
                     html += `<button type="button" class="btn-remove-img" onclick="removerImagem(${index})" title="Remover imagem">×</button>`;
                 }
@@ -844,7 +849,6 @@
                 btnPrint.style.display = 'none';
             }
             
-            // Re-renderiza as imagens para esconder/mostrar o botão "x" de apagar
             renderizarPrevisualizacaoImagens();
         }
 
