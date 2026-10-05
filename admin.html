@@ -144,6 +144,13 @@
             margin: 0;
         }
 
+        .filter-action-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
         .filter-container {
             display: flex;
             gap: 8px;
@@ -234,9 +241,8 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            width: 100%;
-            box-sizing: border-box;
             text-align: center;
+            white-space: nowrap;
         }
         .btn-delete-all:hover { background-color: #b91c1c; }
 
@@ -289,11 +295,10 @@
             .main-container { margin: 25px auto; padding: 0 15px; gap: 24px; }
             .section-header-card { flex-direction: row; justify-content: space-between; align-items: center; padding: 20px; }
             .theme-section { padding: 20px; }
-            .theme-section-header { flex-direction: row; align-items: center; }
+            .theme-section-header { flex-direction: row; align-items: center; justify-content: space-between; }
             .theme-section h2 { font-size: 18px; }
-            .filter-container { width: auto; }
-            .filter-container input { width: auto; }
-            .btn-delete-all { width: auto; }
+            .filter-action-row { flex-direction: row; justify-content: flex-end; align-items: center; width: auto; gap: 12px; }
+            .filter-container { width: 220px; }
             th { padding: 12px 16px; font-size: 14px; }
             td { padding: 14px 16px; font-size: 14px; }
         }
@@ -323,7 +328,14 @@
 
         <!-- 1. Gestão de Utilizadores e Aprovações -->
         <div class="theme-section">
-            <h2>Gestão de Utilizadores e Aprovações</h2>
+            <div class="theme-section-header">
+                <h2>Gestão de Utilizadores e Aprovações</h2>
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroUsers" placeholder="Filtrar utilizadores..." onkeyup="filtrarTabela('usersTableBody', this.value)">
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -343,7 +355,10 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Gestão de Atividades</h2>
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroAtividades" placeholder="Filtrar por nº ou nome..." onkeyup="filtrarTabela('atividadesTableBody', this.value)">
+                    </div>
                     <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('atividades', carregarAtividades)">🗑️ Apagar Todas</button>
                 </div>
             </div>
@@ -351,8 +366,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID / Nome</th>
-                            <th>Detalhes</th>
+                            <th>Nº Atividade</th>
+                            <th>Nome / Detalhes</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
@@ -365,7 +380,10 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Avaliações de Atividades</h2>
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroAvaliacoes" placeholder="Filtrar avaliações..." onkeyup="filtrarTabela('avaliacoesTableBody', this.value)">
+                    </div>
                     <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('avaliacoes_atividades', carregarAvaliacoesAtividades)">🗑️ Apagar Todas</button>
                 </div>
             </div>
@@ -373,8 +391,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Avaliação / Detalhes</th>
+                            <th>Nº Avaliação</th>
+                            <th>Detalhes / Comentário</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
@@ -387,7 +405,10 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Registo de Objetivos e Atividades</h2>
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroObjetivos" placeholder="Filtrar objetivos..." onkeyup="filtrarTabela('objectivesTableBody', this.value)">
+                    </div>
                     <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('registos_objetivos_atividades', carregarRegistarObjetivos)">🗑️ Apagar Todas</button>
                 </div>
             </div>
@@ -395,7 +416,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Atividade</th>
+                            <th>Nº / Atividade</th>
                             <th>Tipo / Ano Letivo</th>
                             <th>Responsável</th>
                             <th style="text-align: right;">Ações</th>
@@ -410,7 +431,10 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Registos CAA</h2>
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroCaa" placeholder="Filtrar registos CAA..." onkeyup="filtrarTabela('registosCaaTableBody', this.value)">
+                    </div>
                     <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('registos_caa', carregarRegistosCaa)">🗑️ Apagar Todas</button>
                 </div>
             </div>
@@ -418,7 +442,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Nº Registo</th>
                             <th>Descrição / Informação</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
@@ -432,7 +456,10 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Gestão de Turmas</h2>
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroTurmas" placeholder="Filtrar por nome da turma..." onkeyup="filtrarTabela('turmasTableBody', this.value)">
+                    </div>
                     <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('turmas', carregarTurmas)">🗑️ Apagar Todas</button>
                 </div>
             </div>
@@ -440,8 +467,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nome da Turma</th>
+                            <th>ID do Registo</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
@@ -454,7 +481,10 @@
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Gestão de Requisições</h2>
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <div class="filter-action-row">
+                    <div class="filter-container">
+                        <input type="text" id="filtroRequisicoes" placeholder="Filtrar nº requisição..." onkeyup="filtrarTabela('requisicoesTableBody', this.value)">
+                    </div>
                     <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('requisicoes', carregarRequisicoes)">🗑️ Apagar Todas</button>
                 </div>
             </div>
@@ -462,8 +492,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Detalhes da Requisição</th>
+                            <th>Nº Requisição</th>
+                            <th>Detalhes do Equipamento / Motivo</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
@@ -535,6 +565,26 @@
             };
         }
 
+        // --- FILTRO GENÉRICO EM TEMPO REAL ---
+        function filtrarTabela(tbodyId, termo) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            const linhas = tbody.getElementsByTagName('tr');
+            const termoMinusculo = termo.toLowerCase();
+
+            for (let i = 0; i < linhas.length; i++) {
+                const textoLinha = linhas[i].textContent || linhas[i].innerText;
+                // Se a linha tiver a mensagem de "A carregar" ou "Nenhum registo", ignoramos o filtro
+                if (textoLinha.includes('A carregar') || textoLinha.includes('Nenhum registo')) continue;
+                
+                if (textoLinha.toLowerCase().indexOf(termoMinusculo) > -1) {
+                    linhas[i].style.display = "";
+                } else {
+                    linhas[i].style.display = "none";
+                }
+            }
+        }
+
         // --- 1. UTILIZADORES ---
         async function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
@@ -557,7 +607,7 @@
                 const statusAprovacao = u.aprovado ? '<span style="color: #15803d; font-weight: 600;">Aprovado</span>' : '<span style="color: #d97706; font-weight: 600;">Pendente</span>';
 
                 tr.innerHTML = `
-                    <td>${u.name || 'Sem Nome'}</td>
+                    <td><strong>${u.name || 'Sem Nome'}</strong></td>
                     <td style="color: var(--text-light);">${u.email}</td>
                     <td>${isAdm} | ${statusAprovacao}</td>
                     <td style="text-align: right; white-space: nowrap;">
@@ -623,21 +673,21 @@
             });
         }
 
-        // --- 2. ATIVIDADES ---
+        // --- 2. ATIVIDADES (Nº da Atividade em 1º) ---
         function carregarAtividades() {
             carregarTabelaGenerica('atividades', 'atividadesTableBody', 3, (item) => `
-                <td><strong>${item.id}</strong> - ${item.nome || item.titulo || 'Atividade'}</td>
-                <td>${item.descricao || item.tipo || 'Sem detalhes'}</td>
+                <td><strong>Nº ${item.id}</strong></td>
+                <td>${item.nome || item.titulo || 'Atividade'} - <span style="color: var(--text-light);">${item.descricao || item.tipo || 'Sem detalhes'}</span></td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('atividades', ${item.id}, carregarAtividades)">Eliminar</button>
                 </td>
             `);
         }
 
-        // --- 3. AVALIAÇÕES DE ATIVIDADES ---
+        // --- 3. AVALIAÇÕES DE ATIVIDADES (Nº da Avaliação em 1º) ---
         function carregarAvaliacoesAtividades() {
             carregarTabelaGenerica('avaliacoes_atividades', 'avaliacoesTableBody', 3, (item) => `
-                <td><strong>ID: ${item.id}</strong></td>
+                <td><strong>Nº ${item.id}</strong></td>
                 <td>${item.comentario || item.avaliacao || item.descricao || 'Sem avaliação'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('avaliacoes_atividades', ${item.id}, carregarAvaliacoesAtividades)">Eliminar</button>
@@ -645,10 +695,10 @@
             `);
         }
 
-        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES ---
+        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES (Nº / Atividade em 1º) ---
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
-                <td><strong>${reg.nome_atividade || 'Sem Nome'}</strong></td>
+                <td><strong>Nº ${reg.id}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
                 <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade || '-'}</span> | ${reg.ano_letivo || '-'}</td>
                 <td>${reg.responsavel || reg.criador_nome || '-'}</td>
                 <td style="text-align: right;">
@@ -657,10 +707,10 @@
             `);
         }
 
-        // --- 5. REGISTOS CAA ---
+        // --- 5. REGISTOS CAA (Nº Registo em 1º) ---
         function carregarRegistosCaa() {
             carregarTabelaGenerica('registos_caa', 'registosCaaTableBody', 3, (item) => `
-                <td><strong>ID: ${item.id}</strong></td>
+                <td><strong>Nº ${item.id}</strong></td>
                 <td>${item.descricao || item.titulo || 'Registo CAA'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_caa', ${item.id}, carregarRegistosCaa)">Eliminar</button>
@@ -668,21 +718,21 @@
             `);
         }
 
-        // --- 6. TURMAS ---
+        // --- 6. TURMAS (Nome da Turma em 1º) ---
         function carregarTurmas() {
             carregarTabelaGenerica('turmas', 'turmasTableBody', 3, (item) => `
-                <td><strong>ID: ${item.id}</strong></td>
-                <td>${item.nome || item.nome_turma || 'Turma'}</td>
+                <td><strong style="color: var(--primary-green); font-size: 14px;">${item.nome || item.nome_turma || 'Turma'}</strong></td>
+                <td style="color: var(--text-light);">ID: ${item.id}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('turmas', ${item.id}, carregarTurmas)">Eliminar</button>
                 </td>
             `);
         }
 
-        // --- 7. REQUISIÇÕES ---
+        // --- 7. REQUISIÇÕES (Nº Requisição em 1º) ---
         function carregarRequisicoes() {
             carregarTabelaGenerica('requisicoes', 'requisicoesTableBody', 3, (item) => `
-                <td><strong>ID: ${item.id}</strong></td>
+                <td><strong>Nº ${item.id}</strong></td>
                 <td>${item.equipamento || item.descricao || item.motivo || 'Requisição'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('requisicoes', ${item.id}, carregarRequisicoes)">Eliminar</button>
