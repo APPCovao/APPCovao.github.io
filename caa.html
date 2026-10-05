@@ -350,7 +350,6 @@
             border-color: var(--primary-green);
         }
 
-        /* ALTERAÇÃO AQUI: Aumentámos o tamanho das pré-visualizações das imagens */
         .image-preview-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -361,7 +360,7 @@
         .image-preview-item {
             position: relative;
             width: 100%;
-            height: 110px; /* Altura maior para destacar melhor as fotos */
+            height: 110px;
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid #d1d5db;
@@ -372,6 +371,31 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Botão para apagar imagem individual na pré-visualização */
+        .btn-remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(220, 38, 38, 0.85);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+
+        .btn-remove-img:hover {
+            background: rgba(220, 38, 38, 1);
         }
 
         .form-footer {
@@ -400,7 +424,6 @@
             .form-card { padding: 20px; }
             td, th { padding: 12px 14px; font-size: 13px; }
             
-            /* Em ecrãs maiores, podemos dar ainda mais destaque às imagens */
             .image-preview-container {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
@@ -574,7 +597,6 @@
 
                 <div class="form-footer">
                     <a href="#" id="btnPrintForm" class="btn-top-action" style="background-color: #0ea5e9; display: none; text-decoration: none; text-align: center;">🖨️ Imprimir Relatório</a>
-                    <button type="button" class="btn-top-action" style="background-color: #6b7280;" onclick="fecharFormulario()">Cancelar</button>
                     <button type="submit" id="btnSubmit" class="btn-top-action btn-top-primary">Guardar</button>
                 </div>
             </form>
@@ -676,7 +698,6 @@
         }
 
         async function handleFiles(files) {
-            const previewContainer = document.getElementById('imagePreviewContainer');
             for (let file of files) {
                 const blobComprimido = await comprimirImagem(file);
                 const urlLocal = URL.createObjectURL(blobComprimido);
@@ -686,12 +707,34 @@
                     blob: blobComprimido,
                     url: urlLocal
                 });
+            }
+            renderizarPrevisualizacaoImagens();
+        }
 
+        function removerImagem(index) {
+            imagensGuardadas.splice(index, 1);
+            renderizarPrevisualizacaoImagens();
+        }
+
+        function renderizarPrevisualizacaoImagens() {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            previewContainer.innerHTML = '';
+
+            const isSomenteLeitura = document.getElementById('btnSubmit').style.display === 'none';
+
+            imagensGuardadas.forEach((imgObj, index) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'image-preview-item';
-                wrapper.innerHTML = `<img src="${urlLocal}">`;
+                
+                let html = `<img src="${imgObj.url}">`;
+                // Só mostra o botão de apagar se não estiver em modo de somente leitura
+                if (!isSomenteLeitura) {
+                    html += `<button type="button" class="btn-remove-img" onclick="removerImagem(${index})" title="Remover imagem">×</button>`;
+                }
+                
+                wrapper.innerHTML = html;
                 previewContainer.appendChild(wrapper);
-            }
+            });
         }
 
         async function carregarRegistos() {
@@ -755,8 +798,8 @@
         async function abrirFormularioCriacao() {
             document.getElementById('editId').value = '';
             document.getElementById('caaForm').reset();
-            document.getElementById('imagePreviewContainer').innerHTML = '';
             imagensGuardadas = [];
+            renderizarPrevisualizacaoImagens();
             document.getElementById('data_atividade').valueAsDate = new Date();
 
             ajustarModoFormulario(false);
@@ -781,8 +824,8 @@
             document.getElementById('vistaFormulario').style.display = 'none';
             document.getElementById('vistaTabela').style.display = 'block';
             document.getElementById('caaForm').reset();
-            document.getElementById('imagePreviewContainer').innerHTML = '';
             imagensGuardadas = [];
+            renderizarPrevisualizacaoImagens();
         }
 
         function ajustarModoFormulario(isSomenteLeitura, id = '') {
@@ -800,6 +843,9 @@
             } else {
                 btnPrint.style.display = 'none';
             }
+            
+            // Re-renderiza as imagens para esconder/mostrar o botão "x" de apagar
+            renderizarPrevisualizacaoImagens();
         }
 
         async function verRegisto(id) {
@@ -851,18 +897,12 @@
             });
 
             imagensGuardadas = [];
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            previewContainer.innerHTML = '';
-            
             if (reg.imagens && Array.isArray(reg.imagens)) {
                 reg.imagens.forEach(urlImg => {
                     imagensGuardadas.push({ tipo: 'existente', url: urlImg });
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-preview-item';
-                    wrapper.innerHTML = `<img src="${urlImg}">`;
-                    previewContainer.appendChild(wrapper);
                 });
             }
+            renderizarPrevisualizacaoImagens();
         }
 
         async function eliminarRegisto(id) {
