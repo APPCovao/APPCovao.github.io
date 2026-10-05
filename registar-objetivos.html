@@ -109,11 +109,12 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            width: 100%;
+            width: auto;
+            justify-content: flex-end;
         }
 
         .btn-top-action {
-            background-color: #1e293b;
+            background-color: #16a34a;
             color: white;
             border: none;
             padding: 10px 16px;
@@ -126,50 +127,63 @@
             gap: 6px;
             transition: background 0.2s;
             text-decoration: none;
-            width: 100%;
+            width: auto;
             justify-content: center;
             box-sizing: border-box;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        .btn-top-action:hover { background-color: #0f172a; }
+        .btn-top-action:hover { background-color: #15803d; }
 
         .filters-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             box-sizing: border-box;
+            align-items: center;
+        }
+
+        .filter-group {
+            position: relative;
         }
 
         .filter-group label {
             display: block;
             font-weight: 600;
             font-size: 12px;
-            color: #374151;
-            margin-bottom: 6px;
+            color: var(--primary-green);
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .filter-group input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .filter-group input:hover {
+            border-color: #cbd5e1;
             background-color: #fff;
         }
 
         .filter-group input:focus {
             outline: none;
             border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
         }
 
         .table-card, .form-section-card {
@@ -433,6 +447,8 @@
             .form-row-grid { grid-template-columns: 1fr; gap: 0; }
             .form-section-card { padding: 12px; }
             th, td { padding: 10px 8px; font-size: 12px; }
+            .header-actions { width: 100%; justify-content: stretch; }
+            .btn-top-action { width: 100%; }
         }
     </style>
 </head>
@@ -457,7 +473,7 @@
                 <p>Consulta de associações a objetivos, metas PEE e avaliações globais.</p>
             </div>
             <div class="header-actions">
-                <button type="button" class="btn-top-action" style="background-color: #16a34a;" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
+                <button type="button" class="btn-top-action" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
             </div>
         </div>
 
@@ -468,7 +484,7 @@
                 <input type="text" id="filtroNumeroAtividade" placeholder="Ex: 1, 2, 3..." oninput="carregarObjetivos()">
             </div>
             <div class="filter-group">
-                <label for="filtroCriador">Quem Criou</label>
+                <label for="filtroCriador">Criado por</label>
                 <input type="text" id="filtroCriador" placeholder="Nome do autor..." oninput="carregarObjetivos()">
             </div>
         </div>
@@ -1011,7 +1027,7 @@
                     chk.checked = reg.metas_selecionadas && reg.metas_selecionadas.includes(chk.value);
                 });
 
-                // CARREGAR IMAGENS EXISTENTES DE FORMA SEGURA (SUPORTA ARRAY OU STRING JSON)
+                // CARREGAR IMAGENS EXISTENTES (SUPORTA ARRAY OU STRING JSON)
                 imagensGuardadas = [];
                 let imagensDoRegisto = reg.imagens;
                 if (typeof imagensDoRegisto === 'string') {
@@ -1029,6 +1045,8 @@
                         }
                     });
                 }
+                
+                // Forçar renderização imediata das imagens carregadas
                 renderizarPrevisualizacaoImagens();
 
                 if (modo === 'ver') {
@@ -1038,7 +1056,6 @@
                     saveBtn.style.display = 'none';
                     btnImprimir.style.display = 'inline-block';
                     btnImprimir.href = `imprimir.html?id=${reg.id}`;
-                    renderizarPrevisualizacaoImagens();
                 } else {
                     document.getElementById('formTitulo').innerText = 'Editar Registo de Objetivos';
                     inputs.forEach(el => el.disabled = false);
@@ -1048,6 +1065,9 @@
                     saveBtn.style.display = 'inline-block';
                     btnImprimir.style.display = 'none';
                 }
+                
+                // Chamar novamente para garantir que a pré-visualização fica correta após os inputs estarem disabled/enabled
+                renderizarPrevisualizacaoImagens();
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
