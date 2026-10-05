@@ -98,6 +98,29 @@
             margin-bottom: 3px;
         }
 
+        /* ESTILOS PARA AS FOTOS DE EVIDÊNCIA NA IMPRESSÃO */
+        .print-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .print-image-item {
+            width: 100%;
+            height: 120px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+            background-color: #fff;
+        }
+
+        .print-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .no-print {
             text-align: center;
             margin-top: 20px;
@@ -152,6 +175,9 @@
             .section-block {
                 background-color: #ffffff !important;
                 border: 1px solid #d1d5db;
+                break-inside: avoid;
+            }
+            .print-image-item {
                 break-inside: avoid;
             }
         }
@@ -217,6 +243,12 @@
             <div class="value-content" id="printResumo" style="white-space: pre-line;">-</div>
         </div>
 
+        <!-- SECÇÃO DE FOTOGRAFIAS (SÓ APARECE SE HOUVER IMAGENS) -->
+        <div class="section-block" id="printSeccaoImagens" style="display: none;">
+            <div class="label-title">Registo Fotográfico (Evidências)</div>
+            <div class="print-images-grid" id="printImagensGrid"></div>
+        </div>
+
         <!-- CAMPO RESPONSÁVEL ENCOSTADO À DIREITA NO FIM DO DOCUMENTO -->
         <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin: 20px 0; padding: 10px 0;">
             <span style="font-weight: 700; font-size: 12px; color: var(--primary-green); text-transform: uppercase; letter-spacing: 0.5px;">Responsável:</span>
@@ -226,7 +258,7 @@
         <!-- BOTÕES DE AÇÃO (NÃO APARECEM NA IMPRESSÃO) -->
         <div class="no-print">
             <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-            <a href="registar-objetivos.html" class="btn-back">← Voltar a Registos</a>
+            <a href="registos-objetivos.html" class="btn-back">← Voltar a Registos</a>
         </div>
     </div>
 
@@ -272,6 +304,7 @@
 
             document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
 
+            // OBJETIVOS E METAS
             let htmlListas = '';
             const objetivos = reg.objetivos_selecionados || [];
             const metas = reg.metas_selecionadas || [];
@@ -288,6 +321,40 @@
                 document.getElementById('printObjetivosMetas').innerHTML = htmlListas;
             } else {
                 document.getElementById('printObjetivosMetas').innerHTML = '<em style="color: #6b7280;">Nenhum registo selecionado.</em>';
+            }
+
+            // TRATAMENTO E EXIBIÇÃO DAS FOTOGRAFIAS (SE EXISTIREM)
+            let imagensDoRegisto = reg.imagens;
+            if (typeof imagensDoRegisto === 'string') {
+                try {
+                    imagensDoRegisto = JSON.parse(imagensDoRegisto);
+                } catch (e) {
+                    imagensDoRegisto = [];
+                }
+            }
+
+            const seccaoImagens = document.getElementById('printSeccaoImagens');
+            const gridImagens = document.getElementById('printImagensGrid');
+            gridImagens.innerHTML = '';
+
+            if (imagensDoRegisto && Array.isArray(imagensDoRegisto) && imagensDoRegisto.length > 0) {
+                imagensDoRegisto.forEach(urlImg => {
+                    if (urlImg && typeof urlImg === 'string' && urlImg.trim() !== '') {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'print-image-item';
+                        itemDiv.innerHTML = `<img src="${urlImg}" alt="Evidência da Atividade">`;
+                        gridImagens.appendChild(itemDiv);
+                    }
+                });
+
+                // Só mostra o bloco se efetivamente houver imagens válidas no array
+                if (gridImagens.children.length > 0) {
+                    seccaoImagens.style.display = 'block';
+                } else {
+                    seccaoImagens.style.display = 'none';
+                }
+            } else {
+                seccaoImagens.style.display = 'none';
             }
         }
 
