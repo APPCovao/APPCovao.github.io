@@ -1046,7 +1046,6 @@
                     });
                 }
                 
-                // Forçar renderização imediata das imagens carregadas
                 renderizarPrevisualizacaoImagens();
 
                 if (modo === 'ver') {
@@ -1066,7 +1065,6 @@
                     btnImprimir.style.display = 'none';
                 }
                 
-                // Chamar novamente para garantir que a pré-visualização fica correta após os inputs estarem disabled/enabled
                 renderizarPrevisualizacaoImagens();
             }
 
@@ -1104,12 +1102,18 @@
                         .from('fotos_relatorios_objetivos')
                         .upload(nomeFicheiro, imgObj.blob, { contentType: 'image/jpeg' });
 
-                    if (!uploadError) {
+                    if (uploadError) {
+                        console.error('Erro no upload para o Storage:', uploadError);
+                        alert('Erro ao carregar a imagem para o storage: ' + uploadError.message);
+                    } else {
+                        // Obtenção robusta do URL público
                         const { data: urlData } = supabaseClient.storage
                             .from('fotos_relatorios_objetivos')
                             .getPublicUrl(nomeFicheiro);
                         
-                        urlsImagensFinais.push(urlData.publicUrl);
+                        if (urlData && urlData.publicUrl) {
+                            urlsImagensFinais.push(urlData.publicUrl);
+                        }
                     }
                 }
             }
@@ -1159,7 +1163,7 @@
 
             if (error) {
                 console.error('Erro ao guardar no Supabase:', error);
-                alert('Ocorreu um erro ao guardar o registo na base de dados.');
+                alert('Ocorreu um erro ao guardar o registo na base de dados: ' + error.message);
                 return;
             }
 
