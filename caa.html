@@ -289,7 +289,8 @@
             background-color: #fff;
         }
 
-        input:readonly {
+        /* Classe dedicada para garantir fundo cinza em campos bloqueados */
+        input.input-readonly-cinza {
             background-color: #e5e7eb !important;
             color: #1f2937 !important;
             font-weight: 600 !important;
@@ -520,7 +521,7 @@
 
                 <div class="form-group">
                     <label for="numero_atividade">1. Nº da Atividade <span class="required">*</span></label>
-                    <input type="number" id="numero_atividade" name="numero_atividade" readonly required>
+                    <input type="number" id="numero_atividade" name="numero_atividade" class="input-readonly-cinza" readonly required>
                 </div>
                 
                 <div class="form-group">
@@ -817,7 +818,8 @@
             
             const campoNumero = document.getElementById('numero_atividade');
             campoNumero.value = proximoNumero;
-            campoNumero.readOnly = true; // Garante explicitamente que fica bloqueado ao criar
+            campoNumero.readOnly = true;
+            campoNumero.classList.add('input-readonly-cinza'); // Garante explicitamente o fundo cinza
 
             document.getElementById('responsaveis').value = currentUser.name || currentUser.nome || currentUser.email;
 
@@ -839,11 +841,16 @@
             const inputs = document.querySelectorAll('#caaForm input, #caaForm textarea');
             inputs.forEach(el => { 
                 if (el.id !== 'editId') {
-                    // Se for o campo de número, mantém sempre readonly, caso contrário aplica conforme o modo
                     if (el.id === 'numero_atividade') {
                         el.readOnly = true;
+                        el.classList.add('input-readonly-cinza');
                     } else {
                         el.readOnly = isSomenteLeitura;
+                        if (isSomenteLeitura) {
+                            el.classList.add('input-readonly-cinza');
+                        } else {
+                            el.classList.remove('input-readonly-cinza');
+                        }
                     }
                 } 
             });
@@ -886,7 +893,10 @@
 
             ajustarModoFormulario(false);
             preencherFormularioComDados(reg);
-            document.getElementById('numero_atividade').readOnly = true;
+            const campoNumero = document.getElementById('numero_atividade');
+            campoNumero.readOnly = true;
+            campoNumero.classList.add('input-readonly-cinza');
+            
             document.getElementById('formTitle').innerText = 'Editar Registo';
             document.getElementById('vistaTabela').style.display = 'none';
             document.getElementById('vistaFormulario').style.display = 'block';
