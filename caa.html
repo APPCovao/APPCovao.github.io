@@ -157,7 +157,6 @@
             background-color: var(--primary-green-hover);
         }
 
-        /* Estilo específico para o botão Voltar no fundo (cinzento, sem seta) */
         .btn-footer-voltar {
             background-color: #6b7280;
             color: white;
@@ -816,7 +815,10 @@
                 proximoNumero = Math.max(...numeros) + 1;
             }
             
-            document.getElementById('numero_atividade').value = proximoNumero;
+            const campoNumero = document.getElementById('numero_atividade');
+            campoNumero.value = proximoNumero;
+            campoNumero.readOnly = true; // Garante explicitamente que fica bloqueado ao criar
+
             document.getElementById('responsaveis').value = currentUser.name || currentUser.nome || currentUser.email;
 
             document.getElementById('formTitle').innerText = 'Novo Registo de Atividade';
@@ -835,7 +837,16 @@
 
         function ajustarModoFormulario(isSomenteLeitura, id = '') {
             const inputs = document.querySelectorAll('#caaForm input, #caaForm textarea');
-            inputs.forEach(el => { if (el.id !== 'editId') el.readOnly = isSomenteLeitura; });
+            inputs.forEach(el => { 
+                if (el.id !== 'editId') {
+                    // Se for o campo de número, mantém sempre readonly, caso contrário aplica conforme o modo
+                    if (el.id === 'numero_atividade') {
+                        el.readOnly = true;
+                    } else {
+                        el.readOnly = isSomenteLeitura;
+                    }
+                } 
+            });
 
             document.querySelectorAll('#caaForm input[type="checkbox"]').forEach(cb => cb.disabled = isSomenteLeitura);
             document.getElementById('boxUploadFicheiro').style.display = isSomenteLeitura ? 'none' : 'block';
