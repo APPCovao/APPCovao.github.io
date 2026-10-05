@@ -317,11 +317,11 @@
         <div class="section-header-card">
             <div>
                 <h1>Painel de Administração</h1>
-                <p>Gestão centralizada de utilizadores, aprovações e registos de atividades.</p>
+                <p>Gestão centralizada de utilizadores, atividades, avaliações, objetivos, CAA, turmas e requisições.</p>
             </div>
         </div>
 
-        <!-- 1. Secção de Utilizadores -->
+        <!-- 1. Gestão de Utilizadores e Aprovações -->
         <div class="theme-section">
             <h2>Gestão de Utilizadores e Aprovações</h2>
             <div class="table-responsive">
@@ -334,39 +334,140 @@
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="usersTableBody">
-                        <!-- Preenchido via JS -->
-                    </tbody>
+                    <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 2. Secção de Atividades -->
+        <!-- 2. Atividades -->
         <div class="theme-section">
             <div class="theme-section-header">
                 <h2>Gestão de Atividades</h2>
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; width: 100%;">
-                    <div class="filter-container">
-                        <label for="filterNumero" style="font-size: 12px; font-weight: 600; color: var(--text-light); white-space: nowrap;">Nº:</label>
-                        <input type="text" id="filterNumero" placeholder="Filtrar..." oninput="carregarAtividades()">
-                    </div>
-                    <button class="btn-delete-all" onclick="confirmarApagarTodas()">🗑️ Apagar Todas</button>
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('atividades', carregarAtividades)">🗑️ Apagar Todas</button>
                 </div>
             </div>
-
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th>Nº Atividade</th>
-                            <th>Título / Descrição</th>
-                            <th>Tipo</th>
+                            <th>ID / Nome</th>
+                            <th>Detalhes</th>
                             <th style="text-align: right;">Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="activitiesTableBody">
-                        <!-- Preenchido via JS -->
-                    </tbody>
+                    <tbody id="atividadesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. Avaliações de Atividades -->
+        <div class="theme-section">
+            <div class="theme-section-header">
+                <h2>Avaliações de Atividades</h2>
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('avaliacoes_atividades', carregarAvaliacoesAtividades)">🗑️ Apagar Todas</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Avaliação / Detalhes</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="avaliacoesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. Registo de Objetivos e Atividades -->
+        <div class="theme-section">
+            <div class="theme-section-header">
+                <h2>Registo de Objetivos e Atividades</h2>
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('registos_objetivos_atividades', carregarRegistarObjetivos)">🗑️ Apagar Todas</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Atividade</th>
+                            <th>Tipo / Ano Letivo</th>
+                            <th>Responsável</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="objectivesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. Registos CAA -->
+        <div class="theme-section">
+            <div class="theme-section-header">
+                <h2>Registos CAA</h2>
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('registos_caa', carregarRegistosCaa)">🗑️ Apagar Todas</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição / Informação</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registosCaaTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 6. Turmas -->
+        <div class="theme-section">
+            <div class="theme-section-header">
+                <h2>Gestão de Turmas</h2>
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('turmas', carregarTurmas)">🗑️ Apagar Todas</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome da Turma</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="turmasTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 7. Requisições -->
+        <div class="theme-section">
+            <div class="theme-section-header">
+                <h2>Gestão de Requisições</h2>
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <button class="btn-delete-all" onclick="confirmarApagarTodasTabela('requisicoes', carregarRequisicoes)">🗑️ Apagar Todas</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Detalhes da Requisição</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requisicoesTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -434,32 +535,18 @@
             };
         }
 
-        // --- GESTÃO DE UTILIZADORES & APROVAÇÕES (SUPABASE) ---
+        // --- 1. UTILIZADORES ---
         async function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar utilizadores...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar...</td></tr>`;
 
             const client = getSupabase();
-            if (!client) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 20px;">Erro: Cliente Supabase não inicializado.</td></tr>`;
-                return;
-            }
-
-            const { data: users, error } = await client
-                .from('users')
-                .select('*')
-                .order('id', { ascending: true });
-
+            if (!client) return;
+            const { data: users, error } = await client.from('users').select('*').order('id', { ascending: true });
             tbody.innerHTML = '';
 
-            if (error) {
-                console.error('Erro ao carregar utilizadores:', error);
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 20px;">Erro ao carregar utilizadores do Supabase.</td></tr>`;
-                return;
-            }
-
-            if (!users || users.length === 0) {
+            if (error || !users || users.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhum utilizador encontrado.</td></tr>`;
                 return;
             }
@@ -485,17 +572,7 @@
 
         async function aprovarUtilizador(id) {
             const client = getSupabase();
-            const { error } = await client
-                .from('users')
-                .update({ aprovado: true })
-                .eq('id', id);
-
-            if (error) {
-                mostrarAlerta('Erro', 'Não foi possível aprovar o utilizador.');
-                console.error(error);
-                return;
-            }
-
+            await client.from('users').update({ aprovado: true }).eq('id', id);
             carregarUtilizadores();
             mostrarAlerta('Sucesso', 'Utilizador aprovado com sucesso!');
         }
@@ -505,20 +582,8 @@
                 mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões.');
                 return;
             }
-
-            const novoEstado = !isAdminAtual;
             const client = getSupabase();
-            const { error } = await client
-                .from('users')
-                .update({ is_admin: novoEstado })
-                .eq('id', id);
-
-            if (error) {
-                mostrarAlerta('Erro', 'Não foi possível alterar as permissões.');
-                console.error(error);
-                return;
-            }
-
+            await client.from('users').update({ is_admin: !isAdminAtual }).eq('id', id);
             carregarUtilizadores();
         }
 
@@ -527,84 +592,139 @@
                 mostrarAlerta('Aviso', 'Não pode eliminar a sua própria conta ativa.');
                 return;
             }
-
             mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', async () => {
                 const client = getSupabase();
-                const { error } = await client
-                    .from('users')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) {
-                    mostrarAlerta('Erro', 'Não foi possível eliminar o utilizador.');
-                    console.error(error);
-                    return;
-                }
-
+                await client.from('users').delete().eq('id', id);
                 carregarUtilizadores();
                 mostrarAlerta('Sucesso', 'Utilizador eliminado com sucesso.');
             });
         }
 
-        // --- GESTÃO DE ATIVIDADES ---
-        function carregarAtividades() {
-            const tbody = document.getElementById('activitiesTableBody');
+        // --- FUNÇÃO AUXILIAR GENÉRICA DE CARREGAMENTO ---
+        async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb) {
+            const tbody = document.getElementById(elementId);
             if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar...</td></tr>`;
+
+            const client = getSupabase();
+            if (!client) return;
+            const { data, error } = await client.from(nomeTabela).select('*').order('id', { ascending: false });
             tbody.innerHTML = '';
 
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const filtro = document.getElementById('filterNumero').value.trim().toLowerCase();
-
-            const atividadesFiltradas = atividades.map((atv, originalIndex) => ({ atv, originalIndex })).filter(({ atv }) => {
-                if (!filtro) return true;
-                const numAtv = String(atv.numero !== undefined ? atv.numero : (atv.id !== undefined ? atv.id : atv.numeroAtividade || '')).toLowerCase();
-                const tituloAtv = String(atv.titulo || '').toLowerCase();
-                return numAtv.includes(filtro) || tituloAtv.includes(filtro);
-            });
-
-            if (atividadesFiltradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhuma atividade encontrada.</td></tr>`;
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhum registo encontrado.</td></tr>`;
                 return;
             }
 
-            atividadesFiltradas.forEach(({ atv, originalIndex }) => {
+            data.forEach((item) => {
                 const tr = document.createElement('tr');
-                const numAtv = atv.numero !== undefined ? atv.numero : (atv.id !== undefined ? atv.id : (atv.numeroAtividade || '-'));
-                const titulo = atv.titulo || atv.nome || atv.descricao || 'Sem título';
-                const tipo = atv.tipo || atv.tipoAtividade || atv.categoria || 'Geral';
-
-                tr.innerHTML = `
-                    <td><strong>${numAtv}</strong></td>
-                    <td>${titulo}</td>
-                    <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${tipo}</span></td>
-                    <td style="text-align: right;">
-                        <button class="btn-action btn-delete" onclick="confirmarEliminarAtividade(${originalIndex}, '${numAtv}')">Eliminar</button>
-                    </td>
-                `;
+                tr.innerHTML = formatarLinhaCb(item);
                 tbody.appendChild(tr);
             });
         }
 
-        function confirmarEliminarAtividade(index, numAtv) {
-            mostrarConfirmacao('Eliminar Atividade', `Tem a certeza que pretende eliminar a Atividade ${numAtv}?`, () => {
-                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-                atividades.splice(index, 1);
-                localStorage.setItem('atividades', JSON.stringify(atividades));
-                carregarAtividades();
-                mostrarAlerta('Sucesso', 'Atividade eliminada com sucesso!');
+        // --- 2. ATIVIDADES ---
+        function carregarAtividades() {
+            carregarTabelaGenerica('atividades', 'atividadesTableBody', 3, (item) => `
+                <td><strong>${item.id}</strong> - ${item.nome || item.titulo || 'Atividade'}</td>
+                <td>${item.descricao || item.tipo || 'Sem detalhes'}</td>
+                <td style="text-align: right;">
+                    <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('atividades', ${item.id}, carregarAtividades)">Eliminar</button>
+                </td>
+            `);
+        }
+
+        // --- 3. AVALIAÇÕES DE ATIVIDADES ---
+        function carregarAvaliacoesAtividades() {
+            carregarTabelaGenerica('avaliacoes_atividades', 'avaliacoesTableBody', 3, (item) => `
+                <td><strong>ID: ${item.id}</strong></td>
+                <td>${item.comentario || item.avaliacao || item.descricao || 'Sem avaliação'}</td>
+                <td style="text-align: right;">
+                    <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('avaliacoes_atividades', ${item.id}, carregarAvaliacoesAtividades)">Eliminar</button>
+                </td>
+            `);
+        }
+
+        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES ---
+        function carregarRegistarObjetivos() {
+            carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
+                <td><strong>${reg.nome_atividade || 'Sem Nome'}</strong></td>
+                <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade || '-'}</span> | ${reg.ano_letivo || '-'}</td>
+                <td>${reg.responsavel || reg.criador_nome || '-'}</td>
+                <td style="text-align: right;">
+                    <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_objetivos_atividades', ${reg.id}, carregarRegistarObjetivos)">Eliminar</button>
+                </td>
+            `);
+        }
+
+        // --- 5. REGISTOS CAA ---
+        function carregarRegistosCaa() {
+            carregarTabelaGenerica('registos_caa', 'registosCaaTableBody', 3, (item) => `
+                <td><strong>ID: ${item.id}</strong></td>
+                <td>${item.descricao || item.titulo || 'Registo CAA'}</td>
+                <td style="text-align: right;">
+                    <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_caa', ${item.id}, carregarRegistosCaa)">Eliminar</button>
+                </td>
+            `);
+        }
+
+        // --- 6. TURMAS ---
+        function carregarTurmas() {
+            carregarTabelaGenerica('turmas', 'turmasTableBody', 3, (item) => `
+                <td><strong>ID: ${item.id}</strong></td>
+                <td>${item.nome || item.nome_turma || 'Turma'}</td>
+                <td style="text-align: right;">
+                    <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('turmas', ${item.id}, carregarTurmas)">Eliminar</button>
+                </td>
+            `);
+        }
+
+        // --- 7. REQUISIÇÕES ---
+        function carregarRequisicoes() {
+            carregarTabelaGenerica('requisicoes', 'requisicoesTableBody', 3, (item) => `
+                <td><strong>ID: ${item.id}</strong></td>
+                <td>${item.equipamento || item.descricao || item.motivo || 'Requisição'}</td>
+                <td style="text-align: right;">
+                    <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('requisicoes', ${item.id}, carregarRequisicoes)">Eliminar</button>
+                </td>
+            `);
+        }
+
+        // --- FUNÇÕES GENÉRICAS DE ELIMINAÇÃO (ADMIN) ---
+        async function eliminarRegistoTabela(nomeTabela, idRegisto, callbackRefresh) {
+            mostrarConfirmacao('Eliminar Registo', 'Tem a certeza que pretende eliminar este registo permanentemente?', async () => {
+                const client = getSupabase();
+                const { error } = await client.from(nomeTabela).delete().eq('id', idRegisto);
+                if (error) {
+                    mostrarAlerta('Erro', 'Não foi possível eliminar o registo na base de dados.');
+                    return;
+                }
+                callbackRefresh();
+                mostrarAlerta('Sucesso', 'Registo eliminado com sucesso.');
             });
         }
 
-        function confirmarApagarTodas() {
-            mostrarConfirmacao('Apagar Tudo', 'Tem a certeza que pretende eliminar todas as atividades?', () => {
-                localStorage.removeItem('atividades');
-                carregarAtividades();
-                mostrarAlerta('Sucesso', 'Todas as atividades foram apagadas.');
+        async function confirmarApagarTodasTabela(nomeTabela, callbackRefresh) {
+            mostrarConfirmacao('Apagar Tudo', `Tem a certeza que pretende apagar TODOS os registos desta tabela? Esta ação é irreversível.`, async () => {
+                const client = getSupabase();
+                const { error } = await client.from(nomeTabela).delete().neq('id', -1); 
+                if (error) {
+                    mostrarAlerta('Erro', 'Não foi possível limpar os registos da tabela.');
+                    return;
+                }
+                callbackRefresh();
+                mostrarAlerta('Sucesso', 'Todos os registos foram eliminados.');
             });
         }
 
+        // Inicializar painel carregando todas as tabelas
         carregarUtilizadores();
         carregarAtividades();
+        carregarAvaliacoesAtividades();
+        carregarRegistarObjetivos();
+        carregarRegistosCaa();
+        carregarTurmas();
+        carregarRequisicoes();
     </script>
 </body>
 </html>
