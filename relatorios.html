@@ -544,6 +544,7 @@
 
         function renderizarGraficoBarras(containerId, dadosObjeto, ordenarNumericamente = false) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = '';
 
             let chaves = Object.keys(dadosObjeto);
@@ -586,6 +587,7 @@
 
         function renderizarProgressoGantt(containerId, quantidadeAtual, limiteMeta = 6) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = '';
 
             const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
@@ -608,6 +610,7 @@
 
         function renderizarProgressoMetaGantt(containerId, percentagemAtual, metaPercentagem = 75) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = '';
 
             const progressoVisual = Math.min(Math.max(Math.round((percentagemAtual / metaPercentagem) * 100), 0), 100);
@@ -629,6 +632,7 @@
 
         function renderizarProgressoRequisicoesGantt(containerId, quantidadeAtual, limiteMeta = 126) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = '';
 
             const percentagem = Math.min(Math.round((quantidadeAtual / limiteMeta) * 100), 100);
@@ -650,6 +654,7 @@
 
         function renderizarProgressoPersonalizadoGantt(containerId, quantidadeAtual, limiteMeta) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = '';
 
             const quantidadeEfetiva = Math.min(quantidadeAtual, limiteMeta);
