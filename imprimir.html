@@ -323,31 +323,36 @@
                 document.getElementById('printObjetivosMetas').innerHTML = '<em style="color: #6b7280;">Nenhum registo selecionado.</em>';
             }
 
-            // TRATAMENTO E EXIBIÇÃO DAS FOTOGRAFIAS (SE EXISTIREM)
-            let imagensDoRegisto = reg.imagens;
-            if (typeof imagensDoRegisto === 'string') {
-                try {
-                    imagensDoRegisto = JSON.parse(imagensDoRegisto);
-                } catch (e) {
-                    imagensDoRegisto = [];
-                }
-            }
-
+            // TRATAMENTO E EXIBIÇÃO DAS FOTOGRAFIAS (ROBUSTO)
             const seccaoImagens = document.getElementById('printSeccaoImagens');
             const gridImagens = document.getElementById('printImagensGrid');
             gridImagens.innerHTML = '';
 
+            let imagensDoRegisto = reg.imagens;
+            
+            // Se vier como string JSON, faz o parse
+            if (typeof imagensDoRegisto === 'string') {
+                try {
+                    imagensDoRegisto = JSON.parse(imagensDoRegisto);
+                } catch (e) {
+                    imagensDoRegisto = [reg.imagens];
+                }
+            }
+
             if (imagensDoRegisto && Array.isArray(imagensDoRegisto) && imagensDoRegisto.length > 0) {
                 imagensDoRegisto.forEach(urlImg => {
-                    if (urlImg && typeof urlImg === 'string' && urlImg.trim() !== '') {
+                    // Limpar eventuais plicas ou aspas extra guardadas na string do URL
+                    let urlLimpa = typeof urlImg === 'string' ? urlImg.replace(/['"]+/g, '').trim() : '';
+
+                    if (urlLimpa !== '') {
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'print-image-item';
-                        itemDiv.innerHTML = `<img src="${urlImg}" alt="Evidência da Atividade">`;
+                        itemDiv.innerHTML = `<img src="${urlLimpa}" alt="Evidência da Atividade" onerror="this.parentElement.style.display='none'">`;
                         gridImagens.appendChild(itemDiv);
                     }
                 });
 
-                // Só mostra o bloco se efetivamente houver imagens válidas no array
+                // Mostra a secção apenas se houver elementos criados na grelha
                 if (gridImagens.children.length > 0) {
                     seccaoImagens.style.display = 'block';
                 } else {
