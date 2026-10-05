@@ -709,12 +709,12 @@
         async function carregarRelatorios() {
             try {
                 const [
-                    { data: requisicoesLista, error: errReq },
-                    { data: atividadesLista, error: errAtv },
-                    { data: avaliadasLista, error: errAv },
-                    { data: objetivosLista, error: errObj },
-                    { data: turmasLista, error: errTurmas },
-                    { data: caaLista, error: errCaa }
+                    resReq,
+                    resAtv,
+                    resAv,
+                    resObj,
+                    resTurmas,
+                    resCaa
                 ] = await Promise.all([
                     supabaseClient.from('requisicoes').select('*'),
                     supabaseClient.from('atividades').select('*'),
@@ -724,16 +724,23 @@
                     supabaseClient.from('registos_caa').select('*')
                 ]);
 
-                if (errReq || errAtv || errAv || errObj || errTurmas || errCaa) {
-                    console.error("Aviso ao carregar algumas tabelas:", { errReq, errAtv, errAv, errObj, errTurmas, errCaa });
+                if (resReq.error || resAtv.error || resAv.error || resObj.error || resTurmas.error || resCaa.error) {
+                    console.error("Aviso ao carregar algumas tabelas:", { 
+                        req: resReq.error, 
+                        atv: resAtv.error, 
+                        av: resAv.error, 
+                        obj: resObj.error, 
+                        turmas: resTurmas.error, 
+                        caa: resCaa.error 
+                    });
                 }
 
-                const reqs = requisicoesLista || [];
-                const atvs = atividadesLista || [];
-                const avs = avaliadasLista || [];
-                const objs = objetivosLista || [];
-                const turmas = turmasLista || [];
-                const caaRegs = caaLista || [];
+                const reqs = resReq.data || [];
+                const atvs = resAtv.data || [];
+                const avs = resAv.data || [];
+                const objs = resObj.data || [];
+                const turmas = resTurmas.data || [];
+                const caaRegs = resCaa.data || [];
 
                 document.getElementById('statRequisicoes').innerText = reqs.length;
                 document.getElementById('statCaa').innerText = caaRegs.length;
