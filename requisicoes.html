@@ -17,6 +17,11 @@
             --text-main: #1f2937;
             --border-color: #bbf7d0;
             --radius: 12px;
+
+            /* Cores específicas do formulário solicitadas */
+            --form-card-bg: #ffffff;
+            --field-bg: #F0F3F7;
+            --field-border: #B8C4D4;
         }
 
         body {
@@ -25,6 +30,7 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
+            -webkit-text-size-adjust: 100%;
         }
 
         .navbar {
@@ -200,14 +206,14 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 450px;
+            table-layout: auto;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 12px 14px;
-            font-size: 12px;
+            padding: 10px 8px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
             border-bottom: 2px solid var(--border-color);
@@ -215,8 +221,8 @@
         }
 
         td {
-            padding: 12px 14px;
-            font-size: 13px;
+            padding: 10px 8px;
+            font-size: 12px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
         }
@@ -229,22 +235,24 @@
             background-color: #fafaf9;
         }
 
+        /* Botões de Ação otimizados para telemóvel vertical */
         .btn-action {
-            width: 36px;
-            height: 36px;
+            padding: 5px 6px;
             border-radius: 6px;
+            font-size: 11px;
             border: none;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 4px;
+            margin-right: 1px;
             transition: opacity 0.2s;
+            vertical-align: middle;
         }
 
         .btn-action svg {
-            width: 18px;
-            height: 18px;
+            width: 13px;
+            height: 13px;
             fill: #ffffff;
         }
 
@@ -256,23 +264,24 @@
         .btn-edit { background-color: #f59e0b; }
         .btn-delete { background-color: #dc2626; }
 
+        /* Estilo do Cartão do Formulário personalizado */
         .form-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: var(--form-card-bg);
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 13px;
+            margin-bottom: 4px;
+            font-size: 12px;
             color: #374151;
         }
 
@@ -280,42 +289,47 @@
             color: #dc2626;
         }
 
+        /* Campos com fundo cinzento-azulado suave e borda solicitada */
         input[type="text"],
         input[type="date"],
         input[type="number"],
         select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
+            padding: 9px 10px;
+            background-color: var(--field-bg);
+            border: 1px solid var(--field-border);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             box-sizing: border-box;
             font-family: inherit;
-            background-color: #fff;
+            color: var(--text-main);
         }
 
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary-green);
+            background-color: #fff;
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
         .form-grid-2 {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: 12px;
         }
 
         .form-footer {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 15px;
             border-top: 1px solid #e5e7eb;
-            padding-top: 16px;
+            padding-top: 12px;
+            flex-direction: column;
         }
 
         .form-footer button {
-            flex: 1;
+            width: 100%;
+            flex: unset;
         }
 
         @media (min-width: 640px) {
@@ -333,12 +347,14 @@
             .btn-top-action { padding: 10px 18px; flex: unset; }
             .filter-card { padding: 20px 30px; }
             .filter-container input { max-width: 300px; }
-            th { padding: 16px 20px; font-size: 13px; }
-            td { padding: 18px 20px; font-size: 14px; }
-            .form-card { padding: 30px; }
-            .form-grid-2 { grid-template-columns: 1fr 1fr; gap: 20px; }
-            .form-footer { justify-content: flex-end; }
-            .form-footer button { flex: unset; min-width: 150px; }
+            th { padding: 12px 14px; font-size: 13px; }
+            td { padding: 14px 14px; font-size: 13px; }
+            .btn-action { padding: 6px 8px; font-size: 12px; margin-right: 2px; }
+            .btn-action svg { width: 14px; height: 14px; }
+            .form-card { padding: 20px; }
+            .form-grid-2 { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .form-footer { flex-direction: row; justify-content: flex-end; }
+            .form-footer button { width: auto; min-width: 150px; }
         }
     </style>
 </head>
@@ -380,10 +396,10 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 70px;">Nº</th>
+                            <th style="width: 45px;">Nº</th>
                             <th>Área</th>
-                            <th>Equipamento / Material</th>
-                            <th style="width: 150px; text-align: right;">Ações</th>
+                            <th>Equipamento</th>
+                            <th style="width: 95px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="requisicoesTableBody">
@@ -395,10 +411,10 @@
 
         <!-- Vista de Formulário -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 4px 0; font-size: 20px;">Registar Nova Requisição</h1>
-                    <p id="formSubtitle" style="margin: 0; color: #4b5563; font-size: 13px;">Preencha os dados abaixo.</p>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 2px 0; font-size: 16px;">Registar Nova Requisição</h1>
+                    <p id="formSubtitle" style="margin: 0; color: #4b5563; font-size: 11px;">Preencha os dados abaixo.</p>
                 </div>
             </div>
 
@@ -485,7 +501,7 @@
 
         async function carregarRequisicoes() {
             const tbody = document.getElementById('requisicoesTableBody');
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 2rem;">A carregar dados...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 1.5rem; font-size: 12px;">A carregar dados...</td></tr>`;
 
             const termoFiltro = document.getElementById('filtroResponsavel').value.toLowerCase().trim();
 
@@ -495,7 +511,7 @@
 
             if (error) {
                 console.error('Erro ao carregar do Supabase:', error);
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar dados da base de dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 1.5rem; font-size: 12px;">Erro ao carregar dados da base de dados.</td></tr>`;
                 return;
             }
 
@@ -505,7 +521,7 @@
             }
 
             if (dadosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 2rem;">Sem registos encontrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 1.5rem; font-size: 12px;">Sem registos encontrados.</td></tr>`;
                 return;
             }
 
@@ -515,8 +531,8 @@
 
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary-green);">${req.numero_requisicao}</td>
-                    <td>${req.area || 'N/A'}</td>
-                    <td style="font-weight: 600;">${req.equipamento}</td>
+                    <td style="word-break: break-word;">${req.area || 'N/A'}</td>
+                    <td style="font-weight: 600; word-break: break-word;">${req.equipamento}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-action btn-view" onclick="verRequisicao('${req.id}')" title="Ver">
                             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
