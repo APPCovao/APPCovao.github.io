@@ -16,6 +16,11 @@
             --card-bg: #ffffff;
             --text-main: #1f2937;
             --border-color: #bbf7d0;
+            
+            /* Novas cores estéticas do formulário */
+            --form-card-bg: #ffffff;
+            --field-bg: #F0F3F7;
+            --field-border: #B8C4D4;
         }
 
         body {
@@ -192,13 +197,13 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 280px;
+            table-layout: auto;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 10px 12px;
+            padding: 10px 8px;
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -207,7 +212,7 @@
         }
 
         td {
-            padding: 10px 12px;
+            padding: 10px 8px;
             font-size: 12px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
@@ -222,23 +227,23 @@
         }
 
         .btn-action {
-            padding: 6px 8px;
+            padding: 5px 6px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             border: none;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 2px;
+            margin-right: 1px;
             transition: opacity 0.2s;
             vertical-align: middle;
         }
 
         .btn-action svg {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             fill: currentColor;
         }
 
@@ -250,12 +255,13 @@
         .btn-editar { background-color: #f59e0b; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
+        /* Estilização do Cartão do Formulário solicitada */
         .form-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
+            background-color: var(--form-card-bg);
+            border: 1px solid #d1d5db;
             border-radius: 10px;
-            padding: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .form-group {
@@ -274,6 +280,7 @@
             color: #dc2626;
         }
 
+        /* Estilização específica para os campos do formulário */
         input[type="text"],
         input[type="date"],
         input[type="number"],
@@ -281,12 +288,13 @@
         select {
             width: 100%;
             padding: 9px 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            background-color: var(--field-bg);
+            border: 1px solid var(--field-border);
+            border-radius: 8px;
             font-size: 13px;
             box-sizing: border-box;
             font-family: inherit;
-            background-color: #fff;
+            color: var(--text-main);
         }
 
         /* Classe dedicada para garantir fundo cinza em campos bloqueados */
@@ -301,6 +309,7 @@
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--primary-green);
+            background-color: #fff;
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
@@ -321,10 +330,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 6px;
-            background: #fafaf9;
+            background: var(--field-bg);
             padding: 10px;
             border-radius: 8px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--field-border);
         }
 
         .checkbox-item {
@@ -345,11 +354,11 @@
         }
 
         .image-upload-box {
-            border: 2px dashed var(--border-color);
+            border: 2px dashed var(--field-border);
             padding: 12px;
             text-align: center;
             border-radius: 8px;
-            background: #fafaf9;
+            background: var(--field-bg);
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -431,6 +440,8 @@
             .section-header-card { padding: 18px 20px; }
             .form-card { padding: 20px; }
             td, th { padding: 12px 14px; font-size: 13px; }
+            .btn-action { padding: 6px 8px; font-size: 12px; margin-right: 2px; }
+            .btn-action svg { width: 14px; height: 14px; }
             
             .image-preview-container {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -472,7 +483,7 @@
                 <div class="filter-grid">
                     <div>
                         <label for="filtroTurma" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #374151;">Filtrar por Turma</label>
-                        <select id="filtroTurma" onchange="carregarRegistos()" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff;">
+                        <select id="filtroTurma" onchange="carregarRegistos()" style="width: 100%; padding: 8px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 12px; background-color: var(--field-bg);">
                             <option value="">Todas as Turmas</option>
                             <option value="1ºA">1ºA</option>
                             <option value="1ºB">1ºB</option>
@@ -489,7 +500,7 @@
                     </div>
                     <div>
                         <label for="filtroResponsavel" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #374151;">Filtrar por Responsável</label>
-                        <input type="text" id="filtroResponsavel" oninput="carregarRegistos()" placeholder="Nome do responsável..." style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background-color: #fff; box-sizing: border-box;">
+                        <input type="text" id="filtroResponsavel" oninput="carregarRegistos()" placeholder="Nome do responsável..." style="width: 100%; padding: 8px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 12px; background-color: var(--field-bg); box-sizing: border-box;">
                     </div>
                 </div>
             </div>
@@ -498,9 +509,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 45px;">Nº</th>
+                            <th style="width: 35px;">Nº</th>
                             <th>Atividade</th>
-                            <th style="width: 120px; text-align: right;">Ações</th>
+                            <th style="width: 95px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="caaTableBody">
@@ -781,7 +792,7 @@
 
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--primary-green);">${reg.numero_atividade}</td>
-                    <td style="font-weight: 600;">${reg.atividade}</td>
+                    <td style="font-weight: 600; word-break: break-word;">${reg.atividade}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         <button class="btn-action btn-ver" title="Ver" onclick="verRegisto('${reg.id}')">
                             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -819,7 +830,7 @@
             const campoNumero = document.getElementById('numero_atividade');
             campoNumero.value = proximoNumero;
             campoNumero.readOnly = true;
-            campoNumero.classList.add('input-readonly-cinza'); // Garante explicitamente o fundo cinza
+            campoNumero.classList.add('input-readonly-cinza');
 
             document.getElementById('responsaveis').value = currentUser.name || currentUser.nome || currentUser.email;
 
