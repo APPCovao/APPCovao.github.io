@@ -9,10 +9,10 @@
     <style>
         :root {
             --primary-green: #16a34a;
-            --bg-page: #f0fdf4;
-            --card-bg: #ffffff;
+            --bg-page: #eafaf1; /* Verde muito claro / menta */
+            --card-bg: #ffffff; /* Branco quase puro #FFFFFF */
             --text-main: #1f2937;
-            --border-color: #bbf7d0;
+            --border-color: #b8c4d4; /* Cinzento-azulado suave */
             --text-light: #4b5563;
         }
 
@@ -81,14 +81,14 @@
 
         .section-header-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -137,11 +137,11 @@
 
         .filters-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
@@ -166,16 +166,16 @@
         .filter-group input {
             width: 100%;
             padding: 12px 14px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
-            background-color: #f8fafc;
+            background-color: #f0f3f7; /* Cinzento-azulado muito claro */
             transition: all 0.2s ease;
         }
 
         .filter-group input:hover {
-            border-color: #cbd5e1;
+            border-color: #94a3b8;
             background-color: #fff;
         }
 
@@ -188,9 +188,9 @@
 
         .table-card, .form-section-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             margin-bottom: 20px;
             overflow-x: auto;
         }
@@ -201,7 +201,7 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 450px;
+            min-width: 320px; /* Reduzido para encaixar melhor em telemóveis verticais */
         }
 
         th {
@@ -226,22 +226,22 @@
         tr:hover td { background-color: #fafaf9; }
 
         .btn-action {
-            padding: 6px 8px;
+            padding: 5px 6px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             border: none;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 2px;
+            margin-right: 1px;
             transition: opacity 0.2s;
             vertical-align: middle;
         }
         .btn-action svg {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
         .btn-action:hover { opacity: 0.85; }
@@ -254,31 +254,34 @@
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #374151; }
         .required { color: #dc2626; }
 
+        /* Campos com estilo cinzento-azulado muito claro e cantos arredondados de cerca de 8px */
         input[type="text"], select, textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
             font-family: inherit;
-            background-color: #fff;
+            background-color: #f0f3f7; /* Cinzento-azulado muito claro #F0F3F7 */
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-green);
+            background-color: #fff;
             box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
         }
 
         textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
 
         input:disabled, select:disabled, textarea:disabled, input[readonly] {
-            background-color: #e5e7eb !important;
+            background-color: #e2e8f0 !important;
             color: #1f2937 !important;
             font-weight: 600 !important;
             cursor: not-allowed;
-            border-color: #d1d5db !important;
+            border-color: var(--border-color) !important;
         }
 
         .form-row-grid {
@@ -288,7 +291,7 @@
         }
 
         .pee-objetivo-box {
-            background: #fafaf9;
+            background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 12px;
@@ -327,13 +330,13 @@
             padding: 14px;
             text-align: center;
             border-radius: 8px;
-            background: #fafaf9;
+            background: #f0f3f7;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .image-upload-box:hover {
-            background: #f0fdf4;
+            background: #e2e8f0;
             border-color: var(--primary-green);
         }
 
@@ -350,7 +353,7 @@
             height: 110px;
             border-radius: 8px;
             overflow: hidden;
-            border: 1px solid #d1d5db;
+            border: 1px solid var(--border-color);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
@@ -423,8 +426,8 @@
         }
         .custom-modal {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 24px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
             width: 100%;
@@ -446,9 +449,20 @@
             .filters-card { grid-template-columns: 1fr; padding: 12px; gap: 10px; }
             .form-row-grid { grid-template-columns: 1fr; gap: 0; }
             .form-section-card { padding: 12px; }
-            th, td { padding: 10px 8px; font-size: 12px; }
+            th, td { padding: 8px 6px; font-size: 12px; }
             .header-actions { width: 100%; justify-content: stretch; }
             .btn-top-action { width: 100%; }
+            /* Ajustes específicos para telemóveis verticais na coluna de ações da tabela */
+            td:last-child {
+                white-space: normal !important;
+                word-break: break-all;
+                text-align: right;
+                max-width: 90px;
+            }
+            .btn-action {
+                padding: 4px 5px;
+                margin-bottom: 2px;
+            }
         }
     </style>
 </head>
@@ -494,9 +508,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 20%;">Nº Ativ.</th>
+                        <th style="width: 18%;">Nº Ativ.</th>
                         <th>Atividade / Metas Associadas</th>
-                        <th style="width: 25%; text-align: right;">Ações</th>
+                        <th style="width: 22%; text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="objetivosTableBody"></tbody>
@@ -607,7 +621,7 @@
                 <!-- CAMPO DO RESPONSÁVEL -->
                 <div class="form-group" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 15px;">
                     <label for="modalObjResponsavel" style="margin-bottom: 0; font-weight: 600; font-size: 13px; color: #374151;">Responsável:</label>
-                    <input type="text" id="modalObjResponsavel" readonly style="width: 250px; background-color: #e5e7eb; text-align: right;" placeholder="Preenchimento automático">
+                    <input type="text" id="modalObjResponsavel" readonly style="width: 250px; background-color: #e2e8f0; text-align: right;" placeholder="Preenchimento automático">
                 </div>
 
                 <div class="form-buttons">
@@ -838,7 +852,6 @@
                 return null;
             }
 
-            // 1. Verificar se a atividade existe
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             let atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
 
@@ -858,7 +871,6 @@
                 }
             }
 
-            // Se não existe em nenhum lado, mostra logo a mensagem e bloqueia o botão
             if (!atv) {
                 erroMsg.innerText = `Erro: O número de atividade "${numStr}" ainda não existe. Registe a atividade primeiro!`;
                 erroMsg.style.display = 'block';
@@ -867,7 +879,6 @@
                 return null;
             }
 
-            // 2. Verificar se já existe um registo de objetivos para este número
             const isDuplicated = await verificarAtividadeDuplicada(numStr, editId);
             if (isDuplicated) {
                 erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
@@ -877,7 +888,6 @@
                 return null;
             }
 
-            // Se passou em ambas as validações, limpa o aviso e desbloqueia
             erroMsg.style.display = 'none';
             saveBtn.disabled = false;
             saveBtn.style.opacity = '1';
@@ -1030,7 +1040,6 @@
                     chk.checked = reg.metas_selecionadas && reg.metas_selecionadas.includes(chk.value);
                 });
 
-                // CARREGAR IMAGENS EXISTENTES
                 imagensGuardadas = [];
                 let imagensDoRegisto = reg.imagens;
                 if (typeof imagensDoRegisto === 'string') {
