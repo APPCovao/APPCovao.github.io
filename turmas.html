@@ -194,7 +194,7 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 420px;
+            min-width: 350px;
         }
 
         th {
@@ -380,7 +380,6 @@
                     <thead>
                         <tr>
                             <th>Turma</th>
-                            <th>Alunos</th>
                             <th>Port.</th>
                             <th>Mat.</th>
                             <th style="width: 85px; text-align: right;">Ações</th>
@@ -560,7 +559,7 @@
         async function carregarTurmas() {
             const tbody = document.getElementById('tabelaTurmasBody');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 12px;">A carregar turmas...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 12px;">A carregar turmas...</td></tr>`;
 
             const { data: turmas, error } = await supabaseClient
                 .from('turmas')
@@ -569,12 +568,12 @@
 
             if (error) {
                 console.error('Erro ao carregar turmas:', error);
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #dc2626; font-size: 12px;">Erro ao carregar dados da base de dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: #dc2626; font-size: 12px;">Erro ao carregar dados da base de dados.</td></tr>`;
                 return;
             }
 
             if (!turmas || turmas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 12px;">Ainda não existem turmas registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 12px;">Ainda não existem turmas registadas.</td></tr>`;
                 return;
             }
 
@@ -585,7 +584,6 @@
 
                 tr.innerHTML = `
                     <td><strong>${t.nome_turma}</strong></td>
-                    <td>${t.total_alunos}</td>
                     <td>${t.perc_port}</td>
                     <td>${t.perc_mat}</td>
                     <td style="text-align: right; white-space: nowrap;">
