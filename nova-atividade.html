@@ -8,11 +8,14 @@
         :root {
             --primary-green: #15803d;
             --primary-green-hover: #166534;
-            --bg-page: #f0fdf4;
-            --card-bg: #ffffff;
+            --bg-page: #e6f4ea; /* Verde muito claro / menta */
+            --card-bg: #ffffff; /* Branco quase puro #FFFFFF */
             --text-main: #1f2937;
             --border-color: #bbf7d0;
             --text-light: #4b5563;
+            /* Novas variáveis para os campos */
+            --input-bg: #F0F3F7;
+            --input-border: #B8C4D4;
         }
 
         body {
@@ -88,14 +91,14 @@
 
         .section-header-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px; /* Cantos arredondados a 8px */
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra muito suave */
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -153,14 +156,14 @@
         /* Barra de Filtros */
         .filters-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             padding: 16px;
             margin-bottom: 20px;
             display: flex;
             gap: 15px;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             flex-wrap: wrap;
         }
 
@@ -184,24 +187,25 @@
         .filter-group input, .filter-group select {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
             font-size: 14px;
-            background-color: #fff;
+            background-color: var(--input-bg);
             font-family: inherit;
         }
 
         .filter-group input:focus, .filter-group select:focus {
             outline: none;
             border-color: var(--primary-green);
+            background-color: #fff;
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
         .table-card, .form-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); /* Sombra suave para destacar o cartão */
         }
 
         .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -266,20 +270,24 @@
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #374151; }
         .required { color: #dc2626; }
 
+        /* Estilo dos campos com cinzento-azulado e cantos arredondados a 8px */
         input[type="text"], select, textarea {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
             font-family: inherit;
-            background-color: #fff;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-green);
+            background-color: #fff;
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
@@ -331,10 +339,10 @@
         }
         .custom-modal {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             padding: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             width: 100%;
             max-width: 380px;
             text-align: center;
