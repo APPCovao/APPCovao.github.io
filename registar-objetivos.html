@@ -594,7 +594,7 @@
                     <textarea id="modalObjResumo" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." required></textarea>
                 </div>
 
-                <!-- CAMPO DE EVIDÊNCIAS FOTOGRÁFICAS (BUCKET: fotos_relatorios_objetivos) -->
+                <!-- CAMPO DE EVIDÊNCIAS FOTOGRÁFICAS -->
                 <div class="form-group" id="seccaoImagensUpload">
                     <label>Registo Fotográfico (Evidências):</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
@@ -604,7 +604,7 @@
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
                 </div>
 
-                <!-- CAMPO DO RESPONSÁVEL ENCOSTADO À DIREITA NO FINAL -->
+                <!-- CAMPO DO RESPONSÁVEL -->
                 <div class="form-group" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 15px;">
                     <label for="modalObjResponsavel" style="margin-bottom: 0; font-weight: 600; font-size: 13px; color: #374151;">Responsável:</label>
                     <input type="text" id="modalObjResponsavel" readonly style="width: 250px; background-color: #e5e7eb; text-align: right;" placeholder="Preenchimento automático">
@@ -838,18 +838,7 @@
                 return null;
             }
 
-            const isDuplicated = await verificarAtividadeDuplicada(numStr, editId);
-            if (isDuplicated) {
-                erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
-                erroMsg.style.display = 'block';
-                saveBtn.disabled = true;
-                saveBtn.style.opacity = '0.5';
-            } else {
-                erroMsg.style.display = 'none';
-                saveBtn.disabled = false;
-                saveBtn.style.opacity = '1';
-            }
-
+            // 1. Verificar se a atividade existe
             let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             let atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
 
@@ -869,6 +858,30 @@
                 }
             }
 
+            // Se não existe em nenhum lado, mostra logo a mensagem e bloqueia o botão
+            if (!atv) {
+                erroMsg.innerText = `Erro: O número de atividade "${numStr}" ainda não existe. Registe a atividade primeiro!`;
+                erroMsg.style.display = 'block';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+                return null;
+            }
+
+            // 2. Verificar se já existe um registo de objetivos para este número
+            const isDuplicated = await verificarAtividadeDuplicada(numStr, editId);
+            if (isDuplicated) {
+                erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
+                erroMsg.style.display = 'block';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+                return null;
+            }
+
+            // Se passou em ambas as validações, limpa o aviso e desbloqueia
+            erroMsg.style.display = 'none';
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = '1';
+
             if (atv) {
                 document.getElementById('modalObjNomeAtividade').value = atv.titulo || atv.nome_atividade || '';
                 document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || atv.ano_letivo || '';
@@ -879,16 +892,6 @@
 
                 await calcularMediaESugestoes(atv.id || atv.numero, atv.numero);
                 return atv;
-            } else {
-                document.getElementById('modalObjNomeAtividade').value = '';
-                document.getElementById('modalObjAnoLetivo').value = '';
-                document.getElementById('modalObjTipo').value = '';
-                document.getElementById('modalObjNomeAtividade').readOnly = false;
-                document.getElementById('modalObjAnoLetivo').readOnly = false;
-                document.getElementById('modalObjTipo').readOnly = false;
-                
-                await calcularMediaESugestoes(null, numStr);
-                return null;
             }
         }
 
@@ -1027,7 +1030,7 @@
                     chk.checked = reg.metas_selecionadas && reg.metas_selecionadas.includes(chk.value);
                 });
 
-                // CARREGAR IMAGENS EXISTENTES (SUPORTA ARRAY OU STRING JSON)
+                // CARREGAR IMAGENS EXISTENTES
                 imagensGuardadas = [];
                 let imagensDoRegisto = reg.imagens;
                 if (typeof imagensDoRegisto === 'string') {
@@ -1127,8 +1130,6 @@
             const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
 
             const responsavelVal = document.getElementById('modalObjResponsavel').value || (currentUser ? (currentUser.name || currentUser.email) : '');
-
-            // Limpa o array para garantir que não entram nulos ou valores vazios incompatíveis com text[]
             const imagensLimpas = urlsImagensFinais.filter(url => url && typeof url === 'string' && url.trim() !== '');
 
             const dadosRegisto = {
