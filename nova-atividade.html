@@ -13,7 +13,7 @@
             --text-main: #1f2937;
             --border-color: #bbf7d0;
             --text-light: #4b5563;
-            /* Novas variáveis para os campos */
+            /* Variáveis para os campos */
             --input-bg: #F0F3F7;
             --input-border: #B8C4D4;
         }
@@ -92,13 +92,13 @@
         .section-header-card {
             background-color: var(--card-bg);
             border: 1px solid #d1d5db;
-            border-radius: 8px; /* Cantos arredondados a 8px */
+            border-radius: 8px;
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra muito suave */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -205,7 +205,7 @@
             background-color: var(--card-bg);
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); /* Sombra suave para destacar o cartão */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         }
 
         .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -239,7 +239,7 @@
         tr:hover td { background-color: #fafaf9; }
 
         .btn-action {
-            padding: 6px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-size: 12px;
             border: none;
@@ -248,13 +248,12 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 4px;
             transition: opacity 0.2s;
             vertical-align: middle;
         }
         .btn-action svg {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
         .btn-action:hover { opacity: 0.85; }
@@ -263,6 +262,33 @@
         .btn-delete { background-color: #dc2626; color: white; }
         .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
 
+        /* Ajustes específicos para telemóveis (evita scroll horizontal) */
+        @media (max-width: 600px) {
+            td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+            th {
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+            .table-card {
+                overflow-x: hidden;
+            }
+            table {
+                min-width: 100% !important;
+            }
+            td:last-child {
+                white-space: normal !important;
+                text-align: right;
+            }
+            .btn-action {
+                padding: 5px 6px;
+                margin-right: 2px;
+                margin-bottom: 2px;
+            }
+        }
+
         .form-card { padding: 20px; }
         @media (min-width: 600px) { .form-card { padding: 30px; } }
 
@@ -270,7 +296,6 @@
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #374151; }
         .required { color: #dc2626; }
 
-        /* Estilo dos campos com cinzento-azulado e cantos arredondados a 8px */
         input[type="text"], select, textarea {
             width: 100%;
             padding: 10px 14px;
