@@ -255,7 +255,6 @@
         .btn-editar { background-color: #f59e0b; color: white; }
         .btn-apagar { background-color: #dc2626; color: white; }
 
-        /* Estilização do Cartão do Formulário solicitada */
         .form-card {
             background-color: var(--form-card-bg);
             border: 1px solid #d1d5db;
@@ -280,7 +279,6 @@
             color: #dc2626;
         }
 
-        /* Estilização específica para os campos do formulário */
         input[type="text"],
         input[type="date"],
         input[type="number"],
@@ -297,7 +295,6 @@
             color: var(--text-main);
         }
 
-        /* Classe dedicada para garantir fundo cinza em campos bloqueados */
         input.input-readonly-cinza {
             background-color: #e5e7eb !important;
             color: #1f2937 !important;
@@ -603,9 +600,9 @@
                 </div>
 
                 <div class="form-group" id="seccaoImagensUpload">
-                    <label>12. Registo Fotográfico:</label>
+                    <label>12. Registo Fotográfico (Máx: 250 KB por imagem):</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias (Comprimidas Automaticamente)</p>
+                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias (Até 250 KB)</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
@@ -715,8 +712,32 @@
         }
 
         async function handleFiles(files) {
+            const tamanhoMaximoBytes = 250 * 1024; // 250 KB
+
             for (let file of files) {
+                // Verificar o tamanho do ficheiro original antes de processar
+                if (file.size > tamanhoMaximoBytes) {
+                    const tamanhoAtualKB = Math.round(file.size / 1024);
+                    mostrarPopupPersonalizado(
+                        'Ficheiro Demasiado Grande', 
+                        `A imagem "${file.name}" tem ${tamanhoAtualKB} KB. O limite máximo permitido é de 250 KB. Por favor, escolha uma imagem mais pequena ou reduza o seu tamanho.`, 
+                        '⚠️'
+                    );
+                    continue; // Ignora esta imagem e avança para a próxima
+                }
+
                 const blobComprimido = await comprimirImagem(file);
+                
+                // Validação de segurança extra para o blob gerado
+                if (blobComprimido.size > tamanhoMaximoBytes) {
+                    mostrarPopupPersonalizado(
+                        'Aviso de Tamanho', 
+                        `A imagem "${file.name}" ultrapassou os 250 KB após o processamento.`, 
+                        '⚠️'
+                    );
+                    continue;
+                }
+
                 const urlLocal = URL.createObjectURL(blobComprimido);
                 
                 imagensGuardadas.push({
@@ -726,6 +747,8 @@
                 });
             }
             renderizarPrevisualizacaoImagens();
+            // Limpa o valor do input para permitir carregar o mesmo ficheiro se necessário
+            document.getElementById('fileInput').value = '';
         }
 
         function removerImagem(index) {
