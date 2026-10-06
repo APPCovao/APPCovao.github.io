@@ -14,6 +14,11 @@
             --card-bg: #ffffff;
             --text-main: #1f2937;
             --border-color: #bbf7d0;
+
+            /* Cores específicas solicitadas para o formulário */
+            --form-bg: #FFFFFF;
+            --field-bg: #F0F3F7;
+            --field-border: #B8C4D4;
         }
 
         body {
@@ -189,14 +194,14 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 500px;
+            min-width: 420px;
         }
 
         th {
             background-color: #f0fdf4;
             color: var(--primary-green);
-            padding: 14px 16px;
-            font-size: 12px;
+            padding: 12px 10px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
             border-bottom: 2px solid var(--border-color);
@@ -204,8 +209,8 @@
         }
 
         td {
-            padding: 14px 16px;
-            font-size: 13px;
+            padding: 12px 10px;
+            font-size: 12px;
             border-bottom: 1px solid #f3f4f6;
             color: var(--text-main);
         }
@@ -218,27 +223,25 @@
             background-color: #fafaf9;
         }
 
-        /* Botões de Ação na Tabela com Ícones SVG Brancos */
+        /* Botões de Ação na Tabela compactos para telemóvel vertical */
         .btn-action {
-            padding: 6px 10px;
+            padding: 5px 6px;
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
             border: none;
             cursor: pointer;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            margin-right: 3px;
+            margin-right: 1px;
             transition: opacity 0.2s;
             color: white;
+            vertical-align: middle;
         }
 
         .btn-action svg {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             fill: currentColor;
         }
 
@@ -250,13 +253,13 @@
         .btn-editar { background-color: #047857; }
         .btn-apagar { background-color: #dc2626; }
 
-        /* Formulário Estilizado */
+        /* Formulário Estilizado conforme especificações */
         .form-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: var(--form-bg);
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         @media (min-width: 640px) {
@@ -266,14 +269,14 @@
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 13px;
+            margin-bottom: 5px;
+            font-size: 12px;
             color: #374151;
         }
 
@@ -286,16 +289,17 @@
         select {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
+            background-color: var(--field-bg);
+            border: 1px solid var(--field-border);
+            border-radius: 8px;
+            font-size: 13px;
             box-sizing: border-box;
             font-family: inherit;
-            background-color: #fff;
+            color: var(--text-main);
         }
 
         input:disabled, select:disabled {
-            background-color: #f8fafc;
+            background-color: #e5e7eb;
             color: var(--primary-green);
             font-weight: 600;
             cursor: not-allowed;
@@ -304,26 +308,27 @@
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary-green);
+            background-color: #fff;
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
         }
 
         .calc-display {
-            background-color: #f8fafc;
-            border: 1px dashed #cbd5e1;
+            background-color: var(--field-bg);
+            border: 1px dashed var(--field-border);
             padding: 10px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
             color: var(--primary-green);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .form-footer {
             display: flex;
-            flex-direction: column-reverse;
-            gap: 10px;
-            margin-top: 25px;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
             border-top: 1px solid #e5e7eb;
-            padding-top: 15px;
+            padding-top: 14px;
         }
 
         @media (min-width: 640px) {
@@ -331,6 +336,14 @@
                 flex-direction: row;
                 justify-content: flex-end;
             }
+            .form-footer button {
+                width: auto;
+                min-width: 150px;
+            }
+            th { padding: 14px 16px; font-size: 12px; }
+            td { padding: 14px 16px; font-size: 13px; }
+            .btn-action { padding: 6px 10px; font-size: 12px; margin-right: 3px; }
+            .btn-action svg { width: 14px; height: 14px; }
         }
     </style>
 </head>
@@ -367,10 +380,10 @@
                     <thead>
                         <tr>
                             <th>Turma</th>
-                            <th>Nº Alunos</th>
-                            <th>Português (%)</th>
-                            <th>Matemática (%)</th>
-                            <th style="width: 170px; text-align: right;">Ações</th>
+                            <th>Alunos</th>
+                            <th>Port.</th>
+                            <th>Mat.</th>
+                            <th style="width: 85px; text-align: right;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaTurmasBody">
@@ -382,12 +395,12 @@
 
         <!-- Vista de Formulário (Oculto por defeito) -->
         <div id="vistaFormulario" style="display: none;" class="form-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <div>
-                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 4px 0; font-size: 20px;">Registar Dados da Turma</h1>
-                    <p style="margin: 0; color: #4b5563; font-size: 13px;">EB1/PE do Covão e Vargem – Estatísticas de Turma</p>
+                    <h1 id="formTitle" style="color: var(--primary-green); margin: 0 0 2px 0; font-size: 18px;">Registar Dados da Turma</h1>
+                    <p style="margin: 0; color: #4b5563; font-size: 12px;">EB1/PE do Covão e Vargem – Estatísticas de Turma</p>
                 </div>
-                <button class="btn-top-action" onclick="fecharFormulario()" style="background-color: #6b7280; width: auto;">← Voltar</button>
+                <button class="btn-top-action" onclick="fecharFormulario()" style="background-color: #6b7280; width: auto; padding: 6px 12px; font-size: 12px;">← Voltar</button>
             </div>
 
             <form id="turmaForm">
@@ -547,7 +560,7 @@
         async function carregarTurmas() {
             const tbody = document.getElementById('tabelaTurmasBody');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #6b7280;">A carregar turmas...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 12px;">A carregar turmas...</td></tr>`;
 
             const { data: turmas, error } = await supabaseClient
                 .from('turmas')
@@ -556,12 +569,12 @@
 
             if (error) {
                 console.error('Erro ao carregar turmas:', error);
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #dc2626;">Erro ao carregar dados da base de dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #dc2626; font-size: 12px;">Erro ao carregar dados da base de dados.</td></tr>`;
                 return;
             }
 
             if (!turmas || turmas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #6b7280;">Ainda não existem turmas registadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 1.5rem; text-align: center; color: #6b7280; font-size: 12px;">Ainda não existem turmas registadas.</td></tr>`;
                 return;
             }
 
@@ -586,7 +599,7 @@
                             <button class="btn-action btn-apagar" onclick="eliminarRegisto(${t.id})" title="Apagar">
                                 <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                             </button>
-                        ` : '<span style="color: #9ca3af; font-size: 0.8rem;">🔒 Bloqueado</span>'}
+                        ` : '<span style="color: #9ca3af; font-size: 0.75rem;">🔒</span>'}
                     </td>
                 `;
                 tbody.appendChild(tr);
