@@ -170,7 +170,7 @@
             border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
-            background-color: #f0f3f7; /* Cinzento-azulado muito claro */
+            background-color: #f0f3f7;
             transition: all 0.2s ease;
         }
 
@@ -201,7 +201,7 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            min-width: 320px; /* Reduzido para encaixar melhor em telemóveis verticais */
+            min-width: 320px;
         }
 
         th {
@@ -254,7 +254,6 @@
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #374151; }
         .required { color: #dc2626; }
 
-        /* Campos com estilo cinzento-azulado muito claro e cantos arredondados de cerca de 8px */
         input[type="text"], select, textarea {
             width: 100%;
             padding: 10px 12px;
@@ -263,7 +262,7 @@
             font-size: 14px;
             box-sizing: border-box;
             font-family: inherit;
-            background-color: #f0f3f7; /* Cinzento-azulado muito claro #F0F3F7 */
+            background-color: #f0f3f7;
             transition: all 0.2s ease;
         }
 
@@ -452,7 +451,6 @@
             th, td { padding: 8px 6px; font-size: 12px; }
             .header-actions { width: 100%; justify-content: stretch; }
             .btn-top-action { width: 100%; }
-            /* Ajustes específicos para telemóveis verticais na coluna de ações da tabela */
             td:last-child {
                 white-space: normal !important;
                 word-break: break-all;
@@ -608,11 +606,11 @@
                     <textarea id="modalObjResumo" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." required></textarea>
                 </div>
 
-                <!-- CAMPO DE EVIDÊNCIAS FOTOGRÁFICAS -->
+                <!-- CAMPO DE EVIDÊNCIAS FOTOGRÁFICAS (MÁX: 250 KB) -->
                 <div class="form-group" id="seccaoImagensUpload">
-                    <label>Registo Fotográfico (Evidências):</label>
+                    <label>Registo Fotográfico (Máx: 250 KB por imagem):</label>
                     <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias (Comprimidas Automaticamente)</p>
+                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias (Até 250 KB)</p>
                         <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
@@ -646,6 +644,18 @@
         </div>
     </div>
 
+    <!-- Popup Personalizado de Avisos -->
+    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 3000; padding: 1rem; box-sizing: border-box;">
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
+            <div id="popupIcon" style="font-size: 1.8rem; margin-bottom: 0.4rem;">🏫</div>
+            <h3 id="popupTitle" style="margin: 0 0 8px 0; color: var(--primary-green); font-size: 16px;">Aviso</h3>
+            <p id="popupMessage" style="margin: 0 0 16px 0; color: #1f2937; line-height: 1.4; font-size: 12px;"></p>
+            <div>
+                <button onclick="fecharPopup()" style="background-color: #16a34a; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; width: 100%;">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script>
         // Inicialização do Supabase
@@ -667,6 +677,17 @@
         function isAdminUser(user) {
             if (!user) return false;
             return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
+        }
+
+        function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫') {
+            document.getElementById('popupTitle').innerText = titulo;
+            document.getElementById('popupMessage').innerText = mensagem;
+            document.getElementById('popupIcon').innerText = icone;
+            document.getElementById('customPopup').style.display = 'flex';
+        }
+
+        function fecharPopup() {
+            document.getElementById('customPopup').style.display = 'none';
         }
 
         // COMPRESSÃO DE IMAGENS NO CLIENTE
@@ -708,8 +729,32 @@
         }
 
         async function handleFiles(files) {
+            const tamanhoMaximoBytes = 250 * 1024; // 250 KB
+
             for (let file of files) {
+                // Verificar se o ficheiro original ultrapassa os 250 KB
+                if (file.size > tamanhoMaximoBytes) {
+                    const tamanhoAtualKB = Math.round(file.size / 1024);
+                    mostrarPopupPersonalizado(
+                        'Ficheiro Demasiado Grande',
+                        `A imagem "${file.name}" tem ${tamanhoAtualKB} KB. O limite máximo permitido é de 250 KB. Por favor, escolha uma imagem mais pequena ou reduza o seu tamanho.`,
+                        '⚠️'
+                    );
+                    continue; // Ignora esta imagem e passa para a seguinte
+                }
+
                 const blobComprimido = await comprimirImagem(file);
+                
+                // Validação extra pós-compressão
+                if (blobComprimido.size > tamanhoMaximoBytes) {
+                    mostrarPopupPersonalizado(
+                        'Aviso de Tamanho',
+                        `A imagem "${file.name}" ultrapassou os 250 KB após o processamento.`,
+                        '⚠️'
+                    );
+                    continue;
+                }
+
                 const urlLocal = URL.createObjectURL(blobComprimido);
                 
                 imagensGuardadas.push({
@@ -719,6 +764,8 @@
                 });
             }
             renderizarPrevisualizacaoImagens();
+            // Limpa o input para permitir carregar o mesmo ficheiro se necessário
+            document.getElementById('fileInput').value = '';
         }
 
         function removerImagem(index) {
