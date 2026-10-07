@@ -668,11 +668,11 @@
                 tr.innerHTML = `
                     <td><strong>${u.name || 'Sem Nome'}</strong></td>
                     <td style="color: var(--text-light);">${u.email}</td>
-                    <td>${isAdm} \vert{}${statusAprovacao}</td>
+                    <td>${isAdm} | ${statusAprovacao}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         ${!u.aprovado ? `<button class="btn-action btn-approve" onclick="aprovarUtilizador(${u.id})">Aprovar</button>` : ''}
-                        <button class="btn-action btn-edit" onclick="abrirModalEdicao(${u.id}, '${u.name || ''}', '${u.email \vert{}\vert{} ''}', '${u.password || u.palavra_passe || ''}')">Editar</button>
-                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${u.id},${u.is_admin}, '${u.email}')">${u.is_admin ? 'Remover Admin' : 'Tornar Admin'}</button>
+                        <button class="btn-action btn-edit" onclick="abrirModalEdicao(${u.id}, '${u.name || ''}', '${u.email || ''}', '${u.password || u.palavra_passe || ''}')">Editar</button>
+                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${u.id}, ${u.is_admin}, '${u.email}')">${u.is_admin ? 'Remover Admin' : 'Tornar Admin'}</button>
                         <button class="btn-action btn-delete" onclick="eliminarUtilizador(${u.id}, '${u.email}')">Eliminar</button>
                     </td>
                 `;
@@ -701,7 +701,6 @@
             const client = getSupabase();
             if (!client) return;
 
-            // Atualiza tanto 'password' como 'palavra_passe' para garantir compatibilidade com a estrutura da base de dados
             const { error } = await client.from('users').update({
                 name: name,
                 email: email,
@@ -798,7 +797,7 @@
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
                 <td><strong>Nº ${reg.numero_atividade !== null && reg.numero_atividade !== undefined ? reg.numero_atividade : '-'}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
-                <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade \vert{}\vert{} '-'}</span> \vert{}${reg.ano_letivo || '-'}</td>
+                <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade || '-'}</span> | ${reg.ano_letivo || '-'}</td>
                 <td>${reg.responsavel || reg.criador_nome || '-'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_objetivos_atividades', ${reg.id}, carregarRegistarObjetivos)">Eliminar</button>
@@ -854,4 +853,26 @@
         }
 
         async function confirmarApagarTodasTabela(nomeTabela, callbackRefresh) {
-            mostrarConfirmacao('Apagar Tudo', `Tem a certeza que pretende ap
+            mostrarConfirmacao('Apagar Tudo', `Tem a certeza que pretende apagar TODOS os registos desta tabela? Esta ação é irreversível.`, async () => {
+                const client = getSupabase();
+                const { error } = await client.from(nomeTabela).delete().neq('id', -1); 
+                if (error) {
+                    mostrarAlerta('Erro', 'Não foi possível limpar os registos da tabela.');
+                    return;
+                }
+                callbackRefresh();
+                mostrarAlerta('Sucesso', 'Todos os registos foram eliminados.');
+            });
+        }
+
+        // Inicializar painel carregando todas as tabelas
+        carregarUtilizadores();
+        carregarAtividades();
+        carregarAvaliacoesAtividades();
+        carregarRegistarObjetivos();
+        carregarRegistosCaa();
+        carregarTurmas();
+        carregarRequisicoes();
+    </script>
+</body>
+</html>
