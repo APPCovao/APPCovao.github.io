@@ -671,7 +671,7 @@
                     <td>${isAdm} | ${statusAprovacao}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         ${!u.aprovado ? `<button class="btn-action btn-approve" onclick="aprovarUtilizador(${u.id})">Aprovar</button>` : ''}
-                        <button class="btn-action btn-edit" onclick="abrirModalEdicao(${u.id}, '${u.name || ''}', '${u.email || ''}', '${u.password || u.palavra_passe || ''}')">Editar</button>
+                        <button class="btn-action btn-edit" onclick="abrirModalEdicao(${u.id}, '${u.name || ''}', '${u.email || ''}', '${u.password || ''}')">Editar</button>
                         <button class="btn-action btn-toggle" onclick="alternarAdmin(${u.id}, ${u.is_admin}, '${u.email}')">${u.is_admin ? 'Remover Admin' : 'Tornar Admin'}</button>
                         <button class="btn-action btn-delete" onclick="eliminarUtilizador(${u.id}, '${u.email}')">Eliminar</button>
                     </td>
@@ -704,8 +704,7 @@
             const { error } = await client.from('users').update({
                 name: name,
                 email: email,
-                password: password,
-                palavra_passe: password
+                password: password
             }).eq('id', id);
 
             if (error) {
