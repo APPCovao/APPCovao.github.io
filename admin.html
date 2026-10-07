@@ -209,21 +209,26 @@
             cursor: pointer;
             font-weight: 600;
             transition: background 0.2s;
+            margin-right: 4px;
         }
 
         .btn-approve {
             background-color: #dcfce7;
             color: #15803d;
-            margin-right: 4px;
         }
         .btn-approve:hover { background-color: #bbf7d0; }
 
-        .btn-toggle {
+        .btn-edit {
             background-color: #e0f2fe;
             color: #0369a1;
-            margin-right: 4px;
         }
-        .btn-toggle:hover { background-color: #bae6fd; }
+        .btn-edit:hover { background-color: #bae6fd; }
+
+        .btn-toggle {
+            background-color: #fef08a;
+            color: #854d0e;
+        }
+        .btn-toggle:hover { background-color: #fde047; }
 
         .btn-delete {
             background-color: #fee2e2;
@@ -278,7 +283,34 @@
         .modal-icon { font-size: 32px; margin-bottom: 10px; }
         .modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
         .modal-message { font-size: 13px; color: var(--text-light); margin-bottom: 16px; line-height: 1.4; }
-        .modal-buttons { display: flex; gap: 8px; justify-content: center; }
+        
+        .form-group-modal {
+            text-align: left;
+            margin-bottom: 12px;
+        }
+        .form-group-modal label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .form-group-modal input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+        }
+        .form-group-modal input:focus {
+            border-color: var(--primary-green);
+            background-color: #fff;
+            outline: none;
+        }
+
+        .modal-buttons { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }
         .modal-btn { padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s; flex: 1; }
         .modal-btn-cancel { background-color: #f1f5f9; color: var(--text-light); }
         .modal-btn-cancel:hover { background-color: #e2e8f0; }
@@ -504,13 +536,41 @@
 
     </div>
 
-    <!-- MODAL -->
+    <!-- MODAL GENÉRICO -->
     <div id="customModal" class="modal-overlay">
         <div class="modal-card">
             <div id="modalIcon" class="modal-icon">⚠️</div>
             <div id="modalTitle" class="modal-title">Confirmação</div>
             <div id="modalMessage" class="modal-message">Mensagem...</div>
             <div id="modalButtons" class="modal-buttons"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO DE UTILIZADOR -->
+    <div id="editUserModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 440px; text-align: left;">
+            <div style="font-size: 24px; text-align: center; margin-bottom: 5px;">✏️</div>
+            <div class="modal-title" style="text-align: center; margin-bottom: 15px;">Editar Utilizador</div>
+            
+            <input type="hidden" id="editUserId">
+            
+            <div class="form-group-modal">
+                <label>Nome:</label>
+                <input type="text" id="editUserName">
+            </div>
+            <div class="form-group-modal">
+                <label>Email:</label>
+                <input type="email" id="editUserEmail">
+            </div>
+            <div class="form-group-modal">
+                <label>Palavra-passe:</label>
+                <input type="text" id="editUserPassword" placeholder="Insira a nova palavra-passe">
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="fecharModalEdicao()">Cancelar</button>
+                <button class="modal-btn modal-btn-ok" onclick="guardarEdicaoUtilizador()">Guardar Alterações</button>
+            </div>
         </div>
     </div>
 
@@ -608,15 +668,55 @@
                 tr.innerHTML = `
                     <td><strong>${u.name || 'Sem Nome'}</strong></td>
                     <td style="color: var(--text-light);">${u.email}</td>
-                    <td>${isAdm} | ${statusAprovacao}</td>
+                    <td>${isAdm} \vert{}${statusAprovacao}</td>
                     <td style="text-align: right; white-space: nowrap;">
                         ${!u.aprovado ? `<button class="btn-action btn-approve" onclick="aprovarUtilizador(${u.id})">Aprovar</button>` : ''}
-                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${u.id}, ${u.is_admin}, '${u.email}')">${u.is_admin ? 'Remover Admin' : 'Tornar Admin'}</button>
+                        <button class="btn-action btn-edit" onclick="abrirModalEdicao(${u.id}, '${u.name || ''}', '${u.email \vert{}\vert{} ''}', '${u.password || u.palavra_passe || ''}')">Editar</button>
+                        <button class="btn-action btn-toggle" onclick="alternarAdmin(${u.id},${u.is_admin}, '${u.email}')">${u.is_admin ? 'Remover Admin' : 'Tornar Admin'}</button>
                         <button class="btn-action btn-delete" onclick="eliminarUtilizador(${u.id}, '${u.email}')">Eliminar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function abrirModalEdicao(id, nome, email, password) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('editUserName').value = nome;
+            document.getElementById('editUserEmail').value = email;
+            document.getElementById('editUserPassword').value = password;
+            document.getElementById('editUserModal').classList.add('active');
+        }
+
+        function fecharModalEdicao() {
+            document.getElementById('editUserModal').classList.remove('active');
+        }
+
+        async function guardarEdicaoUtilizador() {
+            const id = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value.trim();
+            const email = document.getElementById('editUserEmail').value.trim();
+            const password = document.getElementById('editUserPassword').value.trim();
+
+            const client = getSupabase();
+            if (!client) return;
+
+            // Atualiza tanto 'password' como 'palavra_passe' para garantir compatibilidade com a estrutura da base de dados
+            const { error } = await client.from('users').update({
+                name: name,
+                email: email,
+                password: password,
+                palavra_passe: password
+            }).eq('id', id);
+
+            if (error) {
+                mostrarAlerta('Erro', 'Não foi possível atualizar o utilizador: ' + error.message);
+                return;
+            }
+
+            fecharModalEdicao();
+            carregarUtilizadores();
+            mostrarAlerta('Sucesso', 'Dados do utilizador atualizados com sucesso!');
         }
 
         async function aprovarUtilizador(id) {
@@ -698,7 +798,7 @@
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
                 <td><strong>Nº ${reg.numero_atividade !== null && reg.numero_atividade !== undefined ? reg.numero_atividade : '-'}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
-                <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade || '-'}</span> | ${reg.ano_letivo || '-'}</td>
+                <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px;">${reg.tipo_atividade \vert{}\vert{} '-'}</span> \vert{}${reg.ano_letivo || '-'}</td>
                 <td>${reg.responsavel || reg.criador_nome || '-'}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('registos_objetivos_atividades', ${reg.id}, carregarRegistarObjetivos)">Eliminar</button>
@@ -754,26 +854,4 @@
         }
 
         async function confirmarApagarTodasTabela(nomeTabela, callbackRefresh) {
-            mostrarConfirmacao('Apagar Tudo', `Tem a certeza que pretende apagar TODOS os registos desta tabela? Esta ação é irreversível.`, async () => {
-                const client = getSupabase();
-                const { error } = await client.from(nomeTabela).delete().neq('id', -1); 
-                if (error) {
-                    mostrarAlerta('Erro', 'Não foi possível limpar os registos da tabela.');
-                    return;
-                }
-                callbackRefresh();
-                mostrarAlerta('Sucesso', 'Todos os registos foram eliminados.');
-            });
-        }
-
-        // Inicializar painel carregando todas as tabelas
-        carregarUtilizadores();
-        carregarAtividades();
-        carregarAvaliacoesAtividades();
-        carregarRegistarObjetivos();
-        carregarRegistosCaa();
-        carregarTurmas();
-        carregarRequisicoes();
-    </script>
-</body>
-</html>
+            mostrarConfirmacao('Apagar Tudo', `Tem a certeza que pretende ap
