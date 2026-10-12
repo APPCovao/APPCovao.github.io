@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Objetivos e Avaliações Globais - Registos Covão</title>
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -34,1199 +33,115 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .navbar .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .navbar .brand img { height: 28px; }
-
-        .navbar .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 13px;
-        }
-
-        .navbar .user-info span { color: #dcfce7; }
-
-        .btn-voltar-menu {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: background 0.2s;
-            white-space: nowrap;
-        }
-
-        .btn-voltar-menu:hover { background-color: #1d4ed8; }
-
-        .main-container {
+        .container {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 15px;
-            box-sizing: border-box;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
-        .section-header-card {
+        .card {
             background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .section-header-card h1 {
-            color: var(--primary-green);
-            font-size: 22px;
-            margin: 0 0 4px 0;
-        }
-
-        .section-header-card p {
-            margin: 0;
-            color: #4b5563;
-            font-size: 13px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            width: auto;
-            justify-content: flex-end;
-        }
-
-        .btn-top-action {
-            background-color: #16a34a;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-            text-decoration: none;
-            width: auto;
-            justify-content: center;
-            box-sizing: border-box;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .btn-top-action:hover { background-color: #15803d; }
-
-        .filters-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            box-sizing: border-box;
-            align-items: center;
-        }
-
-        .filter-group {
-            position: relative;
-        }
-
-        .filter-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--primary-green);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .filter-group input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            background-color: #f0f3f7;
-            transition: all 0.2s ease;
-        }
-
-        .filter-group input:hover {
-            border-color: #94a3b8;
-            background-color: #fff;
-        }
-
-        .filter-group input:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
-        }
-
-        .table-card, .form-section-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
-            overflow-x: auto;
-        }
-
-        .form-section-card { padding: 20px; display: none; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            min-width: 320px;
-        }
-
-        th {
-            background-color: #f0fdf4;
-            color: var(--primary-green);
-            padding: 12px 14px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--border-color);
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 12px 14px;
-            font-size: 13px;
-            border-bottom: 1px solid #f3f4f6;
-            color: var(--text-main);
-        }
-
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background-color: #fafaf9; }
-
-        .btn-action {
-            padding: 5px 6px;
-            border-radius: 6px;
-            font-size: 11px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1px;
-            transition: opacity 0.2s;
-            vertical-align: middle;
-        }
-        .btn-action svg {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-        }
-        .btn-action:hover { opacity: 0.85; }
-        .btn-view { background-color: #0ea5e9; color: white; }
-        .btn-edit { background-color: #f59e0b; color: white; }
-        .btn-delete { background-color: #dc2626; color: white; }
-        .btn-action:disabled { background-color: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
-
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #374151; }
-        .required { color: #dc2626; }
-
-        input[type="text"], select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            font-family: inherit;
-            background-color: #f0f3f7;
-            transition: all 0.2s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            background-color: #fff;
-            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
-        }
-
-        textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
-
-        input:disabled, select:disabled, textarea:disabled, input[readonly] {
-            background-color: #e2e8f0 !important;
-            color: #1f2937 !important;
-            font-weight: 600 !important;
-            cursor: not-allowed;
-            border-color: var(--border-color) !important;
-        }
-
-        .form-row-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .pee-objetivo-box {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-
-        .pee-obj-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--primary-green);
-            cursor: pointer;
-        }
-
-        .pee-meta-list {
-            margin-top: 8px;
-            margin-left: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .pee-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #4b5563;
-            cursor: pointer;
-        }
-
-        .image-upload-box {
-            border: 2px dashed var(--border-color);
-            padding: 14px;
-            text-align: center;
-            border-radius: 8px;
-            background: #f0f3f7;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .image-upload-box:hover {
-            background: #e2e8f0;
-            border-color: var(--primary-green);
-        }
-
-        .image-preview-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .image-preview-item {
-            position: relative;
-            width: 100%;
-            height: 110px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
+            padding: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
         }
 
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-remove-img {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(220, 38, 38, 0.85);
+        .btn {
+            background-color: var(--primary-green);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
-            z-index: 10;
-        }
-
-        .btn-remove-img:hover {
-            background: rgba(220, 38, 38, 1);
-        }
-
-        .form-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 16px;
-            flex-direction: column-reverse;
-        }
-
-        .btn-form-action {
-            padding: 10px 16px;
-            border-radius: 8px;
             font-weight: 600;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
-            text-decoration: none;
-            display: inline-block;
         }
-        .btn-cancel { background-color: #6b7280; color: white; }
-        .btn-cancel:hover { background-color: #4b5563; }
 
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 1rem;
-            box-sizing: border-box;
+        .btn:hover {
+            background-color: #15803d;
         }
-        .custom-modal {
-            background-color: var(--card-bg);
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.5rem;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 360px;
-            text-align: center;
+            border-radius: 4px;
             box-sizing: border-box;
-        }
-
-        @media (max-width: 768px) {
-            body { font-size: 14px; }
-            .navbar { padding: 0.6rem 0.8rem; }
-            .navbar .brand span { display: none; }
-            .navbar .user-info { gap: 8px; font-size: 11px; }
-            .navbar .user-info span { max-width: 95px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-            .main-container { margin: 10px 6px; padding: 0; }
-            .section-header-card { padding: 12px; flex-direction: column; align-items: stretch; }
-            .section-header-card h1 { font-size: 18px; }
-            .section-header-card p { font-size: 12px; }
-            .filters-card { grid-template-columns: 1fr; padding: 12px; gap: 10px; }
-            .form-row-grid { grid-template-columns: 1fr; gap: 0; }
-            .form-section-card { padding: 12px; }
-            th, td { padding: 8px 6px; font-size: 12px; }
-            .header-actions { width: 100%; justify-content: stretch; }
-            .btn-top-action { width: 100%; }
-            td:last-child {
-                white-space: normal !important;
-                word-break: break-all;
-                text-align: right;
-                max-width: 90px;
-            }
-            .btn-action {
-                padding: 4px 5px;
-                margin-bottom: 2px;
-            }
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <h2>Registos Covão</h2>
+    </div>
 
-    <nav class="navbar">
-        <div class="brand">
-            <img src="imagens/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span>Registos Covão</span>
-        </div>
-        <div class="user-info">
-            <span><strong id="userNameSpan">Utilizador</strong></span>
-            <a href="atividades.html" class="btn-voltar-menu">⬅ Menu</a>
-        </div>
-    </nav>
-
-    <div class="main-container">
-        <!-- CABEÇALHO DA LISTAGEM -->
-        <div id="listagemHeaderCard" class="section-header-card">
-            <div>
-                <h1>Objetivos e Avaliações Globais</h1>
-                <p>Consulta de associações a objetivos, metas PEE e avaliações globais.</p>
-            </div>
-            <div class="header-actions">
-                <button type="button" class="btn-top-action" onclick="mostrarFormulario(null, 'criar')">🎯 Registar Objetivos</button>
-            </div>
-        </div>
-
-        <!-- BARRA DE FILTROS -->
-        <div id="listagemFiltersCard" class="filters-card">
-            <div class="filter-group">
-                <label for="filtroNumeroAtividade">Nº da Atividade</label>
-                <input type="text" id="filtroNumeroAtividade" placeholder="Ex: 1, 2, 3..." oninput="carregarObjetivos()">
-            </div>
-            <div class="filter-group">
-                <label for="filtroCriador">Criado por</label>
-                <input type="text" id="filtroCriador" placeholder="Nome do autor..." oninput="carregarObjetivos()">
-            </div>
-        </div>
-
-        <!-- TABELA DE LISTAGEM -->
-        <div id="listagemTableCard" class="table-card">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 18%;">Nº Ativ.</th>
-                        <th>Atividade / Metas Associadas</th>
-                        <th style="width: 22%; text-align: right;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="objetivosTableBody"></tbody>
-            </table>
-        </div>
-
-        <!-- SECÇÃO DO FORMULÁRIO -->
-        <div id="formularioCard" class="form-section-card">
-            <h2 id="formTitulo" style="color: #16a34a; margin-top: 0; font-size: 18px;">Registo de Objetivos e Avaliação Global</h2>
-            <p style="color: var(--text-light); font-size: 12px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE e consolide as avaliações.</p>
-            
-            <form id="objetivoForm" onsubmit="salvarRegistoObjetivo(event)">
-                <input type="hidden" id="editObjetivoId">
-
+    <div class="container">
+        <div class="card">
+            <h3>Gestão de Objetivos</h3>
+            <form id="oMeuFormulario">
                 <div class="form-group">
-                    <label>Número da Atividade <span class="required">*</span></label>
-                    <input type="text" id="modalObjNumAtividade" placeholder="Ex: 1, 2, 3..." required oninput="aoMudarNumeroAtividade(this.value)">
-                    <small id="erroDuplicadoMsg" style="color: #dc2626; font-weight: 600; display: none; margin-top: 4px;"></small>
+                    <label for="numeroRegisto">Número:</label>
+                    <input type="text" id="numeroRegisto" autocomplete="off" placeholder="Digite o número...">
                 </div>
-
                 <div class="form-group">
-                    <label>Nome da Atividade</label>
-                    <input type="text" id="modalObjNomeAtividade" placeholder="Preenchimento automático ou manual">
+                    <label for="campoNome">Nome / Descrição:</label>
+                    <input type="text" id="campoNome" autocomplete="off">
                 </div>
-
-                <div class="form-row-grid">
-                    <div class="form-group">
-                        <label>Ano Letivo</label>
-                        <input type="text" id="modalObjAnoLetivo" placeholder="Preenchimento automático ou manual">
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo de Atividade</label>
-                        <input type="text" id="modalObjTipo" placeholder="Preenchimento automático ou manual">
-                    </div>
-                </div>
-
-                <div class="form-row-grid">
-                    <div class="form-group">
-                        <label>Integra o PAA? <span class="required">*</span></label>
-                        <select id="modalObjPaa" required>
-                            <option value="">Selecione</option>
-                            <option value="Sim">Sim</option><option value="Não">Não</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Integra o PEE? <span class="required">*</span></label>
-                        <select id="modalObjPee" required>
-                            <option value="">Selecione</option>
-                            <option value="Sim">Sim</option><option value="Não">Não</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label style="margin-bottom: 10px; display: block; font-weight: 600;">Objetivos e respetivas Metas do PEE abrangidos:</label>
-                    
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title"><input type="checkbox" name="objCheck" value="Objetivo 1: Melhorar a articulação pedagógica"> Objetivo 1: Melhorar a articulação pedagógica</label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item"><input type="checkbox" name="metaCheck" value="Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma"> Meta 1: Anualmente realizar seis Reuniões de Concelho de Turma</label>
-                        </div>
-                    </div>
-
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title"><input type="checkbox" name="objCheck" value="Objetivo 2: Melhorar os resultados académicos dos alunos"> Objetivo 2: Melhorar os resultados académicos dos alunos</label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item"><input type="checkbox" name="metaCheck" value="Meta 2: 75% alunos com menções de Bom e Muito Bom no português"> Meta 2: 75% alunos com menções de Bom e Muito Bom no português</label>
-                            <label class="pee-meta-item"><input type="checkbox" name="metaCheck" value="Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática"> Meta 3: 75% alunos com menções de Bom e Muito Bom na Matemática</label>
-                        </div>
-                    </div>
-
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title"><input type="checkbox" name="objCheck" value="Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas"> Objetivo 3: Aumentar o uso das tecnologias nas práticas educativas</label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item"><input type="checkbox" name="metaCheck" value="Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias"> Meta 4: Cada professor realizar pelo menos 6 atividades por área com tecnologias</label>
-                        </div>
-                    </div>
-
-                    <div class="pee-objetivo-box">
-                        <label class="pee-obj-title"><input type="checkbox" name="objCheck" value="Objetivo 4: Aumentar a participação da comunidade e encarregados de educação"> Objetivo 4: Aumentar a participação da comunidade e encarregados de educação</label>
-                        <div class="pee-meta-list">
-                            <label class="pee-meta-item"><input type="checkbox" name="metaCheck" value="Meta 5: Anualmente realizar dois questionários para a comunidade escolar"> Meta 5: Anualmente realizar dois questionários para a comunidade escolar</label>
-                            <label class="pee-meta-item"><input type="checkbox" name="metaCheck" value="Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais"> Meta 6: Envolver os Encarregados de Educação em 6 atividades/ações anuais</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Média Geral das Avaliações</label>
-                    <input type="text" id="modalObjMedia" readonly placeholder="Calculado automaticamente a partir das avaliações do Supabase">
-                </div>
-
-                <div class="form-group">
-                    <label>Resumo / Conclusões da Atividade <span class="required">*</span></label>
-                    <textarea id="modalObjResumo" placeholder="Insira o resumo final e conclusões retiradas da realização da atividade..." required></textarea>
-                </div>
-
-                <!-- CAMPO DE EVIDÊNCIAS FOTOGRÁFICAS (MÁX: 250 KB) -->
-                <div class="form-group" id="seccaoImagensUpload">
-                    <label>Registo Fotográfico (Máx: 250 KB por imagem):</label>
-                    <div class="image-upload-box" id="boxUploadFicheiro" onclick="document.getElementById('fileInput').click()">
-                        <p style="margin: 0; color: #4b5563; font-size: 12px;">📸 Clique para adicionar fotografias (Até 250 KB)</p>
-                        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
-                    </div>
-                    <div id="imagePreviewContainer" class="image-preview-container"></div>
-                </div>
-
-                <!-- CAMPO DO RESPONSÁVEL -->
-                <div class="form-group" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 15px;">
-                    <label for="modalObjResponsavel" style="margin-bottom: 0; font-weight: 600; font-size: 13px; color: #374151;">Responsável:</label>
-                    <input type="text" id="modalObjResponsavel" readonly style="width: 250px; background-color: #e2e8f0; text-align: right;" placeholder="Preenchimento automático">
-                </div>
-
-                <div class="form-buttons">
-                    <button type="button" class="btn-form-action btn-cancel" onclick="voltarParaListagem()">Voltar</button>
-                    <a href="#" id="btnImprimirRegisto" class="btn-form-action" style="background-color: #0284c7; color: white; display: none;">🖨️ Imprimir Registo</a>
-                    <button type="submit" id="btnSalvarForm" class="btn-form-action" style="background-color: #16a34a; color: white;">Guardar</button>
-                </div>
+                <button type="button" class="btn" onclick="guardarRegisto()">Guardar</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Apagar -->
-    <div id="confirmModal" class="custom-modal-overlay">
-        <div class="custom-modal">
-            <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">⚠</div>
-            <h3 style="color: #ef4444; margin-bottom: 0.4rem; margin-top: 0; font-size: 18px;">Confirmar Remoção</h3>
-            <p style="color: var(--text-light); margin-bottom: 1.2rem; font-size: 13px;">Tens a certeza que pretendes apagar este registo?</p>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <button type="button" id="btnConfirmDelete" class="btn-form-action" style="background-color: #ef4444; color: white; width: 100%;">Sim, Apagar</button>
-                <button type="button" class="btn-form-action btn-cancel" onclick="fecharConfirmarApagar()" style="width: 100%;">Cancelar</button>
-            </div>
+    <div id="confirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+        <div style="background:white; padding:2rem; border-radius:8px;">
+            <p>Tem a certeza que pretende apagar?</p>
+            <button id="btnConfirmDelete" class="btn" style="background:#dc2626;">Sim, apagar</button>
+            <button onclick="fecharConfirmarApagar()" class="btn" style="background:#6b7280;">Cancelar</button>
         </div>
     </div>
 
-    <!-- Popup Personalizado de Avisos -->
-    <div id="customPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 3000; padding: 1rem; box-sizing: border-box;">
-        <div style="background: white; padding: 1.5rem; border-radius: 12px; width: 100%; max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); text-align: center;">
-            <div id="popupIcon" style="font-size: 1.8rem; margin-bottom: 0.4rem;">🏫</div>
-            <h3 id="popupTitle" style="margin: 0 0 8px 0; color: var(--primary-green); font-size: 16px;">Aviso</h3>
-            <p id="popupMessage" style="margin: 0 0 16px 0; color: #1f2937; line-height: 1.4; font-size: 12px;"></p>
-            <div>
-                <button onclick="fecharPopup()" style="background-color: #16a34a; color: white; padding: 0.5rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; width: 100%;">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/auth.js"></script>
     <script>
-        // Inicialização do Supabase
-        const SUPABASE_URL = 'https://hskjqcikiefktkaekxxo.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let imagensGuardadas = [];
-
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(!currentUser) {
-            window.location.href = 'index.html';
-        } else {
-            const nomeCompleto = currentUser.name || currentUser.email || 'Utilizador';
-            const primeiroNome = nomeCompleto.trim().split(' ')[0];
-            document.getElementById('userNameSpan').innerText = primeiroNome;
-        }
-
-        function isAdminUser(user) {
-            if (!user) return false;
-            return (user.isAdmin === true || user.role === 'admin' || user.tipo === 'admin' || user.perfil === 'admin' || (user.email && user.email.toLowerCase().includes('admin')));
-        }
-
-        function mostrarPopupPersonalizado(titulo, mensagem, icone = '🏫') {
-            document.getElementById('popupTitle').innerText = titulo;
-            document.getElementById('popupMessage').innerText = mensagem;
-            document.getElementById('popupIcon').innerText = icone;
-            document.getElementById('customPopup').style.display = 'flex';
-        }
-
-        function fecharPopup() {
-            document.getElementById('customPopup').style.display = 'none';
-        }
-
-        // COMPRESSÃO DE IMAGENS NO CLIENTE
-        function comprimirImagem(file, maxWidth = 1024, maxHeight = 1024, quality = 0.7) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > maxWidth) {
-                                height *= maxWidth / width;
-                                width = maxWidth;
-                            }
-                        } else {
-                            if (height > maxHeight) {
-                                width *= maxHeight / height;
-                                height = maxHeight;
-                            }
-                        }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        canvas.toBlob((blob) => {
-                            resolve(blob);
-                        }, 'image/jpeg', quality);
-                    };
-                };
-            });
-        }
-
-        async function handleFiles(files) {
-            const tamanhoMaximoBytes = 250 * 1024; // 250 KB
-
-            for (let file of files) {
-                // Verificar se o ficheiro original ultrapassa os 250 KB
-                if (file.size > tamanhoMaximoBytes) {
-                    const tamanhoAtualKB = Math.round(file.size / 1024);
-                    mostrarPopupPersonalizado(
-                        'Ficheiro Demasiado Grande',
-                        `A imagem "${file.name}" tem ${tamanhoAtualKB} KB. O limite máximo permitido é de 250 KB. Por favor, escolha uma imagem mais pequena ou reduza o seu tamanho.`,
-                        '⚠️'
-                    );
-                    continue; // Ignora esta imagem e passa para a seguinte
-                }
-
-                const blobComprimido = await comprimirImagem(file);
-                
-                // Validação extra pós-compressão
-                if (blobComprimido.size > tamanhoMaximoBytes) {
-                    mostrarPopupPersonalizado(
-                        'Aviso de Tamanho',
-                        `A imagem "${file.name}" ultrapassou os 250 KB após o processamento.`,
-                        '⚠️'
-                    );
-                    continue;
-                }
-
-                const urlLocal = URL.createObjectURL(blobComprimido);
-                
-                imagensGuardadas.push({
-                    tipo: 'novo',
-                    blob: blobComprimido,
-                    url: urlLocal
-                });
-            }
-            renderizarPrevisualizacaoImagens();
-            // Limpa o input para permitir carregar o mesmo ficheiro se necessário
-            document.getElementById('fileInput').value = '';
-        }
-
-        function removerImagem(index) {
-            imagensGuardadas.splice(index, 1);
-            renderizarPrevisualizacaoImagens();
-        }
-
-        function renderizarPrevisualizacaoImagens() {
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            previewContainer.innerHTML = '';
-
-            const isSomenteLeitura = document.getElementById('btnSalvarForm').style.display === 'none';
-
-            imagensGuardadas.forEach((imgObj, index) => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'image-preview-item';
-                
-                let html = `<img src="${imgObj.url}">`;
-                if (!isSomenteLeitura) {
-                    html += `<button type="button" class="btn-remove-img" onclick="removerImagem(${index})" title="Remover imagem">×</button>`;
-                }
-                
-                wrapper.innerHTML = html;
-                previewContainer.appendChild(wrapper);
-            });
-        }
+        // Configuração do Supabase (Ajusta com as tuas credenciais se necessário)
+        const supabaseUrl = 'O_TEU_SUPABASE_URL';
+        const supabaseKey = 'O_TEU_SUPABASE_KEY';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function carregarObjetivos() {
-            const tbody = document.getElementById('objetivosTableBody');
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">A carregar registos...</td></tr>`;
-            
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            // Lógica para carregar dados
+        }
 
-            const { data: registos, error } = await supabaseClient
+        async function guardarRegisto() {
+            const id = document.getElementById('numeroRegisto').value;
+            const nome = document.getElementById('campoNome').value;
+
+            const dadosRegisto = { id, nome };
+
+            let { error } = await supabaseClient
                 .from('registos_objetivos_atividades')
-                .select('*')
-                .order('id', { ascending: false });
-
-            if (error) {
-                console.error('Erro ao carregar do Supabase:', error);
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar dados da base de dados.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = '';
-            const filtroNumAtvVal = (document.getElementById('filtroNumeroAtividade').value || '').toLowerCase().trim();
-            const filtroCriadorVal = (document.getElementById('filtroCriador').value || '').toLowerCase().trim();
-
-            const registosFiltrados = (registos || []).filter(reg => {
-                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividade_id || a.numero == reg.numero_atividade);
-                const numAtividade = String(reg.numero_atividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '')).toLowerCase();
-                const criadorNome = String(reg.criador_nome || (atividadeCorrespondente ? atividadeCorrespondente.criadorNome : '')).toLowerCase();
-
-                const matchNum = !filtroNumAtvVal || numAtividade.includes(filtroNumAtvVal);
-                const matchCriador = !filtroCriadorVal || criadorNome.includes(filtroCriadorVal);
-
-                return matchNum && matchCriador;
-            });
-
-            if (registosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">Ainda não existem registos ou nenhum corresponde aos filtros aplicados.</td></tr>`;
-                return;
-            }
-
-            const userIsAdmin = isAdminUser(currentUser);
-            registosFiltrados.forEach(reg => {
-                const idReal = reg.id;
-                const podeModificar = userIsAdmin || (reg.criador_id === currentUser.id);
-
-                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividade_id || a.numero == reg.numero_atividade);
-                const numAtividade = reg.numero_atividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
-                const tituloAtividade = reg.nome_atividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--primary-green);">${numAtividade}</td>
-                    <td style="font-weight: 600;">${tituloAtividade}</td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <button class="btn-action btn-view" title="Ver" onclick="mostrarFormulario('${idReal}', 'ver')">
-                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        </button>
-                        <button class="btn-action btn-edit" title="Editar" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario('${idReal}', 'editar')">
-                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                        </button>
-                        <button class="btn-action btn-delete" title="Apagar" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}')">
-                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        async function verificarAtividadeDuplicada(numStr, idAtual = null) {
-            if (!numStr) return false;
-            
-            let query = supabaseClient
-                .from('registos_objetivos_atividades')
-                .select('id, numero_atividade')
-                .eq('numero_atividade', String(numStr).trim());
-            
-            if (idAtual) {
-                query = query.neq('id', idAtual);
-            }
-
-            const { data, error } = await query;
-            if (error) {
-                console.error('Erro ao verificar duplicados:', error);
-                return false;
-            }
-            return data && data.length > 0;
-        }
-
-        async function preencherDadosAutomaticosPorNumero(numInput) {
-            const numStr = String(numInput || '').trim();
-            const editId = document.getElementById('editObjetivoId').value;
-            const erroMsg = document.getElementById('erroDuplicadoMsg');
-            const saveBtn = document.getElementById('btnSalvarForm');
-
-            if (!numStr) {
-                document.getElementById('modalObjNomeAtividade').value = '';
-                document.getElementById('modalObjAnoLetivo').value = '';
-                document.getElementById('modalObjTipo').value = '';
-                document.getElementById('modalObjMedia').value = '';
-                document.getElementById('modalObjNomeAtividade').readOnly = false;
-                document.getElementById('modalObjAnoLetivo').readOnly = false;
-                document.getElementById('modalObjTipo').readOnly = false;
-                erroMsg.style.display = 'none';
-                saveBtn.disabled = false;
-                saveBtn.style.opacity = '1';
-                return null;
-            }
-
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            let atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
-
-            if (!atv) {
-                try {
-                    const { data: atvSupabase } = await supabaseClient
-                        .from('atividades')
-                        .select('*')
-                        .eq('numero', numStr)
-                        .maybeSingle();
-                    
-                    if (atvSupabase) {
-                        atv = atvSupabase;
-                    }
-                } catch (err) {
-                    console.log('Tabela de atividades externa não consultada.');
-                }
-            }
-
-            if (!atv) {
-                erroMsg.innerText = `Erro: O número de atividade "${numStr}" ainda não existe. Registe a atividade primeiro!`;
-                erroMsg.style.display = 'block';
-                saveBtn.disabled = true;
-                saveBtn.style.opacity = '0.5';
-                return null;
-            }
-
-            const isDuplicated = await verificarAtividadeDuplicada(numStr, editId);
-            if (isDuplicated) {
-                erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
-                erroMsg.style.display = 'block';
-                saveBtn.disabled = true;
-                saveBtn.style.opacity = '0.5';
-                return null;
-            }
-
-            erroMsg.style.display = 'none';
-            saveBtn.disabled = false;
-            saveBtn.style.opacity = '1';
-
-            if (atv) {
-                document.getElementById('modalObjNomeAtividade').value = atv.titulo || atv.nome_atividade || '';
-                document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || atv.ano_letivo || '';
-                document.getElementById('modalObjTipo').value = atv.tipo || atv.tipo_atividade || '';
-                document.getElementById('modalObjNomeAtividade').readOnly = true;
-                document.getElementById('modalObjAnoLetivo').readOnly = true;
-                document.getElementById('modalObjTipo').readOnly = true;
-
-                await calcularMediaESugestoes(atv.id || atv.numero, atv.numero);
-                return atv;
-            }
-        }
-
-        async function calcularMediaESugestoes(atvId, atvNumero) {
-            const numStr = String(atvNumero || '').trim();
-            let todasAvaliacoes = [];
-
-            try {
-                const { data: avSupabase, error } = await supabaseClient
-                    .from('avaliacoes_atividades')
-                    .select('*');
-                
-                if (!error && avSupabase && Array.isArray(avSupabase)) {
-                    todasAvaliacoes = avSupabase;
-                }
-            } catch (err) {
-                console.error('Erro de conexão ao aceder ao Supabase para avaliações:', err);
-            }
-
-            if (todasAvaliacoes.length === 0) {
-                const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
-                const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
-                const av3 = JSON.parse(localStorage.getItem('avaliacoes')) || [];
-                const av4 = JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
-                todasAvaliacoes = [...av1, ...av2, ...av3, ...av4];
-            }
-            
-            const avaliacoesDaAtividade = todasAvaliacoes.filter(av => {
-                const avIdAtv = String(av.atividade_id || av.atividadeId || av.idAtividade || av.id_atividade || av.id || '').trim();
-                const avNumAtv = String(av.numero_atividade || av.numeroAtividade || av.numeroAtv || av.numero || '').trim();
-
-                const matchId = atvId && avIdAtv && avIdAtv === String(atvId).trim();
-                const matchNum = numStr && avNumAtv && avNumAtv === numStr;
-
-                return matchId || matchNum;
-            });
-
-            if (avaliacoesDaAtividade.length === 0) {
-                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
-                return;
-            }
-
-            let somaPertinencia = 0;
-            let somaDinamica = 0;
-            let somaInteresse = 0;
-            let totalValidas = 0;
-
-            avaliacoesDaAtividade.forEach(av => {
-                const p = parseFloat(av.pertinencia || av.nota_pertinencia || av.notaPertinencia || av.p || av.grauPertinencia || 0);
-                const d = parseFloat(av.dinamica || av.nota_dinamica || av.notaDinamica || av.d || av.grauDinamica || 0);
-                const i = parseFloat(av.interesse || av.nota_interesse || av.notaInteresse || av.int || av.grauInteresse || 0);
-
-                if (!isNaN(p) || !isNaN(d) || !isNaN(i)) {
-                    somaPertinencia += (isNaN(p) ? 0 : p);
-                    somaDinamica += (isNaN(d) ? 0 : d);
-                    somaInteresse += (isNaN(i) ? 0 : i);
-                    totalValidas++;
-                }
-            });
-
-            if (totalValidas > 0) {
-                const mediaP = somaPertinencia / totalValidas;
-                const mediaD = somaDinamica / totalValidas;
-                const mediaI = somaInteresse / totalValidas;
-                const mediaGlobal = (mediaP + mediaD + mediaI) / 3;
-                
-                document.getElementById('modalObjMedia').value = `${mediaGlobal.toFixed(1)} / 5`;
-            } else {
-                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas';
-            }
-        }
-
-        function aoMudarNumeroAtividade(val) {
-            preencherDadosAutomaticosPorNumero(val);
-        }
-
-        async function mostrarFormulario(id, modo) {
-            document.getElementById('listagemHeaderCard').style.display = 'none';
-            document.getElementById('listagemFiltersCard').style.display = 'none';
-            document.getElementById('listagemTableCard').style.display = 'none';
-            document.getElementById('formularioCard').style.display = 'block';
-            document.getElementById('erroDuplicadoMsg').style.display = 'none';
-
-            const inputs = document.querySelectorAll('#objetivoForm input:not([type="hidden"]), #objetivoForm select, #objetivoForm textarea');
-            const saveBtn = document.getElementById('btnSalvarForm');
-            const btnImprimir = document.getElementById('btnImprimirRegisto');
-
-            saveBtn.disabled = false;
-            saveBtn.style.opacity = '1';
-
-            if (modo === 'criar') {
-                document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
-                document.getElementById('editObjetivoId').value = '';
-                document.getElementById('objetivoForm').reset();
-                
-                imagensGuardadas = [];
-                renderizarPrevisualizacaoImagens();
-
-                const nomeUtilizador = currentUser ? (currentUser.name || currentUser.email || 'Utilizador') : '';
-                document.getElementById('modalObjResponsavel').value = nomeUtilizador;
-
-                inputs.forEach(el => el.disabled = false);
-                document.getElementById('modalObjMedia').disabled = true;
-                document.getElementById('modalObjResponsavel').disabled = true;
-                document.getElementById('boxUploadFicheiro').style.display = 'block';
-                saveBtn.style.display = 'inline-block';
-                btnImprimir.style.display = 'none';
-            } else {
-                const { data: reg, error } = await supabaseClient
-                    .from('registos_objetivos_atividades')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
-
-                if (error || !reg) {
-                    alert('Erro ao carregar os dados para edição.');
-                    voltarParaListagem();
-                    return;
-                }
-
-                document.getElementById('editObjetivoId').value = reg.id;
-                document.getElementById('modalObjNumAtividade').value = reg.numero_atividade || '';
-                document.getElementById('modalObjNomeAtividade').value = reg.nome_atividade || '';
-                document.getElementById('modalObjAnoLetivo').value = reg.ano_letivo || '';
-                document.getElementById('modalObjTipo').value = reg.tipo_atividade || '';
-                document.getElementById('modalObjPaa').value = reg.integra_paa || '';
-                document.getElementById('modalObjPee').value = reg.integra_pee || '';
-                document.getElementById('modalObjMedia').value = reg.media_geral || 'N/A';
-                document.getElementById('modalObjResumo').value = reg.resumo_conclusoes || '';
-                document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criador_nome || '';
-
-                document.querySelectorAll('#objetivoForm input[name="objCheck"]').forEach(chk => {
-                    chk.checked = reg.objetivos_selecionados && reg.objetivos_selecionados.includes(chk.value);
-                });
-                document.querySelectorAll('#objetivoForm input[name="metaCheck"]').forEach(chk => {
-                    chk.checked = reg.metas_selecionadas && reg.metas_selecionadas.includes(chk.value);
-                });
-
-                imagensGuardadas = [];
-                let imagensDoRegisto = reg.imagens;
-                if (typeof imagensDoRegisto === 'string') {
-                    try {
-                        imagensDoRegisto = JSON.parse(imagensDoRegisto);
-                    } catch (e) {
-                        imagensDoRegisto = [];
-                    }
-                }
-
-                if (imagensDoRegisto && Array.isArray(imagensDoRegisto)) {
-                    imagensDoRegisto.forEach(urlImg => {
-                        if (urlImg) {
-                            imagensGuardadas.push({ tipo: 'existente', url: urlImg });
-                        }
-                    });
-                }
-                
-                renderizarPrevisualizacaoImagens();
-
-                if (modo === 'ver') {
-                    document.getElementById('formTitulo').innerText = 'Consultar Registo de Objetivos';
-                    inputs.forEach(el => el.disabled = true);
-                    document.getElementById('boxUploadFicheiro').style.display = 'none';
-                    saveBtn.style.display = 'none';
-                    btnImprimir.style.display = 'inline-block';
-                    btnImprimir.href = `imprimir.html?id=${reg.id}`;
-                } else {
-                    document.getElementById('formTitulo').innerText = 'Editar Registo de Objetivos';
-                    inputs.forEach(el => el.disabled = false);
-                    document.getElementById('modalObjMedia').disabled = true;
-                    document.getElementById('modalObjResponsavel').disabled = true;
-                    document.getElementById('boxUploadFicheiro').style.display = 'block';
-                    saveBtn.style.display = 'inline-block';
-                    btnImprimir.style.display = 'none';
-                }
-                
-                renderizarPrevisualizacaoImagens();
-            }
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function voltarParaListagem() {
-            document.getElementById('btnImprimirRegisto').style.display = 'none';
-            document.getElementById('formularioCard').style.display = 'none';
-            document.getElementById('listagemHeaderCard').style.display = 'flex';
-            document.getElementById('listagemFiltersCard').style.display = 'grid';
-            document.getElementById('listagemTableCard').style.display = 'block';
-            carregarObjetivos();
-        }
-
-        async function salvarRegistoObjetivo(e) {
-            e.preventDefault();
-            const id = document.getElementById('editObjetivoId').value;
-            const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
-
-            const isDuplicated = await verificarAtividadeDuplicada(numAtvInput, id);
-            if (isDuplicated) {
-                alert(`Erro: Já existe um relatório de objetivos guardado para a atividade nº ${numAtvInput}. Não são permitidos duplicados.`);
-                return;
-            }
-
-            let urlsImagensFinais = [];
-            for (let imgObj of imagensGuardadas) {
-                if (imgObj.tipo === 'existente' && imgObj.url) {
-                    urlsImagensFinais.push(imgObj.url);
-                } else if (imgObj.tipo === 'novo' && imgObj.blob) {
-                    const nomeFicheiro = `obj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
-                    
-                    const { error: uploadError } = await supabaseClient.storage
-                        .from('fotos_relatorios_objetivos')
-                        .upload(nomeFicheiro, imgObj.blob, { contentType: 'image/jpeg' });
-
-                    if (uploadError) {
-                        console.error('Erro no upload para o Storage:', uploadError);
-                        alert('Erro ao carregar a imagem para o storage: ' + uploadError.message);
-                    } else {
-                        const { data: urlData } = supabaseClient.storage
-                            .from('fotos_relatorios_objetivos')
-                            .getPublicUrl(nomeFicheiro);
-                        
-                        if (urlData && urlData.publicUrl) {
-                            urlsImagensFinais.push(urlData.publicUrl);
-                        }
-                    }
-                }
-            }
-
-            let objsSel = [];
-            document.querySelectorAll('#objetivoForm input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
-
-            let metasSel = [];
-            document.querySelectorAll('#objetivoForm input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
-
-            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
-
-            const responsavelVal = document.getElementById('modalObjResponsavel').value || (currentUser ? (currentUser.name || currentUser.email) : '');
-            const imagensLimpas = urlsImagensFinais.filter(url => url && typeof url === 'string' && url.trim() !== '');
-
-            const dadosRegisto = {
-                atividade_id: atvEncontrada ? String(atvEncontrada.id) : null,
-                numero_atividade: numAtvInput,
-                nome_atividade: document.getElementById('modalObjNomeAtividade').value,
-                ano_letivo: document.getElementById('modalObjAnoLetivo').value,
-                tipo_atividade: document.getElementById('modalObjTipo').value,
-                integra_paa: document.getElementById('modalObjPaa').value,
-                integra_pee: document.getElementById('modalObjPee').value,
-                objetivos_selecionados: objsSel,
-                metas_selecionadas: metasSel,
-                media_geral: document.getElementById('modalObjMedia').value,
-                resumo_conclusoes: document.getElementById('modalObjResumo').value,
-                imagens: imagensLimpas,
-                responsavel: responsavelVal,
-                criador_id: String(currentUser.id),
-                criador_nome: currentUser.name || currentUser.email
-            };
-
-            let error;
-            if (!id || id === '') {
-                const { error: err } = await supabaseClient
-                    .from('registos_objetivos_atividades')
-                    .insert([dadosRegisto]);
-                error = err;
-            } else {
-                const { error: err } = await supabaseClient
-                    .from('registos_objetivos_atividades')
-                    .update(dadosRegisto)
-                    .eq('id', id);
-                error = err;
-            }
+                .upsert(dadosRegisto);
 
             if (error) {
                 console.error('Erro ao guardar no Supabase:', error);
-                alert('Ocorreu um erro ao guardar o registo na base de dados: ' + error.message);
+                alert('Ocorreu um erro ao guardar o registo: ' + error.message);
                 return;
             }
 
-            voltarParaListagem();
+            // 3. FORÇAR O RESET AO FORMULÁRIO APÓS GUARDAR
+            document.getElementById('oMeuFormulario').reset();
+            
+            alert('Guardado com sucesso!');
+            carregarObjetivos();
         }
 
         let idParaApagar = null;
@@ -1250,6 +165,8 @@
                     console.error('Erro ao apagar no Supabase:', error);
                     alert('Erro ao apagar o registo.');
                 } else {
+                    // FORÇAR RESET TAMBÉM AO APAGAR PARA LIMPAR OS CAMPOS
+                    document.getElementById('oMeuFormulario').reset();
                     carregarObjetivos();
                 }
                 fecharConfirmarApagar();
