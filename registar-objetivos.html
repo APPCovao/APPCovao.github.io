@@ -898,7 +898,6 @@
 
             let atv = null;
 
-            // 1. TENTAR PRIMEIRO NO SUPABASE (Fonte de verdade atualizada)
             try {
                 const { data: atvSupabase } = await supabaseClient
                     .from('atividades')
@@ -913,7 +912,6 @@
                 console.log('Erro ao consultar Supabase para atividades.');
             }
 
-            // 2. SE NÃO ENCONTRAR NO SUPABASE, VERIFICAR LOCALSTORAGE (fallback)
             if (!atv) {
                 let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
                 atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
@@ -1230,8 +1228,9 @@
                 return;
             }
 
-            // Forçar o reset ao formulário após guardar com sucesso
+            // Forçar o reset ao formulário e disparar o pop-up personalizado de sucesso
             document.getElementById('oMeuFormulario').reset();
+            mostrarPopupPersonalizado('Sucesso', 'O registo de objetivos foi guardado com sucesso!', '🎉');
 
             voltarParaListagem();
         }
