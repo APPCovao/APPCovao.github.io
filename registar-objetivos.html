@@ -732,7 +732,6 @@
             const tamanhoMaximoBytes = 250 * 1024; // 250 KB
 
             for (let file of files) {
-                // Verificar se o ficheiro original ultrapassa os 250 KB
                 if (file.size > tamanhoMaximoBytes) {
                     const tamanhoAtualKB = Math.round(file.size / 1024);
                     mostrarPopupPersonalizado(
@@ -740,12 +739,11 @@
                         `A imagem "${file.name}" tem ${tamanhoAtualKB} KB. O limite máximo permitido é de 250 KB. Por favor, escolha uma imagem mais pequena ou reduza o seu tamanho.`,
                         '⚠️'
                     );
-                    continue; // Ignora esta imagem e passa para a seguinte
+                    continue;
                 }
 
                 const blobComprimido = await comprimirImagem(file);
                 
-                // Validação extra pós-compressão
                 if (blobComprimido.size > tamanhoMaximoBytes) {
                     mostrarPopupPersonalizado(
                         'Aviso de Tamanho',
@@ -764,7 +762,6 @@
                 });
             }
             renderizarPrevisualizacaoImagens();
-            // Limpa o input para permitir carregar o mesmo ficheiro se necessário
             document.getElementById('fileInput').value = '';
         }
 
@@ -899,28 +896,35 @@
                 return null;
             }
 
-            let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
-            let atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
+            let atv = null;
 
-            if (!atv) {
-                try {
-                    const { data: atvSupabase } = await supabaseClient
-                        .from('atividades')
-                        .select('*')
-                        .eq('numero', numStr)
-                        .maybeSingle();
-                    
-                    if (atvSupabase) {
-                        atv = atvSupabase;
-                    }
-                } catch (err) {
-                    console.log('Tabela de atividades externa não consultada.');
+            // 1. TENTAR PRIMEIRO NO SUPABASE (Fonte de verdade atualizada)
+            try {
+                const { data: atvSupabase } = await supabaseClient
+                    .from('atividades')
+                    .select('*')
+                    .eq('numero', numStr)
+                    .maybeSingle();
+                
+                if (atvSupabase) {
+                    atv = atvSupabase;
                 }
+            } catch (err) {
+                console.log('Erro ao consultar Supabase para atividades.');
+            }
+
+            // 2. SE NÃO ENCONTRAR NO SUPABASE, VERIFICAR LOCALSTORAGE (fallback)
+            if (!atv) {
+                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
             }
 
             if (!atv) {
                 erroMsg.innerText = `Erro: O número de atividade "${numStr}" ainda não existe. Registe a atividade primeiro!`;
                 erroMsg.style.display = 'block';
+                document.getElementById('modalObjNomeAtividade').value = '';
+                document.getElementById('modalObjAnoLetivo').value = '';
+                document.getElementById('modalObjTipo').value = '';
                 saveBtn.disabled = true;
                 saveBtn.style.opacity = '0.5';
                 return null;
@@ -1226,7 +1230,7 @@
                 return;
             }
 
-            // ADICIONADO: Forçar o reset ao formulário após guardar com sucesso
+            // Forçar o reset ao formulário após guardar com sucesso
             document.getElementById('oMeuFormulario').reset();
 
             voltarParaListagem();
