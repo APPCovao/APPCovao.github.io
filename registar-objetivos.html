@@ -112,13 +112,12 @@
     </div>
 
     <script>
-        // Configuração do Supabase (Ajusta com as tuas credenciais se necessário)
         const supabaseUrl = 'O_TEU_SUPABASE_URL';
         const supabaseKey = 'O_TEU_SUPABASE_KEY';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function carregarObjetivos() {
-            // Lógica para carregar dados
+            // Lógica original de carregamento
         }
 
         async function guardarRegisto() {
@@ -133,15 +132,14 @@
 
             if (error) {
                 console.error('Erro ao guardar no Supabase:', error);
-                alert('Ocorreu um erro ao guardar o registo: ' + error.message);
+                alert('Ocorreu um erro ao guardar o registo na base de dados: ' + error.message);
                 return;
             }
 
-            // 3. FORÇAR O RESET AO FORMULÁRIO APÓS GUARDAR
+            // ADICIONADO: Forçar reset ao formulário aqui para limpar os campos e cache local
             document.getElementById('oMeuFormulario').reset();
-            
-            alert('Guardado com sucesso!');
-            carregarObjetivos();
+
+            // Substitui isto pela tua função original de voltar para a listagem se tinhas uma (ex: voltarParaListagem())
         }
 
         let idParaApagar = null;
@@ -165,7 +163,7 @@
                     console.error('Erro ao apagar no Supabase:', error);
                     alert('Erro ao apagar o registo.');
                 } else {
-                    // FORÇAR RESET TAMBÉM AO APAGAR PARA LIMPAR OS CAMPOS
+                    // ADICIONADO: Forçar reset também ao apagar
                     document.getElementById('oMeuFormulario').reset();
                     carregarObjetivos();
                 }
