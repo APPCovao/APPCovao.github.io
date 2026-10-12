@@ -520,7 +520,7 @@
             <h2 id="formTitulo" style="color: #16a34a; margin-top: 0; font-size: 18px;">Registo de Objetivos e Avaliação Global</h2>
             <p style="color: var(--text-light); font-size: 12px; margin-bottom: 16px;">Associe a atividade a múltiplos objetivos e metas do PEE e consolide as avaliações.</p>
             
-            <form id="objetivoForm" onsubmit="salvarRegistoObjetivo(event)">
+            <form id="oMeuFormulario" onsubmit="salvarRegistoObjetivo(event)">
                 <input type="hidden" id="editObjetivoId">
 
                 <div class="form-group">
@@ -688,6 +688,10 @@
 
         function fecharPopup() {
             document.getElementById('customPopup').style.display = 'none';
+            if (window._deveVoltarAbreviatura) {
+                window._deveVoltarAbreviatura = false;
+                voltarParaListagem();
+            }
         }
 
         // COMPRESSÃO DE IMAGENS NO CLIENTE
@@ -1034,7 +1038,7 @@
             document.getElementById('formularioCard').style.display = 'block';
             document.getElementById('erroDuplicadoMsg').style.display = 'none';
 
-            const inputs = document.querySelectorAll('#objetivoForm input:not([type="hidden"]), #objetivoForm select, #objetivoForm textarea');
+            const inputs = document.querySelectorAll('#oMeuFormulario input:not([type="hidden"]), #oMeuFormulario select, #oMeuFormulario textarea');
             const saveBtn = document.getElementById('btnSalvarForm');
             const btnImprimir = document.getElementById('btnImprimirRegisto');
 
@@ -1044,7 +1048,7 @@
             if (modo === 'criar') {
                 document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
                 document.getElementById('editObjetivoId').value = '';
-                document.getElementById('objetivoForm').reset();
+                document.getElementById('oMeuFormulario').reset();
                 
                 imagensGuardadas = [];
                 renderizarPrevisualizacaoImagens();
@@ -1082,10 +1086,10 @@
                 document.getElementById('modalObjResumo').value = reg.resumo_conclusoes || '';
                 document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criador_nome || '';
 
-                document.querySelectorAll('#objetivoForm input[name="objCheck"]').forEach(chk => {
+                document.querySelectorAll('#oMeuFormulario input[name="objCheck"]').forEach(chk => {
                     chk.checked = reg.objetivos_selecionados && reg.objetivos_selecionados.includes(chk.value);
                 });
-                document.querySelectorAll('#objetivoForm input[name="metaCheck"]').forEach(chk => {
+                document.querySelectorAll('#oMeuFormulario input[name="metaCheck"]').forEach(chk => {
                     chk.checked = reg.metas_selecionadas && reg.metas_selecionadas.includes(chk.value);
                 });
 
@@ -1179,10 +1183,10 @@
             }
 
             let objsSel = [];
-            document.querySelectorAll('#objetivoForm input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
+            document.querySelectorAll('#oMeuFormulario input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
 
             let metasSel = [];
-            document.querySelectorAll('#objetivoForm input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
+            document.querySelectorAll('#oMeuFormulario input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
 
             const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
             const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
@@ -1228,11 +1232,14 @@
                 return;
             }
 
-            // Forçar o reset ao formulário e disparar o pop-up personalizado de sucesso
+            // Forçar o reset ao formulário
             document.getElementById('oMeuFormulario').reset();
+            
+            // Marcar flag para voltar à listagem após fechar o pop-up
+            window._deveVoltarAbreviatura = true;
+            
+            // Exibir o pop-up personalizado de sucesso
             mostrarPopupPersonalizado('Sucesso', 'O registo de objetivos foi guardado com sucesso!', '🎉');
-
-            voltarParaListagem();
         }
 
         let idParaApagar = null;
