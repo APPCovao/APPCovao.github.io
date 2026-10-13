@@ -98,29 +98,6 @@
             margin-bottom: 3px;
         }
 
-        /* ESTILOS PARA AS FOTOS DE EVIDÊNCIA NA IMPRESSÃO */
-        .print-images-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .print-image-item {
-            width: 100%;
-            height: 120px;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid #d1d5db;
-            background-color: #fff;
-        }
-
-        .print-image-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         .no-print {
             text-align: center;
             margin-top: 20px;
@@ -175,9 +152,6 @@
             .section-block {
                 background-color: #ffffff !important;
                 border: 1px solid #d1d5db;
-                break-inside: avoid;
-            }
-            .print-image-item {
                 break-inside: avoid;
             }
         }
@@ -238,15 +212,27 @@
             <div class="value-content" id="printMedia">-</div>
         </div>
 
+        <!-- Nº DA ATA E DATA DA AVALIAÇÃO LADO A LADO -->
+        <div class="grid-2">
+            <div class="section-block">
+                <div class="label-title">Nº da Ata</div>
+                <div class="value-content" id="printNumeroAta">-</div>
+            </div>
+            <div class="section-block">
+                <div class="label-title">Data da Avaliação</div>
+                <div class="value-content" id="printDataAvaliacao">-</div>
+            </div>
+        </div>
+
         <div class="section-block">
-            <div class="label-title">Resumo / Conclusões da Atividade</div>
+            <div class="label-title">Resultados / Melhorias</div>
             <div class="value-content" id="printResumo" style="white-space: pre-line;">-</div>
         </div>
 
-        <!-- SECÇÃO DE FOTOGRAFIAS (SÓ APARECE SE HOUVER IMAGENS) -->
-        <div class="section-block" id="printSeccaoImagens" style="display: none;">
-            <div class="label-title">Registo Fotográfico (Evidências)</div>
-            <div class="print-images-grid" id="printImagensGrid"></div>
+        <!-- CAMPO EVIDÊNCIAS -->
+        <div class="section-block">
+            <div class="label-title">Evidências</div>
+            <div class="value-content" id="printEvidencias" style="white-space: pre-line;">-</div>
         </div>
 
         <!-- CAMPO RESPONSÁVEL ENCOSTADO À DIREITA NO FIM DO DOCUMENTO -->
@@ -300,7 +286,10 @@
             document.getElementById('printPaa').innerText = reg.integra_paa || '-';
             document.getElementById('printPee').innerText = reg.integra_pee || '-';
             document.getElementById('printMedia').innerText = reg.media_geral || '-';
+            document.getElementById('printNumeroAta').innerText = reg.numero_ata !== null && reg.numero_ata !== undefined ? reg.numero_ata : '-';
+            document.getElementById('printDataAvaliacao').innerText = reg.data_avaliacao || '-';
             document.getElementById('printResumo').innerText = reg.resumo_conclusoes || '-';
+            document.getElementById('printEvidencias').innerText = reg.evidencias || '-';
 
             document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
 
@@ -321,45 +310,6 @@
                 document.getElementById('printObjetivosMetas').innerHTML = htmlListas;
             } else {
                 document.getElementById('printObjetivosMetas').innerHTML = '<em style="color: #6b7280;">Nenhum registo selecionado.</em>';
-            }
-
-            // TRATAMENTO E EXIBIÇÃO DAS FOTOGRAFIAS (ROBUSTO)
-            const seccaoImagens = document.getElementById('printSeccaoImagens');
-            const gridImagens = document.getElementById('printImagensGrid');
-            gridImagens.innerHTML = '';
-
-            let imagensDoRegisto = reg.imagens;
-            
-            // Se vier como string JSON, faz o parse
-            if (typeof imagensDoRegisto === 'string') {
-                try {
-                    imagensDoRegisto = JSON.parse(imagensDoRegisto);
-                } catch (e) {
-                    imagensDoRegisto = [reg.imagens];
-                }
-            }
-
-            if (imagensDoRegisto && Array.isArray(imagensDoRegisto) && imagensDoRegisto.length > 0) {
-                imagensDoRegisto.forEach(urlImg => {
-                    // Limpar eventuais plicas ou aspas extra guardadas na string do URL
-                    let urlLimpa = typeof urlImg === 'string' ? urlImg.replace(/['"]+/g, '').trim() : '';
-
-                    if (urlLimpa !== '') {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'print-image-item';
-                        itemDiv.innerHTML = `<img src="${urlLimpa}" alt="Evidência da Atividade" onerror="this.parentElement.style.display='none'">`;
-                        gridImagens.appendChild(itemDiv);
-                    }
-                });
-
-                // Mostra a secção apenas se houver elementos criados na grelha
-                if (gridImagens.children.length > 0) {
-                    seccaoImagens.style.display = 'block';
-                } else {
-                    seccaoImagens.style.display = 'none';
-                }
-            } else {
-                seccaoImagens.style.display = 'none';
             }
         }
 
