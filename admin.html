@@ -726,12 +726,28 @@
 
         async function alternarAdmin(id, isAdminAtual, emailUtilizador) {
             if (emailUtilizador === currentUser.email) {
-                mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões.');
+                mostrarAlerta('Aviso', 'Não pode alterar as suas próprias permissões de administrador.');
                 return;
             }
+
             const client = getSupabase();
-            await client.from('users').update({ is_admin: !isAdminAtual }).eq('id', id);
+            if (!client) return;
+
+            const novoEstado = !isAdminAtual;
+
+            const { error } = await client
+                .from('users')
+                .update({ is_admin: novoEstado })
+                .eq('id', id);
+
+            if (error) {
+                console.error("Erro ao alterar permissão:", error);
+                mostrarAlerta('Erro', 'Não foi possível alterar a permissão do utilizador: ' + error.message);
+                return;
+            }
+
             carregarUtilizadores();
+            mostrarAlerta('Sucesso', 'Permissões do utilizador atualizadas com sucesso!');
         }
 
         async function eliminarUtilizador(id, emailUtilizador) {
@@ -739,9 +755,22 @@
                 mostrarAlerta('Aviso', 'Não pode eliminar a sua própria conta ativa.');
                 return;
             }
+            
             mostrarConfirmacao('Eliminar Utilizador', 'Tem a certeza que pretende eliminar este utilizador?', async () => {
                 const client = getSupabase();
-                await client.from('users').delete().eq('id', id);
+                if (!client) return;
+
+                const { error } = await client
+                    .from('users')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) {
+                    console.error("Erro ao apagar utilizador:", error);
+                    mostrarAlerta('Erro', 'Não foi possível eliminar o utilizador. Detalhe: ' + error.message);
+                    return;
+                }
+
                 carregarUtilizadores();
                 mostrarAlerta('Sucesso', 'Utilizador eliminado com sucesso.');
             });
@@ -770,7 +799,7 @@
             });
         }
 
-        // --- 2. ATIVIDADES (coluna 'numero') ---
+        // --- 2. ATIVIDADES ---
         function carregarAtividades() {
             carregarTabelaGenerica('atividades', 'atividadesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero !== null && item.numero !== undefined ? item.numero : '-'}</strong></td>
@@ -781,7 +810,7 @@
             `, 'numero');
         }
 
-        // --- 3. AVALIAÇÕES DE ATIVIDADES (coluna 'numero_atividade') ---
+        // --- 3. AVALIAÇÕES DE ATIVIDADES ---
         function carregarAvaliacoesAtividades() {
             carregarTabelaGenerica('avaliacoes_atividades', 'avaliacoesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
@@ -792,7 +821,7 @@
             `, 'numero_atividade');
         }
 
-        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES (coluna 'numero_atividade') ---
+        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES ---
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
                 <td><strong>Nº ${reg.numero_atividade !== null && reg.numero_atividade !== undefined ? reg.numero_atividade : '-'}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
@@ -804,7 +833,7 @@
             `, 'numero_atividade');
         }
 
-        // --- 5. REGISTOS CAA (coluna 'numero_atividade') ---
+        // --- 5. REGISTOS CAA ---
         function carregarRegistosCaa() {
             carregarTabelaGenerica('registos_caa', 'registosCaaTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
@@ -815,18 +844,17 @@
             `, 'numero_atividade');
         }
 
-        // --- 6. TURMAS (Nome da Turma em 1º) ---
+        // --- 6. TURMAS ---
         function carregarTurmas() {
             carregarTabelaGenerica('turmas', 'turmasTableBody', 3, (item) => `
                 <td><strong style="color: var(--primary-green); font-size: 14px;">${item.nome || item.nome_turma || 'Turma'}</strong></td>
-                <td style="color: var(--text-light);">ID: ${item.id}</td>
                 <td style="text-align: right;">
                     <button class="btn-action btn-delete" onclick="eliminarRegistoTabela('turmas', ${item.id}, carregarTurmas)">Eliminar</button>
                 </td>
             `, 'id');
         }
 
-        // --- 7. REQUISIÇÕES (coluna 'numero_requisicao') ---
+        // --- 7. REQUISIÇÕES ---
         function carregarRequisicoes() {
             carregarTabelaGenerica('requisicoes', 'requisicoesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_requisicao !== null && item.numero_requisicao !== undefined ? item.numero_requisicao : '-'}</strong></td>
