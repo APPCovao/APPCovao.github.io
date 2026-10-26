@@ -679,4 +679,409 @@
             const userIsAdmin = isAdminUser(currentUser);
             registosFiltrados.forEach(reg => {
                 const idReal = reg.id;
-                const podeModificar = userIsAdmin || (String(reg.criador_id) === String(currentUser.id)) || (reg.criador_nome && reg.criador_nome === (currentUser.name ||
+                const podeModificar = userIsAdmin || (String(reg.criador_id) === String(currentUser.id)) || (reg.criador_nome && reg.criador_nome === (currentUser.name || currentUser.email));
+
+                let atividadeCorrespondente = atividades.find(a => a.id == reg.atividade_id || a.numero == reg.numero_atividade);
+                const numAtividade = reg.numero_atividade || (atividadeCorrespondente ? atividadeCorrespondente.numero : '-');
+                const tituloAtividade = reg.nome_atividade || (atividadeCorrespondente ? atividadeCorrespondente.titulo : 'Atividade');
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--primary-green);">${numAtividade}</td>
+                    <td style="font-weight: 600;">${tituloAtividade}</td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn-action btn-view" title="Ver" onclick="mostrarFormulario('${idReal}', 'ver')">
+                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </button>
+                        <button class="btn-action btn-edit" title="Editar" ${!podeModificar ? 'disabled' : ''} onclick="mostrarFormulario('${idReal}', 'editar')">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button class="btn-action btn-delete" title="Apagar" ${!podeModificar ? 'disabled' : ''} onclick="confirmarApagar('${idReal}')">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function verificarAtividadeDuplicada(numStr, idAtual = null) {
+            if (!numStr) return false;
+            
+            let query = supabaseClient
+                .from('registos_objetivos_atividades')
+                .select('id, numero_atividade')
+                .eq('numero_atividade', String(numStr).trim());
+            
+            if (idAtual) {
+                query = query.neq('id', idAtual);
+            }
+
+            const { data, error } = await query;
+            if (error) {
+                console.error('Erro ao verificar duplicados:', error);
+                return false;
+            }
+            return data && data.length > 0;
+        }
+
+        async function preencherDadosAutomaticosPorNumero(numInput) {
+            const numStr = String(numInput || '').trim();
+            const editId = document.getElementById('editObjetivoId').value;
+            const erroMsg = document.getElementById('erroDuplicadoMsg');
+            const saveBtn = document.getElementById('btnSalvarForm');
+
+            if (!numStr) {
+                document.getElementById('modalObjNomeAtividade').value = '';
+                document.getElementById('modalObjAnoLetivo').value = '';
+                document.getElementById('modalObjTipo').value = '';
+                document.getElementById('modalObjMedia').value = '';
+                document.getElementById('modalObjNomeAtividade').readOnly = false;
+                document.getElementById('modalObjAnoLetivo').readOnly = false;
+                document.getElementById('modalObjTipo').readOnly = false;
+                erroMsg.style.display = 'none';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+                return null;
+            }
+
+            let atv = null;
+
+            try {
+                const { data: atvSupabase } = await supabaseClient
+                    .from('atividades')
+                    .select('*')
+                    .eq('numero', numStr)
+                    .maybeSingle();
+                
+                if (atvSupabase) {
+                    atv = atvSupabase;
+                }
+            } catch (err) {
+                console.log('Erro ao consultar Supabase para atividades.');
+            }
+
+            if (!atv) {
+                let atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+                atv = atividades.find(item => String(item.numero) === numStr || String(item.id) === numStr);
+            }
+
+            if (!atv) {
+                erroMsg.innerText = `Erro: O número de atividade "${numStr}" ainda não existe. Registe a atividade primeiro!`;
+                erroMsg.style.display = 'block';
+                document.getElementById('modalObjNomeAtividade').value = '';
+                document.getElementById('modalObjAnoLetivo').value = '';
+                document.getElementById('modalObjTipo').value = '';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+                return null;
+            }
+
+            const isDuplicated = await verificarAtividadeDuplicada(numStr, editId);
+            if (isDuplicated) {
+                erroMsg.innerText = `Aviso: A atividade nº ${numStr} já possui um relatório de objetivos registado!`;
+                erroMsg.style.display = 'block';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+                return null;
+            }
+
+            erroMsg.style.display = 'none';
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = '1';
+
+            if (atv) {
+                document.getElementById('modalObjNomeAtividade').value = atv.titulo || atv.nome_atividade || '';
+                document.getElementById('modalObjAnoLetivo').value = atv.anoLetivo || atv.ano_letivo || '';
+                document.getElementById('modalObjTipo').value = atv.tipo || atv.tipo_atividade || '';
+                document.getElementById('modalObjNomeAtividade').readOnly = true;
+                document.getElementById('modalObjAnoLetivo').readOnly = true;
+                document.getElementById('modalObjTipo').readOnly = true;
+
+                await calcularMediaESugestoes(atv.id || atv.numero, atv.numero);
+                return atv;
+            }
+        }
+
+        async function calcularMediaESugestoes(atvId, atvNumero) {
+            const numStr = String(atvNumero || '').trim();
+            const idStr = String(atvId || '').trim();
+            let avaliacoesDaAtividade = [];
+
+            if (!numStr && !idStr) {
+                document.getElementById('modalObjMedia').value = 'Sem identificador de atividade';
+                return;
+            }
+
+            try {
+                // Vai buscar todas as avaliações da tabela avaliacoes_atividades no Supabase[cite: 4]
+                const { data: avSupabase, error } = await supabaseClient
+                    .from('avaliacoes_atividades')
+                    .select('*');
+                
+                if (!error && avSupabase && Array.isArray(avSupabase)) {
+                    avaliacoesDaAtividade = avSupabase.filter(av => {
+                        const avNum = String(av.numero_atividade || av.numeroAtividade || av.numero || '').trim();
+                        const avId = String(av.atividade_id || av.atividadeId || av.id_atividade || av.id || '').trim();
+
+                        return (numStr && avNum === numStr) || (idStr && avId === idStr);
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao consultar avaliações no Supabase:', err);
+            }
+
+            // Fallback para o localStorage se necessário
+            if (avaliacoesDaAtividade.length === 0) {
+                const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
+                const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
+                const av3 = JSON.parse(localStorage.getItem('avaliacoes')) || [];
+                const av4 = JSON.parse(localStorage.getItem('registosAvaliacoes')) || [];
+                const todasLocal = [...av1, ...av2, ...av3, ...av4];
+
+                avaliacoesDaAtividade = todasLocal.filter(av => {
+                    const avNum = String(av.numero_atividade || av.numeroAtividade || av.numero || '').trim();
+                    const avId = String(av.atividade_id || av.atividadeId || av.id_atividade || av.id || '').trim();
+                    return (numStr && avNum === numStr) || (idStr && avId === idStr);
+                });
+            }
+
+            if (avaliacoesDaAtividade.length === 0) {
+                document.getElementById('modalObjMedia').value = 'Sem avaliações registadas';
+                return;
+            }
+
+            let somaPertinencia = 0;
+            let somaDinamica = 0;
+            let somaInteresse = 0;
+            let totalValidas = 0;
+
+            // Percorre todas as avaliações de todos os utilizadores encontradas para esta atividade
+            avaliacoesDaAtividade.forEach(av => {
+                const p = parseFloat(av.pertinencia ?? av.nota_pertinencia ?? av.notaPertinencia ?? av.p ?? av.grauPertinencia ?? av.grau_pertinencia ?? NaN);
+                const d = parseFloat(av.dinamica ?? av.nota_dinamica ?? av.notaDinamica ?? av.d ?? av.grauDinamica ?? av.grau_dinamica ?? NaN);
+                const i = parseFloat(av.interesse ?? av.nota_interesse ?? av.notaInteresse ?? av.int ?? av.grauInteresse ?? av.grau_interesse ?? NaN);
+
+                if (!isNaN(p) || !isNaN(d) || !isNaN(i)) {
+                    somaPertinencia += (!isNaN(p) ? p : 0);
+                    somaDinamica += (!isNaN(d) ? d : 0);
+                    somaInteresse += (!isNaN(i) ? i : 0);
+                    totalValidas++;
+                }
+            });
+
+            if (totalValidas > 0) {
+                const mediaP = somaPertinencia / totalValidas;
+                const mediaD = somaDinamica / totalValidas;
+                const mediaI = somaInteresse / totalValidas;
+                const mediaGlobal = (mediaP + mediaD + mediaI) / 3;
+                
+                document.getElementById('modalObjMedia').value = `${mediaGlobal.toFixed(1)} / 5`;
+            } else {
+                document.getElementById('modalObjMedia').value = 'Sem pontuações numéricas válidas';
+            }
+        }
+
+        function aoMudarNumeroAtividade(val) {
+            preencherDadosAutomaticosPorNumero(val);
+        }
+
+        async function mostrarFormulario(id, modo) {
+            document.getElementById('listagemHeaderCard').style.display = 'none';
+            document.getElementById('listagemFiltersCard').style.display = 'none';
+            document.getElementById('listagemTableCard').style.display = 'none';
+            document.getElementById('formularioCard').style.display = 'block';
+            document.getElementById('erroDuplicadoMsg').style.display = 'none';
+
+            const saveBtn = document.getElementById('btnSalvarForm');
+            const btnImprimir = document.getElementById('btnImprimirRegisto');
+
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = '1';
+
+            // Garante que todos os campos e checkboxes do formulário estão ativos por defeito
+            const todosCampos = document.querySelectorAll('#oMeuFormulario input, #oMeuFormulario select, #oMeuFormulario textarea');
+            todosCampos.forEach(el => el.disabled = false);
+
+            if (modo === 'criar') {
+                document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
+                document.getElementById('editObjetivoId').value = '';
+                document.getElementById('oMeuFormulario').reset();
+
+                const nomeUtilizador = currentUser ? (currentUser.name || currentUser.email || 'Utilizador') : '';
+                document.getElementById('modalObjResponsavel').value = nomeUtilizador;
+
+                document.getElementById('modalObjMedia').disabled = true;
+                document.getElementById('modalObjResponsavel').disabled = true;
+                saveBtn.style.display = 'inline-block';
+                btnImprimir.style.display = 'none';
+            } else {
+                const { data: reg, error } = await supabaseClient
+                    .from('registos_objetivos_atividades')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error || !reg) {
+                    alert('Erro ao carregar os dados para edição.');
+                    voltarParaListagem();
+                    return;
+                }
+
+                document.getElementById('editObjetivoId').value = reg.id;
+                document.getElementById('modalObjNumAtividade').value = reg.numero_atividade || '';
+                document.getElementById('modalObjNomeAtividade').value = reg.nome_atividade || '';
+                document.getElementById('modalObjAnoLetivo').value = reg.ano_letivo || '';
+                document.getElementById('modalObjTipo').value = reg.tipo_atividade || '';
+                document.getElementById('modalObjPaa').value = reg.integra_paa || '';
+                document.getElementById('modalObjPee').value = reg.integra_pee || '';
+                document.getElementById('modalObjNumeroAta').value = reg.numero_ata || '';
+                document.getElementById('modalObjdataAvaliacao').value = reg.data_avaliacao || '';
+                document.getElementById('modalObjResumo').value = reg.resumo_conclusoes || '';
+                document.getElementById('modalObjEvidencias').value = reg.evidencias || '';
+                document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criador_nome || '';
+
+                // Marca os Objetivos e Metas que estavam guardados
+                document.querySelectorAll('#oMeuFormulario input[name="objCheck"]').forEach(chk => {
+                    chk.checked = Array.isArray(reg.objetivos_selecionados) && reg.objetivos_selecionados.includes(chk.value);
+                });
+                document.querySelectorAll('#oMeuFormulario input[name="metaCheck"]').forEach(chk => {
+                    chk.checked = Array.isArray(reg.metas_selecionadas) && reg.metas_selecionadas.includes(chk.value);
+                });
+
+                // RECALCULA A MÉDIA EM TEMPO REAL: Lê as avaliações mais recentes no Supabase[cite: 4]
+                await calcularMediaESugestoes(reg.atividade_id, reg.numero_atividade);
+
+                // Se o modo for editar e a média tiver mudado devido a novas avaliações, atualiza a base de dados[cite: 3]
+                if (modo === 'editar' && document.getElementById('modalObjMedia').value !== reg.media_geral) {
+                    await supabaseClient
+                        .from('registos_objetivos_atividades')
+                        .update({ media_geral: document.getElementById('modalObjMedia').value })
+                        .eq('id', reg.id);
+                }
+
+                if (modo === 'ver') {
+                    document.getElementById('formTitulo').innerText = 'Consultar Registo de Objetivos';
+                    todosCampos.forEach(el => el.disabled = true);
+                    saveBtn.style.display = 'none';
+                    btnImprimir.style.display = 'inline-block';
+                    btnImprimir.href = `imprimir.html?id=${reg.id}`;
+                } else {
+                    document.getElementById('formTitulo').innerText = 'Editar Registo de Objetivos';
+                    document.getElementById('modalObjMedia').disabled = true;
+                    document.getElementById('modalObjResponsavel').disabled = true;
+                    saveBtn.style.display = 'inline-block';
+                    btnImprimir.style.display = 'none';
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function voltarParaListagem() {
+            document.getElementById('btnImprimirRegisto').style.display = 'none';
+            document.getElementById('formularioCard').style.display = 'none';
+            document.getElementById('listagemHeaderCard').style.display = 'flex';
+            document.getElementById('listagemFiltersCard').style.display = 'grid';
+            document.getElementById('listagemTableCard').style.display = 'block';
+            carregarObjetivos();
+        }
+
+        async function salvarRegistoObjetivo(e) {
+            e.preventDefault();
+            const id = document.getElementById('editObjetivoId').value;
+            const numAtvInput = document.getElementById('modalObjNumAtividade').value.trim();
+
+            const isDuplicated = await verificarAtividadeDuplicada(numAtvInput, id);
+            if (isDuplicated) {
+                alert(`Erro: Já existe um relatório de objetivos guardado para a atividade nº ${numAtvInput}. Não são permitidos duplicados.`);
+                return;
+            }
+
+            let objsSel = [];
+            document.querySelectorAll('#oMeuFormulario input[name="objCheck"]:checked').forEach(c => objsSel.push(c.value));
+
+            let metasSel = [];
+            document.querySelectorAll('#oMeuFormulario input[name="metaCheck"]:checked').forEach(c => metasSel.push(c.value));
+
+            const atividades = JSON.parse(localStorage.getItem('atividades')) || [];
+            const atvEncontrada = atividades.find(item => String(item.numero) === numAtvInput || String(item.id) === numAtvInput);
+
+            const responsavelVal = document.getElementById('modalObjResponsavel').value || (currentUser ? (currentUser.name || currentUser.email) : '');
+
+            const dadosRegisto = {
+                atividade_id: atvEncontrada ? String(atvEncontrada.id) : null,
+                numero_atividade: numAtvInput,
+                nome_atividade: document.getElementById('modalObjNomeAtividade').value,
+                ano_letivo: document.getElementById('modalObjAnoLetivo').value,
+                tipo_atividade: document.getElementById('modalObjTipo').value,
+                integra_paa: document.getElementById('modalObjPaa').value,
+                integra_pee: document.getElementById('modalObjPee').value,
+                objetivos_selecionados: objsSel,
+                metas_selecionadas: metasSel,
+                media_geral: document.getElementById('modalObjMedia').value,
+                numero_ata: document.getElementById('modalObjNumeroAta').value ? parseInt(document.getElementById('modalObjNumeroAta').value) : null,
+                data_avaliacao: document.getElementById('modalObjdataAvaliacao').value || null,
+                resumo_conclusoes: document.getElementById('modalObjResumo').value,
+                evidencias: document.getElementById('modalObjEvidencias').value,
+                responsavel: responsavelVal,
+                criador_id: String(currentUser.id),
+                criador_nome: currentUser.name || currentUser.email
+            };
+
+            let error;
+            if (!id || id === '') {
+                const { error: err } = await supabaseClient
+                    .from('registos_objetivos_atividades')[cite: 3]
+                    .insert([dadosRegisto]);
+                error = err;
+            } else {
+                const { error: err } = await supabaseClient
+                    .from('registos_objetivos_atividades')[cite: 3]
+                    .update(dadosRegisto)
+                    .eq('id', id);
+                error = err;
+            }
+
+            if (error) {
+                console.error('Erro ao guardar no Supabase:', error);
+                alert('Ocorreu um erro ao guardar o registo na base de dados: ' + error.message);
+                return;
+            }
+
+            document.getElementById('oMeuFormulario').reset();
+            window._deveVoltarAbreviatura = true;
+            mostrarPopupPersonalizado('Sucesso', 'O registo de objetivos foi guardado com sucesso!', '🎉');
+        }
+
+        let idParaApagar = null;
+        function confirmarApagar(id) {
+            idParaApagar = id;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        function fecharConfirmarApagar() {
+            idParaApagar = null;
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        document.getElementById('btnConfirmDelete').onclick = async function() {
+            if (idParaApagar !== null) {
+                const { error } = await supabaseClient
+                    .from('registos_objetivos_atividades')[cite: 3]
+                    .delete()
+                    .eq('id', idParaApagar);
+
+                if (error) {
+                    console.error('Erro ao apagar no Supabase:', error);
+                    alert('Erro ao apagar o registo.');
+                } else {
+                    carregarObjetivos();
+                }
+                fecharConfirmarApagar();
+            }
+        };
+
+        carregarObjetivos();
+    </script>
+</body>
+</html>
