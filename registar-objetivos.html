@@ -814,7 +814,7 @@
             }
 
             try {
-                // Vai buscar todas as avaliações da tabela avaliacoes_atividades no Supabase[cite: 4]
+                // Vai buscar todas as avaliações da tabela avaliacoes_atividades no Supabase
                 const { data: avSupabase, error } = await supabaseClient
                     .from('avaliacoes_atividades')
                     .select('*');
@@ -896,12 +896,14 @@
             const saveBtn = document.getElementById('btnSalvarForm');
             const btnImprimir = document.getElementById('btnImprimirRegisto');
 
+            // Habilita todos os inputs e checkboxes por defeito
+            const todosOsElementos = document.querySelectorAll('#oMeuFormulario input, #oMeuFormulario select, #oMeuFormulario textarea');
+            todosOsElementos.forEach(el => {
+                el.disabled = false;
+            });
+
             saveBtn.disabled = false;
             saveBtn.style.opacity = '1';
-
-            // Garante que todos os campos e checkboxes do formulário estão ativos por defeito
-            const todosCampos = document.querySelectorAll('#oMeuFormulario input, #oMeuFormulario select, #oMeuFormulario textarea');
-            todosCampos.forEach(el => el.disabled = false);
 
             if (modo === 'criar') {
                 document.getElementById('formTitulo').innerText = 'Registar Objetivos e Avaliação Global';
@@ -941,7 +943,7 @@
                 document.getElementById('modalObjEvidencias').value = reg.evidencias || '';
                 document.getElementById('modalObjResponsavel').value = reg.responsavel || reg.criador_nome || '';
 
-                // Marca os Objetivos e Metas que estavam guardados
+                // Marca as checkboxes que estavam previamente guardadas
                 document.querySelectorAll('#oMeuFormulario input[name="objCheck"]').forEach(chk => {
                     chk.checked = Array.isArray(reg.objetivos_selecionados) && reg.objetivos_selecionados.includes(chk.value);
                 });
@@ -949,20 +951,12 @@
                     chk.checked = Array.isArray(reg.metas_selecionadas) && reg.metas_selecionadas.includes(chk.value);
                 });
 
-                // RECALCULA A MÉDIA EM TEMPO REAL: Lê as avaliações mais recentes no Supabase[cite: 4]
+                // RECALCULA A MÉDIA ATUALIZADA NO MOMENTO DE ABRIR O REGISTO
                 await calcularMediaESugestoes(reg.atividade_id, reg.numero_atividade);
-
-                // Se o modo for editar e a média tiver mudado devido a novas avaliações, atualiza a base de dados[cite: 3]
-                if (modo === 'editar' && document.getElementById('modalObjMedia').value !== reg.media_geral) {
-                    await supabaseClient
-                        .from('registos_objetivos_atividades')
-                        .update({ media_geral: document.getElementById('modalObjMedia').value })
-                        .eq('id', reg.id);
-                }
 
                 if (modo === 'ver') {
                     document.getElementById('formTitulo').innerText = 'Consultar Registo de Objetivos';
-                    todosCampos.forEach(el => el.disabled = true);
+                    todosOsElementos.forEach(el => el.disabled = true);
                     saveBtn.style.display = 'none';
                     btnImprimir.style.display = 'inline-block';
                     btnImprimir.href = `imprimir.html?id=${reg.id}`;
@@ -1032,12 +1026,12 @@
             let error;
             if (!id || id === '') {
                 const { error: err } = await supabaseClient
-                    .from('registos_objetivos_atividades')[cite: 3]
+                    .from('registos_objetivos_atividades')
                     .insert([dadosRegisto]);
                 error = err;
             } else {
                 const { error: err } = await supabaseClient
-                    .from('registos_objetivos_atividades')[cite: 3]
+                    .from('registos_objetivos_atividades')
                     .update(dadosRegisto)
                     .eq('id', id);
                 error = err;
@@ -1067,7 +1061,7 @@
         document.getElementById('btnConfirmDelete').onclick = async function() {
             if (idParaApagar !== null) {
                 const { error } = await supabaseClient
-                    .from('registos_objetivos_atividades')[cite: 3]
+                    .from('registos_objetivos_atividades')
                     .delete()
                     .eq('id', idParaApagar);
 
