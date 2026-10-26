@@ -1,15 +1,14 @@
-// Gestão unificada e segura de Autenticação e Registos
+// Gestão centralizada de Autenticação e Contas
 
 async function lidarComRegisto(event) {
     if (event) event.preventDefault();
     
-    // Tenta encontrar os campos por vários IDs possíveis nos formulários
     const nomeInput = document.getElementById('regNome') || document.getElementById('nome') || document.getElementById('name');
     const emailInput = document.getElementById('regEmail') || document.getElementById('email');
     const passInput = document.getElementById('regPassword') || document.getElementById('password') || document.getElementById('pass');
 
     if (!emailInput || !passInput) {
-        alert("Erro: Não foi possível encontrar os campos do formulário de registo.");
+        alert("Erro: Campos de registo não encontrados no formulário.");
         return;
     }
 
@@ -28,24 +27,23 @@ async function lidarComRegisto(event) {
         return;
     }
 
-    // Inserir diretamente na tabela 'users'
     const { data, error } = await client.from('users').insert([
         {
             name: nome,
             email: email,
             password: password,
-            aprovado: false,   // Fica pendente até aprovação do admin
+            aprovado: false,
             is_admin: false
         }
     ]).select();
 
     if (error) {
         console.error("Erro no registo:", error);
-        alert("Erro ao criar conta (o email já pode existir): " + error.message);
+        alert("Erro ao criar conta (o email poderá já estar registado): " + error.message);
         return;
     }
 
-    alert("Conta criada com sucesso! Aguarde a aprovação do administrador para aceder ao sistema.");
+    alert("Conta criada com sucesso! Aguarde a aprovação do administrador.");
     window.location.href = 'index.html';
 }
 
@@ -56,7 +54,7 @@ async function lidarComLogin(event) {
     const passInput = document.getElementById('loginPassword') || document.getElementById('password') || document.getElementById('pass');
 
     if (!emailInput || !passInput) {
-        alert("Erro: Não foi possível encontrar os campos do formulário de login.");
+        alert("Erro: Campos de login não encontrados no formulário.");
         return;
     }
 
@@ -93,7 +91,6 @@ async function lidarComLogin(event) {
         return;
     }
 
-    // Guardar sessão local e redirecionar para o dashboard
     localStorage.setItem('currentUser', JSON.stringify(user));
     window.location.href = 'dashboard.html';
 }
