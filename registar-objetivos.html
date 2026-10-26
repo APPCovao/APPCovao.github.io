@@ -808,25 +808,30 @@
             const idStr = String(atvId || '').trim();
             let avaliacoesDaAtividade = [];
 
+            if (!numStr && !idStr) {
+                document.getElementById('modalObjMedia').value = 'Sem identificador de atividade';
+                return;
+            }
+
             try {
-                let query = supabaseClient.from('avaliacoes_atividades').select('*');
-                const { data: avSupabase, error } = await query;
+                // Vai buscar todas as avaliações da tabela avaliacoes_atividades no Supabase
+                const { data: avSupabase, error } = await supabaseClient
+                    .from('avaliacoes_atividades')
+                    .select('*');
                 
                 if (!error && avSupabase && Array.isArray(avSupabase)) {
                     avaliacoesDaAtividade = avSupabase.filter(av => {
-                        const avIdAtv = String(av.atividade_id || av.atividadeId || av.idAtividade || av.id_atividade || av.id || '').trim();
-                        const avNumAtv = String(av.numero_atividade || av.numeroAtividade || av.numeroAtv || av.numero || '').trim();
+                        const avNum = String(av.numero_atividade || av.numeroAtividade || av.numero || '').trim();
+                        const avId = String(av.atividade_id || av.atividadeId || av.id_atividade || av.id || '').trim();
 
-                        const matchId = idStr && avIdAtv && avIdAtv === idStr;
-                        const matchNum = numStr && avNumAtv && avNumAtv === numStr;
-
-                        return matchId || matchNum;
+                        return (numStr && avNum === numStr) || (idStr && avId === idStr);
                     });
                 }
             } catch (err) {
-                console.error('Erro de conexão ao aceder ao Supabase para avaliações:', err);
+                console.error('Erro ao consultar avaliações no Supabase:', err);
             }
 
+            // Fallback para o localStorage se necessário
             if (avaliacoesDaAtividade.length === 0) {
                 const av1 = JSON.parse(localStorage.getItem('avaliacoesAtividades')) || [];
                 const av2 = JSON.parse(localStorage.getItem('atividadesAvaliadas')) || [];
@@ -835,13 +840,9 @@
                 const todasLocal = [...av1, ...av2, ...av3, ...av4];
 
                 avaliacoesDaAtividade = todasLocal.filter(av => {
-                    const avIdAtv = String(av.atividade_id || av.atividadeId || av.idAtividade || av.id_atividade || av.id || '').trim();
-                    const avNumAtv = String(av.numero_atividade || av.numeroAtividade || av.numeroAtv || av.numero || '').trim();
-
-                    const matchId = idStr && avIdAtv && avIdAtv === idStr;
-                    const matchNum = numStr && avNumAtv && avNumAtv === numStr;
-
-                    return matchId || matchNum;
+                    const avNum = String(av.numero_atividade || av.numeroAtividade || av.numero || '').trim();
+                    const avId = String(av.atividade_id || av.atividadeId || av.id_atividade || av.id || '').trim();
+                    return (numStr && avNum === numStr) || (idStr && avId === idStr);
                 });
             }
 
@@ -855,10 +856,11 @@
             let somaInteresse = 0;
             let totalValidas = 0;
 
+            // Percorre todas as avaliações de todos os utilizadores encontradas para esta atividade
             avaliacoesDaAtividade.forEach(av => {
-                const p = parseFloat(av.pertinencia ?? av.nota_pertinencia ?? av.notaPertinencia ?? av.p ?? av.grauPertinencia ?? NaN);
-                const d = parseFloat(av.dinamica ?? av.nota_dinamica ?? av.notaDinamica ?? av.d ?? av.grauDinamica ?? NaN);
-                const i = parseFloat(av.interesse ?? av.nota_interesse ?? av.notaInteresse ?? av.int ?? av.grauInteresse ?? NaN);
+                const p = parseFloat(av.pertinencia ?? av.nota_pertinencia ?? av.notaPertinencia ?? av.p ?? av.grauPertinencia ?? av.grau_pertinencia ?? NaN);
+                const d = parseFloat(av.dinamica ?? av.nota_dinamica ?? av.notaDinamica ?? av.d ?? av.grauDinamica ?? av.grau_dinamica ?? NaN);
+                const i = parseFloat(av.interesse ?? av.nota_interesse ?? av.notaInteresse ?? av.int ?? av.grauInteresse ?? av.grau_interesse ?? NaN);
 
                 if (!isNaN(p) || !isNaN(d) || !isNaN(i)) {
                     somaPertinencia += (!isNaN(p) ? p : 0);
