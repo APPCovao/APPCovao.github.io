@@ -1,24 +1,34 @@
-// Gestão de Autenticação e Registos
+// Gestão unificada e segura de Autenticação e Registos
+
 async function lidarComRegisto(event) {
     if (event) event.preventDefault();
     
-    const nomeInput = document.getElementById('regNome') || document.getElementById('nome');
+    // Tenta encontrar os campos por vários IDs possíveis nos formulários
+    const nomeInput = document.getElementById('regNome') || document.getElementById('nome') || document.getElementById('name');
     const emailInput = document.getElementById('regEmail') || document.getElementById('email');
-    const passInput = document.getElementById('regPassword') || document.getElementById('password');
+    const passInput = document.getElementById('regPassword') || document.getElementById('password') || document.getElementById('pass');
 
-    if (!emailInput || !passInput) return;
+    if (!emailInput || !passInput) {
+        alert("Erro: Não foi possível encontrar os campos do formulário de registo.");
+        return;
+    }
 
     const nome = nomeInput ? nomeInput.value.trim() : 'Novo Utilizador';
     const email = emailInput.value.trim();
     const password = passInput.value.trim();
 
-    const client = getSupabase();
-    if (!client) {
-        alert("Erro crítico: Cliente Supabase não encontrado.");
+    if (!email || !password) {
+        alert("Por favor, preencha o email e a palavra-passe.");
         return;
     }
 
-    // Inserir diretamente na tabela 'users' para manter a lógica independente e compatível com o painel admin
+    const client = getSupabase();
+    if (!client) {
+        alert("Erro crítico: Cliente Supabase não inicializado.");
+        return;
+    }
+
+    // Inserir diretamente na tabela 'users'
     const { data, error } = await client.from('users').insert([
         {
             name: nome,
@@ -31,7 +41,7 @@ async function lidarComRegisto(event) {
 
     if (error) {
         console.error("Erro no registo:", error);
-        alert("Erro ao criar conta: " + error.message);
+        alert("Erro ao criar conta (o email já pode existir): " + error.message);
         return;
     }
 
@@ -43,16 +53,24 @@ async function lidarComLogin(event) {
     if (event) event.preventDefault();
 
     const emailInput = document.getElementById('loginEmail') || document.getElementById('email');
-    const passInput = document.getElementById('loginPassword') || document.getElementById('password');
+    const passInput = document.getElementById('loginPassword') || document.getElementById('password') || document.getElementById('pass');
 
-    if (!emailInput || !passInput) return;
+    if (!emailInput || !passInput) {
+        alert("Erro: Não foi possível encontrar os campos do formulário de login.");
+        return;
+    }
 
     const email = emailInput.value.trim();
     const password = passInput.value.trim();
 
+    if (!email || !password) {
+        alert("Por favor, introduza o email e a palavra-passe.");
+        return;
+    }
+
     const client = getSupabase();
     if (!client) {
-        alert("Erro crítico: Cliente Supabase não encontrado.");
+        alert("Erro crítico: Cliente Supabase não inicializado.");
         return;
     }
 
@@ -75,7 +93,7 @@ async function lidarComLogin(event) {
         return;
     }
 
-    // Guardar sessão local
+    // Guardar sessão local e redirecionar para o dashboard
     localStorage.setItem('currentUser', JSON.stringify(user));
     window.location.href = 'dashboard.html';
 }
