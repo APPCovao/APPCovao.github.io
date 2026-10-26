@@ -254,6 +254,65 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_Rg9vFNdp6xyu1X629P7DWw_XsfCZid-';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        async function calcularMediaAtualizada(atvId, atvNumero) {
+            const numStr = String(atvNumero || '').trim();
+            const idStr = String(atvId || '').trim();
+            let avaliacoesDaAtividade = [];
+
+            if (!numStr && !idStr) return 'Sem identificador de atividade';
+
+            try {
+                // Vai buscar todas as avaliações da tabela avaliacoes_atividades no Supabase
+                const { data: avSupabase, error } = await supabaseClient
+                    .from('avaliacoes_atividades')
+                    .select('*');
+                
+                if (!error && avSupabase && Array.isArray(avSupabase)) {
+                    avaliacoesDaAtividade = avSupabase.filter(av => {
+                        const avNum = String(av.numero_atividade || av.numeroAtividade || av.numero || '').trim();
+                        const avId = String(av.atividade_id || av.atividadeId || av.id_atividade || av.id || '').trim();
+
+                        return (numStr && avNum === numStr) || (idStr && avId === idStr);
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao consultar avaliações no Supabase:', err);
+            }
+
+            if (avaliacoesDaAtividade.length === 0) {
+                return 'Sem avaliações registadas';
+            }
+
+            let somaPertinencia = 0;
+            let somaDinamica = 0;
+            let somaInteresse = 0;
+            let totalValidas = 0;
+
+            avaliacoesDaAtividade.forEach(av => {
+                const p = parseFloat(av.pertinencia ?? av.nota_pertinencia ?? av.notaPertinencia ?? av.p ?? av.grauPertinencia ?? av.grau_pertinencia ?? NaN);
+                const d = parseFloat(av.dinamica ?? av.nota_dinamica ?? av.notaDinamica ?? av.d ?? av.grauDinamica ?? av.grau_dinamica ?? NaN);
+                const i = parseFloat(av.interesse ?? av.nota_interesse ?? av.notaInteresse ?? av.int ?? av.grauInteresse ?? av.grau_interesse ?? NaN);
+
+                if (!isNaN(p) || !isNaN(d) || !isNaN(i)) {
+                    somaPertinencia += (!isNaN(p) ? p : 0);
+                    somaDinamica += (!isNaN(d) ? d : 0);
+                    somaInteresse += (!isNaN(i) ? i : 0);
+                    totalValidas++;
+                }
+            });
+
+            if (totalValidas > 0) {
+                const mediaP = somaPertinencia / totalValidas;
+                const mediaD = somaDinamica / totalValidas;
+                const mediaI = somaInteresse / totalValidas;
+                const mediaGlobal = (mediaP + mediaD + mediaI) / 3;
+                
+                return `${mediaGlobal.toFixed(1)} / 5`;
+            } else {
+                return 'Sem pontuações numéricas válidas';
+            }
+        }
+
         async function carregarDadosImpressao() {
             const urlParams = new URLSearchParams(window.location.search);
             const registoId = urlParams.get('id');
@@ -285,13 +344,24 @@
             document.getElementById('printResponsavelFim').innerText = responsavelNome;
             document.getElementById('printPaa').innerText = reg.integra_paa || '-';
             document.getElementById('printPee').innerText = reg.integra_pee || '-';
-            document.getElementById('printMedia').innerText = reg.media_geral || '-';
             document.getElementById('printNumeroAta').innerText = reg.numero_ata !== null && reg.numero_ata !== undefined ? reg.numero_ata : '-';
             document.getElementById('printDataAvaliacao').innerText = reg.data_avaliacao || '-';
             document.getElementById('printResumo').innerText = reg.resumo_conclusoes || '-';
             document.getElementById('printEvidencias').innerText = reg.evidencias || '-';
 
             document.getElementById('printTituloCabecalho').innerText = `Relatório da atividade: ${nomeAtividade}`;
+
+            // Calcula a média atualizada em tempo real consultando todas as avaliações no Supabase
+            const mediaFinal = await calcularMediaAtualizada(reg.atividade_id, reg.numero_atividade);
+            document.getElementById('printMedia').innerText = mediaFinal;
+
+            // Se a média atualizada for válida e diferente da guardada, atualiza também na base de dados em segundo plano
+            if (mediaFinal.includes('/') && mediaFinal !== reg.media_geral) {
+                await supabaseClient
+                    .from('registos_objetivos_atividades')
+                    .update({ media_geral: mediaFinal })
+                    .eq('id', reg.id);
+            }
 
             // OBJETIVOS E METAS
             let htmlListas = '';
