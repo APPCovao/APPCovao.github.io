@@ -625,7 +625,6 @@
             };
         }
 
-        // --- FILTRO GENÉRICO EM TEMPO REAL ---
         function filtrarTabela(tbodyId, termo) {
             const tbody = document.getElementById(tbodyId);
             if (!tbody) return;
@@ -644,7 +643,6 @@
             }
         }
 
-        // --- 1. UTILIZADORES ---
         async function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
             if (!tbody) return;
@@ -719,7 +717,11 @@
 
         async function aprovarUtilizador(id) {
             const client = getSupabase();
-            await client.from('users').update({ aprovado: true }).eq('id', id);
+            const { error } = await client.from('users').update({ aprovado: true }).eq('id', id);
+            if(error) {
+                mostrarAlerta('Erro', 'Erro ao aprovar: ' + error.message);
+                return;
+            }
             carregarUtilizadores();
             mostrarAlerta('Sucesso', 'Utilizador aprovado com sucesso!');
         }
@@ -734,7 +736,6 @@
             if (!client) return;
 
             const novoEstado = !isAdminAtual;
-
             const { error } = await client
                 .from('users')
                 .update({ is_admin: novoEstado })
@@ -742,7 +743,7 @@
 
             if (error) {
                 console.error("Erro ao alterar permissão:", error);
-                mostrarAlerta('Erro', 'Não foi possível alterar a permissão do utilizador: ' + error.message);
+                mostrarAlerta('Erro', 'Não foi possível alterar a permissão do utilizador (verifique se a tabela permite UPDATE via RLS): ' + error.message);
                 return;
             }
 
@@ -767,7 +768,7 @@
                 
                 if (error) {
                     console.error("Erro ao apagar utilizador:", error);
-                    mostrarAlerta('Erro', 'Não foi possível eliminar o utilizador. Detalhe: ' + error.message);
+                    mostrarAlerta('Erro', 'Não foi possível eliminar. Se persistir, verifique as políticas de DELETE (RLS) no Supabase. Detalhe: ' + error.message);
                     return;
                 }
 
@@ -776,7 +777,6 @@
             });
         }
 
-        // --- FUNÇÃO AUXILIAR GENÉRICA DE CARREGAMENTO ---
         async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb, orderByField = 'id') {
             const tbody = document.getElementById(elementId);
             if (!tbody) return;
@@ -799,7 +799,6 @@
             });
         }
 
-        // --- 2. ATIVIDADES ---
         function carregarAtividades() {
             carregarTabelaGenerica('atividades', 'atividadesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero !== null && item.numero !== undefined ? item.numero : '-'}</strong></td>
@@ -810,7 +809,6 @@
             `, 'numero');
         }
 
-        // --- 3. AVALIAÇÕES DE ATIVIDADES ---
         function carregarAvaliacoesAtividades() {
             carregarTabelaGenerica('avaliacoes_atividades', 'avaliacoesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
@@ -821,7 +819,6 @@
             `, 'numero_atividade');
         }
 
-        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES ---
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
                 <td><strong>Nº ${reg.numero_atividade !== null && reg.numero_atividade !== undefined ? reg.numero_atividade : '-'}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
@@ -833,7 +830,6 @@
             `, 'numero_atividade');
         }
 
-        // --- 5. REGISTOS CAA ---
         function carregarRegistosCaa() {
             carregarTabelaGenerica('registos_caa', 'registosCaaTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
@@ -844,7 +840,6 @@
             `, 'numero_atividade');
         }
 
-        // --- 6. TURMAS ---
         function carregarTurmas() {
             carregarTabelaGenerica('turmas', 'turmasTableBody', 3, (item) => `
                 <td><strong style="color: var(--primary-green); font-size: 14px;">${item.nome || item.nome_turma || 'Turma'}</strong></td>
@@ -854,7 +849,6 @@
             `, 'id');
         }
 
-        // --- 7. REQUISIÇÕES ---
         function carregarRequisicoes() {
             carregarTabelaGenerica('requisicoes', 'requisicoesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_requisicao !== null && item.numero_requisicao !== undefined ? item.numero_requisicao : '-'}</strong></td>
@@ -865,13 +859,12 @@
             `, 'numero_requisicao');
         }
 
-        // --- FUNÇÕES GENÉRICAS DE ELIMINAÇÃO (ADMIN) ---
         async function eliminarRegistoTabela(nomeTabela, idRegisto, callbackRefresh) {
             mostrarConfirmacao('Eliminar Registo', 'Tem a certeza que pretende eliminar este registo permanentemente?', async () => {
                 const client = getSupabase();
                 const { error } = await client.from(nomeTabela).delete().eq('id', idRegisto);
                 if (error) {
-                    mostrarAlerta('Erro', 'Não foi possível eliminar o registo na base de dados.');
+                    mostrarAlerta('Erro', 'Não foi possível eliminar o registo: ' + error.message);
                     return;
                 }
                 callbackRefresh();
@@ -884,7 +877,7 @@
                 const client = getSupabase();
                 const { error } = await client.from(nomeTabela).delete().neq('id', -1); 
                 if (error) {
-                    mostrarAlerta('Erro', 'Não foi possível limpar os registos da tabela.');
+                    mostrarAlerta('Erro', 'Não foi possível limpar os registos: ' + error.message);
                     return;
                 }
                 callbackRefresh();
@@ -892,7 +885,6 @@
             });
         }
 
-        // Inicializar painel carregando todas as tabelas
         carregarUtilizadores();
         carregarAtividades();
         carregarAvaliacoesAtividades();
