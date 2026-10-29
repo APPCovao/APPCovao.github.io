@@ -201,7 +201,7 @@
             color: var(--text-main);
         }
 
-        /* Paginação */
+        /* --- ESTILOS DE PAGINAÇÃO LIMPA --- */
         .pagination-container {
             display: flex;
             justify-content: space-between;
@@ -213,16 +213,18 @@
         .pagination-buttons {
             display: flex;
             gap: 6px;
+            align-items: center;
         }
         .btn-page {
             background-color: #f1f5f9;
             border: 1px solid #cbd5e1;
-            padding: 4px 10px;
-            border-radius: 4px;
+            padding: 5px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
             color: var(--text-main);
+            transition: background 0.2s;
         }
         .btn-page:hover:not(:disabled) {
             background-color: #e2e8f0;
@@ -598,7 +600,7 @@
             </div>
             <div class="form-group-modal">
                 <label>Email:</label>
-                <input type="text" id="editUserEmail">
+                <input type="email" id="editUserEmail">
             </div>
             <div class="form-group-modal">
                 <label>Palavra-passe:</label>
@@ -627,7 +629,7 @@
             document.getElementById('userNameDisplay').innerText = primeiroNome;
         }
 
-        // Estado global para guardar a página atual de cada tabela (10 itens por página)
+        // Estado global para controlar as páginas de cada tabela
         const paginacaoEstado = {};
         const ITENS_POR_PAGINA = 10;
 
@@ -686,7 +688,7 @@
             }
         }
 
-        // --- FUNÇÃO AUXILIAR GENÉRICA COM PAGINAÇÃO ---
+        // --- FUNÇÃO AUXILIAR GENÉRICA COM PAGINAÇÃO LIMPA ---
         async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb, orderByField = 'id') {
             const tbody = document.getElementById(elementId);
             const pagContainer = document.getElementById(`pagination-${elementId}`);
@@ -704,12 +706,25 @@
                 return;
             }
 
-            // Inicializar página
+            window[`dadosTabela_${elementId}`] = data;
+            window[`renderCb_${elementId}`] = formatarLinhaCb;
+
             if (!paginacaoEstado[elementId]) paginacaoEstado[elementId] = 1;
             let paginaAtual = paginacaoEstado[elementId];
             const totalPaginas = Math.ceil(data.length / ITENS_POR_PAGINA);
 
             if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+
+            renderizarPaginaTabela(elementId, paginaAtual, totalPaginas, data);
+        }
+
+        function renderizarPaginaTabela(elementId, paginaAtual, totalPaginas, data) {
+            const tbody = document.getElementById(elementId);
+            const pagContainer = document.getElementById(`pagination-${elementId}`);
+            const formatarLinhaCb = window[`renderCb_${elementId}`];
+
+            if (!tbody) return;
+            tbody.innerHTML = '';
 
             const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
             const fim = inicio + ITENS_POR_PAGINA;
@@ -721,41 +736,26 @@
                 tbody.appendChild(tr);
             });
 
-            // Renderizar Controlos de Paginação
             if (pagContainer && totalPaginas > 1) {
                 pagContainer.innerHTML = `
                     <span>Mostrando ${inicio + 1} a ${Math.min(fim, data.length)} de ${data.length} registos</span>
                     <div class="pagination-buttons">
-                        <button class="btn-page" ${paginaAtual === 1 ? 'disabled' : ''} onclick="mudarPagina('${elementId}', '${nomeTabela}', ${colSpan}, ${formatarLinhaCb.toString()}, '${orderByField}', ${paginaAtual - 1})">Anterior</button>
+                        <button class="btn-page" ${paginaAtual === 1 ? 'disabled' : ''} onclick="mudarPagina('${elementId}', ${paginaAtual - 1})">Anterior</button>
                         <span style="padding: 4px 8px; align-self: center;">Página ${paginaAtual} de ${totalPaginas}</span>
-                        <button class="btn-page" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="mudarPagina('${elementId}', '${nomeTabela}', ${colSpan}, null, '${orderByField}', ${paginaAtual + 1}, ${data.length})">Seguinte</button>
+                        <button class="btn-page" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="mudarPagina('${elementId}', ${paginaAtual + 1})">Seguinte</button>
                     </div>
                 `;
-                // Guardar callback de formatação de forma segura globalmente se necessário
-                window[`renderCb_${elementId}`] = formatarLinhaCb;
             } else if (pagContainer) {
                 pagContainer.innerHTML = `<span>Total: ${data.length} registos</span>`;
             }
         }
 
-        function mudarPagina(elementId, nomeTabela, colSpan, cb, orderByField, novaPagina) {
+        function mudarPagina(elementId, novaPagina) {
             paginacaoEstado[elementId] = novaPagina;
-            const formatarLinhaCb = window[`renderCb_${elementId}`];
-            if (elementId === 'usersTableBody') {
-                carregarUtilizadores();
-            } else if (elementId === 'atividadesTableBody') {
-                carregarAtividades();
-            } else if (elementId === 'avaliacoesTableBody') {
-                carregarAvaliacoesAtividades();
-            } else if (elementId === 'objectivesTableBody') {
-                carregarRegistarObjetivos();
-            } else if (elementId === 'registosCaaTableBody') {
-                carregarRegistosCaa();
-            } else if (elementId === 'turmasTableBody') {
-                carregarTurmas();
-            } else if (elementId === 'requisicoesTableBody') {
-                carregarRequisicoes();
-            }
+            const data = window[`dadosTabela_${elementId}`];
+            if (!data) return;
+            const totalPaginas = Math.ceil(data.length / ITENS_POR_PAGINA);
+            renderizarPaginaTabela(elementId, novaPagina, totalPaginas, data);
         }
 
         // --- 1. UTILIZADORES (Com Paginação) ---
@@ -776,6 +776,7 @@
                 return;
             }
 
+            window[`dadosTabela_usersTableBody`] = users;
             if (!paginacaoEstado['usersTableBody']) paginacaoEstado['usersTableBody'] = 1;
             let paginaAtual = paginacaoEstado['usersTableBody'];
             const totalPaginas = Math.ceil(users.length / ITENS_POR_PAGINA);
@@ -808,14 +809,19 @@
                 pagContainer.innerHTML = `
                     <span>Mostrando ${inicio + 1} a ${Math.min(fim, users.length)} de ${users.length} registos</span>
                     <div class="pagination-buttons">
-                        <button class="btn-page" ${paginaAtual === 1 ? 'disabled' : ''} onclick="paginacaoEstado['usersTableBody']--; carregarUtilizadores();">Anterior</button>
+                        <button class="btn-page" ${paginaAtual === 1 ? 'disabled' : ''} onclick="mudarPaginaUsers(${paginaAtual - 1})">Anterior</button>
                         <span style="padding: 4px 8px; align-self: center;">Página ${paginaAtual} de ${totalPaginas}</span>
-                        <button class="btn-page" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="paginacaoEstado['usersTableBody']++; carregarUtilizadores();">Seguinte</button>
+                        <button class="btn-page" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="mudarPaginaUsers(${paginaAtual + 1})">Seguinte</button>
                     </div>
                 `;
             } else if (pagContainer) {
                 pagContainer.innerHTML = `<span>Total: ${users.length} registos</span>`;
             }
+        }
+
+        function mudarPaginaUsers(novaPagina) {
+            paginacaoEstado['usersTableBody'] = novaPagina;
+            carregarUtilizadores();
         }
 
         function abrirModalEdicao(id, nome, email, password) {
