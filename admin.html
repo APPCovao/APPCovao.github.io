@@ -201,6 +201,37 @@
             color: var(--text-main);
         }
 
+        /* Paginação */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-page {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .btn-page:hover:not(:disabled) {
+            background-color: #e2e8f0;
+        }
+        .btn-page:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .btn-action {
             padding: 5px 10px;
             border-radius: 6px;
@@ -381,6 +412,7 @@
                     <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-usersTableBody" class="pagination-container"></div>
         </div>
 
         <!-- 2. Atividades -->
@@ -406,6 +438,7 @@
                     <tbody id="atividadesTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-atividadesTableBody" class="pagination-container"></div>
         </div>
 
         <!-- 3. Avaliações de Atividades -->
@@ -431,6 +464,7 @@
                     <tbody id="avaliacoesTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-avaliacoesTableBody" class="pagination-container"></div>
         </div>
 
         <!-- 4. Registo de Objetivos e Atividades -->
@@ -457,6 +491,7 @@
                     <tbody id="objectivesTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-objectivesTableBody" class="pagination-container"></div>
         </div>
 
         <!-- 5. Registos CAA -->
@@ -482,6 +517,7 @@
                     <tbody id="registosCaaTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-registosCaaTableBody" class="pagination-container"></div>
         </div>
 
         <!-- 6. Turmas -->
@@ -507,6 +543,7 @@
                     <tbody id="turmasTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-turmasTableBody" class="pagination-container"></div>
         </div>
 
         <!-- 7. Requisições -->
@@ -532,6 +569,7 @@
                     <tbody id="requisicoesTableBody"></tbody>
                 </table>
             </div>
+            <div id="pagination-requisicoesTableBody" class="pagination-container"></div>
         </div>
 
     </div>
@@ -560,7 +598,7 @@
             </div>
             <div class="form-group-modal">
                 <label>Email:</label>
-                <input type="email" id="editUserEmail">
+                <input type="text" id="editUserEmail">
             </div>
             <div class="form-group-modal">
                 <label>Palavra-passe:</label>
@@ -588,6 +626,10 @@
             let primeiroNome = nomeCompleto === 'Administrador' ? 'Admin' : nomeCompleto.split(' ')[0];
             document.getElementById('userNameDisplay').innerText = primeiroNome;
         }
+
+        // Estado global para guardar a página atual de cada tabela (10 itens por página)
+        const paginacaoEstado = {};
+        const ITENS_POR_PAGINA = 10;
 
         function mostrarAlerta(titulo, mensagem, callbackOnClose = null) {
             const overlay = document.getElementById('customModal');
@@ -644,11 +686,85 @@
             }
         }
 
-        // --- 1. UTILIZADORES ---
+        // --- FUNÇÃO AUXILIAR GENÉRICA COM PAGINAÇÃO ---
+        async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb, orderByField = 'id') {
+            const tbody = document.getElementById(elementId);
+            const pagContainer = document.getElementById(`pagination-${elementId}`);
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar...</td></tr>`;
+            if (pagContainer) pagContainer.innerHTML = '';
+
+            const client = getSupabase();
+            if (!client) return;
+            const { data, error } = await client.from(nomeTabela).select('*').order(orderByField, { ascending: false });
+            tbody.innerHTML = '';
+
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhum registo encontrado.</td></tr>`;
+                return;
+            }
+
+            // Inicializar página
+            if (!paginacaoEstado[elementId]) paginacaoEstado[elementId] = 1;
+            let paginaAtual = paginacaoEstado[elementId];
+            const totalPaginas = Math.ceil(data.length / ITENS_POR_PAGINA);
+
+            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+
+            const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+            const fim = inicio + ITENS_POR_PAGINA;
+            const dadosPagina = data.slice(inicio, fim);
+
+            dadosPagina.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = formatarLinhaCb(item);
+                tbody.appendChild(tr);
+            });
+
+            // Renderizar Controlos de Paginação
+            if (pagContainer && totalPaginas > 1) {
+                pagContainer.innerHTML = `
+                    <span>Mostrando ${inicio + 1} a ${Math.min(fim, data.length)} de ${data.length} registos</span>
+                    <div class="pagination-buttons">
+                        <button class="btn-page" ${paginaAtual === 1 ? 'disabled' : ''} onclick="mudarPagina('${elementId}', '${nomeTabela}', ${colSpan}, ${formatarLinhaCb.toString()}, '${orderByField}', ${paginaAtual - 1})">Anterior</button>
+                        <span style="padding: 4px 8px; align-self: center;">Página ${paginaAtual} de ${totalPaginas}</span>
+                        <button class="btn-page" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="mudarPagina('${elementId}', '${nomeTabela}', ${colSpan}, null, '${orderByField}', ${paginaAtual + 1}, ${data.length})">Seguinte</button>
+                    </div>
+                `;
+                // Guardar callback de formatação de forma segura globalmente se necessário
+                window[`renderCb_${elementId}`] = formatarLinhaCb;
+            } else if (pagContainer) {
+                pagContainer.innerHTML = `<span>Total: ${data.length} registos</span>`;
+            }
+        }
+
+        function mudarPagina(elementId, nomeTabela, colSpan, cb, orderByField, novaPagina) {
+            paginacaoEstado[elementId] = novaPagina;
+            const formatarLinhaCb = window[`renderCb_${elementId}`];
+            if (elementId === 'usersTableBody') {
+                carregarUtilizadores();
+            } else if (elementId === 'atividadesTableBody') {
+                carregarAtividades();
+            } else if (elementId === 'avaliacoesTableBody') {
+                carregarAvaliacoesAtividades();
+            } else if (elementId === 'objectivesTableBody') {
+                carregarRegistarObjetivos();
+            } else if (elementId === 'registosCaaTableBody') {
+                carregarRegistosCaa();
+            } else if (elementId === 'turmasTableBody') {
+                carregarTurmas();
+            } else if (elementId === 'requisicoesTableBody') {
+                carregarRequisicoes();
+            }
+        }
+
+        // --- 1. UTILIZADORES (Com Paginação) ---
         async function carregarUtilizadores() {
             const tbody = document.getElementById('usersTableBody');
+            const pagContainer = document.getElementById('pagination-usersTableBody');
             if (!tbody) return;
             tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar...</td></tr>`;
+            if (pagContainer) pagContainer.innerHTML = '';
 
             const client = getSupabase();
             if (!client) return;
@@ -660,7 +776,16 @@
                 return;
             }
 
-            users.forEach((u) => {
+            if (!paginacaoEstado['usersTableBody']) paginacaoEstado['usersTableBody'] = 1;
+            let paginaAtual = paginacaoEstado['usersTableBody'];
+            const totalPaginas = Math.ceil(users.length / ITENS_POR_PAGINA);
+            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+
+            const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+            const fim = inicio + ITENS_POR_PAGINA;
+            const usersPagina = users.slice(inicio, fim);
+
+            usersPagina.forEach((u) => {
                 const tr = document.createElement('tr');
                 const isAdm = u.is_admin ? '<span style="color: var(--primary-green); font-weight: bold;">Admin</span>' : '<span style="color: var(--text-light);">Padrão</span>';
                 const statusAprovacao = u.aprovado ? '<span style="color: #15803d; font-weight: 600;">Aprovado</span>' : '<span style="color: #d97706; font-weight: 600;">Pendente</span>';
@@ -678,6 +803,19 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            if (pagContainer && totalPaginas > 1) {
+                pagContainer.innerHTML = `
+                    <span>Mostrando ${inicio + 1} a ${Math.min(fim, users.length)} de ${users.length} registos</span>
+                    <div class="pagination-buttons">
+                        <button class="btn-page" ${paginaAtual === 1 ? 'disabled' : ''} onclick="paginacaoEstado['usersTableBody']--; carregarUtilizadores();">Anterior</button>
+                        <span style="padding: 4px 8px; align-self: center;">Página ${paginaAtual} de ${totalPaginas}</span>
+                        <button class="btn-page" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="paginacaoEstado['usersTableBody']++; carregarUtilizadores();">Seguinte</button>
+                    </div>
+                `;
+            } else if (pagContainer) {
+                pagContainer.innerHTML = `<span>Total: ${users.length} registos</span>`;
+            }
         }
 
         function abrirModalEdicao(id, nome, email, password) {
@@ -747,30 +885,7 @@
             });
         }
 
-        // --- FUNÇÃO AUXILIAR GENÉRICA DE CARREGAMENTO ---
-        async function carregarTabelaGenerica(nomeTabela, elementId, colSpan, formatarLinhaCb, orderByField = 'id') {
-            const tbody = document.getElementById(elementId);
-            if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">A carregar...</td></tr>`;
-
-            const client = getSupabase();
-            if (!client) return;
-            const { data, error } = await client.from(nomeTabela).select('*').order(orderByField, { ascending: false });
-            tbody.innerHTML = '';
-
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: var(--text-light); padding: 20px;">Nenhum registo encontrado.</td></tr>`;
-                return;
-            }
-
-            data.forEach((item) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = formatarLinhaCb(item);
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- 2. ATIVIDADES (coluna 'numero') ---
+        // --- 2. ATIVIDADES ---
         function carregarAtividades() {
             carregarTabelaGenerica('atividades', 'atividadesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero !== null && item.numero !== undefined ? item.numero : '-'}</strong></td>
@@ -781,7 +896,7 @@
             `, 'numero');
         }
 
-        // --- 3. AVALIAÇÕES DE ATIVIDADES (coluna 'numero_atividade') ---
+        // --- 3. AVALIAÇÕES DE ATIVIDADES ---
         function carregarAvaliacoesAtividades() {
             carregarTabelaGenerica('avaliacoes_atividades', 'avaliacoesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
@@ -792,7 +907,7 @@
             `, 'numero_atividade');
         }
 
-        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES (coluna 'numero_atividade') ---
+        // --- 4. REGISTO DE OBJETIVOS E ATIVIDADES ---
         function carregarRegistarObjetivos() {
             carregarTabelaGenerica('registos_objetivos_atividades', 'objectivesTableBody', 4, (reg) => `
                 <td><strong>Nº ${reg.numero_atividade !== null && reg.numero_atividade !== undefined ? reg.numero_atividade : '-'}</strong> - ${reg.nome_atividade || 'Sem Nome'}</td>
@@ -804,7 +919,7 @@
             `, 'numero_atividade');
         }
 
-        // --- 5. REGISTOS CAA (coluna 'numero_atividade') ---
+        // --- 5. REGISTOS CAA ---
         function carregarRegistosCaa() {
             carregarTabelaGenerica('registos_caa', 'registosCaaTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_atividade !== null && item.numero_atividade !== undefined ? item.numero_atividade : '-'}</strong></td>
@@ -815,7 +930,7 @@
             `, 'numero_atividade');
         }
 
-        // --- 6. TURMAS (Nome da Turma em 1º) ---
+        // --- 6. TURMAS ---
         function carregarTurmas() {
             carregarTabelaGenerica('turmas', 'turmasTableBody', 3, (item) => `
                 <td><strong style="color: var(--primary-green); font-size: 14px;">${item.nome || item.nome_turma || 'Turma'}</strong></td>
@@ -826,7 +941,7 @@
             `, 'id');
         }
 
-        // --- 7. REQUISIÇÕES (coluna 'numero_requisicao') ---
+        // --- 7. REQUISIÇÕES ---
         function carregarRequisicoes() {
             carregarTabelaGenerica('requisicoes', 'requisicoesTableBody', 3, (item) => `
                 <td><strong>Nº ${item.numero_requisicao !== null && item.numero_requisicao !== undefined ? item.numero_requisicao : '-'}</strong></td>
